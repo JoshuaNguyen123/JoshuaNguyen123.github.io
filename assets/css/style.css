@@ -242,7 +242,9 @@ h6 {
   width: 100%;
   height: 100vh;
   background: url("../img/abstract-plexus-blue-geometrical-shapes-connection-ai-generated-image.jpg");
-  background-size: 100% 100%;
+  background-size: cover; /* Scale the image to cover the entire element */
+  background-repeat: no-repeat; /* Prevent image repetition */
+  background-position: center; /* Center the image */
   
 }
 
