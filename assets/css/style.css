@@ -270,19 +270,22 @@ h6 {
 }
 
 #hero h1 {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px 0; /* Adjust bottom margin as needed */
   font-size: 64px;
   font-weight: 700;
   line-height: 56px;
   color: #fff;
+  text-align: center; /* Center the text if needed */
 }
 
 #hero p {
   color: #fff;
-  margin-bottom: 50px;
+  margin-bottom: 50px; /* Adjust or remove as needed */
   font-size: 26px;
   font-family: "Poppins", sans-serif;
+  text-align: center; /* Center the text */
 }
+
 
 #hero p span {
   color: #fff;
