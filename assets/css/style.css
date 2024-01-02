@@ -260,6 +260,10 @@ h6 {
 }
 
 #hero .hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Use this if you want vertical centering as well */
   position: relative;
   z-index: 2;
   min-width: 300px;
