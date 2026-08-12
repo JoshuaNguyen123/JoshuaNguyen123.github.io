@@ -96,13 +96,13 @@ async function getLocalProviders() {
   const file = path.join(ROOT, "data", "local-activity.json");
   if (!existsSync(file)) return {
     codex: unavailableProvider("codex", "Local Codex log database (timestamp and thread_id only)"),
-    cursor: unavailableProvider("cursor", "Local Cursor AI tracking database"),
+    cursor: unavailableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)"),
     "claude-code": unavailableProvider("claude-code", "Local Claude Code session event timestamps"),
   };
   const value = await loadJson(file);
   const topKeys = Object.keys(value).sort().join(",");
   if (topKeys !== ["generatedAt", "privacyVersion", "providers", "schemaVersion", "timeZone"].sort().join(",")) throw new Error("Local activity snapshot contains unexpected properties");
-  if (value.schemaVersion !== 1 || value.privacyVersion !== "aggregate-v1" || value.timeZone !== TIME_ZONE) throw new Error("Local activity snapshot schema is invalid");
+  if (value.schemaVersion !== 2 || value.privacyVersion !== "aggregate-v2" || value.timeZone !== TIME_ZONE) throw new Error("Local activity snapshot schema is invalid");
   for (const provider of ["codex", "cursor", "claude-code"]) validateRawProvider(provider, value.providers[provider]);
   return value.providers;
 }

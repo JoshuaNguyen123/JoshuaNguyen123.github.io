@@ -15,14 +15,15 @@ async function listJsonlFiles(root) {
 
 async function readLinePrefixes(file, onPrefix, limit = 4096) {
   let prefix = "";
-  for await (const chunk of createReadStream(file)) {
+  for await (const chunk of createReadStream(file, { highWaterMark: 1024 * 1024 })) {
     let start = 0;
-    for (let index = 0; index < chunk.length; index += 1) {
-      if (chunk[index] !== 10) continue;
+    let index = chunk.indexOf(10, start);
+    while (index !== -1) {
       if (prefix.length < limit) prefix += chunk.subarray(start, Math.min(index, start + limit - prefix.length)).toString("utf8");
       onPrefix(prefix);
       prefix = "";
       start = index + 1;
+      index = chunk.indexOf(10, start);
     }
     if (start < chunk.length && prefix.length < limit) prefix += chunk.subarray(start, start + limit - prefix.length).toString("utf8");
   }
@@ -31,10 +32,17 @@ async function readLinePrefixes(file, onPrefix, limit = 4096) {
 
 class DailyIdentityCounter {
   #identities = new Map();
+  #dateCache = new Map();
 
   add(timestamp, transientId) {
-    if (!timestamp || !transientId || Number.isNaN(Date.parse(timestamp))) return;
-    const date = dateInTimeZone(timestamp);
+    if (!timestamp || !transientId) return;
+    const cacheKey = timestamp.slice(0, 13);
+    let date = this.#dateCache.get(cacheKey);
+    if (!date) {
+      if (Number.isNaN(Date.parse(timestamp))) return;
+      date = dateInTimeZone(timestamp);
+      this.#dateCache.set(cacheKey, date);
+    }
     if (!this.#identities.has(date)) this.#identities.set(date, new Set());
     this.#identities.get(date).add(transientId);
   }
@@ -65,7 +73,7 @@ export async function exportCodex(root) {
     await readLinePrefixes(file, (prefix) => {
       const timestamp = prefix.match(/"timestamp":"([^"]+)"/)?.[1];
       if (timestamp) counter.add(timestamp, transientId);
-    });
+    }, 512);
   }
   return availableProvider("codex", "Local Codex session event timestamps", counter.days());
 }
@@ -98,36 +106,23 @@ export async function exportClaude(root) {
 }
 
 export function exportCursor(databasePath) {
-  if (!existsSync(databasePath)) return availableProvider("cursor", "Local Cursor AI tracking database", []);
-  const database = new DatabaseSync(databasePath, { readOnly: true });
-  try {
-    const rows = database.prepare(
-      "SELECT MIN(timestamp) AS timestamp, requestId FROM ai_code_hashes WHERE timestamp IS NOT NULL AND requestId IS NOT NULL GROUP BY requestId",
-    ).all();
-    const counter = new DailyIdentityCounter();
-    for (const row of rows) {
-      const timestamp = typeof row.timestamp === "number" ? new Date(row.timestamp).toISOString() : row.timestamp;
-      counter.add(timestamp, String(row.requestId));
-    }
-    return availableProvider("cursor", "Local Cursor AI tracking database (timestamp and requestId only)", counter.days());
-  } finally {
-    database.close();
-  }
+  void databasePath;
+  return availableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)", []);
 }
 
 export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase } = {}) {
   const profile = homedir();
-  const configuredCodexDatabase = codexDatabase ?? process.env.CODEX_ACTIVITY_DB ?? path.join(profile, ".codex", "logs_2.sqlite");
+  const configuredCodexRoot = codexRoot ?? process.env.CODEX_ACTIVITY_ROOT ?? path.join(profile, ".codex", "sessions");
   const providers = {
-    codex: codexRoot
-      ? await exportCodex(codexRoot)
-      : exportCodexDatabase(configuredCodexDatabase),
+    codex: codexDatabase
+      ? exportCodexDatabase(codexDatabase)
+      : await exportCodex(configuredCodexRoot),
     cursor: exportCursor(cursorDatabase ?? process.env.CURSOR_ACTIVITY_DB ?? path.join(profile, ".cursor", "ai-tracking", "ai-code-tracking.db")),
     "claude-code": await exportClaude(claudeRoot ?? process.env.CLAUDE_ACTIVITY_ROOT ?? path.join(profile, ".claude", "projects")),
   };
   return {
-    schemaVersion: 1,
-    privacyVersion: "aggregate-v1",
+    schemaVersion: 2,
+    privacyVersion: "aggregate-v2",
     timeZone: TIME_ZONE,
     generatedAt: new Date().toISOString(),
     providers,

@@ -12,9 +12,10 @@
     "activity:export": "node scripts/export-local-activity.mjs",
     "activity:prepare": "node scripts/prepare-activity.mjs",
     "privacy:check": "node scripts/validate-activity.mjs public/data/activity.json",
+    "smoke": "node scripts/smoke-export.mjs && node scripts/smoke-http.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
-    "verify": "npm run lint && npm test && npm run build"
+    "verify": "npm run lint && npm test && npm run build && npm run privacy:check && npm run smoke"
   },
   "dependencies": {
     "gray-matter": "4.0.3",

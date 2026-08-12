@@ -15,9 +15,11 @@ A fully static Next.js portfolio for `https://joshuanguyen123.github.io`. It pai
 Public units are deliberately narrow:
 
 - GitHub: public contributions per day.
-- Codex: distinct sessions active per day.
-- Cursor: distinct AI code request events per day.
-- Claude Code: distinct sessions active per day.
+- Codex: distinct locally retained sessions with an observed event per day.
+- Cursor: unavailable until a first-party aggregate export can reproduce the AI Line Edits metric.
+- Claude Code: distinct locally retained sessions with an observed event per day.
+
+Codex and Claude annual totals are labeled **active session-days**: one session observed on two dates contributes one to each date. They are not lifetime-session or token totals.
 
 The Build Index is the equal-weight mean of each available provider's independently normalized daily level. It is an activity index, not a productivity score.
 
@@ -27,9 +29,9 @@ Export local aggregates explicitly:
 npm run activity:export
 ```
 
-The exporter reads only timestamps and transient session/request identifiers needed to count activity. Codex is queried for only `ts` and `thread_id`; Cursor is queried for only `timestamp` and `requestId`. The committed snapshot contains dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, and raw IDs are forbidden by schema validation.
+The exporter reads only timestamp prefixes and transient session identifiers needed to count Codex and Claude Code activity. Cursor request IDs are deliberately not published because they do not reproduce Cursor's AI Line Edits metric. The committed snapshot contains dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, token totals, and raw IDs are forbidden by schema validation.
 
-Local Codex, Cursor, and Claude Code freshness therefore reflects the most recently committed export. GitHub Actions refreshes the public GitHub contribution calendar on `main`, manual runs, and a six-hour schedule.
+Local Codex and Claude Code freshness therefore reflects the most recently committed export. GitHub Actions refreshes the public GitHub contribution calendar on `main`, manual runs, and a six-hour schedule. Cursor remains visibly unavailable and is excluded from the Build Index until a compatible first-party aggregate is configured.
 
 ## Local development
 

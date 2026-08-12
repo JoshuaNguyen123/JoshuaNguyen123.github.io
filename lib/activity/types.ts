@@ -39,16 +39,16 @@ export interface BuildIndexSnapshot {
 
 export interface ActivitySummary {
   contributions: number;
-  codexSessions: number;
-  cursorEvents: number;
-  claudeSessions: number;
+  codexActiveSessionDays: number;
+  cursorAiCodeEvents: number;
+  claudeActiveSessionDays: number;
   activeDays: number;
   longestStreak: number;
 }
 
 export interface ActivitySnapshot {
-  schemaVersion: 1;
-  privacyVersion: "aggregate-v1";
+  schemaVersion: 2;
+  privacyVersion: "aggregate-v2";
   mode: "observed" | "fixture";
   generatedAt: string;
   timeZone: "America/Denver";
