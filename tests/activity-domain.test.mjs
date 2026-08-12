@@ -16,7 +16,7 @@ function provider(name, days, syncedAt = "2026-08-10T12:00:00Z") {
     source: {
       github: "GitHub public contribution calendar",
       codex: "Local Codex session event timestamps",
-      cursor: "Local Cursor AI tracking database (timestamp and requestId only)",
+      cursor: "Cursor AI Line Edits dashboard (aggregate export not configured)",
       "claude-code": "Local Claude Code session event timestamps",
     }[name],
     coverage: { start: days[0].date, end: days.at(-1).date },
@@ -44,13 +44,17 @@ test("Build Index equally averages only available providers", () => {
   const snapshot = assembleSnapshot({
     github: provider("github", [{ date: "2026-01-01", value: 1 }, { date: "2026-01-02", value: 9 }]),
     codex: provider("codex", [{ date: "2026-01-01", value: 1 }, { date: "2026-01-02", value: 1 }]),
-    cursor: unavailableProvider("cursor", "Local Cursor AI tracking database"),
+    cursor: unavailableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)"),
     "claude-code": unavailableProvider("claude-code", "Local Claude Code session event timestamps"),
   }, { start: "2026-01-01", end: "2026-01-02", generatedAt: "2026-01-03T00:00:00Z" });
   assert.deepEqual(snapshot.buildIndex.days.map(({ value, level }) => ({ value, level })), [
     { value: 40, level: 2 },
     { value: 80, level: 4 },
   ]);
+  assert.equal(snapshot.schemaVersion, 2);
+  assert.equal(snapshot.privacyVersion, "aggregate-v2");
+  assert.equal(snapshot.summaries["2026"].codexActiveSessionDays, 2);
+  assert.equal(snapshot.summaries["2026"].cursorAiCodeEvents, 0);
   assert.match(snapshot.buildIndex.disclaimer, /not a productivity score/);
 });
 
@@ -58,7 +62,7 @@ test("missing and stale sources remain explicit", () => {
   const snapshot = assembleSnapshot({
     github: provider("github", [{ date: "2026-01-01", value: 2 }], "2025-01-01T00:00:00Z"),
     codex: unavailableProvider("codex", "Local Codex session event timestamps"),
-    cursor: unavailableProvider("cursor", "Local Cursor AI tracking database"),
+    cursor: unavailableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)"),
     "claude-code": unavailableProvider("claude-code", "Local Claude Code session event timestamps"),
   }, { start: "2026-01-01", end: "2026-01-02" });
   assert.equal(snapshot.providers.github.lastSyncedAt, "2025-01-01T00:00:00Z");
@@ -70,7 +74,7 @@ test("privacy validation rejects fixtures, extra properties, and legacy units", 
   const base = assembleSnapshot({
     github: provider("github", [{ date: "2026-01-01", value: 1 }]),
     codex: unavailableProvider("codex", "Local Codex session event timestamps"),
-    cursor: unavailableProvider("cursor", "Local Cursor AI tracking database"),
+    cursor: unavailableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)"),
     "claude-code": unavailableProvider("claude-code", "Local Claude Code session event timestamps"),
   }, { start: "2026-01-01", end: "2026-01-01" });
   assert.throws(() => validateSnapshot({ ...base, prompt: "secret" }), /forbidden fields/);

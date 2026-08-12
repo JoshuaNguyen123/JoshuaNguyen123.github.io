@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: JoshuaNguyen123
       - run: npm run privacy:check
-      - run: node scripts/smoke-export.mjs
+      - run: npm run smoke
       - if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
       - if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

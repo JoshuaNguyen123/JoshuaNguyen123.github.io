@@ -64,7 +64,7 @@ export function ActivityHeatmap({
           <span className="metric-label">{metric.label}</span>
         </div>
         {status !== "available" ? (
-          <span className="provider-status">No observed data</span>
+          <span className="provider-status">Source unavailable</span>
         ) : featured ? (
           <span className="provider-status provider-status--live">Equal-weight composite</span>
         ) : null}

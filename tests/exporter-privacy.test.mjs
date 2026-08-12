@@ -15,7 +15,8 @@ test("local exporter emits counts but no prompts, paths, code, filenames, or raw
   await mkdir(claudeRoot, { recursive: true });
   await writeFile(path.join(codexRoot, "session.jsonl"), [
     JSON.stringify({ type: "session_meta", timestamp: "2026-01-01T08:00:00Z", payload: { id: "codex-raw-secret", cwd: "C:/private/repository" } }),
-    JSON.stringify({ type: "response_item", timestamp: "2026-01-01T09:00:00Z", payload: { prompt: "PRIVATE PROMPT", code: "SECRET CODE" } }),
+    JSON.stringify({ type: "response_item", timestamp: "2026-01-01T09:00:00Z", payload: { prompt: "PRIVATE PROMPT", code: "SECRET CODE", timestamp: "2026-03-03T09:00:00Z" } }),
+    JSON.stringify({ type: "response_item", timestamp: "2026-01-02T09:00:00Z", payload: { prompt: "PRIVATE SECOND-DAY PROMPT" } }),
   ].join("\n"));
   await writeFile(path.join(claudeRoot, "session.jsonl"), JSON.stringify({
     sessionId: "claude-raw-secret", timestamp: "2026-01-02T08:00:00Z", message: "PRIVATE CLAUDE PROMPT", filePath: "C:/private/secret.ts",
@@ -28,7 +29,10 @@ test("local exporter emits counts but no prompts, paths, code, filenames, or raw
 
   const snapshot = await exportLocalActivity({ codexRoot, claudeRoot, cursorDatabase: databasePath });
   assert.equal(snapshot.providers.codex.days[0].value, 1);
-  assert.equal(snapshot.providers.cursor.days[0].value, 1);
+  assert.equal(snapshot.providers.codex.days[1].value, 1);
+  assert.equal(snapshot.providers.codex.days.length, 2);
+  assert.equal(snapshot.providers.cursor.status, "unavailable");
+  assert.deepEqual(snapshot.providers.cursor.days, []);
   assert.equal(snapshot.providers["claude-code"].days[0].value, 1);
   const output = JSON.stringify(snapshot);
   for (const forbidden of ["PRIVATE", "SECRET", "private.ts", "C:/private", "codex-raw-secret", "claude-raw-secret", "cursor-raw-secret"]) {
@@ -36,8 +40,8 @@ test("local exporter emits counts but no prompts, paths, code, filenames, or raw
   }
 });
 
-test("Cursor exporter source contains an allowlisted two-column query", async () => {
+test("Cursor request IDs are never published as AI Line Edits", async () => {
   const source = await readFile(new URL("../scripts/local-exporter.mjs", import.meta.url), "utf8");
-  assert.match(source, /SELECT MIN\(timestamp\) AS timestamp, requestId FROM ai_code_hashes/);
-  assert.doesNotMatch(source, /SELECT \*/);
+  assert.doesNotMatch(source, /FROM ai_code_hashes/);
+  assert.match(source, /aggregate export not configured/);
 });

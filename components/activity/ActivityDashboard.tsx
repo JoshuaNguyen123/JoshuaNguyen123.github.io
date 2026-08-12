@@ -79,7 +79,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC",
   });
   const summary = initialData.summaries[String(selectedYear)] ?? {
-    contributions: 0, codexSessions: 0, cursorEvents: 0, claudeSessions: 0, activeDays: 0, longestStreak: 0,
+    contributions: 0, codexActiveSessionDays: 0, cursorAiCodeEvents: 0, claudeActiveSessionDays: 0, activeDays: 0, longestStreak: 0,
   };
 
   return (
@@ -101,7 +101,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         <span className={`data-dot data-dot--${initialData.mode}`} />
         {initialData.mode === "fixture" ? "Development fixtures — never published" : `Observed aggregates · updated ${new Date(initialData.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`}
       </div>
-      <ActivitySummary summary={summary} />
+      <ActivitySummary summary={summary} providers={filteredProviders} />
 
       <div className="activity-workspace">
         <div className="heatmap-stack">
@@ -158,7 +158,12 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                 <div><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" /><h3>{providerLabels[provider]}</h3></div>
                 <strong>{item.metric.label}</strong>
                 <p>{item.metric.methodology}</p>
-                <dl><dt>Source</dt><dd>{item.source}</dd><dt>Coverage</dt><dd>{item.coverage.start && item.coverage.end ? `${item.coverage.start} — ${item.coverage.end}` : "Unavailable"}</dd><dt>Last sync</dt><dd>{item.lastSyncedAt ? new Date(item.lastSyncedAt).toLocaleString() : "Unavailable"}</dd></dl>
+                <dl>
+                  <dt>Status</dt><dd>{item.status === "available" ? "Observed within coverage" : "Unavailable; excluded from index"}</dd>
+                  <dt>Source</dt><dd>{item.source}</dd>
+                  <dt>Coverage</dt><dd>{item.coverage.start && item.coverage.end ? `${item.coverage.start} — ${item.coverage.end}` : "Unavailable"}</dd>
+                  <dt>Last sync</dt><dd>{item.lastSyncedAt ? new Date(item.lastSyncedAt).toLocaleString() : "Unavailable"}</dd>
+                </dl>
               </article>
             );
           })}

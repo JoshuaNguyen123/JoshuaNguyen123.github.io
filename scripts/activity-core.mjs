@@ -11,19 +11,19 @@ export const METRICS = {
   codex: {
     label: "active sessions",
     unit: "active-sessions",
-    methodology: "Distinct Codex session IDs with an observed event on each local calendar day.",
+    methodology: "Distinct Codex session files with an observed event on each local calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
     accuracy: "observed",
   },
   cursor: {
     label: "AI code events",
     unit: "ai-code-events",
-    methodology: "Distinct Cursor AI code request IDs observed by the local tracking database each day.",
+    methodology: "Unavailable until a first-party aggregate export can reproduce Cursor's AI Line Edits metric. Local request IDs are not treated as line edits.",
     accuracy: "observed",
   },
   "claude-code": {
     label: "active sessions",
     unit: "active-sessions",
-    methodology: "Distinct Claude Code session IDs with an observed event on each local calendar day.",
+    methodology: "Distinct Claude Code session IDs with an observed event on each locally retained calendar day. Annual totals are active-session-days, not lifetime sessions.",
     accuracy: "observed",
   },
 };
@@ -36,8 +36,7 @@ export const ALLOWED_SOURCES = {
     "Synthetic local development fixture",
   ],
   cursor: [
-    "Local Cursor AI tracking database (timestamp and requestId only)",
-    "Local Cursor AI tracking database",
+    "Cursor AI Line Edits dashboard (aggregate export not configured)",
     "Synthetic local development fixture",
   ],
   "claude-code": ["Local Claude Code session event timestamps", "Synthetic local development fixture"],
@@ -143,7 +142,7 @@ export function validateRawProvider(provider, value, { publicDays = false } = {}
 
 export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
   assertKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
-  if (snapshot.schemaVersion !== 1 || snapshot.privacyVersion !== "aggregate-v1") throw new Error("Unsupported activity schema");
+  if (snapshot.schemaVersion !== 2 || snapshot.privacyVersion !== "aggregate-v2") throw new Error("Unsupported activity schema");
   if (snapshot.mode === "fixture" && !allowFixtures) throw new Error("Fixture telemetry cannot be published");
   if (!['observed', 'fixture'].includes(snapshot.mode) || snapshot.timeZone !== TIME_ZONE) throw new Error("Invalid snapshot metadata");
   assertKeys(snapshot.range, ["start", "end"], "snapshot.range");
@@ -162,7 +161,7 @@ export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
   }
   for (const [year, summary] of Object.entries(snapshot.summaries)) {
     if (!/^\d{4}$/.test(year)) throw new Error("Invalid summary year");
-    assertKeys(summary, ["contributions", "codexSessions", "cursorEvents", "claudeSessions", "activeDays", "longestStreak"], `summary.${year}`);
+    assertKeys(summary, ["contributions", "codexActiveSessionDays", "cursorAiCodeEvents", "claudeActiveSessionDays", "activeDays", "longestStreak"], `summary.${year}`);
     if (Object.values(summary).some((value) => !Number.isInteger(value) || value < 0)) throw new Error(`Invalid summary for ${year}`);
   }
   return snapshot;
@@ -205,16 +204,16 @@ export function assembleSnapshot(rawProviders, { start, end, mode = "observed", 
     const activeDates = buildDays.filter((day) => day.date.startsWith(year) && day.value > 0).map((day) => day.date);
     return [year, {
       contributions: sumProvider("github"),
-      codexSessions: sumProvider("codex"),
-      cursorEvents: sumProvider("cursor"),
-      claudeSessions: sumProvider("claude-code"),
+      codexActiveSessionDays: sumProvider("codex"),
+      cursorAiCodeEvents: sumProvider("cursor"),
+      claudeActiveSessionDays: sumProvider("claude-code"),
       activeDays: activeDates.length,
       longestStreak: longestStreak(activeDates),
     }];
   }));
   return validateSnapshot({
-    schemaVersion: 1,
-    privacyVersion: "aggregate-v1",
+    schemaVersion: 2,
+    privacyVersion: "aggregate-v2",
     mode,
     generatedAt,
     timeZone: TIME_ZONE,
