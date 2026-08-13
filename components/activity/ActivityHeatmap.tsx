@@ -7,6 +7,7 @@ import type {
   DailyActivityPoint,
   ProviderCoverage,
   ProviderMetricDefinition,
+  ProviderStatus,
 } from "@/lib/activity/types";
 import type { CSSProperties } from "react";
 
@@ -18,7 +19,7 @@ interface ActivityHeatmapProps {
   coverage: ProviderCoverage;
   startDate: string;
   endDate: string;
-  status?: "available" | "unavailable";
+  status?: ProviderStatus;
   selectedDate: string;
   onDaySelect: (date: string) => void;
   featured?: boolean;
@@ -28,7 +29,8 @@ function formatValue(value: number, metric: ProviderMetricDefinition, provider: 
   if (provider === "build-index") return `${value}% normalized activity`;
   if (metric.unit === "contributions") return `${value} contribution${value === 1 ? "" : "s"}`;
   if (metric.unit === "active-sessions") return `${value} active session${value === 1 ? "" : "s"}`;
-  return `${value} AI code event${value === 1 ? "" : "s"}`;
+  if (metric.unit === "applied-ai-line-changes") return `${value} applied AI line change${value === 1 ? "" : "s"}`;
+  return `${value}% normalized activity`;
 }
 
 export function ActivityHeatmap({
@@ -63,8 +65,10 @@ export function ActivityHeatmap({
           <h3 id={`heatmap-${provider}`}>{title}</h3>
           <span className="metric-label">{metric.label}</span>
         </div>
-        {status !== "available" ? (
+        {status === "unavailable" ? (
           <span className="provider-status">Source unavailable</span>
+        ) : status === "stale" ? (
+          <span className="provider-status">Last verified data</span>
         ) : featured ? (
           <span className="provider-status provider-status--live">Equal-weight composite</span>
         ) : null}
@@ -88,7 +92,7 @@ export function ActivityHeatmap({
                     }
                     const point = byDate.get(cell.date);
                     const covered =
-                      status === "available" &&
+                      status !== "unavailable" &&
                       Boolean(coverage.start && coverage.end && cell.date >= coverage.start && cell.date <= coverage.end);
                     const readableDate = new Date(`${cell.date}T00:00:00Z`).toLocaleDateString("en-US", {
                       month: "long", day: "numeric", year: "numeric", timeZone: "UTC",

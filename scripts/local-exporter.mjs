@@ -3,7 +3,15 @@ import { readdir } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { dateInTimeZone, METRICS, TIME_ZONE, validateRawProvider } from "./activity-core.mjs";
+import {
+  createMetricSeries,
+  dateInTimeZone,
+  SCHEMA_VERSION,
+  PRIVACY_VERSION,
+  TIME_ZONE,
+  unavailableMetric,
+  validateRawProvider,
+} from "./activity-core.mjs";
 
 async function listJsonlFiles(root) {
   if (!existsSync(root)) return [];
@@ -35,11 +43,10 @@ class DailyIdentityCounter {
   #dateCache = new Map();
 
   add(timestamp, transientId) {
-    if (!timestamp || !transientId) return;
+    if (!timestamp || !transientId || Number.isNaN(Date.parse(timestamp))) return;
     const cacheKey = timestamp.slice(0, 13);
     let date = this.#dateCache.get(cacheKey);
     if (!date) {
-      if (Number.isNaN(Date.parse(timestamp))) return;
       date = dateInTimeZone(timestamp);
       this.#dateCache.set(cacheKey, date);
     }
@@ -48,20 +55,22 @@ class DailyIdentityCounter {
   }
 
   days() {
-    return [...this.#identities.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, identities]) => ({ date, value: identities.size }));
+    return [...this.#identities.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([date, identities]) => ({ date, value: identities.size }));
   }
 }
 
-function availableProvider(provider, source, days) {
-  const now = new Date().toISOString();
-  const result = {
-    status: days.length ? "available" : "unavailable",
-    metric: METRICS[provider],
-    source,
-    coverage: days.length ? { start: days[0].date, end: days.at(-1).date } : { start: null, end: null },
-    lastSyncedAt: days.length ? now : null,
-    days,
-  };
+function epochToIso(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0) return null;
+  const milliseconds = number < 10_000_000_000 ? number * 1000 : number;
+  const result = new Date(milliseconds);
+  return Number.isNaN(result.valueOf()) ? null : result.toISOString();
+}
+
+function providerWithMetric(provider, metricId, source, days) {
+  const result = { metrics: { [metricId]: createMetricSeries(provider, metricId, source, days) } };
   validateRawProvider(provider, result);
   return result;
 }
@@ -75,11 +84,11 @@ export async function exportCodex(root) {
       if (timestamp) counter.add(timestamp, transientId);
     }, 512);
   }
-  return availableProvider("codex", "Local Codex session event timestamps", counter.days());
+  return providerWithMetric("codex", "activeSessions", "Local Codex session event timestamps", counter.days());
 }
 
 export function exportCodexDatabase(databasePath) {
-  if (!existsSync(databasePath)) return availableProvider("codex", "Local Codex log database (timestamp and thread_id only)", []);
+  if (!existsSync(databasePath)) return providerWithMetric("codex", "activeSessions", "Local Codex log database (timestamp and thread_id only)", []);
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
     const rows = database.prepare(
@@ -87,7 +96,7 @@ export function exportCodexDatabase(databasePath) {
     ).all();
     const counter = new DailyIdentityCounter();
     for (const row of rows) counter.add(new Date(Number(row.timestamp) * 1000).toISOString(), String(row.thread_id));
-    return availableProvider("codex", "Local Codex log database (timestamp and thread_id only)", counter.days());
+    return providerWithMetric("codex", "activeSessions", "Local Codex log database (timestamp and thread_id only)", counter.days());
   } finally {
     database.close();
   }
@@ -102,27 +111,54 @@ export async function exportClaude(root) {
       if (timestamp && sessionId) counter.add(timestamp, sessionId);
     });
   }
-  return availableProvider("claude-code", "Local Claude Code session event timestamps", counter.days());
+  return providerWithMetric("claude-code", "activeSessions", "Local Claude Code session event timestamps", counter.days());
 }
 
 export function exportCursor(databasePath) {
-  void databasePath;
-  return availableProvider("cursor", "Cursor AI Line Edits dashboard (aggregate export not configured)", []);
+  const activeSource = "Local Cursor hooks and retained conversation timestamps";
+  const attemptedAt = new Date().toISOString();
+  const counter = new DailyIdentityCounter();
+  if (existsSync(databasePath)) {
+    const database = new DatabaseSync(databasePath, { readOnly: true });
+    try {
+      const tables = database.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'ai_code_hashes'").all();
+      if (tables.length) {
+        const columns = new Set(database.prepare("PRAGMA table_info(ai_code_hashes)").all().map((column) => String(column.name)));
+        const timeColumn = columns.has("timestamp") ? "timestamp" : columns.has("createdAt") ? "createdAt" : null;
+        if (columns.has("conversationId") && timeColumn) {
+          const rows = database.prepare(`SELECT conversationId, ${timeColumn} AS observedAt FROM ai_code_hashes WHERE conversationId IS NOT NULL`).all();
+          for (const row of rows) {
+            const timestamp = epochToIso(row.observedAt);
+            if (timestamp) counter.add(timestamp, String(row.conversationId));
+          }
+        }
+      }
+    } finally {
+      database.close();
+    }
+  }
+  const activeDays = counter.days();
+  const result = {
+    metrics: {
+      activeSessions: createMetricSeries("cursor", "activeSessions", activeSource, activeDays, { lastAttemptedAt: attemptedAt }),
+      appliedLineChanges: unavailableMetric("cursor", "appliedLineChanges", "Local Cursor Agent and Tab edit hooks", { attemptedAt }),
+    },
+  };
+  validateRawProvider("cursor", result);
+  return result;
 }
 
 export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase } = {}) {
   const profile = homedir();
   const configuredCodexRoot = codexRoot ?? process.env.CODEX_ACTIVITY_ROOT ?? path.join(profile, ".codex", "sessions");
   const providers = {
-    codex: codexDatabase
-      ? exportCodexDatabase(codexDatabase)
-      : await exportCodex(configuredCodexRoot),
+    codex: codexDatabase ? exportCodexDatabase(codexDatabase) : await exportCodex(configuredCodexRoot),
     cursor: exportCursor(cursorDatabase ?? process.env.CURSOR_ACTIVITY_DB ?? path.join(profile, ".cursor", "ai-tracking", "ai-code-tracking.db")),
     "claude-code": await exportClaude(claudeRoot ?? process.env.CLAUDE_ACTIVITY_ROOT ?? path.join(profile, ".claude", "projects")),
   };
   return {
-    schemaVersion: 2,
-    privacyVersion: "aggregate-v2",
+    schemaVersion: SCHEMA_VERSION,
+    privacyVersion: PRIVACY_VERSION,
     timeZone: TIME_ZONE,
     generatedAt: new Date().toISOString(),
     providers,

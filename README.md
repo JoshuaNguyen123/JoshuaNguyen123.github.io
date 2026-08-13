@@ -6,7 +6,7 @@ A fully static Next.js portfolio for `https://joshuanguyen123.github.io`. It pai
 
 - Next.js static export (`output: "export"`); no server, database, runtime API, or CMS.
 - GitHub Pages deploys `out/` through the official Pages artifact workflow.
-- `public/data/activity.json` is generated and privacy-validated before every build.
+- `public/data/activity.json` is generated and privacy-validated before every build. It is the verified fallback if the near-real-time public feed cannot be reached.
 - Blog posts are optional Markdown files in `content/blog`. Empty blog navigation is hidden.
 - LinkedIn embeds are optional configuration in `content/linkedin-posts.ts`. Empty configuration renders nothing and makes no LinkedIn request.
 
@@ -16,12 +16,12 @@ Public units are deliberately narrow:
 
 - GitHub: public contributions per day.
 - Codex: distinct locally retained sessions with an observed event per day.
-- Cursor: unavailable until a first-party aggregate export can reproduce the AI Line Edits metric.
-- Claude Code: distinct locally retained sessions with an observed event per day.
+- Cursor: active session-days from retained local conversation timestamps and user hooks, plus applied AI line changes from completed Agent and Tab edit hooks.
+- Claude Code: active session-days from retained local sessions and user hooks.
 
 Codex and Claude annual totals are labeled **active session-days**: one session observed on two dates contributes one to each date. They are not lifetime-session or token totals.
 
-The Build Index is the equal-weight mean of each available provider's independently normalized daily level. It is an activity index, not a productivity score.
+The Build Index is the equal-weight mean of each available provider's independently normalized daily level. When a provider refresh fails, its last verified data remains explicitly marked stale; unavailable sources are excluded. The index is an activity index, not a productivity score.
 
 Export local aggregates explicitly:
 
@@ -29,9 +29,27 @@ Export local aggregates explicitly:
 npm run activity:export
 ```
 
-The exporter reads only timestamp prefixes and transient session identifiers needed to count Codex and Claude Code activity. Cursor request IDs are deliberately not published because they do not reproduce Cursor's AI Line Edits metric. The committed snapshot contains dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, token totals, and raw IDs are forbidden by schema validation.
+The local exporter reads only timestamp prefixes and transient session identifiers needed to count Codex, Cursor, and Claude activity. Cursor request IDs and code hashes are never treated as line changes. Installed hooks reduce raw inputs in memory and persist only provider, date, event type, applied line count, and a daily keyed session hash. Public snapshots contain dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, emails, token totals, raw IDs, and raw hook payloads are forbidden by schema validation.
 
-Local Codex and Claude Code freshness therefore reflects the most recently committed export. GitHub Actions refreshes the public GitHub contribution calendar on `main`, manual runs, and a six-hour schedule. Cursor remains visibly unavailable and is excluded from the Build Index until a compatible first-party aggregate is configured.
+The bundled static snapshot refreshes during GitHub Pages builds. The optional near-real-time collector publishes a separate public aggregate to the `activity-data` branch every five minutes when data changes; the browser polls that feed once a minute. Collection runs while this Windows account is online, and freshness remains visible per metric.
+
+## No-cost near-real-time 2026 feed
+
+This mode uses Cursor and Claude Code user hooks, Windows Task Scheduler, and the existing GitHub CLI login. It needs no Cursor Team plan, Claude Team or Enterprise plan, vendor analytics key, database, server, or paid monitoring service. `.env.live` is optional and is needed only to override the repository, branch, path, or GitHub token defaults.
+
+Run the following from this repository:
+
+```powershell
+npm run activity:hooks:preflight # validates installed client versions and settings JSON
+npm run activity:hooks:install   # backs up and merges global user hooks
+npm run activity:preflight       # validates local collection and GitHub access without publishing
+npm run activity:backfill        # publishes Jan 1, 2026 through present coverage
+npm run activity:schedule        # installs the five-minute Windows scheduled task
+```
+
+The installer copies the hook runtime and owner-only ledger to `%LOCALAPPDATA%\EngineeringActivity`. It creates timestamped backups before changing `~/.cursor/hooks.json` or `~/.claude/settings.json`, merges without replacing unrelated hooks or preferences, and can be reversed with `npm run activity:hooks:uninstall`. The collector never alters the checkout and sends GitHub only the privacy-validated `activity.json` aggregate. A failed refresh preserves the last valid aggregate as `stale`; it does not delete history or turn missing coverage into zero.
+
+Cursor applied-line coverage begins when the hooks are installed. Cursor session-days, Claude session-days, Codex session-days, and GitHub contributions are backfilled only as far as retained local or public records support. Missing earlier dates stay visibly outside source coverage.
 
 ## Local development
 

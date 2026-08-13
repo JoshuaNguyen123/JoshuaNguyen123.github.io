@@ -2,6 +2,7 @@ import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
 import { LinkedInWidget } from "@/components/social/LinkedInWidget";
 import { linkedInPosts, linkedInProfileUrl } from "@/content/linkedin-posts";
 import { getPublishedPosts } from "@/lib/blog";
+import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import type { ActivitySnapshot } from "@/lib/activity/types";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -9,7 +10,9 @@ import Link from "next/link";
 
 function loadActivitySnapshot(): ActivitySnapshot {
   const snapshotPath = path.join(process.cwd(), "public", "data", "activity.json");
-  return JSON.parse(readFileSync(snapshotPath, "utf8")) as ActivitySnapshot;
+  const snapshot = parseActivitySnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
+  if (!snapshot) throw new Error("Bundled activity snapshot failed runtime validation");
+  return snapshot;
 }
 
 const interests = [

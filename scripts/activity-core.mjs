@@ -1,45 +1,89 @@
 export const TIME_ZONE = "America/Denver";
 export const PROVIDERS = ["github", "codex", "cursor", "claude-code"];
+export const SCHEMA_VERSION = 4;
+export const PRIVACY_VERSION = "aggregate-v4";
 
 export const METRICS = {
   github: {
-    label: "public contributions",
-    unit: "contributions",
-    methodology: "Daily public contribution count from GitHub's contribution calendar.",
-    accuracy: "observed",
+    contributions: {
+      label: "public contributions",
+      unit: "contributions",
+      methodology: "Daily public contribution count from GitHub's contribution calendar.",
+      accuracy: "observed",
+    },
   },
   codex: {
-    label: "active sessions",
-    unit: "active-sessions",
-    methodology: "Distinct Codex session files with an observed event on each local calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
-    accuracy: "observed",
+    activeSessions: {
+      label: "active sessions",
+      unit: "active-sessions",
+      methodology: "Distinct Codex sessions with an observed event on each America/Denver calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
+      accuracy: "observed",
+    },
   },
   cursor: {
-    label: "AI code events",
-    unit: "ai-code-events",
-    methodology: "Unavailable until a first-party aggregate export can reproduce Cursor's AI Line Edits metric. Local request IDs are not treated as line edits.",
-    accuracy: "observed",
+    activeSessions: {
+      label: "active sessions",
+      unit: "active-sessions",
+      methodology: "Distinct local Cursor conversations observed on each America/Denver calendar day from retained timestamps or installed user hooks.",
+      accuracy: "observed",
+    },
+    appliedLineChanges: {
+      label: "applied AI line changes",
+      unit: "applied-ai-line-changes",
+      methodology: "Daily line additions plus deletions computed in memory after local Cursor Agent or Tab edits. This is not Cursor's Team Admin API accepted-lines metric.",
+      accuracy: "observed",
+    },
   },
   "claude-code": {
-    label: "active sessions",
-    unit: "active-sessions",
-    methodology: "Distinct Claude Code session IDs with an observed event on each locally retained calendar day. Annual totals are active-session-days, not lifetime sessions.",
-    accuracy: "observed",
+    activeSessions: {
+      label: "active sessions",
+      unit: "active-sessions",
+      methodology: "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.",
+      accuracy: "observed",
+    },
   },
 };
 
+export const INDEX_METRICS = {
+  github: "contributions",
+  codex: "activeSessions",
+  cursor: "activeSessions",
+  "claude-code": "activeSessions",
+};
+
 export const ALLOWED_SOURCES = {
-  github: ["GitHub public contribution calendar", "Synthetic local development fixture"],
-  codex: [
-    "Local Codex log database (timestamp and thread_id only)",
-    "Local Codex session event timestamps",
-    "Synthetic local development fixture",
-  ],
-  cursor: [
-    "Cursor AI Line Edits dashboard (aggregate export not configured)",
-    "Synthetic local development fixture",
-  ],
-  "claude-code": ["Local Claude Code session event timestamps", "Synthetic local development fixture"],
+  github: {
+    contributions: ["GitHub public contribution calendar", "Synthetic local development fixture"],
+  },
+  codex: {
+    activeSessions: [
+      "Local Codex log database (timestamp and thread_id only)",
+      "Local Codex session event timestamps",
+      "Synthetic local development fixture",
+    ],
+  },
+  cursor: {
+    activeSessions: [
+      "Local Cursor hooks and retained conversation timestamps",
+      "Local Cursor hooks",
+      "Synthetic local development fixture",
+      "Legacy Cursor aggregate feed",
+    ],
+    appliedLineChanges: [
+      "Local Cursor Agent and Tab edit hooks",
+      "Synthetic local development fixture",
+      "Legacy Cursor aggregate feed",
+    ],
+  },
+  "claude-code": {
+    activeSessions: [
+      "Local Claude Code hooks and retained session timestamps",
+      "Local Claude Code session event timestamps",
+      "Local Claude Code hooks",
+      "Synthetic local development fixture",
+      "Legacy Claude aggregate feed",
+    ],
+  },
 };
 
 const DAY_MS = 86_400_000;
@@ -53,6 +97,10 @@ export function dateInTimeZone(value, timeZone = TIME_ZONE) {
   }).formatToParts(new Date(value));
   const get = (type) => parts.find((part) => part.type === type)?.value;
   return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+export function addDays(date, amount) {
+  return new Date(Date.parse(`${date}T12:00:00Z`) + amount * DAY_MS).toISOString().slice(0, 10);
 }
 
 export function enumerateDates(start, end) {
@@ -92,19 +140,21 @@ function longestStreak(activeDates) {
   let current = 0;
   let previous;
   for (const date of dates) {
-    const prior = previous ? new Date(`${previous}T12:00:00Z`) : null;
-    if (prior) prior.setUTCDate(prior.getUTCDate() + 1);
-    current = prior?.toISOString().slice(0, 10) === date ? current + 1 : 1;
+    current = previous && addDays(previous, 1) === date ? current + 1 : 1;
     longest = Math.max(longest, current);
     previous = date;
   }
   return longest;
 }
 
-function assertKeys(value, allowed, label) {
+function assertExactKeys(value, allowed, label) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object`);
-  const unknown = Object.keys(value).filter((key) => !allowed.includes(key));
-  if (unknown.length) throw new Error(`${label} contains forbidden fields: ${unknown.join(", ")}`);
+  const actual = Object.keys(value);
+  const unknown = actual.filter((key) => !allowed.includes(key));
+  const missing = allowed.filter((key) => !Object.hasOwn(value, key));
+  if (unknown.length || missing.length) {
+    throw new Error(`${label} has invalid fields${unknown.length ? `; forbidden: ${unknown.join(", ")}` : ""}${missing.length ? `; missing: ${missing.join(", ")}` : ""}`);
+  }
 }
 
 function isDate(value) {
@@ -115,60 +165,90 @@ function isTimestamp(value) {
   return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }
 
-export function validateRawProvider(provider, value, { publicDays = false } = {}) {
-  assertKeys(value, ["status", "metric", "source", "coverage", "lastSyncedAt", "days"], provider);
-  if (!['available', 'unavailable'].includes(value.status)) throw new Error(`${provider} has invalid status`);
-  assertKeys(value.metric, ["label", "unit", "methodology", "accuracy"], `${provider}.metric`);
-  if (Object.entries(METRICS[provider]).some(([key, expected]) => value.metric[key] !== expected)) {
-    throw new Error(`${provider} has a non-allowlisted metric definition`);
-  }
-  if (!ALLOWED_SOURCES[provider].includes(value.source)) throw new Error(`${provider} has a non-allowlisted source`);
-  assertKeys(value.coverage, ["start", "end"], `${provider}.coverage`);
+function sameObject(left, right) {
+  return Boolean(left && right)
+    && Object.entries(left).every(([key, value]) => right[key] === value)
+    && Object.keys(left).length === Object.keys(right).length;
+}
+
+export function createMetricSeries(provider, metricId, source, days, {
+  coverage,
+  status,
+  lastSyncedAt,
+  lastAttemptedAt = new Date().toISOString(),
+} = {}) {
+  const sorted = [...days]
+    .filter((day) => isDate(day.date) && Number.isInteger(day.value) && day.value >= 0)
+    .sort((left, right) => left.date.localeCompare(right.date));
+  const resolvedCoverage = coverage ?? (sorted.length
+    ? { start: sorted[0].date, end: sorted.at(-1).date }
+    : { start: null, end: null });
+  const resolvedStatus = status ?? (resolvedCoverage.start ? "available" : "unavailable");
+  const result = {
+    status: resolvedStatus,
+    definition: METRICS[provider][metricId],
+    source,
+    coverage: resolvedCoverage,
+    lastSyncedAt: lastSyncedAt ?? (resolvedStatus === "unavailable" ? null : lastAttemptedAt),
+    lastAttemptedAt,
+    days: sorted,
+  };
+  validateMetricSeries(provider, metricId, result);
+  return result;
+}
+
+export function unavailableMetric(provider, metricId, source, { attemptedAt = null } = {}) {
+  return createMetricSeries(provider, metricId, source, [], {
+    status: "unavailable",
+    coverage: { start: null, end: null },
+    lastSyncedAt: null,
+    lastAttemptedAt: attemptedAt,
+  });
+}
+
+export function unavailableProvider(provider, sources = {}, { attemptedAt = null } = {}) {
+  return {
+    metrics: Object.fromEntries(Object.keys(METRICS[provider]).map((metricId) => [
+      metricId,
+      unavailableMetric(provider, metricId, sources[metricId] ?? ALLOWED_SOURCES[provider][metricId][0], { attemptedAt }),
+    ])),
+  };
+}
+
+export function validateMetricSeries(provider, metricId, value, { publicDays = false } = {}) {
+  assertExactKeys(value, ["status", "definition", "source", "coverage", "lastSyncedAt", "lastAttemptedAt", "days"], `${provider}.${metricId}`);
+  if (!Object.hasOwn(METRICS[provider] ?? {}, metricId)) throw new Error(`${provider} has an unknown metric`);
+  if (!["available", "stale", "unavailable"].includes(value.status)) throw new Error(`${provider}.${metricId} has invalid status`);
+  assertExactKeys(value.definition, ["label", "unit", "methodology", "accuracy"], `${provider}.${metricId}.definition`);
+  if (!sameObject(value.definition, METRICS[provider][metricId])) throw new Error(`${provider}.${metricId} has a non-allowlisted definition`);
+  if (!ALLOWED_SOURCES[provider][metricId].includes(value.source)) throw new Error(`${provider}.${metricId} has a non-allowlisted source`);
+  assertExactKeys(value.coverage, ["start", "end"], `${provider}.${metricId}.coverage`);
   const coverageValid = value.coverage.start === null && value.coverage.end === null
     || isDate(value.coverage.start) && isDate(value.coverage.end) && value.coverage.start <= value.coverage.end;
-  if (!coverageValid) throw new Error(`${provider} has invalid coverage`);
-  if (value.lastSyncedAt !== null && !isTimestamp(value.lastSyncedAt)) throw new Error(`${provider} has invalid freshness metadata`);
-  if (!Array.isArray(value.days)) throw new Error(`${provider}.days must be an array`);
+  if (!coverageValid) throw new Error(`${provider}.${metricId} has invalid coverage`);
+  if (value.status === "unavailable" && (value.coverage.start !== null || value.days.length)) throw new Error(`${provider}.${metricId} unavailable data must be empty`);
+  if (value.lastSyncedAt !== null && !isTimestamp(value.lastSyncedAt)) throw new Error(`${provider}.${metricId} has invalid freshness metadata`);
+  if (value.lastAttemptedAt !== null && !isTimestamp(value.lastAttemptedAt)) throw new Error(`${provider}.${metricId} has invalid attempt metadata`);
+  if (!Array.isArray(value.days)) throw new Error(`${provider}.${metricId}.days must be an array`);
+  const seen = new Set();
   for (const day of value.days) {
-    assertKeys(day, publicDays ? ["date", "value", "level"] : ["date", "value"], `${provider}.day`);
-    if (!isDate(day.date) || !Number.isInteger(day.value) || day.value < 0) {
-      throw new Error(`${provider} contains an invalid daily aggregate`);
-    }
-    if (publicDays && (!Number.isInteger(day.level) || day.level < 0 || day.level > 5)) {
-      throw new Error(`${provider} contains an invalid activity level`);
-    }
+    assertExactKeys(day, publicDays ? ["date", "value", "level"] : ["date", "value"], `${provider}.${metricId}.day`);
+    if (!isDate(day.date) || !Number.isInteger(day.value) || day.value < 0 || seen.has(day.date)) throw new Error(`${provider}.${metricId} contains an invalid daily aggregate`);
+    seen.add(day.date);
+    if (publicDays && (!Number.isInteger(day.level) || day.level < 0 || day.level > 5)) throw new Error(`${provider}.${metricId} contains an invalid activity level`);
   }
+  return value;
 }
 
-export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
-  assertKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
-  if (snapshot.schemaVersion !== 2 || snapshot.privacyVersion !== "aggregate-v2") throw new Error("Unsupported activity schema");
-  if (snapshot.mode === "fixture" && !allowFixtures) throw new Error("Fixture telemetry cannot be published");
-  if (!['observed', 'fixture'].includes(snapshot.mode) || snapshot.timeZone !== TIME_ZONE) throw new Error("Invalid snapshot metadata");
-  assertKeys(snapshot.range, ["start", "end"], "snapshot.range");
-  if (!isDate(snapshot.range.start) || !isDate(snapshot.range.end) || snapshot.range.start > snapshot.range.end) throw new Error("Invalid snapshot range");
-  assertKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
-  for (const provider of PROVIDERS) {
-    validateRawProvider(provider, snapshot.providers[provider], { publicDays: true });
-  }
-  assertKeys(snapshot.buildIndex, ["label", "formula", "disclaimer", "days"], "buildIndex");
-  if (snapshot.buildIndex.label !== "Build Index") throw new Error("Invalid Build Index label");
-  for (const day of snapshot.buildIndex.days) {
-    assertKeys(day, ["date", "value", "level"], "buildIndex.day");
-    if (!isDate(day.date) || !Number.isInteger(day.value) || day.value < 0 || day.value > 100 || !Number.isInteger(day.level) || day.level < 0 || day.level > 5) {
-      throw new Error("Invalid Build Index point");
-    }
-  }
-  for (const [year, summary] of Object.entries(snapshot.summaries)) {
-    if (!/^\d{4}$/.test(year)) throw new Error("Invalid summary year");
-    assertKeys(summary, ["contributions", "codexActiveSessionDays", "cursorAiCodeEvents", "claudeActiveSessionDays", "activeDays", "longestStreak"], `summary.${year}`);
-    if (Object.values(summary).some((value) => !Number.isInteger(value) || value < 0)) throw new Error(`Invalid summary for ${year}`);
-  }
-  return snapshot;
+export function validateRawProvider(provider, value, { publicDays = false } = {}) {
+  assertExactKeys(value, ["metrics"], provider);
+  assertExactKeys(value.metrics, Object.keys(METRICS[provider]), `${provider}.metrics`);
+  for (const metricId of Object.keys(METRICS[provider])) validateMetricSeries(provider, metricId, value.metrics[metricId], { publicDays });
+  return value;
 }
 
-function completeProvider(provider, raw, start, end) {
-  validateRawProvider(provider, raw);
+function completeMetric(provider, metricId, raw, start, end) {
+  validateMetricSeries(provider, metricId, raw);
   if (raw.status === "unavailable" || !raw.coverage.start || !raw.coverage.end) return { ...raw, days: [] };
   const first = raw.coverage.start > start ? raw.coverage.start : start;
   const last = raw.coverage.end < end ? raw.coverage.end : end;
@@ -183,37 +263,115 @@ function completeProvider(provider, raw, start, end) {
   return { ...raw, days };
 }
 
+function completeProvider(provider, raw, start, end) {
+  validateRawProvider(provider, raw);
+  return {
+    metrics: Object.fromEntries(Object.entries(raw.metrics).map(([metricId, metric]) => [
+      metricId,
+      completeMetric(provider, metricId, metric, start, end),
+    ])),
+  };
+}
+
+function summaryKeys(version) {
+  if (version === 2) return ["contributions", "codexActiveSessionDays", "cursorAiCodeEvents", "claudeActiveSessionDays", "activeDays", "longestStreak"];
+  if (version === 3) return ["contributions", "codexActiveSessionDays", "cursorAcceptedAiLineChanges", "claudeActiveSessionDays", "activeDays", "longestStreak"];
+  return ["contributions", "codexActiveSessionDays", "cursorActiveSessionDays", "cursorAppliedAiLineChanges", "claudeActiveSessionDays", "activeDays", "longestStreak"];
+}
+
+function validateBuildIndex(buildIndex) {
+  assertExactKeys(buildIndex, ["label", "formula", "disclaimer", "days"], "buildIndex");
+  if (buildIndex.label !== "Build Index" || !Array.isArray(buildIndex.days)) throw new Error("Invalid Build Index");
+  for (const day of buildIndex.days) {
+    assertExactKeys(day, ["date", "value", "level"], "buildIndex.day");
+    if (!isDate(day.date) || !Number.isInteger(day.value) || day.value < 0 || day.value > 100 || !Number.isInteger(day.level) || day.level < 0 || day.level > 5) throw new Error("Invalid Build Index point");
+  }
+}
+
+function validateLegacySnapshot(snapshot) {
+  const version = snapshot.schemaVersion === 2 && snapshot.privacyVersion === "aggregate-v2" ? 2
+    : snapshot.schemaVersion === 3 && snapshot.privacyVersion === "aggregate-v3" ? 3 : null;
+  if (!version) throw new Error("Unsupported activity schema");
+  assertExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
+  assertExactKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
+  for (const provider of PROVIDERS) {
+    const value = snapshot.providers[provider];
+    const providerKeys = version === 3
+      ? ["status", "metric", "source", "coverage", "lastSyncedAt", "lastAttemptedAt", "days"]
+      : ["status", "metric", "source", "coverage", "lastSyncedAt", "days"];
+    assertExactKeys(value, providerKeys, provider);
+    if (!Array.isArray(value.days)) throw new Error(`${provider}.days must be an array`);
+    for (const day of value.days) {
+      assertExactKeys(day, ["date", "value", "level"], `${provider}.day`);
+      if (!isDate(day.date) || !Number.isInteger(day.value) || day.value < 0) throw new Error(`${provider} contains invalid data`);
+    }
+  }
+  validateBuildIndex(snapshot.buildIndex);
+  for (const [year, summary] of Object.entries(snapshot.summaries)) {
+    if (!/^\d{4}$/.test(year)) throw new Error("Invalid summary year");
+    assertExactKeys(summary, summaryKeys(version), `summary.${year}`);
+  }
+  return version;
+}
+
+export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
+  if (snapshot?.schemaVersion !== SCHEMA_VERSION || snapshot?.privacyVersion !== PRIVACY_VERSION) {
+    validateLegacySnapshot(snapshot);
+    if (snapshot.mode === "fixture" && !allowFixtures) throw new Error("Fixture telemetry cannot be published");
+    return snapshot;
+  }
+  assertExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
+  if (snapshot.mode === "fixture" && !allowFixtures) throw new Error("Fixture telemetry cannot be published");
+  if (!["observed", "fixture"].includes(snapshot.mode) || snapshot.timeZone !== TIME_ZONE || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid snapshot metadata");
+  assertExactKeys(snapshot.range, ["start", "end"], "snapshot.range");
+  if (!isDate(snapshot.range.start) || !isDate(snapshot.range.end) || snapshot.range.start > snapshot.range.end) throw new Error("Invalid snapshot range");
+  assertExactKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
+  for (const provider of PROVIDERS) validateRawProvider(provider, snapshot.providers[provider], { publicDays: true });
+  validateBuildIndex(snapshot.buildIndex);
+  for (const [year, summary] of Object.entries(snapshot.summaries)) {
+    if (!/^\d{4}$/.test(year)) throw new Error("Invalid summary year");
+    assertExactKeys(summary, summaryKeys(4), `summary.${year}`);
+    if (Object.values(summary).some((value) => !Number.isInteger(value) || value < 0)) throw new Error(`Invalid summary for ${year}`);
+  }
+  return snapshot;
+}
+
 export function assembleSnapshot(rawProviders, { start, end, mode = "observed", generatedAt = new Date().toISOString() }) {
-  const providers = Object.fromEntries(
-    PROVIDERS.map((provider) => [provider, completeProvider(provider, rawProviders[provider], start, end)]),
-  );
-  const lookups = Object.fromEntries(PROVIDERS.map((provider) => [provider, new Map(providers[provider].days.map((day) => [day.date, day]))]));
+  const normalizedRaw = Object.fromEntries(PROVIDERS.map((provider) => [provider, upgradeProvider(provider, rawProviders[provider])]));
+  const providers = Object.fromEntries(PROVIDERS.map((provider) => [provider, completeProvider(provider, normalizedRaw[provider], start, end)]));
+  const indexLookups = Object.fromEntries(PROVIDERS.map((provider) => {
+    const metric = providers[provider].metrics[INDEX_METRICS[provider]];
+    return [provider, { metric, days: new Map(metric.days.map((day) => [day.date, day])) }];
+  }));
   const buildDays = enumerateDates(start, end).flatMap((date) => {
     const scores = PROVIDERS.flatMap((provider) => {
-      const source = providers[provider];
-      const point = lookups[provider].get(date);
-      return source.status === "available" && point ? [point.level] : [];
+      const { metric, days } = indexLookups[provider];
+      const point = days.get(date);
+      return metric.status !== "unavailable" && point ? [point.level] : [];
     });
     if (!scores.length) return [];
     const mean = scores.reduce((sum, score) => sum + score, 0) / scores.length;
     return [{ date, value: Math.round((mean / 5) * 100), level: Math.round(mean) }];
   });
+  const sumMetric = (provider, metricId, year) => providers[provider].metrics[metricId].days
+    .filter((day) => day.date.startsWith(year))
+    .reduce((sum, day) => sum + day.value, 0);
   const years = [...new Set(enumerateDates(start, end).map((date) => date.slice(0, 4)))];
   const summaries = Object.fromEntries(years.map((year) => {
-    const sumProvider = (provider) => providers[provider].days.filter((day) => day.date.startsWith(year)).reduce((sum, day) => sum + day.value, 0);
     const activeDates = buildDays.filter((day) => day.date.startsWith(year) && day.value > 0).map((day) => day.date);
     return [year, {
-      contributions: sumProvider("github"),
-      codexActiveSessionDays: sumProvider("codex"),
-      cursorAiCodeEvents: sumProvider("cursor"),
-      claudeActiveSessionDays: sumProvider("claude-code"),
+      contributions: sumMetric("github", "contributions", year),
+      codexActiveSessionDays: sumMetric("codex", "activeSessions", year),
+      cursorActiveSessionDays: sumMetric("cursor", "activeSessions", year),
+      cursorAppliedAiLineChanges: sumMetric("cursor", "appliedLineChanges", year),
+      claudeActiveSessionDays: sumMetric("claude-code", "activeSessions", year),
       activeDays: activeDates.length,
       longestStreak: longestStreak(activeDates),
     }];
   }));
   return validateSnapshot({
-    schemaVersion: 2,
-    privacyVersion: "aggregate-v2",
+    schemaVersion: SCHEMA_VERSION,
+    privacyVersion: PRIVACY_VERSION,
     mode,
     generatedAt,
     timeZone: TIME_ZONE,
@@ -221,21 +379,75 @@ export function assembleSnapshot(rawProviders, { start, end, mode = "observed", 
     providers,
     buildIndex: {
       label: "Build Index",
-      formula: "Equal-weight mean of each available provider's independently normalized daily level.",
-      disclaimer: "It describes observed activity breadth and intensity; it is not a productivity score.",
+      formula: "Equal-weight mean of GitHub contributions and Codex, Cursor, and Claude active-session levels when each metric has coverage.",
+      disclaimer: "Cursor applied line changes are displayed separately and never give Cursor extra weight. The index describes observed activity, not productivity.",
       days: buildDays,
     },
     summaries,
   }, { allowFixtures: mode === "fixture" });
 }
 
-export function unavailableProvider(provider, source) {
+export function markMetricStale(provider, metricId, previous, attemptedAt = new Date().toISOString()) {
+  if (!previous || previous.status === "unavailable" || !previous.days?.length) {
+    return unavailableMetric(provider, metricId, previous?.source ?? ALLOWED_SOURCES[provider][metricId][0], { attemptedAt });
+  }
+  validateMetricSeries(provider, metricId, previous);
+  return { ...previous, status: "stale", lastAttemptedAt: attemptedAt };
+}
+
+export function markProviderStale(provider, previous, attemptedAt = new Date().toISOString()) {
+  const upgraded = upgradeProvider(provider, previous);
   return {
-    status: "unavailable",
-    metric: METRICS[provider],
-    source,
-    coverage: { start: null, end: null },
-    lastSyncedAt: null,
-    days: [],
+    metrics: Object.fromEntries(Object.entries(upgraded.metrics).map(([metricId, metric]) => [
+      metricId,
+      markMetricStale(provider, metricId, metric, attemptedAt),
+    ])),
   };
+}
+
+function legacyProviderToV4(provider, value) {
+  const now = value.lastAttemptedAt ?? value.lastSyncedAt;
+  const series = (metricId, source, days = value.days) => createMetricSeries(provider, metricId, source, days.map(({ date, value: dailyValue }) => ({ date, value: dailyValue })), {
+    status: value.status === "stale" ? "stale" : value.status,
+    coverage: value.coverage,
+    lastSyncedAt: value.lastSyncedAt,
+    lastAttemptedAt: now,
+  });
+  if (provider === "github") return { metrics: { contributions: series("contributions", "GitHub public contribution calendar") } };
+  if (provider === "codex") return { metrics: { activeSessions: series("activeSessions", value.source.includes("database") ? "Local Codex log database (timestamp and thread_id only)" : "Local Codex session event timestamps") } };
+  if (provider === "claude-code") return { metrics: { activeSessions: series("activeSessions", "Legacy Claude aggregate feed") } };
+  const cursorMetric = String(value.metric?.unit).includes("line") ? series("appliedLineChanges", "Legacy Cursor aggregate feed")
+    : unavailableMetric("cursor", "appliedLineChanges", "Legacy Cursor aggregate feed", { attemptedAt: now });
+  return {
+    metrics: {
+      activeSessions: unavailableMetric("cursor", "activeSessions", "Legacy Cursor aggregate feed", { attemptedAt: now }),
+      appliedLineChanges: cursorMetric,
+    },
+  };
+}
+
+export function upgradeProvider(provider, value) {
+  if (value?.metrics) {
+    const normalized = {
+      metrics: Object.fromEntries(Object.entries(value.metrics).map(([metricId, metric]) => [metricId, {
+        ...metric,
+        days: Array.isArray(metric.days) ? metric.days.map(({ date, value: dailyValue }) => ({ date, value: dailyValue })) : metric.days,
+      }])),
+    };
+    return validateRawProvider(provider, normalized);
+  }
+  if (!value || typeof value !== "object") return unavailableProvider(provider);
+  return legacyProviderToV4(provider, value);
+}
+
+export function upgradeSnapshot(snapshot) {
+  validateSnapshot(snapshot, { allowFixtures: true });
+  if (snapshot.schemaVersion === SCHEMA_VERSION) return snapshot;
+  const providers = Object.fromEntries(PROVIDERS.map((provider) => [provider, legacyProviderToV4(provider, snapshot.providers[provider])]));
+  return assembleSnapshot(providers, {
+    start: snapshot.range.start,
+    end: snapshot.range.end,
+    mode: snapshot.mode,
+    generatedAt: snapshot.generatedAt,
+  });
 }

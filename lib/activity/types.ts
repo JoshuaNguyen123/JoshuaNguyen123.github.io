@@ -1,7 +1,9 @@
 export type ActivityProvider = "github" | "codex" | "cursor" | "claude-code";
 export type ActivityChannel = ActivityProvider | "build-index";
 export type ActivityLevel = 0 | 1 | 2 | 3 | 4 | 5;
-export type ActivityUnit = "contributions" | "active-sessions" | "ai-code-events";
+export type ActivityUnit = "contributions" | "active-sessions" | "applied-ai-line-changes" | "normalized-index";
+export type ProviderStatus = "available" | "stale" | "unavailable";
+export type ActivityMetricId = "contributions" | "activeSessions" | "appliedLineChanges";
 
 export interface DailyActivityPoint {
   date: string;
@@ -21,14 +23,28 @@ export interface ProviderMetricDefinition {
   accuracy: "observed";
 }
 
-export interface ProviderActivitySnapshot {
-  status: "available" | "unavailable";
-  metric: ProviderMetricDefinition;
+export interface MetricActivitySnapshot {
+  status: ProviderStatus;
+  definition: ProviderMetricDefinition;
   source: string;
   coverage: ProviderCoverage;
   lastSyncedAt: string | null;
+  lastAttemptedAt: string | null;
   days: DailyActivityPoint[];
 }
+
+export interface ProviderMetricMap {
+  github: { contributions: MetricActivitySnapshot };
+  codex: { activeSessions: MetricActivitySnapshot };
+  cursor: { activeSessions: MetricActivitySnapshot; appliedLineChanges: MetricActivitySnapshot };
+  "claude-code": { activeSessions: MetricActivitySnapshot };
+}
+
+export type ProviderActivitySnapshot<P extends ActivityProvider = ActivityProvider> = {
+  metrics: ProviderMetricMap[P];
+};
+
+export type ActivityProviders = { [P in ActivityProvider]: ProviderActivitySnapshot<P> };
 
 export interface BuildIndexSnapshot {
   label: "Build Index";
@@ -40,20 +56,21 @@ export interface BuildIndexSnapshot {
 export interface ActivitySummary {
   contributions: number;
   codexActiveSessionDays: number;
-  cursorAiCodeEvents: number;
+  cursorActiveSessionDays: number;
+  cursorAppliedAiLineChanges: number;
   claudeActiveSessionDays: number;
   activeDays: number;
   longestStreak: number;
 }
 
 export interface ActivitySnapshot {
-  schemaVersion: 2;
-  privacyVersion: "aggregate-v2";
+  schemaVersion: 4;
+  privacyVersion: "aggregate-v4";
   mode: "observed" | "fixture";
   generatedAt: string;
   timeZone: "America/Denver";
   range: { start: string; end: string };
-  providers: Record<ActivityProvider, ProviderActivitySnapshot>;
+  providers: ActivityProviders;
   buildIndex: BuildIndexSnapshot;
   summaries: Record<string, ActivitySummary>;
 }

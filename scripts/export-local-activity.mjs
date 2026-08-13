@@ -9,6 +9,9 @@ await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 
 console.log(`Wrote privacy-safe local aggregates to ${output}`);
 for (const [provider, value] of Object.entries(snapshot.providers)) {
-  const total = value.days.reduce((sum, day) => sum + day.value, 0);
-  console.log(`${provider}: ${value.status === "available" ? `${total} aggregate daily observations` : "unavailable"}`);
+  const details = Object.entries(value.metrics).map(([metricId, metric]) => {
+    const total = metric.days.reduce((sum, day) => sum + day.value, 0);
+    return `${metricId}=${metric.status === "available" ? total : "unavailable"}`;
+  });
+  console.log(`${provider}: ${details.join(", ")}`);
 }

@@ -17,11 +17,17 @@ test("public identity and future-ready empty social surfaces are source-safe", a
   assert.match(linkedIn, /linkedInProfileUrl: string \| null = null/);
 });
 
-test("static architecture has no runtime activity API", async () => {
-  const [config, packageJson] = await Promise.all([
+test("static architecture keeps a validated public live-feed fallback without a server API", async () => {
+  const [config, packageJson, dashboard, parser] = await Promise.all([
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../components/activity/ActivityDashboard.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/activity/live-snapshot.ts", import.meta.url), "utf8"),
   ]);
   assert.match(config, /output: "export"/);
   assert.doesNotMatch(packageJson, /vinext|cloudflare|drizzle|wakatime/i);
+  assert.match(dashboard, /parseActivitySnapshot/);
+  assert.match(dashboard, /cache: "no-store"/);
+  assert.match(dashboard, /Verified bundled snapshot/);
+  assert.match(parser, /hasExactKeys/);
 });
