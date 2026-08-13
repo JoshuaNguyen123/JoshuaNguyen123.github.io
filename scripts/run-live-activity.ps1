@@ -1,6 +1,8 @@
 [CmdletBinding()]
 param()
 
+$ErrorActionPreference = "Stop"
+
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskNode = Get-Command node -ErrorAction Stop
 

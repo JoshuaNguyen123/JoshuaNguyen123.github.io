@@ -64,7 +64,8 @@ function configuration() {
 }
 
 async function githubRequest(config, endpoint, options = {}) {
-  const response = await fetch(`https://api.github.com/repos/${config.repository}/${endpoint}`, {
+  const url = `https://api.github.com/repos/${config.repository}${endpoint ? `/${endpoint}` : ""}`;
+  const response = await fetch(url, {
     ...options,
     headers: {
       Accept: "application/vnd.github+json",
@@ -76,7 +77,7 @@ async function githubRequest(config, endpoint, options = {}) {
   });
   if (response.status === 404 && options.allowMissing) return { response, body: null };
   const body = response.status === 204 ? null : await response.json().catch(() => null);
-  if (!response.ok) fail(`GitHub repository request returned HTTP ${response.status}`);
+  if (!response.ok) fail(`GitHub repository request ${endpoint.split("?")[0] || "metadata"} returned HTTP ${response.status}`);
   return { response, body };
 }
 

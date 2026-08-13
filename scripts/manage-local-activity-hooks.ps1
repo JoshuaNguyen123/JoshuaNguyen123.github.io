@@ -4,6 +4,8 @@ param(
   [string]$Action = "status"
 )
 
+$ErrorActionPreference = "Stop"
+
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskNode = Get-Command node -ErrorAction Stop
 $manager = Join-Path $PSScriptRoot "hook-installer.mjs"
