@@ -67,7 +67,7 @@ type FeedState = "checking" | "live" | "fallback";
 export function ActivityDashboard({ initialData }: { initialData: ActivitySnapshot }) {
   const [data, setData] = useState(initialData);
   const [feedState, setFeedState] = useState<FeedState>("checking");
-  const [cursorMetricId, setCursorMetricId] = useState<"activeSessions" | "appliedLineChanges">("appliedLineChanges");
+  const [cursorMetricId, setCursorMetricId] = useState<"activeSessions" | "appliedLineChanges">("activeSessions");
   const availableYears = yearsInSnapshot(data);
   const [selectedYear, setSelectedYear] = useState(() => defaultYear(initialData));
   const selectedRange = yearRange(selectedYear, data);
@@ -153,8 +153,8 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
               <div key={provider}>
                 {provider === "cursor" ? (
                   <div className="metric-selector" aria-label="Cursor metric">
-                    <button type="button" aria-pressed={cursorMetricId === "appliedLineChanges"} className={cursorMetricId === "appliedLineChanges" ? "is-active" : ""} onClick={() => setCursorMetricId("appliedLineChanges")}>Applied line changes</button>
                     <button type="button" aria-pressed={cursorMetricId === "activeSessions"} className={cursorMetricId === "activeSessions" ? "is-active" : ""} onClick={() => setCursorMetricId("activeSessions")}>Active sessions</button>
+                    <button type="button" aria-pressed={cursorMetricId === "appliedLineChanges"} className={cursorMetricId === "appliedLineChanges" ? "is-active" : ""} onClick={() => setCursorMetricId("appliedLineChanges")}>Applied line changes</button>
                   </div>
                 ) : null}
                 <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={selectedDate} onDaySelect={setSelectedDate} />
