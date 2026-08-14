@@ -88,6 +88,9 @@ function installClaude(config) {
   };
   mergeGroup("SessionStart", "", "claude-session");
   mergeGroup("PostToolUse", "Edit|Write|NotebookEdit", "claude-activity");
+  // Claude Code deletes transcripts after cleanupPeriodDays (default 30), which erases the
+  // activity history this pipeline is built on. Raise it, but never lower a user-set value.
+  if (!Number.isInteger(config.cleanupPeriodDays) || config.cleanupPeriodDays < 3650) config.cleanupPeriodDays = 3650;
   return config;
 }
 

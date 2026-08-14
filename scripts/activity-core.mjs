@@ -70,6 +70,7 @@ export const ALLOWED_SOURCES = {
       "Legacy Cursor aggregate feed",
     ],
     appliedLineChanges: [
+      "Local Cursor edit hooks and AI code tracking history",
       "Local Cursor Agent and Tab edit hooks",
       "Synthetic local development fixture",
       "Legacy Cursor aggregate feed",

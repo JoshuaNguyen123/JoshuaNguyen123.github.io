@@ -16,7 +16,7 @@ import { validateSpoolEvent } from "./local-hook-core.mjs";
 
 export const LOCAL_SOURCES = {
   cursorSessions: "Local Cursor hooks and retained conversation timestamps",
-  cursorLines: "Local Cursor Agent and Tab edit hooks",
+  cursorLines: "Local Cursor edit hooks and AI code tracking history",
   claudeSessions: "Local Claude Code hooks and retained session timestamps",
 };
 
@@ -118,7 +118,8 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
   const claudeBackfill = upgradeProvider("claude-code", backfillProviders["claude-code"]);
   const cursorHookSessions = installedCoverageDays(sessionDays(hookState.ledger.providers.cursor.sessions), installedDate, today);
   const cursorSessions = combineBeforeInstall(cursorBackfill.metrics.activeSessions.days, cursorHookSessions, installedDate);
-  const cursorLines = installedCoverageDays(objectDays(hookState.ledger.providers.cursor.lineChanges), installedDate, today);
+  const cursorHookLines = installedCoverageDays(objectDays(hookState.ledger.providers.cursor.lineChanges), installedDate, today);
+  const cursorLines = combineBeforeInstall(cursorBackfill.metrics.appliedLineChanges.days, cursorHookLines, installedDate);
   const claudeHookSessions = installedCoverageDays(sessionDays(hookState.ledger.providers["claude-code"].sessions), installedDate, today);
   const claudeSessions = combineBeforeInstall(claudeBackfill.metrics.activeSessions.days, claudeHookSessions, installedDate);
   const providers = {
@@ -131,7 +132,7 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
           lastAttemptedAt: now,
         }),
         appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", LOCAL_SOURCES.cursorLines, cursorLines, {
-          coverage: { start: installedDate, end: today },
+          coverage: cursorLines.length ? { start: cursorLines[0].date, end: today } : { start: installedDate, end: today },
           lastSyncedAt: now,
           lastAttemptedAt: now,
         }),

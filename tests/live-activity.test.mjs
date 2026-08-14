@@ -47,9 +47,11 @@ test("concurrent spool files are consumed once and merged with partial backfill"
 
   const cursor = unavailableProvider("cursor");
   cursor.metrics.activeSessions = createMetricSeries("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", [{ date: "2026-01-01", value: 3 }]);
+  cursor.metrics.appliedLineChanges = createMetricSeries("cursor", "appliedLineChanges", "Local Cursor edit hooks and AI code tracking history", [{ date: "2026-01-01", value: 7 }, { date: "2026-01-02", value: 9 }]);
   const providers = mergeHookLedger({ codex: unavailableProvider("codex"), cursor, "claude-code": unavailableProvider("claude-code") }, state, "2026-01-03T13:00:00Z");
   assert.deepEqual(providers.cursor.metrics.activeSessions.days, [{ date: "2026-01-01", value: 3 }, { date: "2026-01-02", value: 0 }, { date: "2026-01-03", value: 2 }]);
-  assert.deepEqual(providers.cursor.metrics.appliedLineChanges.days, [{ date: "2026-01-02", value: 0 }, { date: "2026-01-03", value: 24 }]);
+  assert.deepEqual(providers.cursor.metrics.appliedLineChanges.days, [{ date: "2026-01-01", value: 7 }, { date: "2026-01-02", value: 0 }, { date: "2026-01-03", value: 24 }]);
+  assert.equal(providers.cursor.metrics.appliedLineChanges.coverage.start, "2026-01-01");
 });
 
 test("publisher no-op comparison ignores freshness but detects aggregate changes", () => {

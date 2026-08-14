@@ -29,7 +29,7 @@ const sources = {
   codex: { activeSessions: ["Local Codex log database (timestamp and thread_id only)", "Local Codex session event timestamps", "Synthetic local development fixture"] },
   cursor: {
     activeSessions: ["Local Cursor hooks and retained conversation timestamps", "Local Cursor hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
-    appliedLineChanges: ["Local Cursor Agent and Tab edit hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
+    appliedLineChanges: ["Local Cursor edit hooks and AI code tracking history", "Local Cursor Agent and Tab edit hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
   },
   "claude-code": { activeSessions: ["Local Claude Code hooks and retained session timestamps", "Local Claude Code session event timestamps", "Local Claude Code hooks", "Synthetic local development fixture", "Legacy Claude aggregate feed"] },
 } as const;

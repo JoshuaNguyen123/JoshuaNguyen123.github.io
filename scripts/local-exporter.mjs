@@ -1,17 +1,21 @@
 import { createReadStream, existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { fileURLToPath } from "node:url";
 import {
   createMetricSeries,
   dateInTimeZone,
   SCHEMA_VERSION,
   PRIVACY_VERSION,
   TIME_ZONE,
-  unavailableMetric,
   validateRawProvider,
 } from "./activity-core.mjs";
+import { mergeBackfillDays, validateHistoryBackfill } from "./history-backfill-core.mjs";
+
+const CURSOR_LINES_SOURCE = "Local Cursor edit hooks and AI code tracking history";
+const DEFAULT_HISTORY_BACKFILL = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "history-backfill.json");
 
 async function listJsonlFiles(root) {
   if (!existsSync(root)) return [];
@@ -118,6 +122,17 @@ export function exportCursor(databasePath) {
   const activeSource = "Local Cursor hooks and retained conversation timestamps";
   const attemptedAt = new Date().toISOString();
   const counter = new DailyIdentityCounter();
+  const lineTotals = new Map();
+  const dateCache = new Map();
+  const bucketDate = (timestamp) => {
+    const cacheKey = timestamp.slice(0, 13);
+    let date = dateCache.get(cacheKey);
+    if (!date) {
+      date = dateInTimeZone(timestamp);
+      dateCache.set(cacheKey, date);
+    }
+    return date;
+  };
   if (existsSync(databasePath)) {
     const database = new DatabaseSync(databasePath, { readOnly: true });
     try {
@@ -129,7 +144,10 @@ export function exportCursor(databasePath) {
           const rows = database.prepare(`SELECT conversationId, ${timeColumn} AS observedAt FROM ai_code_hashes WHERE conversationId IS NOT NULL`).all();
           for (const row of rows) {
             const timestamp = epochToIso(row.observedAt);
-            if (timestamp) counter.add(timestamp, String(row.conversationId));
+            if (!timestamp) continue;
+            counter.add(timestamp, String(row.conversationId));
+            const date = bucketDate(timestamp);
+            lineTotals.set(date, (lineTotals.get(date) ?? 0) + 1);
           }
         }
       }
@@ -138,17 +156,46 @@ export function exportCursor(databasePath) {
     }
   }
   const activeDays = counter.days();
+  const lineDays = [...lineTotals.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([date, value]) => ({ date, value }));
   const result = {
     metrics: {
       activeSessions: createMetricSeries("cursor", "activeSessions", activeSource, activeDays, { lastAttemptedAt: attemptedAt }),
-      appliedLineChanges: unavailableMetric("cursor", "appliedLineChanges", "Local Cursor Agent and Tab edit hooks", { attemptedAt }),
+      appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, lineDays, { lastAttemptedAt: attemptedAt }),
     },
   };
   validateRawProvider("cursor", result);
   return result;
 }
 
-export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase } = {}) {
+async function loadHistoryBackfill(file) {
+  if (!existsSync(file)) return null;
+  try {
+    return validateHistoryBackfill(JSON.parse(await readFile(file, "utf8")));
+  } catch (error) {
+    process.stderr.write(`Local activity export: ignoring history backfill file ${file}: ${error.message}\n`);
+    return null;
+  }
+}
+
+export function applyHistoryBackfill(providers, backfill) {
+  if (!backfill) return providers;
+  const merge = (provider, metricId, source, staticDays) => {
+    const metric = providers[provider].metrics[metricId];
+    providers[provider].metrics[metricId] = createMetricSeries(provider, metricId, source, mergeBackfillDays(staticDays, metric.days), {
+      lastAttemptedAt: metric.lastAttemptedAt ?? undefined,
+    });
+  };
+  merge("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", backfill.providers.cursor.activeSessions);
+  merge("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, backfill.providers.cursor.appliedLineChanges);
+  merge("claude-code", "activeSessions", "Local Claude Code session event timestamps", backfill.providers["claude-code"].activeSessions);
+  validateRawProvider("cursor", providers.cursor);
+  validateRawProvider("claude-code", providers["claude-code"]);
+  return providers;
+}
+
+export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase, historyBackfill } = {}) {
   const profile = homedir();
   const configuredCodexRoot = codexRoot ?? process.env.CODEX_ACTIVITY_ROOT ?? path.join(profile, ".codex", "sessions");
   const providers = {
@@ -156,6 +203,8 @@ export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot
     cursor: exportCursor(cursorDatabase ?? process.env.CURSOR_ACTIVITY_DB ?? path.join(profile, ".cursor", "ai-tracking", "ai-code-tracking.db")),
     "claude-code": await exportClaude(claudeRoot ?? process.env.CLAUDE_ACTIVITY_ROOT ?? path.join(profile, ".claude", "projects")),
   };
+  const backfill = await loadHistoryBackfill(historyBackfill ?? process.env.ACTIVITY_HISTORY_BACKFILL ?? DEFAULT_HISTORY_BACKFILL);
+  applyHistoryBackfill(providers, backfill);
   return {
     schemaVersion: SCHEMA_VERSION,
     privacyVersion: PRIVACY_VERSION,

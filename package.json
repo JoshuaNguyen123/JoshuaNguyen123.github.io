@@ -14,6 +14,7 @@
     "activity:preflight": "node scripts/hook-installer.mjs preflight && node scripts/live-activity-collector.mjs --preflight",
     "activity:collect": "node scripts/live-activity-collector.mjs",
     "activity:backfill": "node scripts/live-activity-collector.mjs --full",
+    "activity:backfill-history": "node scripts/backfill-history.mjs",
     "activity:hooks:preflight": "node scripts/hook-installer.mjs preflight",
     "activity:hooks:install": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-local-activity-hooks.ps1 -Action install",
     "activity:hooks:status": "node scripts/hook-installer.mjs status",
