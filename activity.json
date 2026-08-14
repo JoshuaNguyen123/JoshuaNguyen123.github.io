@@ -2,11 +2,11 @@
   "schemaVersion": 4,
   "privacyVersion": "aggregate-v4",
   "mode": "observed",
-  "generatedAt": "2026-08-14T02:06:56.232Z",
+  "generatedAt": "2026-08-14T06:01:56.599Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
-    "end": "2026-08-13"
+    "end": "2026-08-14"
   },
   "providers": {
     "github": {
@@ -22,10 +22,10 @@
           "source": "GitHub public contribution calendar",
           "coverage": {
             "start": "2026-01-01",
-            "end": "2026-08-13"
+            "end": "2026-08-14"
           },
-          "lastSyncedAt": "2026-08-14T02:06:56.232Z",
-          "lastAttemptedAt": "2026-08-14T02:06:56.232Z",
+          "lastSyncedAt": "2026-08-14T06:01:56.599Z",
+          "lastAttemptedAt": "2026-08-14T06:01:56.599Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1151,6 +1151,11 @@
               "date": "2026-08-13",
               "value": 7,
               "level": 2
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0,
+              "level": 0
             }
           ]
         }
@@ -1171,8 +1176,8 @@
             "start": "2026-04-20",
             "end": "2026-08-13"
           },
-          "lastSyncedAt": "2026-08-14T02:07:02.289Z",
-          "lastAttemptedAt": "2026-08-14T02:07:02.289Z",
+          "lastSyncedAt": "2026-08-14T06:02:02.585Z",
+          "lastAttemptedAt": "2026-08-14T06:02:02.585Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -1771,10 +1776,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-08-13"
+            "end": "2026-08-14"
           },
-          "lastSyncedAt": "2026-08-14T02:06:56.232Z",
-          "lastAttemptedAt": "2026-08-14T02:06:56.232Z",
+          "lastSyncedAt": "2026-08-14T06:01:56.599Z",
+          "lastAttemptedAt": "2026-08-14T06:01:56.599Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -2805,6 +2810,11 @@
               "date": "2026-08-13",
               "value": 0,
               "level": 0
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0,
+              "level": 0
             }
           ]
         },
@@ -2819,10 +2829,10 @@
           "source": "Local Cursor edit hooks and AI code tracking history",
           "coverage": {
             "start": "2026-07-14",
-            "end": "2026-08-13"
+            "end": "2026-08-14"
           },
-          "lastSyncedAt": "2026-08-14T02:06:56.232Z",
-          "lastAttemptedAt": "2026-08-14T02:06:56.232Z",
+          "lastSyncedAt": "2026-08-14T06:01:56.599Z",
+          "lastAttemptedAt": "2026-08-14T06:01:56.599Z",
           "days": [
             {
               "date": "2026-07-14",
@@ -2978,6 +2988,11 @@
               "date": "2026-08-13",
               "value": 0,
               "level": 0
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0,
+              "level": 0
             }
           ]
         }
@@ -2996,10 +3011,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-08-13"
+            "end": "2026-08-14"
           },
-          "lastSyncedAt": "2026-08-14T02:06:56.232Z",
-          "lastAttemptedAt": "2026-08-14T02:06:56.232Z",
+          "lastSyncedAt": "2026-08-14T06:01:56.599Z",
+          "lastAttemptedAt": "2026-08-14T06:01:56.599Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -3110,6 +3125,11 @@
               "date": "2026-08-13",
               "value": 13,
               "level": 5
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0,
+              "level": 0
             }
           ]
         }
@@ -4245,6 +4265,11 @@
         "date": "2026-08-13",
         "value": 40,
         "level": 2
+      },
+      {
+        "date": "2026-08-14",
+        "value": 0,
+        "level": 0
       }
     ]
   },
