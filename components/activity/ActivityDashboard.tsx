@@ -158,6 +158,12 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                   </div>
                 ) : null}
                 <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={selectedDate} onDaySelect={setSelectedDate} />
+                {provider === "claude-code" ? (
+                  <p className="coverage-note">Coverage begins July 23, 2026. Claude Code deletes local session transcripts after 30 days by default, which erased earlier history before this feed launched—retention is now extended, so nothing is lost going forward.</p>
+                ) : null}
+                {provider === "cursor" && cursorMetricId === "appliedLineChanges" ? (
+                  <p className="coverage-note">Line-change coverage begins July 14, 2026, when Cursor started keeping per-day edit records locally. Earlier days are shown as unobserved rather than estimated.</p>
+                ) : null}
               </div>
             );
           })}

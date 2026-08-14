@@ -149,6 +149,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, button.heatmap-cel
 .day-detail dd { color: #e0e5e8; font-size: 13px; margin: 8px 0 0; }
 .day-detail small { color: #677481; display: block; font-size: 10px; margin-top: 4px; }
 .detail-note { color: #5d6975; font-size: 9px; line-height: 1.55; margin: 20px 0 0; }
+.coverage-note { color: #5d6975; font-size: 9px; line-height: 1.55; margin: 6px 0 0; }
 .activity-legend { align-items: center; color: #667481; display: flex; font-family: var(--font-geist-mono); font-size: 8px; gap: 4px; justify-content: flex-end; margin-top: 16px; text-transform: uppercase; }
 .activity-legend i { display: block; height: 8px; width: 8px; }
 .activity-legend span:first-child { margin-right: 4px; }.activity-legend span:last-child { margin-left: 4px; }
