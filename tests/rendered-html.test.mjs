@@ -29,5 +29,9 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(dashboard, /parseActivitySnapshot/);
   assert.match(dashboard, /cache: "no-store"/);
   assert.match(dashboard, /Verified bundled snapshot/);
+  assert.match(dashboard, /Observed activity/);
+  assert.match(dashboard, /Usage evidence/);
+  assert.match(dashboard, /Each heatmap square is one America\/Denver calendar date/);
   assert.match(parser, /hasExactKeys/);
+  assert.match(parser, /aggregate-v5/);
 });

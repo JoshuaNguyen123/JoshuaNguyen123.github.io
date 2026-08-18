@@ -15,6 +15,8 @@
     "activity:collect": "node scripts/live-activity-collector.mjs",
     "activity:backfill": "node scripts/live-activity-collector.mjs --full",
     "activity:backfill-history": "node scripts/backfill-history.mjs",
+    "activity:import:cursor": "node scripts/import-cursor-usage.mjs",
+    "activity:audit": "node scripts/audit-activity.mjs",
     "activity:hooks:preflight": "node scripts/hook-installer.mjs preflight",
     "activity:hooks:install": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-local-activity-hooks.ps1 -Action install",
     "activity:hooks:status": "node scripts/hook-installer.mjs status",
@@ -24,7 +26,7 @@
     "smoke": "node scripts/smoke-export.mjs && node scripts/smoke-http.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
-    "verify": "npm run lint && npm test && npm run build && npm run privacy:check && npm run smoke"
+    "verify": "npm run lint && npm test && npm run build && npm run activity:audit && npm run privacy:check && npm run smoke"
   },
   "dependencies": {
     "gray-matter": "4.0.3",

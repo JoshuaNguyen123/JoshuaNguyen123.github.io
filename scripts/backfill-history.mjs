@@ -186,6 +186,7 @@ async function run(argv) {
   return {
     out: options.out,
     cursorSessions: summarize("cursor activeSessions", backfill.providers.cursor.activeSessions),
+    cursorUsagePresence: summarize("cursor usagePresence", backfill.providers.cursor.usagePresence),
     cursorLines: summarize("cursor appliedLineChanges", backfill.providers.cursor.appliedLineChanges),
     claudeSessions: summarize("claude-code activeSessions", backfill.providers["claude-code"].activeSessions),
   };

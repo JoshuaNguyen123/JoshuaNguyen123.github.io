@@ -111,6 +111,7 @@ async function getLocalProviders() {
   if (topKeys !== ["generatedAt", "privacyVersion", "providers", "schemaVersion", "timeZone"].sort().join(",")) throw new Error("Local activity snapshot contains unexpected properties");
   const supported = value.schemaVersion === 2 && value.privacyVersion === "aggregate-v2"
     || value.schemaVersion === 3 && value.privacyVersion === "aggregate-v3"
+    || value.schemaVersion === 4 && value.privacyVersion === "aggregate-v4"
     || value.schemaVersion === SCHEMA_VERSION && value.privacyVersion === PRIVACY_VERSION;
   if (!supported || value.timeZone !== TIME_ZONE) throw new Error("Local activity snapshot schema is invalid");
   return Object.fromEntries(["codex", "cursor", "claude-code"].map((provider) => [provider, upgradeProvider(provider, value.providers[provider])]));

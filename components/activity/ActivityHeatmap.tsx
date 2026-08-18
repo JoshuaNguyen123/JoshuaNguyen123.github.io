@@ -29,6 +29,7 @@ function formatValue(value: number, metric: ProviderMetricDefinition, provider: 
   if (provider === "build-index") return `${value}% normalized activity`;
   if (metric.unit === "contributions") return `${value} contribution${value === 1 ? "" : "s"}`;
   if (metric.unit === "active-sessions") return `${value} active session${value === 1 ? "" : "s"}`;
+  if (metric.unit === "observed-usage") return value > 0 ? "observed activity" : "no observed activity";
   if (metric.unit === "applied-ai-line-changes") return `${value} applied AI line change${value === 1 ? "" : "s"}`;
   return `${value}% normalized activity`;
 }

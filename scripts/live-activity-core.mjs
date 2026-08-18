@@ -75,7 +75,7 @@ async function atomicWrite(file, value) {
   await rename(temporary, file);
 }
 
-export async function consumeHookSpool(activityHome) {
+export async function readHookState(activityHome) {
   const config = JSON.parse(await readFile(path.join(activityHome, "config.json"), "utf8"));
   if (!exactKeys(config, ["hookSecret", "installedAt"]) || typeof config.hookSecret !== "string" || config.hookSecret.length < 32 || Number.isNaN(Date.parse(config.installedAt))) throw new Error("Local hook configuration is invalid");
   const ledgerFile = path.join(activityHome, "ledger.json");
@@ -85,9 +85,17 @@ export async function consumeHookSpool(activityHome) {
   const events = [];
   for (const name of files) events.push(validateSpoolEvent(JSON.parse(await readFile(path.join(spool, name), "utf8"))));
   const updated = applySpoolEvents(ledger, events);
+  return { ledger: updated, installedAt: config.installedAt, consumed: files.length, files };
+}
+
+export async function consumeHookSpool(activityHome) {
+  const state = await readHookState(activityHome);
+  const ledgerFile = path.join(activityHome, "ledger.json");
+  const spool = path.join(activityHome, "spool");
+  const { ledger: updated, files } = state;
   if (files.length || !existsSync(ledgerFile)) await atomicWrite(ledgerFile, updated);
   for (const name of files) await rm(path.join(spool, name), { force: true });
-  return { ledger: updated, installedAt: config.installedAt, consumed: files.length };
+  return { ledger: updated, installedAt: state.installedAt, consumed: files.length };
 }
 
 function objectDays(values) {
@@ -131,6 +139,7 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
           lastSyncedAt: now,
           lastAttemptedAt: now,
         }),
+        usagePresence: cursorBackfill.metrics.usagePresence,
         appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", LOCAL_SOURCES.cursorLines, cursorLines, {
           coverage: cursorLines.length ? { start: cursorLines[0].date, end: today } : { start: installedDate, end: today },
           lastSyncedAt: now,

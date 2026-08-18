@@ -15,6 +15,7 @@ import {
 import { mergeBackfillDays, validateHistoryBackfill } from "./history-backfill-core.mjs";
 
 const CURSOR_LINES_SOURCE = "Local Cursor edit hooks and AI code tracking history";
+const CURSOR_USAGE_SOURCE = "Cursor usage-event export (daily presence only)";
 const DEFAULT_HISTORY_BACKFILL = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "history-backfill.json");
 
 async function listJsonlFiles(root) {
@@ -162,6 +163,7 @@ export function exportCursor(databasePath) {
   const result = {
     metrics: {
       activeSessions: createMetricSeries("cursor", "activeSessions", activeSource, activeDays, { lastAttemptedAt: attemptedAt }),
+      usagePresence: createMetricSeries("cursor", "usagePresence", CURSOR_USAGE_SOURCE, [], { lastAttemptedAt: attemptedAt }),
       appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, lineDays, { lastAttemptedAt: attemptedAt }),
     },
   };
@@ -188,6 +190,7 @@ export function applyHistoryBackfill(providers, backfill) {
     });
   };
   merge("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", backfill.providers.cursor.activeSessions);
+  merge("cursor", "usagePresence", CURSOR_USAGE_SOURCE, backfill.providers.cursor.usagePresence);
   merge("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, backfill.providers.cursor.appliedLineChanges);
   merge("claude-code", "activeSessions", "Local Claude Code session event timestamps", backfill.providers["claude-code"].activeSessions);
   validateRawProvider("cursor", providers.cursor);

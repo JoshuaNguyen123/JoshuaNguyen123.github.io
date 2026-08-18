@@ -37,10 +37,10 @@ try {
   const [rootResponse, dataResponse] = await Promise.all([fetch(`${origin}/`), fetch(`${origin}/data/activity.json`)]);
   if (!rootResponse.ok || !dataResponse.ok) throw new Error("Static export did not serve successfully");
   const [html, activity] = await Promise.all([rootResponse.text(), dataResponse.json()]);
-  if (!html.includes("Codex active session-days") || !html.includes("Cursor applied AI line changes")) {
+  if (!html.includes("Codex active session-days") || !html.includes("Cursor applied AI line changes") || !html.includes("Observed activity")) {
     throw new Error("Served dashboard is missing reconciled activity labels");
   }
-  if (activity.schemaVersion !== 4 || activity.privacyVersion !== "aggregate-v4" || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.appliedLineChanges) {
+  if (activity.schemaVersion !== 5 || activity.privacyVersion !== "aggregate-v5" || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.usagePresence || !activity.providers?.cursor?.metrics?.appliedLineChanges) {
     throw new Error("Served activity snapshot has an unexpected reconciliation state");
   }
   console.log("Local production HTTP smoke test passed");

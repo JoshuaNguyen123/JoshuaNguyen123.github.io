@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 4,
-  "privacyVersion": "aggregate-v4",
+  "schemaVersion": 5,
+  "privacyVersion": "aggregate-v5",
   "timeZone": "America/Denver",
-  "generatedAt": "2026-08-14T01:05:17.870Z",
+  "generatedAt": "2026-08-18T23:47:53.673Z",
   "providers": {
     "codex": {
       "metrics": {
@@ -17,10 +17,10 @@
           "source": "Local Codex session event timestamps",
           "coverage": {
             "start": "2026-04-20",
-            "end": "2026-08-13"
+            "end": "2026-08-18"
           },
-          "lastSyncedAt": "2026-08-14T01:05:17.015Z",
-          "lastAttemptedAt": "2026-08-14T01:05:17.015Z",
+          "lastSyncedAt": "2026-08-18T23:47:52.703Z",
+          "lastAttemptedAt": "2026-08-18T23:47:52.703Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -285,6 +285,10 @@
             {
               "date": "2026-08-13",
               "value": 1
+            },
+            {
+              "date": "2026-08-18",
+              "value": 1
             }
           ]
         }
@@ -303,10 +307,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-08-11"
+            "end": "2026-08-18"
           },
-          "lastSyncedAt": "2026-08-14T01:05:17.015Z",
-          "lastAttemptedAt": "2026-08-14T01:05:17.015Z",
+          "lastSyncedAt": "2026-08-18T23:47:53.673Z",
+          "lastAttemptedAt": "2026-08-18T23:47:53.673Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -671,6 +675,416 @@
             {
               "date": "2026-08-11",
               "value": 14
+            },
+            {
+              "date": "2026-08-13",
+              "value": 0
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0
+            },
+            {
+              "date": "2026-08-15",
+              "value": 0
+            },
+            {
+              "date": "2026-08-16",
+              "value": 0
+            },
+            {
+              "date": "2026-08-17",
+              "value": 0
+            },
+            {
+              "date": "2026-08-18",
+              "value": 0
+            }
+          ]
+        },
+        "usagePresence": {
+          "status": "available",
+          "definition": {
+            "label": "verified usage days",
+            "unit": "observed-usage",
+            "methodology": "Binary America/Denver calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.",
+            "accuracy": "observed"
+          },
+          "source": "Cursor usage-event export (daily presence only)",
+          "coverage": {
+            "start": "2026-01-02",
+            "end": "2026-08-11"
+          },
+          "lastSyncedAt": "2026-08-18T23:47:52.704Z",
+          "lastAttemptedAt": "2026-08-18T23:47:52.704Z",
+          "days": [
+            {
+              "date": "2026-01-02",
+              "value": 1
+            },
+            {
+              "date": "2026-01-05",
+              "value": 1
+            },
+            {
+              "date": "2026-01-07",
+              "value": 1
+            },
+            {
+              "date": "2026-01-08",
+              "value": 1
+            },
+            {
+              "date": "2026-01-09",
+              "value": 1
+            },
+            {
+              "date": "2026-01-12",
+              "value": 1
+            },
+            {
+              "date": "2026-01-13",
+              "value": 1
+            },
+            {
+              "date": "2026-01-20",
+              "value": 1
+            },
+            {
+              "date": "2026-01-26",
+              "value": 1
+            },
+            {
+              "date": "2026-01-27",
+              "value": 1
+            },
+            {
+              "date": "2026-02-03",
+              "value": 1
+            },
+            {
+              "date": "2026-02-04",
+              "value": 1
+            },
+            {
+              "date": "2026-02-07",
+              "value": 1
+            },
+            {
+              "date": "2026-02-08",
+              "value": 1
+            },
+            {
+              "date": "2026-02-09",
+              "value": 1
+            },
+            {
+              "date": "2026-02-11",
+              "value": 1
+            },
+            {
+              "date": "2026-02-16",
+              "value": 1
+            },
+            {
+              "date": "2026-02-18",
+              "value": 1
+            },
+            {
+              "date": "2026-02-19",
+              "value": 1
+            },
+            {
+              "date": "2026-02-21",
+              "value": 1
+            },
+            {
+              "date": "2026-02-22",
+              "value": 1
+            },
+            {
+              "date": "2026-03-02",
+              "value": 1
+            },
+            {
+              "date": "2026-03-03",
+              "value": 1
+            },
+            {
+              "date": "2026-03-04",
+              "value": 1
+            },
+            {
+              "date": "2026-03-05",
+              "value": 1
+            },
+            {
+              "date": "2026-03-12",
+              "value": 1
+            },
+            {
+              "date": "2026-03-18",
+              "value": 1
+            },
+            {
+              "date": "2026-03-24",
+              "value": 1
+            },
+            {
+              "date": "2026-03-26",
+              "value": 1
+            },
+            {
+              "date": "2026-03-31",
+              "value": 1
+            },
+            {
+              "date": "2026-04-01",
+              "value": 1
+            },
+            {
+              "date": "2026-04-03",
+              "value": 1
+            },
+            {
+              "date": "2026-04-04",
+              "value": 1
+            },
+            {
+              "date": "2026-04-05",
+              "value": 1
+            },
+            {
+              "date": "2026-04-06",
+              "value": 1
+            },
+            {
+              "date": "2026-04-08",
+              "value": 1
+            },
+            {
+              "date": "2026-04-09",
+              "value": 1
+            },
+            {
+              "date": "2026-04-11",
+              "value": 1
+            },
+            {
+              "date": "2026-04-12",
+              "value": 1
+            },
+            {
+              "date": "2026-04-13",
+              "value": 1
+            },
+            {
+              "date": "2026-04-15",
+              "value": 1
+            },
+            {
+              "date": "2026-04-16",
+              "value": 1
+            },
+            {
+              "date": "2026-04-20",
+              "value": 1
+            },
+            {
+              "date": "2026-04-21",
+              "value": 1
+            },
+            {
+              "date": "2026-04-22",
+              "value": 1
+            },
+            {
+              "date": "2026-04-23",
+              "value": 1
+            },
+            {
+              "date": "2026-04-24",
+              "value": 1
+            },
+            {
+              "date": "2026-04-25",
+              "value": 1
+            },
+            {
+              "date": "2026-05-07",
+              "value": 1
+            },
+            {
+              "date": "2026-05-08",
+              "value": 1
+            },
+            {
+              "date": "2026-05-14",
+              "value": 1
+            },
+            {
+              "date": "2026-05-19",
+              "value": 1
+            },
+            {
+              "date": "2026-05-22",
+              "value": 1
+            },
+            {
+              "date": "2026-05-23",
+              "value": 1
+            },
+            {
+              "date": "2026-05-31",
+              "value": 1
+            },
+            {
+              "date": "2026-06-02",
+              "value": 1
+            },
+            {
+              "date": "2026-06-03",
+              "value": 1
+            },
+            {
+              "date": "2026-06-04",
+              "value": 1
+            },
+            {
+              "date": "2026-06-05",
+              "value": 1
+            },
+            {
+              "date": "2026-06-06",
+              "value": 1
+            },
+            {
+              "date": "2026-06-07",
+              "value": 1
+            },
+            {
+              "date": "2026-06-08",
+              "value": 1
+            },
+            {
+              "date": "2026-06-10",
+              "value": 1
+            },
+            {
+              "date": "2026-06-11",
+              "value": 1
+            },
+            {
+              "date": "2026-06-14",
+              "value": 1
+            },
+            {
+              "date": "2026-06-20",
+              "value": 1
+            },
+            {
+              "date": "2026-06-21",
+              "value": 1
+            },
+            {
+              "date": "2026-06-22",
+              "value": 1
+            },
+            {
+              "date": "2026-06-23",
+              "value": 1
+            },
+            {
+              "date": "2026-06-24",
+              "value": 1
+            },
+            {
+              "date": "2026-06-25",
+              "value": 1
+            },
+            {
+              "date": "2026-06-26",
+              "value": 1
+            },
+            {
+              "date": "2026-06-27",
+              "value": 1
+            },
+            {
+              "date": "2026-06-28",
+              "value": 1
+            },
+            {
+              "date": "2026-06-29",
+              "value": 1
+            },
+            {
+              "date": "2026-06-30",
+              "value": 1
+            },
+            {
+              "date": "2026-07-01",
+              "value": 1
+            },
+            {
+              "date": "2026-07-02",
+              "value": 1
+            },
+            {
+              "date": "2026-07-03",
+              "value": 1
+            },
+            {
+              "date": "2026-07-05",
+              "value": 1
+            },
+            {
+              "date": "2026-07-07",
+              "value": 1
+            },
+            {
+              "date": "2026-07-08",
+              "value": 1
+            },
+            {
+              "date": "2026-07-10",
+              "value": 1
+            },
+            {
+              "date": "2026-07-11",
+              "value": 1
+            },
+            {
+              "date": "2026-07-12",
+              "value": 1
+            },
+            {
+              "date": "2026-07-14",
+              "value": 1
+            },
+            {
+              "date": "2026-07-15",
+              "value": 1
+            },
+            {
+              "date": "2026-07-20",
+              "value": 1
+            },
+            {
+              "date": "2026-07-21",
+              "value": 1
+            },
+            {
+              "date": "2026-07-22",
+              "value": 1
+            },
+            {
+              "date": "2026-07-23",
+              "value": 1
+            },
+            {
+              "date": "2026-08-11",
+              "value": 1
             }
           ]
         },
@@ -685,10 +1099,10 @@
           "source": "Local Cursor edit hooks and AI code tracking history",
           "coverage": {
             "start": "2026-07-14",
-            "end": "2026-08-11"
+            "end": "2026-08-18"
           },
-          "lastSyncedAt": "2026-08-14T01:05:17.015Z",
-          "lastAttemptedAt": "2026-08-14T01:05:17.015Z",
+          "lastSyncedAt": "2026-08-18T23:47:53.673Z",
+          "lastAttemptedAt": "2026-08-18T23:47:53.673Z",
           "days": [
             {
               "date": "2026-07-14",
@@ -717,6 +1131,30 @@
             {
               "date": "2026-08-11",
               "value": 7275
+            },
+            {
+              "date": "2026-08-13",
+              "value": 0
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0
+            },
+            {
+              "date": "2026-08-15",
+              "value": 0
+            },
+            {
+              "date": "2026-08-16",
+              "value": 0
+            },
+            {
+              "date": "2026-08-17",
+              "value": 0
+            },
+            {
+              "date": "2026-08-18",
+              "value": 0
             }
           ]
         }
@@ -732,13 +1170,13 @@
             "methodology": "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.",
             "accuracy": "observed"
           },
-          "source": "Local Claude Code session event timestamps",
+          "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-08-13"
+            "end": "2026-08-18"
           },
-          "lastSyncedAt": "2026-08-14T01:05:17.868Z",
-          "lastAttemptedAt": "2026-08-14T01:05:17.868Z",
+          "lastSyncedAt": "2026-08-18T23:47:53.673Z",
+          "lastAttemptedAt": "2026-08-18T23:47:53.673Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -794,7 +1232,27 @@
             },
             {
               "date": "2026-08-13",
-              "value": 2
+              "value": 13
+            },
+            {
+              "date": "2026-08-14",
+              "value": 14
+            },
+            {
+              "date": "2026-08-15",
+              "value": 5
+            },
+            {
+              "date": "2026-08-16",
+              "value": 0
+            },
+            {
+              "date": "2026-08-17",
+              "value": 0
+            },
+            {
+              "date": "2026-08-18",
+              "value": 8
             }
           ]
         }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
+import { combineCursorActivity } from "@/lib/activity/cursor";
 import type {
   ActivityProvider,
   ActivitySnapshot,
@@ -21,7 +22,7 @@ const maxRetryDelayMs = 300_000;
 const buildIndexMetric: ProviderMetricDefinition = {
   label: "normalized index",
   unit: "normalized-index",
-  methodology: "Equal-weight mean of GitHub contributions and Codex, Cursor, and Claude active-session levels when each metric has coverage.",
+  methodology: "Equal-weight mean of GitHub contributions, Codex sessions, combined Cursor observed activity, and Claude Code sessions when each provider has coverage.",
   accuracy: "observed",
 };
 
@@ -29,6 +30,7 @@ function describeValue(point: DailyActivityPoint | undefined, definition: Provid
   if (!point) return "No source coverage";
   if (definition.unit === "contributions") return `${point.value} contribution${point.value === 1 ? "" : "s"}`;
   if (definition.unit === "active-sessions") return `${point.value} active session${point.value === 1 ? "" : "s"}`;
+  if (definition.unit === "observed-usage") return point.value > 0 ? "Observed activity" : "No observed activity";
   if (definition.unit === "applied-ai-line-changes") return `${point.value} applied AI line change${point.value === 1 ? "" : "s"}`;
   return `${point.value}% normalized activity`;
 }
@@ -67,7 +69,7 @@ type FeedState = "checking" | "live" | "fallback";
 export function ActivityDashboard({ initialData }: { initialData: ActivitySnapshot }) {
   const [data, setData] = useState(initialData);
   const [feedState, setFeedState] = useState<FeedState>("checking");
-  const [cursorMetricId, setCursorMetricId] = useState<"activeSessions" | "appliedLineChanges">("activeSessions");
+  const [cursorMetricId, setCursorMetricId] = useState<"observedActivity" | "activeSessions" | "usagePresence" | "appliedLineChanges">("observedActivity");
   const availableYears = yearsInSnapshot(data);
   const [selectedYear, setSelectedYear] = useState(() => defaultYear(initialData));
   const selectedRange = yearRange(selectedYear, data);
@@ -102,10 +104,18 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     github: filterMetric(data.providers.github.metrics.contributions, selectedRange.start, selectedRange.end),
     codex: filterMetric(data.providers.codex.metrics.activeSessions, selectedRange.start, selectedRange.end),
     cursorSessions: filterMetric(data.providers.cursor.metrics.activeSessions, selectedRange.start, selectedRange.end),
+    cursorUsage: filterMetric(data.providers.cursor.metrics.usagePresence, selectedRange.start, selectedRange.end),
     cursorLines: filterMetric(data.providers.cursor.metrics.appliedLineChanges, selectedRange.start, selectedRange.end),
     claude: filterMetric(data.providers["claude-code"].metrics.activeSessions, selectedRange.start, selectedRange.end),
   }), [data, selectedRange.end, selectedRange.start]);
-  const cursorMetric = cursorMetricId === "activeSessions" ? filteredMetrics.cursorSessions : filteredMetrics.cursorLines;
+  const cursorObserved = useMemo(
+    () => combineCursorActivity(filteredMetrics.cursorSessions, filteredMetrics.cursorUsage),
+    [filteredMetrics.cursorSessions, filteredMetrics.cursorUsage],
+  );
+  const cursorMetric = cursorMetricId === "observedActivity" ? cursorObserved
+    : cursorMetricId === "activeSessions" ? filteredMetrics.cursorSessions
+      : cursorMetricId === "usagePresence" ? filteredMetrics.cursorUsage
+        : filteredMetrics.cursorLines;
   const providerMetrics: Record<ActivityProvider, MetricActivitySnapshot> = {
     github: filteredMetrics.github,
     codex: filteredMetrics.codex,
@@ -122,6 +132,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
 
   const lookups = Object.fromEntries(Object.entries(providerMetrics).map(([provider, metric]) => [provider, new Map(metric.days.map((day) => [day.date, day]))])) as Record<ActivityProvider, Map<string, DailyActivityPoint>>;
   const cursorSessionLookup = new Map(filteredMetrics.cursorSessions.days.map((day) => [day.date, day]));
+  const cursorUsageLookup = new Map(filteredMetrics.cursorUsage.days.map((day) => [day.date, day]));
   const cursorLineLookup = new Map(filteredMetrics.cursorLines.days.map((day) => [day.date, day]));
   const selectedIndex = filteredBuildIndex.find((day) => day.date === selectedDate);
   const readableSelectedDate = new Date(`${selectedDate}T00:00:00Z`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -142,7 +153,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${new Date(data.generatedAt).toLocaleString()}`
             : `Verified bundled snapshot · checking local hook feed · updated ${new Date(data.generatedAt).toLocaleString()}`}
       </div>
-      <ActivitySummary summary={summary} metrics={filteredMetrics} />
+      <ActivitySummary summary={summary} metrics={{ ...filteredMetrics, cursorObserved }} />
 
       <div className="activity-workspace">
         <div className="heatmap-stack">
@@ -153,7 +164,9 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
               <div key={provider}>
                 {provider === "cursor" ? (
                   <div className="metric-selector" aria-label="Cursor metric">
+                    <button type="button" aria-pressed={cursorMetricId === "observedActivity"} className={cursorMetricId === "observedActivity" ? "is-active" : ""} onClick={() => setCursorMetricId("observedActivity")}>Observed activity</button>
                     <button type="button" aria-pressed={cursorMetricId === "activeSessions"} className={cursorMetricId === "activeSessions" ? "is-active" : ""} onClick={() => setCursorMetricId("activeSessions")}>Active sessions</button>
+                    <button type="button" aria-pressed={cursorMetricId === "usagePresence"} className={cursorMetricId === "usagePresence" ? "is-active" : ""} onClick={() => setCursorMetricId("usagePresence")}>Usage evidence</button>
                     <button type="button" aria-pressed={cursorMetricId === "appliedLineChanges"} className={cursorMetricId === "appliedLineChanges" ? "is-active" : ""} onClick={() => setCursorMetricId("appliedLineChanges")}>Applied line changes</button>
                   </div>
                 ) : null}
@@ -163,6 +176,9 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                 ) : null}
                 {provider === "cursor" && cursorMetricId === "appliedLineChanges" ? (
                   <p className="coverage-note">Line-change coverage begins July 14, 2026, when Cursor started keeping per-day edit records locally. Earlier days are shown as unobserved rather than estimated.</p>
+                ) : null}
+                {provider === "cursor" && (cursorMetricId === "observedActivity" || cursorMetricId === "usagePresence") ? (
+                  <p className="coverage-note">Usage-only dates come from a privacy-reduced first-party Cursor export. They prove that Cursor was used on that date but never invent a session count or publish model, token, cost, billing, or ID data.</p>
                 ) : null}
               </div>
             );
@@ -179,7 +195,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                 <div key={provider}>
                   <dt><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />{providerLabels[provider]}</dt>
                   <dd>{metric.status === "unavailable" ? "Source unavailable" : describeValue(lookups[provider].get(selectedDate), metric.definition)}</dd>
-                  {provider === "cursor" ? <small>{describeValue(cursorSessionLookup.get(selectedDate), filteredMetrics.cursorSessions.definition)} · {describeValue(cursorLineLookup.get(selectedDate), filteredMetrics.cursorLines.definition)}</small> : null}
+                  {provider === "cursor" ? <small>{describeValue(cursorSessionLookup.get(selectedDate), filteredMetrics.cursorSessions.definition)} · {describeValue(cursorUsageLookup.get(selectedDate), filteredMetrics.cursorUsage.definition)} · {describeValue(cursorLineLookup.get(selectedDate), filteredMetrics.cursorLines.definition)}</small> : null}
                 </div>
               );
             })}
@@ -192,6 +208,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
         <p className="index-disclaimer"><strong>Build Index:</strong> {data.buildIndex.formula} {data.buildIndex.disclaimer}</p>
+        <p className="index-disclaimer"><strong>Session-days and tiles:</strong> Each heatmap square is one America/Denver calendar date. Session-day totals sum distinct sessions observed on each date, so several sessions can share one square and a session active across dates counts once on each date. Providers are attributed by tool: Cursor calls to Claude models remain Cursor activity, while Claude Code uses Claude Code&apos;s own sessions and hooks.</p>
         <div className="methodology-grid">
           {activityProviders.map((provider) => (
             <article key={provider}>

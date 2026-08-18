@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, readdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { createMetricSeries, unavailableProvider } from "../scripts/activity-core.mjs";
 import { lineChangeCounts, reduceHookPayload, writeSpoolEvent } from "../scripts/local-hook-core.mjs";
-import { applySpoolEvents, consumeHookSpool, mergeHookLedger, snapshotsMatch, validateLedger } from "../scripts/live-activity-core.mjs";
+import { applySpoolEvents, consumeHookSpool, mergeHookLedger, readHookState, snapshotsMatch, validateLedger } from "../scripts/live-activity-core.mjs";
 
 const secret = "test-secret-with-at-least-thirty-two-characters";
 
@@ -39,6 +39,10 @@ test("concurrent spool files are consumed once and merged with partial backfill"
   await writeFile(path.join(activityHome, "config.json"), JSON.stringify({ hookSecret: secret, installedAt: "2026-01-02T12:00:00Z" }));
   const events = Array.from({ length: 12 }, (_, index) => reduceHookPayload("cursor-agent-edit", { conversation_id: `session-${index % 2}`, edits: [{ old_string: "a", new_string: "b" }] }, secret, new Date("2026-01-03T12:00:00Z")));
   await Promise.all(events.map((event) => writeSpoolEvent(activityHome, event)));
+  const preview = await readHookState(activityHome);
+  assert.equal(preview.consumed, 12);
+  assert.equal(preview.ledger.providers.cursor.sessions["2026-01-03"].length, 2);
+  assert.equal((await readdir(path.join(activityHome, "spool"))).length, 12);
   const state = await consumeHookSpool(activityHome);
   assert.equal(state.consumed, 12);
   assert.equal(state.ledger.providers.cursor.sessions["2026-01-03"].length, 2);

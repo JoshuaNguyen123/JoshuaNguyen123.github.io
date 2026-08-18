@@ -1,9 +1,23 @@
 import { mkdir, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import path from "node:path";
+import { mergeHookLedger, readHookState } from "./live-activity-core.mjs";
 import { exportLocalActivity } from "./local-exporter.mjs";
 
 const output = path.resolve(process.env.ACTIVITY_OUTPUT ?? path.join("data", "local-activity.json"));
-const snapshot = await exportLocalActivity();
+const retainedSnapshot = await exportLocalActivity();
+const activityHome = process.env.ENGINEERING_ACTIVITY_HOME
+  ?? path.join(process.env.LOCALAPPDATA ?? path.join(homedir(), "AppData", "Local"), "EngineeringActivity");
+let snapshot = retainedSnapshot;
+try {
+  const hookState = await readHookState(activityHome);
+  snapshot = {
+    ...retainedSnapshot,
+    providers: mergeHookLedger(retainedSnapshot.providers, hookState, retainedSnapshot.generatedAt),
+  };
+} catch (error) {
+  process.stderr.write(`Local hook aggregates were unavailable; exported retained-source aggregates only (${error.message}).\n`);
+}
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 

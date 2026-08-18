@@ -17,6 +17,7 @@ const definitions = {
   },
   cursor: {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Cursor conversations observed on each America/Denver calendar day from retained timestamps or installed user hooks.", accuracy: "observed" },
+    usagePresence: { label: "verified usage days", unit: "observed-usage", methodology: "Binary America/Denver calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.", accuracy: "observed" },
     appliedLineChanges: { label: "applied AI line changes", unit: "applied-ai-line-changes", methodology: "Daily line additions plus deletions computed in memory after local Cursor Agent or Tab edits. This is not Cursor's Team Admin API accepted-lines metric.", accuracy: "observed" },
   },
   "claude-code": {
@@ -29,6 +30,7 @@ const sources = {
   codex: { activeSessions: ["Local Codex log database (timestamp and thread_id only)", "Local Codex session event timestamps", "Synthetic local development fixture"] },
   cursor: {
     activeSessions: ["Local Cursor hooks and retained conversation timestamps", "Local Cursor hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
+    usagePresence: ["Cursor usage-event export (daily presence only)", "Synthetic local development fixture"],
     appliedLineChanges: ["Local Cursor edit hooks and AI code tracking history", "Local Cursor Agent and Tab edit hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
   },
   "claude-code": { activeSessions: ["Local Claude Code hooks and retained session timestamps", "Local Claude Code session event timestamps", "Local Claude Code hooks", "Synthetic local development fixture", "Legacy Claude aggregate feed"] },
@@ -37,7 +39,7 @@ const sources = {
 const providerMetricIds = {
   github: ["contributions"],
   codex: ["activeSessions"],
-  cursor: ["activeSessions", "appliedLineChanges"],
+  cursor: ["activeSessions", "usagePresence", "appliedLineChanges"],
   "claude-code": ["activeSessions"],
 } as const;
 
@@ -111,14 +113,16 @@ function unavailableMetric(provider: ActivityProvider, metricId: string, attempt
   return { status: "unavailable", definition: { ...definition }, source, coverage: { start: null, end: null }, lastSyncedAt: null, lastAttemptedAt: attemptedAt, days: [] };
 }
 
-function parseV4Providers(input: unknown): ActivityProviders | null {
+function parseNestedProviders(input: unknown, version: 4 | 5): ActivityProviders | null {
   const providerInput = record(input);
   if (!providerInput || !hasExactKeys(providerInput, activityProviders)) return null;
   const output = {} as ActivityProviders;
   for (const provider of activityProviders) {
     const wrapper = record(providerInput[provider]);
     const metrics = wrapper && record(wrapper.metrics);
-    const ids = providerMetricIds[provider];
+    const ids = version === 4 && provider === "cursor"
+      ? ["activeSessions", "appliedLineChanges"] as const
+      : providerMetricIds[provider];
     if (!wrapper || !hasExactKeys(wrapper, ["metrics"]) || !metrics || !hasExactKeys(metrics, ids)) return null;
     const parsed: Record<string, MetricActivitySnapshot> = {};
     for (const metricId of ids) {
@@ -126,6 +130,7 @@ function parseV4Providers(input: unknown): ActivityProviders | null {
       if (!metric) return null;
       parsed[metricId] = metric;
     }
+    if (provider === "cursor" && version === 4) parsed.usagePresence = unavailableMetric("cursor", "usagePresence");
     (output as Record<string, unknown>)[provider] = { metrics: parsed };
   }
   return output;
@@ -154,6 +159,7 @@ function parseLegacyProvider(provider: ActivityProvider, input: unknown, version
   if (provider === "claude-code") return { activeSessions: make("activeSessions", "Legacy Claude aggregate feed") };
   return {
     activeSessions: unavailableMetric("cursor", "activeSessions", attemptedAt as string | null),
+    usagePresence: unavailableMetric("cursor", "usagePresence", attemptedAt as string | null),
     appliedLineChanges: metric.unit.includes("line") ? make("appliedLineChanges", "Legacy Cursor aggregate feed") : unavailableMetric("cursor", "appliedLineChanges", attemptedAt as string | null),
   };
 }
@@ -175,20 +181,24 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
   if (!snapshot || !hasExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"])) return null;
   const version = snapshot.schemaVersion === 2 && snapshot.privacyVersion === "aggregate-v2" ? 2
     : snapshot.schemaVersion === 3 && snapshot.privacyVersion === "aggregate-v3" ? 3
-      : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4 : null;
+      : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4
+        : snapshot.schemaVersion === 5 && snapshot.privacyVersion === "aggregate-v5" ? 5 : null;
   if (!version || (snapshot.mode !== "observed" && snapshot.mode !== "fixture") || snapshot.timeZone !== "America/Denver" || !timestamp(snapshot.generatedAt)) return null;
   const range = record(snapshot.range);
   const buildIndex = record(snapshot.buildIndex);
   const summaries = record(snapshot.summaries);
   if (!range || !hasExactKeys(range, ["start", "end"]) || !isoDate(range.start) || !isoDate(range.end) || range.start > range.end || !buildIndex || !hasExactKeys(buildIndex, ["label", "formula", "disclaimer", "days"]) || buildIndex.label !== "Build Index" || typeof buildIndex.formula !== "string" || typeof buildIndex.disclaimer !== "string" || !summaries) return null;
-  const providers = version === 4 ? parseV4Providers(snapshot.providers) : parseLegacyProviders(snapshot.providers, version);
-  const buildDays = parseDays(buildIndex.days, { buildIndex: true });
-  if (!providers || !buildDays) return null;
+  const providers = version === 5 ? parseNestedProviders(snapshot.providers, 5)
+    : version === 4 ? parseNestedProviders(snapshot.providers, 4)
+      : parseLegacyProviders(snapshot.providers, version);
+  const parsedBuildDays = parseDays(buildIndex.days, { buildIndex: true });
+  if (!providers || !parsedBuildDays) return null;
+  const buildDays = parsedBuildDays.map((day) => day.value > 0 && day.level === 0 ? { ...day, level: 1 as const } : day);
   const summariesOutput: ActivitySnapshot["summaries"] = {};
   for (const [year, summaryInput] of Object.entries(summaries)) {
     const summary = record(summaryInput);
     if (!/^\d{4}$/.test(year) || !summary || Object.values(summary).some((value) => !integer(value))) return null;
-    const expectedKeys = version === 4
+    const expectedKeys = version >= 4
       ? ["contributions", "codexActiveSessionDays", "cursorActiveSessionDays", "cursorAppliedAiLineChanges", "claudeActiveSessionDays", "activeDays", "longestStreak"]
       : version === 3
         ? ["contributions", "codexActiveSessionDays", "cursorAcceptedAiLineChanges", "claudeActiveSessionDays", "activeDays", "longestStreak"]
@@ -197,16 +207,16 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
     summariesOutput[year] = {
       contributions: summary.contributions as number,
       codexActiveSessionDays: summary.codexActiveSessionDays as number,
-      cursorActiveSessionDays: version === 4 ? summary.cursorActiveSessionDays as number : 0,
-      cursorAppliedAiLineChanges: version === 4 ? summary.cursorAppliedAiLineChanges as number : version === 3 ? summary.cursorAcceptedAiLineChanges as number : 0,
+      cursorActiveSessionDays: version >= 4 ? summary.cursorActiveSessionDays as number : 0,
+      cursorAppliedAiLineChanges: version >= 4 ? summary.cursorAppliedAiLineChanges as number : version === 3 ? summary.cursorAcceptedAiLineChanges as number : 0,
       claudeActiveSessionDays: summary.claudeActiveSessionDays as number,
       activeDays: summary.activeDays as number,
       longestStreak: summary.longestStreak as number,
     };
   }
   return {
-    schemaVersion: 4,
-    privacyVersion: "aggregate-v4",
+    schemaVersion: 5,
+    privacyVersion: "aggregate-v5",
     mode: snapshot.mode,
     generatedAt: snapshot.generatedAt,
     timeZone: "America/Denver",

@@ -16,20 +16,23 @@ Public units are deliberately narrow:
 
 - GitHub: public contributions per day.
 - Codex: distinct locally retained sessions with an observed event per day.
-- Cursor: active session-days from retained local conversation timestamps and user hooks, plus applied AI line changes from completed Agent and Tab edit hooks.
+- Cursor: active session-days from retained local conversation timestamps and user hooks, privacy-reduced daily presence from first-party usage exports, plus applied AI line changes from completed Agent and Tab edit hooks.
 - Claude Code: active session-days from retained local sessions and user hooks.
 
-Codex and Claude annual totals are labeled **active session-days**: one session observed on two dates contributes one to each date. They are not lifetime-session or token totals.
+Codex, Cursor, and Claude annual totals are labeled **active session-days**: one session observed on two dates contributes one to each date. They are not lifetime-session or token totals. A heatmap square represents one calendar date, so several sessions can contribute to a single square.
 
-The Build Index is the equal-weight mean of each available provider's independently normalized daily level. When a provider refresh fails, its last verified data remains explicitly marked stale; unavailable sources are excluded. The index is an activity index, not a productivity score.
+The Build Index is the equal-weight mean of each available provider's independently normalized daily level. Cursor contributes one observed-activity input: exact session intensity where retained session evidence exists, or light activity when a first-party usage export verifies only the date. Usage presence and line changes never add extra Cursor weight. When a provider refresh fails, its last verified data remains explicitly marked stale; unavailable sources are excluded. The index is an activity index, not a productivity score.
 
 Export local aggregates explicitly:
 
 ```powershell
 npm run activity:export
+npm run activity:import:cursor -- --input "C:\path\to\usage-events.csv"
 ```
 
-The local exporter reads only timestamp prefixes and transient session identifiers needed to count Codex, Cursor, and Claude activity. Cursor request IDs and code hashes are never treated as line changes. Installed hooks reduce raw inputs in memory and persist only provider, date, event type, applied line count, and a daily keyed session hash. Public snapshots contain dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, emails, token totals, raw IDs, and raw hook payloads are forbidden by schema validation.
+The local exporter reads only timestamp prefixes and transient session identifiers needed to count Codex, Cursor, and Claude activity. The Cursor usage importer validates the vendor CSV, then keeps only a binary America/Denver date-level presence series; Cloud Agent IDs, Automation IDs, models, tokens, costs, and billing kinds are discarded. Cursor request IDs and code hashes are never treated as line changes. Installed hooks reduce raw inputs in memory and persist only provider, date, event type, applied line count, and a daily keyed session hash. Public snapshots contain dates, counts, source status, coverage, and freshness only. Prompts, code, filenames, paths, project or repository names, conversation titles, models, emails, token totals, raw IDs, and raw hook payloads are forbidden by schema validation.
+
+Providers are attributed by tool rather than model vendor. A Claude model selected inside Cursor remains Cursor activity; Claude Code counts only Claude Code sessions and hooks, even when Claude Code is launched from Cursor's integrated terminal.
 
 The bundled static snapshot refreshes during GitHub Pages builds. The optional near-real-time collector publishes a separate public aggregate to the `activity-data` branch every five minutes when data changes; the browser polls that feed once a minute. Collection runs while this Windows account is online, and freshness remains visible per metric.
 
