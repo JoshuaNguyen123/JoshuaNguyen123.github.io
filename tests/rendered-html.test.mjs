@@ -32,6 +32,9 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(dashboard, /Observed activity/);
   assert.match(dashboard, /Usage evidence/);
   assert.match(dashboard, /Each heatmap square is one America\/Denver calendar date/);
+  assert.match(dashboard, /activityTimestampFormatter/);
+  assert.match(dashboard, /timeZone: "America\/Denver"/);
+  assert.doesNotMatch(dashboard, /new Date\([^)]*\)\.toLocaleString\(\)/);
   assert.match(parser, /hasExactKeys/);
   assert.match(parser, /aggregate-v5/);
 });

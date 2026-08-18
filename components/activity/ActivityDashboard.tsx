@@ -18,6 +18,16 @@ const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
   ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/activity-data/activity.json";
 const pollDelayMs = 60_000;
 const maxRetryDelayMs = 300_000;
+const activityTimestampFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/Denver",
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true,
+});
 
 const buildIndexMetric: ProviderMetricDefinition = {
   label: "normalized index",
@@ -37,6 +47,10 @@ function describeValue(point: DailyActivityPoint | undefined, definition: Provid
 
 function activityLabel(level: number): string {
   return ["No observed activity", "Light activity", "Steady activity", "Active day", "High activity", "Peak activity"][level] ?? "Activity";
+}
+
+function formatActivityTimestamp(value: string): string {
+  return activityTimestampFormatter.format(new Date(value));
 }
 
 function yearRange(year: number, snapshot: ActivitySnapshot) {
@@ -149,9 +163,9 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
       <div className="data-provenance" role="status">
         <span className={`data-dot data-dot--${data.mode}`} />
         {data.mode === "fixture" ? "Development fixtures — never published" : feedState === "live"
-          ? `Local hook feed · updated ${new Date(data.generatedAt).toLocaleString()}`
-          : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${new Date(data.generatedAt).toLocaleString()}`
-            : `Verified bundled snapshot · checking local hook feed · updated ${new Date(data.generatedAt).toLocaleString()}`}
+          ? `Local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`
+          : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${formatActivityTimestamp(data.generatedAt)}`
+            : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`}
       </div>
       <ActivitySummary summary={summary} metrics={{ ...filteredMetrics, cursorObserved }} />
 
@@ -220,7 +234,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                     <dt>Status</dt><dd>{metric.status === "available" ? "Observed within coverage" : metric.status === "stale" ? "Last verified data retained" : "Unavailable"}</dd>
                     <dt>Source</dt><dd>{metric.source}</dd>
                     <dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${metric.coverage.start} — ${metric.coverage.end}` : "Unavailable"}</dd>
-                    <dt>Last sync</dt><dd>{metric.lastSyncedAt ? new Date(metric.lastSyncedAt).toLocaleString() : "Unavailable"}</dd>
+                    <dt>Last sync</dt><dd>{metric.lastSyncedAt ? formatActivityTimestamp(metric.lastSyncedAt) : "Unavailable"}</dd>
                   </dl>
                 </section>
               ))}
