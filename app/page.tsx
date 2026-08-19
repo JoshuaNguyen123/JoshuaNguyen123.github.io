@@ -32,12 +32,14 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Joshua Nguyen home">
-          JN<span>/</span>26
+          <span className="wordmark-monogram">JN<span>/</span>26</span>
+          <span className="wordmark-name">Joshua Nguyen</span>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#activity">Activity</a>
           <a href="#work">Work</a>
           <a href="#interests">Interests</a>
+          <Link href="/blog/">Writing</Link>
           <a href="#contact">Contact</a>
         </nav>
         <span className="header-status"><i /> Available for thoughtful work</span>
@@ -47,22 +49,26 @@ export default function Home() {
         <div className="hero-index" aria-hidden="true">01</div>
         <div className="hero-copy">
           <span className="eyebrow">Joshua Nguyen · Systems engineer</span>
-          <h1>Software that thinks.<br />Systems that prove it.</h1>
+          <h1>I&apos;m Joshua, a systems engineer building reliable AI and product infrastructure.</h1>
           <p>
-            I build reliable agentic tools, privacy-first products, and the
-            infrastructure that makes ambitious software accountable.
+            My work lives at the intersection of agentic systems, product
+            engineering, and developer infrastructure. I care about clarity,
+            operability, and privacy by design.
           </p>
+          <span className="hero-location">Denver, Colorado · Mountain Time</span>
           <div className="hero-actions">
-            <a className="primary-link" href="#activity">Explore build activity <span>↘</span></a>
-            <span>Denver · Mountain Time</span>
+            <a className="primary-link" href="#activity">View activity <span>↘</span></a>
+            <Link className="primary-link" href="/blog/">Read writing <span>↗</span></Link>
           </div>
         </div>
-        <div className="hero-signal" aria-label="Current focus areas">
-          <span>Current signal</span>
-          <strong>Agentic systems</strong>
-          <strong>Product engineering</strong>
-          <strong>Developer infrastructure</strong>
-        </div>
+        <aside className="hero-now" aria-label="What Joshua is focused on right now">
+          <span>Right now</span>
+          <ul>
+            <li>Building agentic tools that handle real work</li>
+            <li>Ship reliable product infrastructure</li>
+            <li>Strengthen developer foundations</li>
+          </ul>
+        </aside>
       </section>
 
       <section className="activity-section" id="activity">
@@ -71,23 +77,23 @@ export default function Home() {
 
       <section className="work-section" id="work">
         <div className="section-heading">
-          <span className="eyebrow">Selected systems / 03</span>
-          <h2>Work built around<br />clear proof boundaries.</h2>
+          <span className="eyebrow">Selected work / 03</span>
+          <h2>A few kinds of problems<br />I keep coming back to.</h2>
         </div>
         <div className="work-list">
           <article>
             <span>01</span>
-            <div><h3>Agentic research systems</h3><p>Resumable workflows, bounded tool access, source receipts, and observable completion.</p></div>
+            <div><h3>Making agents easier to trust</h3><p>Resumable workflows, bounded tool access, source receipts, and completion you can actually inspect.</p></div>
             <strong>AI / Knowledge</strong>
           </article>
           <article>
             <span>02</span>
-            <div><h3>Private product infrastructure</h3><p>Native-first experiences with explicit privacy contracts and testable service boundaries.</p></div>
+            <div><h3>Building private products for real relationships</h3><p>Native-first experiences with explicit privacy contracts and service boundaries that hold up.</p></div>
             <strong>Product / Systems</strong>
           </article>
           <article>
             <span>03</span>
-            <div><h3>Applied automation</h3><p>Operational data pipelines, intelligence digests, and dashboards designed for action.</p></div>
+            <div><h3>Automating the repetitive parts</h3><p>Operational data pipelines, intelligence digests, and dashboards that turn repeated work into a useful habit.</p></div>
             <strong>Data / Automation</strong>
           </article>
         </div>
@@ -96,7 +102,7 @@ export default function Home() {
       <section className="interests-section" id="interests">
         <div className="section-heading">
           <span className="eyebrow">Interests & writing / 04</span>
-          <h2>Questions worth<br />staying with.</h2>
+          <h2>What I&apos;m learning<br />and writing about.</h2>
         </div>
         <div className="interest-grid">
           {interests.map(([title, description], index) => (
@@ -125,15 +131,15 @@ export default function Home() {
       </section>
 
       <section className="contact-section" id="contact">
-        <span className="eyebrow">Start a conversation / 05</span>
-        <h2>Complex problem.<br />Clear next move.</h2>
-        <p>Interested in reliable AI systems, applied automation, or ambitious product engineering? Let&apos;s compare notes.</p>
-        <a href="https://github.com/JoshuaNguyen123">Find Joshua on GitHub <span>↗</span></a>
+        <span className="eyebrow">Say hello / 05</span>
+        <h2>Want to compare notes?</h2>
+        <p>If you&apos;re thinking about reliable AI systems, applied automation, or thoughtful product engineering, I&apos;d enjoy hearing what you&apos;re working on.</p>
+        <a href="https://github.com/JoshuaNguyen123">Find me on GitHub <span>↗</span></a>
       </section>
 
       <footer>
         <span>© {new Date().getFullYear()} Josh N.</span>
-        <span>Designed as an observable system.</span>
+        <span>A small window into what I&apos;m building.</span>
       </footer>
     </main>
   );
