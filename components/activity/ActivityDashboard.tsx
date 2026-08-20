@@ -16,8 +16,8 @@ import { ActivitySummary } from "./ActivitySummary";
 
 const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
   ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/activity-data/activity.json";
-const pollDelayMs = 60_000;
-const maxRetryDelayMs = 300_000;
+const pollDelayMs = 300_000;
+const maxRetryDelayMs = 1_800_000;
 const activityTimestampFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/Denver",
   year: "numeric",
