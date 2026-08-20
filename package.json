@@ -22,11 +22,12 @@
     "activity:hooks:status": "node scripts/hook-installer.mjs status",
     "activity:hooks:uninstall": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-local-activity-hooks.ps1 -Action uninstall",
     "activity:schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-live-activity-task.ps1",
+    "public-safety:check": "node scripts/validate-public-repo.mjs",
     "privacy:check": "node scripts/validate-activity.mjs public/data/activity.json",
     "smoke": "node scripts/smoke-export.mjs && node scripts/smoke-http.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
-    "verify": "npm run lint && npm test && npm run build && npm run activity:audit && npm run privacy:check && npm run smoke"
+    "verify": "npm run lint && npm run public-safety:check && npm test && npm run build && npm run activity:audit && npm run privacy:check && npm run smoke"
   },
   "dependencies": {
     "gray-matter": "4.0.3",

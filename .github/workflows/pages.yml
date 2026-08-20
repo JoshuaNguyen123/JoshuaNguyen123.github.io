@@ -28,6 +28,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run public-safety:check
       - run: npm test
       - name: Build privacy-validated static export
         run: npm run build
