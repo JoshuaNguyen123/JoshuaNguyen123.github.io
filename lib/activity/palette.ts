@@ -1,11 +1,12 @@
 import type { ActivityChannel } from "./types";
 
 export const providerPalettes: Record<ActivityChannel, readonly [string, string, string, string, string, string]> = {
-  // Every ramp shares a dark zero and uses pronounced lightness steps, so
-  // intensity remains readable when hue perception is reduced or absent.
-  "build-index": ["#182128", "#183e4c", "#205c70", "#2d7c95", "#51a6be", "#8fd7e8"],
-  github: ["#182128", "#153e36", "#1f5e4f", "#2c806a", "#55a989", "#96d5b8"],
-  codex: ["#182128", "#173b58", "#225b82", "#317bab", "#5ba3cf", "#9acde5"],
-  cursor: ["#182128", "#3d2f47", "#5d4668", "#80618a", "#aa87b1", "#d9bdd8"],
-  "claude-code": ["#182128", "#4b3028", "#71463a", "#9a604b", "#c48668", "#e7b49b"],
+  // Every ramp starts from the same cream zero and steps toward ink, so the
+  // heatmaps read as part of the page rather than a separate dark widget.
+  // Provider identity comes from the labelled marks next to each heading.
+  "build-index": ["#e1ded5", "#c2bfb5", "#9d9c94", "#72767a", "#3f464d", "#101419"],
+  github: ["#e1ded5", "#bcc6bc", "#93a697", "#6a8670", "#3f6b52", "#1f3d2c"],
+  codex: ["#e1ded5", "#bcc2c9", "#91a0ad", "#667d90", "#3f5a73", "#203344"],
+  cursor: ["#e1ded5", "#cbbfc9", "#ad99ac", "#8c728c", "#684d6a", "#3e2a40"],
+  "claude-code": ["#e1ded5", "#d4c0b2", "#bf9b86", "#a4775f", "#7f5440", "#4a2e21"],
 };

@@ -1,6 +1,8 @@
 import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
-import { LinkedInWidget } from "@/components/social/LinkedInWidget";
-import { linkedInPosts, linkedInProfileUrl } from "@/content/linkedin-posts";
+import { ContactForm } from "@/components/contact/ContactForm";
+// LinkedIn pulse is paused for now. See notes/linkedin-pulse.md (local only).
+// import { LinkedInWidget } from "@/components/social/LinkedInWidget";
+import { linkedInProfileUrl } from "@/content/linkedin-posts";
 import { getPublishedPosts } from "@/lib/blog";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import type { ActivitySnapshot } from "@/lib/activity/types";
@@ -19,6 +21,56 @@ function loadActivitySnapshot(): ActivitySnapshot {
 const projects = [
   {
     number: "01",
+    title: "Personal AI Digest",
+    description:
+      "A self-hosted RAG pipeline that emails a grounded technical lesson twice a day. Ingest and delivery are fully decoupled and share only the knowledge store (SQLite, or Postgres with pgvector).",
+    reflection:
+      "Grounding every generated sentence in a citation is what turns an LLM toy into something I trust enough to study from.",
+    discipline: "Python · RAG · Cloudflare Workers",
+    href: null,
+  },
+  {
+    number: "02",
+    title: "Teach Anything",
+    description:
+      "An adaptive learning engine that recomputes each day's session from the learner's memory state. FSRS-5 for forgetting, Beta posteriors per mastery level, and a pure engine with no I/O enforced by lint.",
+    reflection:
+      "Keeping the adaptive core deterministic made it replayable against real history, which is the only way to know if it beats a static schedule.",
+    discipline: "TypeScript · Learning systems",
+    href: null,
+  },
+  {
+    number: "03",
+    title: "Vault AI Toolkit",
+    description:
+      "Local search, live graphs, and grounded Q&A over Obsidian vaults, with a sidebar plugin and an MCP server so Cursor and Codex can pull vault context while coding.",
+    reflection:
+      "Read-only by default, audit-logged writes, and nothing leaves the machine. Privacy is a feature people can feel.",
+    discipline: "Python · TypeScript · MCP",
+    href: null,
+  },
+  {
+    number: "04",
+    title: "Ladybug",
+    description:
+      "A private photo-and-writing ritual for two people: a deterministic product simulator, a Supabase-backed PWA, and the original SwiftUI and Firebase app.",
+    reflection:
+      "A deterministic simulator let me verify the whole product on Windows before spending anything on cloud.",
+    discipline: "TypeScript · Swift · Supabase",
+    href: null,
+  },
+  {
+    number: "05",
+    title: "Private Code Review Bot",
+    description:
+      "A stateless, comment-only PR reviewer for private repos on a self-hosted GitHub Actions runner. Deterministic scoring rubric, CI signal ingestion, and an optional free-tier LLM narrative.",
+    reflection:
+      "Running git as argv lists instead of shell strings is boring, and boring is exactly what you want when refs come from the environment.",
+    discipline: "Python · GitHub Actions",
+    href: null,
+  },
+  {
+    number: "06",
     title: "Obsidian Research Agent",
     description:
       "An Obsidian agent for research, writing, and bounded engineering work.",
@@ -28,17 +80,17 @@ const projects = [
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
   {
-    number: "02",
+    number: "07",
     title: "Engineering Activity Portfolio",
     description:
-      "A static personal site with privacy-safe local activity collection, a live aggregate feed, and interactive yearly heatmaps.",
+      "This site: privacy-safe local activity collection, a live aggregate feed, and interactive yearly heatmaps.",
     reflection:
       "Privacy and data provenance should feel like product features, not footnotes.",
     discipline: "TypeScript · Data visualization",
     href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
   },
   {
-    number: "03",
+    number: "08",
     title: "Environmental Quality ML Dashboard",
     description:
       "An air-quality ML pipeline with reproducible training and a Streamlit dashboard.",
@@ -48,7 +100,7 @@ const projects = [
     href: "https://github.com/JoshuaNguyen123/environmental-quality-ml-dashboard",
   },
   {
-    number: "04",
+    number: "09",
     title: "Book Service API",
     description:
       "A FastAPI service with search, ISBN lookup, web import, and local AI enrichment.",
@@ -60,9 +112,9 @@ const projects = [
 ] as const;
 
 const interests = [
-  ["Reliable agents", "Useful, observable, and easy to trust."],
-  ["Private products", "Clear boundaries and careful data choices."],
-  ["Developer experience", "Making complex systems easier to use."],
+  ["AI engineering", "Agents and retrieval systems that are grounded, observable, and worth trusting."],
+  ["Software development", "Small, well-tested pieces with clear contracts and useful errors."],
+  ["Systems engineering", "Pipelines, runners, and local-first tools that keep working when no one is watching."],
 ] as const;
 
 function formatDate(value: string): string {
@@ -116,9 +168,9 @@ export default function Home() {
             <Link className="text-link" href="/blog/">Read my notes</Link>
           </div>
           <dl className="hero-now" aria-label="About Joshua right now">
-            <div><dt>Now</dt><dd>Building reliable AI agents</dd></div>
+            <div><dt>Now</dt><dd>Building with AI</dd></div>
+            <div><dt>Interested in</dt><dd>AI engineering, software development, systems engineering</dd></div>
             <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
-            <div><dt>Interested in</dt><dd>AI, products, systems</dd></div>
           </dl>
         </div>
         <div className="hero-side">
@@ -138,42 +190,54 @@ export default function Home() {
       <section className="about-strip" id="about">
         <span className="eyebrow">About</span>
         <div className="about-copy">
-          <p>I like solving problems—technically and operationally.</p>
+          <p>I like working on ambiguous problems.</p>
           <p>
-            I&apos;m most at home when a problem is still fuzzy: researching it,
-            building a first version, and making the system easier to understand
-            and trust.
+            The part I enjoy most is when nobody is quite sure what the right
+            answer is yet. I read what exists, build a rough first version, and
+            keep reshaping it until the system is something a person can
+            understand and trust. Lately that has meant retrieval pipelines,
+            agents with real guardrails, and local-first tools that respect
+            people&apos;s data.
           </p>
           <p>
-            I&apos;m based in Bozeman, Montana, and I&apos;m especially interested in
-            reliable agents, private products, and thoughtful developer tools.
+            I live in Bozeman, Montana. When I&apos;m not at a keyboard I&apos;m
+            usually reading, fly fishing, hiking, or lifting. I also keep a long
+            Duolingo streak alive, which probably says something about how I
+            approach most things.
           </p>
         </div>
       </section>
 
       <section className="work-section" id="work">
         <div className="section-heading">
-          <span className="eyebrow">04 projects</span>
-          <h2>Selected work.</h2>
+          <span className="eyebrow">Projects</span>
+          <h2>Things I&apos;ve built.</h2>
         </div>
         <div className="project-ledger">
-          {projects.map((project) => (
-            <a href={project.href} key={project.title} target="_blank" rel="noreferrer">
-              <span className="project-number">{project.number}</span>
-              <div className="project-story">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <p className="project-reflection">
-                  <span>What it taught me</span>
-                  {project.reflection}
-                </p>
-              </div>
-              <div className="project-meta">
-                <span>{project.discipline}</span>
-                <strong>View project</strong>
-              </div>
-            </a>
-          ))}
+          {projects.map((project) => {
+            const body = (
+              <>
+                <span className="project-number">{project.number}</span>
+                <div className="project-story">
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <p className="project-reflection">
+                    <span>What it taught me</span>
+                    {project.reflection}
+                  </p>
+                </div>
+                <div className="project-meta">
+                  <span>{project.discipline}</span>
+                  <strong>{project.href ? "View project" : "Private repository"}</strong>
+                </div>
+              </>
+            );
+            return project.href ? (
+              <a href={project.href} key={project.title} target="_blank" rel="noreferrer">{body}</a>
+            ) : (
+              <article key={project.title}>{body}</article>
+            );
+          })}
         </div>
       </section>
 
@@ -224,7 +288,7 @@ export default function Home() {
           )}
         </section>
 
-        <LinkedInWidget posts={linkedInPosts} profileUrl={linkedInProfileUrl} />
+        {/* LinkedIn pulse paused; see notes/linkedin-pulse.md */}
       </section>
 
       <section className="activity-section" id="activity">
@@ -236,9 +300,10 @@ export default function Home() {
         <div>
           <h2>Let&apos;s talk.</h2>
           <p>
-            If you&apos;re building something thoughtful—or wrestling with a tricky
-            technical problem—I&apos;d be glad to hear about it.
+            If you&apos;re building something thoughtful, or stuck on a tricky
+            technical problem, I&apos;d be glad to hear about it.
           </p>
+          <ContactForm />
           <div className="contact-links">
             {linkedInProfileUrl ? (
               <a href={linkedInProfileUrl} target="_blank" rel="noreferrer">LinkedIn</a>
