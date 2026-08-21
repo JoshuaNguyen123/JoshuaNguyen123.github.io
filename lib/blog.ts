@@ -10,6 +10,7 @@ export interface BlogPostSummary {
   publishedAt: string;
   tags: string[];
   draft: boolean;
+  readingMinutes: number;
 }
 
 export interface BlogPost extends BlogPostSummary {
@@ -42,7 +43,9 @@ function readPost(filename: string, directory = contentDirectory): BlogPost {
   ) {
     throw new Error(`Invalid blog frontmatter in ${filename}`);
   }
-  return { ...data, publishedAt, html: marked.parse(content) as string } as BlogPost;
+  const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/u).length;
+  const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
+  return { ...data, publishedAt, readingMinutes, html: marked.parse(content) as string } as BlogPost;
 }
 
 export function getAllPosts(directory = contentDirectory): BlogPost[] {

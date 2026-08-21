@@ -1,24 +1,84 @@
 import { getPublishedPosts } from "@/lib/blog";
 import Link from "next/link";
 
-export const metadata = { title: "Writing - Joshua Nguyen" };
+export const metadata = {
+  title: "Writing — Joshua Nguyen",
+  description: "Joshua Nguyen writes about AI systems, research, and software.",
+};
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
 
 export default function BlogIndex() {
   const posts = getPublishedPosts();
+  const [leadPost, ...morePosts] = posts;
+
   return (
     <main className="blog-shell">
-      <Link className="blog-back" href="/">&larr; Joshua Nguyen</Link>
-      <header><span className="eyebrow">Writing</span><h1>Published notes.</h1></header>
-      {posts.length > 0 ? (
-        <div className="blog-index-list">
-          {posts.map((post) => (
-            <Link href={`/blog/${post.slug}/`} key={post.slug}>
-              <time dateTime={post.publishedAt}>{post.publishedAt}</time>
-              <div><h2>{post.title}</h2><p>{post.summary}</p></div>
-            </Link>
-          ))}
-        </div>
-      ) : <p className="blog-empty">No public notes yet.</p>}
+      <header className="blog-masthead">
+        <Link href="/" aria-label="Back to Joshua Nguyen's home page">Joshua Nguyen</Link>
+        <span>Writing</span>
+        <span>Denver · 2026</span>
+      </header>
+
+      <section className="blog-intro">
+        <span className="eyebrow">Writing</span>
+        <h1>Notes on building.</h1>
+        <p>AI systems, research, and lessons from the work.</p>
+      </section>
+
+      {leadPost ? (
+        <section className="blog-issue" aria-label="Published writing">
+          <Link className="lead-story" href={`/blog/${leadPost.slug}/`}>
+            <div className="story-label"><span>Latest</span><span>{leadPost.tags.join(" · ")}</span></div>
+            <h2>{leadPost.title}</h2>
+            <p>{leadPost.summary}</p>
+            <div className="story-byline">
+              <time dateTime={leadPost.publishedAt}>{formatDate(leadPost.publishedAt)}</time>
+              <span>{leadPost.readingMinutes} min read</span>
+            </div>
+          </Link>
+          {morePosts.length > 0 ? (
+            <div className="blog-index-list">
+              {morePosts.map((post) => (
+                <Link href={`/blog/${post.slug}/`} key={post.slug}>
+                  <div className="story-label"><span>{post.tags.join(" · ")}</span><span>{post.readingMinutes} min</span></div>
+                  <h2>{post.title}</h2>
+                  <p>{post.summary}</p>
+                  <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : (
+        <section className="blog-empty" aria-labelledby="empty-title">
+          <div>
+            <span className="eyebrow">Coming soon</span>
+            <h2 id="empty-title">First piece in progress.</h2>
+          </div>
+          <div className="blog-empty-note">
+            <p>I&apos;m working on the first note.</p>
+            <Link href="/">See my work <span aria-hidden="true">↗</span></Link>
+          </div>
+          <ul aria-label="Subjects planned for future writing">
+            <li><span>01</span>Reliable agents</li>
+            <li><span>02</span>Privacy by design</li>
+            <li><span>03</span>Building in public</li>
+          </ul>
+        </section>
+      )}
+
+      <footer className="blog-footer">
+        <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
+        <Link href="https://github.com/JoshuaNguyen123">GitHub <span aria-hidden="true">↗</span></Link>
+      </footer>
     </main>
   );
 }
