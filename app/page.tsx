@@ -26,6 +26,14 @@ const projects = [
   },
   {
     number: "02",
+    title: "Engineering Activity Portfolio",
+    description:
+      "A static personal site with privacy-safe local activity collection, a live aggregate feed, and interactive yearly heatmaps.",
+    discipline: "TypeScript · Data visualization",
+    href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
+  },
+  {
+    number: "03",
     title: "Environmental Quality ML Dashboard",
     description:
       "An air-quality ML pipeline with reproducible training and a Streamlit dashboard.",
@@ -33,7 +41,7 @@ const projects = [
     href: "https://github.com/JoshuaNguyen123/environmental-quality-ml-dashboard",
   },
   {
-    number: "03",
+    number: "04",
     title: "Book Service API",
     description:
       "A FastAPI service with search, ISBN lookup, web import, and local AI enrichment.",
@@ -85,8 +93,8 @@ export default function Home() {
           <h1>FDE, AI developer, and technical researcher.</h1>
           <p>I build practical AI systems and help teams solve technical problems.</p>
           <div className="hero-actions">
-            <a className="primary-link" href="#work">See what I&apos;m building <span aria-hidden="true">↘</span></a>
-            <Link className="text-link" href="/blog/">Read my notes <span aria-hidden="true">↗</span></Link>
+            <a className="primary-link" href="#work">See what I&apos;m building</a>
+            <Link className="text-link" href="/blog/">Read my notes</Link>
           </div>
         </div>
         <aside className="hero-now" aria-label="What Joshua is focused on right now">
@@ -106,16 +114,12 @@ export default function Home() {
       </section>
 
       <section className="activity-section" id="activity">
-        <div className="activity-intro">
-          <span className="eyebrow">Activity</span>
-          <p>A privacy-safe view of my recent engineering work.</p>
-        </div>
         <ActivityDashboard initialData={activity} />
       </section>
 
       <section className="work-section" id="work">
         <div className="section-heading">
-          <span className="eyebrow">03 projects</span>
+          <span className="eyebrow">04 projects</span>
           <h2>Selected work.</h2>
         </div>
         <div className="project-ledger">
@@ -128,7 +132,7 @@ export default function Home() {
               </div>
               <div className="project-meta">
                 <span>{project.discipline}</span>
-                <strong>View project <span aria-hidden="true">↗</span></strong>
+                <strong>View project</strong>
               </div>
             </a>
           ))}
@@ -156,7 +160,7 @@ export default function Home() {
               <span className="eyebrow">Writing</span>
               <h2 id="home-writing-title">Notes.</h2>
             </div>
-            <Link href="/blog/">Visit the notebook <span aria-hidden="true">↗</span></Link>
+            <Link href="/blog/">Visit the notebook</Link>
           </header>
           {posts.length > 0 ? (
             <div className="writing-list">
@@ -190,7 +194,7 @@ export default function Home() {
         <div>
           <h2>Let&apos;s talk.</h2>
           <p>AI, research, developer tools, or an interesting problem.</p>
-          <a href="https://github.com/JoshuaNguyen123">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/JoshuaNguyen123">GitHub</a>
         </div>
       </section>
 

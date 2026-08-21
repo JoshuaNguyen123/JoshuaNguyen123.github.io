@@ -4,7 +4,7 @@ This is my corner of the internet: a place to share what I’m building, what I�
 
 ## Website
 
-[**Open the live website →**](https://joshuanguyen123.github.io/)
+[**Open the live website**](https://joshuanguyen123.github.io/)
 
 ## What's here
 

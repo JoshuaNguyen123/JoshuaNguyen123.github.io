@@ -154,7 +154,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   return (
     <div className="activity-dashboard">
       <div className="activity-toolbar">
-        <div><span className="eyebrow">Build activity / 02</span><h2>Engineering activity</h2><p>Privacy-safe local activity from the tools I use to build software—no paid analytics service required.</p></div>
+        <div><span className="eyebrow">Build activity / 02</span><h2>Engineering activity</h2><p>A year-by-year record from the tools I use.</p></div>
         <div className="year-selector" aria-label="Activity year">
           {availableYears.map((year) => <button type="button" key={year} className={year === selectedYear ? "is-active" : ""} aria-pressed={year === selectedYear} onClick={() => changeYear(year)}>{year}</button>)}
         </div>
@@ -218,7 +218,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         </aside>
       </div>
 
-      <div className="activity-legend" aria-label="Activity intensity legend"><span>Less</span>{[0, 1, 2, 3, 4, 5].map((level) => <i className={`level-${level}`} key={level} />)}<span>More</span></div>
+      <div className="activity-legend" aria-label="Activity intensity legend"><span>Less</span>{[0, 1, 2, 3, 4, 5].map((level) => <i className={`level-${level}`} key={level} role="img" aria-label={`Intensity level ${level} of 5`} title={`Intensity level ${level} of 5`} />)}<span>More</span></div>
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
         <p className="index-disclaimer"><strong>Build Index:</strong> {data.buildIndex.formula} {data.buildIndex.disclaimer}</p>

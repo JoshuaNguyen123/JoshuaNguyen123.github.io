@@ -3,17 +3,29 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("public identity, editorial writing, and future-ready empty social surfaces are source-safe", async () => {
-  const [page, blog, layout, linkedIn] = await Promise.all([
+  const [page, blog, article, layout, linkedIn, linkedInWidget] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/blog/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../content/linkedin-posts.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/social/LinkedInWidget.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(page, /Joshua Nguyen/);
   assert.match(page, /FDE, AI developer, and technical researcher\./);
   assert.match(page, /Obsidian Research Agent/);
+  assert.match(page, /Engineering Activity Portfolio/);
   assert.match(page, /Environmental Quality ML Dashboard/);
   assert.match(page, /Book Service API/);
+  const projectOrder = [
+    "Obsidian Research Agent",
+    "Engineering Activity Portfolio",
+    "Environmental Quality ML Dashboard",
+    "Book Service API",
+  ].map((project) => page.indexOf(project));
+  assert.ok(projectOrder.every((position) => position >= 0));
+  assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
+  assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
   assert.match(blog, /Coming soon/);
   assert.match(blog, /First piece in progress/);
   assert.doesNotMatch(blog, /placeholder|lorem ipsum/i);

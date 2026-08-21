@@ -65,7 +65,7 @@ export default function BlogIndex() {
           </div>
           <div className="blog-empty-note">
             <p>I&apos;m working on the first note.</p>
-            <Link href="/">See my work <span aria-hidden="true">↗</span></Link>
+            <Link href="/">See my work</Link>
           </div>
           <ul aria-label="Subjects planned for future writing">
             <li><span>01</span>Reliable agents</li>
@@ -77,7 +77,7 @@ export default function BlogIndex() {
 
       <footer className="blog-footer">
         <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
-        <Link href="https://github.com/JoshuaNguyen123">GitHub <span aria-hidden="true">↗</span></Link>
+        <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
       </footer>
     </main>
   );

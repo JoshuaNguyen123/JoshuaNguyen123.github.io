@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       <article>
         <header className="article-header">
-          <Link className="blog-back" href="/blog/">← All writing</Link>
+          <Link className="blog-back" href="/blog/">All writing</Link>
           <span className="eyebrow">{post.tags.join(" · ")}</span>
           <h1>{post.title}</h1>
           <p>{post.summary}</p>
@@ -53,13 +53,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
         <footer className="article-footer">
           <span className="eyebrow">Thanks for reading</span>
-          <Link href="/blog/">All writing <span aria-hidden="true">↗</span></Link>
+          <Link href="/blog/">All writing</Link>
         </footer>
       </article>
 
       <footer className="blog-footer">
         <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
-        <Link href="https://github.com/JoshuaNguyen123">GitHub <span aria-hidden="true">↗</span></Link>
+        <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
       </footer>
     </main>
   );

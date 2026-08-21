@@ -7,7 +7,7 @@ export function LinkedInWidget({ posts, profileUrl }: { posts: ExternalPost[]; p
     <section className="linkedin-widget" aria-labelledby="linkedin-widget-title">
       <div className="linkedin-widget-heading">
         <div><span className="linkedin-mark" aria-hidden="true">in</span><h3 id="linkedin-widget-title">LinkedIn pulse</h3></div>
-        {profileUrl ? <a href={profileUrl}>View profile ↗</a> : null}
+        {profileUrl ? <a href={profileUrl}>View profile</a> : null}
       </div>
       {posts.length > 0 ? (
         <div className="linkedin-posts">
