@@ -25,7 +25,6 @@ export default function BlogIndex() {
       <header className="blog-masthead">
         <Link href="/" aria-label="Back to Joshua Nguyen's home page">Joshua Nguyen</Link>
         <span>Writing</span>
-        <span>Bozeman · 2026</span>
       </header>
 
       <section className="blog-intro">

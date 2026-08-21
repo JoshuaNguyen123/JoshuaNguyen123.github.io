@@ -82,8 +82,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Joshua Nguyen home">
-          <span className="wordmark-name">Joshua Nguyen</span>
-          <span className="wordmark-role">FDE · AI developer · Technical researcher</span>
+          Joshua Nguyen
         </a>
         <nav aria-label="Primary navigation">
           <a href="#about">About</a>
@@ -92,7 +91,6 @@ export default function Home() {
           <a href="#activity">Activity</a>
           <a href="#contact">Contact</a>
         </nav>
-        <span className="header-edition">Bozeman · 2026</span>
         <details className="mobile-nav">
           <summary>Menu</summary>
           <nav aria-label="Mobile navigation">
@@ -106,7 +104,6 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-kicker" aria-hidden="true">Work · Research · Notes</div>
         <div className="hero-copy">
           <span className="eyebrow">Joshua Nguyen</span>
           <h1>FDE, AI developer, and technical researcher.</h1>
@@ -257,7 +254,6 @@ export default function Home() {
 
       <footer>
         <span>© {new Date().getFullYear()} Joshua Nguyen</span>
-        <span>Made in Bozeman · Still a work in progress</span>
       </footer>
     </main>
   );

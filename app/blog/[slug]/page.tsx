@@ -36,7 +36,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <header className="blog-masthead">
         <Link href="/">Joshua Nguyen</Link>
         <Link href="/blog/">Writing</Link>
-        <span>Bozeman · 2026</span>
       </header>
 
       <article>
