@@ -45,6 +45,10 @@ export function ContactForm() {
     }
     if (data.get("botcheck")) return; // honeypot
 
+    // hCaptcha also injects a g-recaptcha-response compatibility field; Web3Forms
+    // treats reCAPTCHA as a paid feature, so only the hCaptcha token is sent.
+    data.delete("g-recaptcha-response");
+
     setStatus("sending");
     setMessage("");
     try {
