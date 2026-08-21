@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/" },
+  // Search indexing stays on; "noai" / "noimageai" ask compliant crawlers not
+  // to use the content or portrait for model training. robots.txt handles the rest.
+  robots: { index: true, follow: true, "max-image-preview": "standard" },
+  other: { robots: "noai, noimageai" },
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
     title,
