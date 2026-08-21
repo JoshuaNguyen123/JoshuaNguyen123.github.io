@@ -19,5 +19,5 @@ function defineExternalPosts(posts: ExternalPost[]): ExternalPost[] {
 // Populate these values only when Joshua has public LinkedIn content to show.
 // With an empty list and no profile URL, the widget renders nothing and makes
 // no request to LinkedIn.
-export const linkedInProfileUrl: string | null = null;
+export const linkedInProfileUrl: string | null = "https://www.linkedin.com/in/joshua-nguyen-6a812a210";
 export const linkedInPosts: ExternalPost[] = defineExternalPosts([]);

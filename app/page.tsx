@@ -6,6 +6,7 @@ import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import type { ActivitySnapshot } from "@/lib/activity/types";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import Image from "next/image";
 import Link from "next/link";
 
 function loadActivitySnapshot(): ActivitySnapshot {
@@ -21,6 +22,8 @@ const projects = [
     title: "Obsidian Research Agent",
     description:
       "An Obsidian agent for research, writing, and bounded engineering work.",
+    reflection:
+      "Autonomy becomes useful when people can see the plan, the tools, and the receipts.",
     discipline: "TypeScript · Agent systems",
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
@@ -29,6 +32,8 @@ const projects = [
     title: "Engineering Activity Portfolio",
     description:
       "A static personal site with privacy-safe local activity collection, a live aggregate feed, and interactive yearly heatmaps.",
+    reflection:
+      "Privacy and data provenance should feel like product features, not footnotes.",
     discipline: "TypeScript · Data visualization",
     href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
   },
@@ -37,6 +42,8 @@ const projects = [
     title: "Environmental Quality ML Dashboard",
     description:
       "An air-quality ML pipeline with reproducible training and a Streamlit dashboard.",
+    reflection:
+      "Model comparisons matter most when the results become understandable and usable.",
     discipline: "Python · Machine learning",
     href: "https://github.com/JoshuaNguyen123/environmental-quality-ml-dashboard",
   },
@@ -45,6 +52,8 @@ const projects = [
     title: "Book Service API",
     description:
       "A FastAPI service with search, ISBN lookup, web import, and local AI enrichment.",
+    reflection:
+      "Predictable contracts and useful errors matter more than an oversized feature list.",
     discipline: "Python · API design",
     href: "https://github.com/JoshuaNguyen123/book_service_api",
   },
@@ -83,7 +92,17 @@ export default function Home() {
           <a href="#activity">Activity</a>
           <a href="#contact">Contact</a>
         </nav>
-        <span className="header-edition">Denver · 2026</span>
+        <span className="header-edition">Bozeman · 2026</span>
+        <details className="mobile-nav">
+          <summary>Menu</summary>
+          <nav aria-label="Mobile navigation">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <Link href="/blog/">Writing</Link>
+            <a href="#activity">Activity</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </details>
       </header>
 
       <section className="hero" id="top">
@@ -91,30 +110,52 @@ export default function Home() {
         <div className="hero-copy">
           <span className="eyebrow">Joshua Nguyen</span>
           <h1>FDE, AI developer, and technical researcher.</h1>
-          <p>I build practical AI systems and help teams solve technical problems.</p>
+          <p>
+            I like turning ideas into useful software, learning as I go, and helping
+            people through the tricky technical parts.
+          </p>
           <div className="hero-actions">
             <a className="primary-link" href="#work">See what I&apos;m building</a>
             <Link className="text-link" href="/blog/">Read my notes</Link>
           </div>
         </div>
-        <aside className="hero-now" aria-label="What Joshua is focused on right now">
-          <span className="eyebrow">Now</span>
-          <p>Building reliable AI agents.</p>
-          <dl>
-            <div><dt>Based in</dt><dd>Denver, Colorado</dd></div>
-            <div><dt>Interested in</dt><dd>AI, products, systems</dd></div>
-            <div><dt>Usually doing</dt><dd>Building and learning</dd></div>
-          </dl>
+        <aside className="hero-side" aria-label="About Joshua right now">
+          <div className="hero-portrait">
+            <Image
+              src="/joshua-nguyen.jpg"
+              alt="Joshua Nguyen smiling outdoors by a lake"
+              width={800}
+              height={1000}
+              sizes="(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 38vw, 320px"
+              priority
+            />
+          </div>
+          <div className="hero-now">
+            <span className="eyebrow">Now</span>
+            <p>Building reliable AI agents.</p>
+            <dl>
+              <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
+              <div><dt>Interested in</dt><dd>AI, products, systems</dd></div>
+              <div><dt>Usually doing</dt><dd>Building and learning</dd></div>
+            </dl>
+          </div>
         </aside>
       </section>
 
       <section className="about-strip" id="about">
         <span className="eyebrow">About</span>
-        <p>I like solving problems—technically and operationally.</p>
-      </section>
-
-      <section className="activity-section" id="activity">
-        <ActivityDashboard initialData={activity} />
+        <div className="about-copy">
+          <p>I like solving problems—technically and operationally.</p>
+          <p>
+            I&apos;m most at home when a problem is still fuzzy: researching it,
+            building a first version, and making the system easier to understand
+            and trust.
+          </p>
+          <p>
+            I&apos;m based in Bozeman, Montana, and I&apos;m especially interested in
+            reliable agents, private products, and thoughtful developer tools.
+          </p>
+        </div>
       </section>
 
       <section className="work-section" id="work">
@@ -129,6 +170,10 @@ export default function Home() {
               <div className="project-story">
                 <h3>{project.title}</h3>
                 <p>{project.description}</p>
+                <p className="project-reflection">
+                  <span>What it taught me</span>
+                  {project.reflection}
+                </p>
               </div>
               <div className="project-meta">
                 <span>{project.discipline}</span>
@@ -189,18 +234,30 @@ export default function Home() {
         <LinkedInWidget posts={linkedInPosts} profileUrl={linkedInProfileUrl} />
       </section>
 
+      <section className="activity-section" id="activity">
+        <ActivityDashboard initialData={activity} />
+      </section>
+
       <section className="contact-section" id="contact">
         <span className="eyebrow">Contact</span>
         <div>
           <h2>Let&apos;s talk.</h2>
-          <p>AI, research, developer tools, or an interesting problem.</p>
-          <a href="https://github.com/JoshuaNguyen123">GitHub</a>
+          <p>
+            If you&apos;re building something thoughtful—or wrestling with a tricky
+            technical problem—I&apos;d be glad to hear about it.
+          </p>
+          <div className="contact-links">
+            {linkedInProfileUrl ? (
+              <a href={linkedInProfileUrl} target="_blank" rel="noreferrer">LinkedIn</a>
+            ) : null}
+            <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
         </div>
       </section>
 
       <footer>
         <span>© {new Date().getFullYear()} Joshua Nguyen</span>
-        <span>Made in Denver · Still a work in progress</span>
+        <span>Made in Bozeman · Still a work in progress</span>
       </footer>
     </main>
   );

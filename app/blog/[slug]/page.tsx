@@ -1,4 +1,5 @@
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog";
+import { linkedInProfileUrl } from "@/content/linkedin-posts";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -35,7 +36,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <header className="blog-masthead">
         <Link href="/">Joshua Nguyen</Link>
         <Link href="/blog/">Writing</Link>
-        <span>Denver · 2026</span>
+        <span>Bozeman · 2026</span>
       </header>
 
       <article>
@@ -59,7 +60,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       <footer className="blog-footer">
         <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
-        <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
+        <div className="blog-footer-links">
+          {linkedInProfileUrl ? <Link href={linkedInProfileUrl}>LinkedIn</Link> : null}
+          <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
+        </div>
       </footer>
     </main>
   );

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("public identity, editorial writing, and future-ready empty social surfaces are source-safe", async () => {
+test("public identity, editorial writing, and public social surfaces are source-safe", async () => {
   const [page, blog, article, layout, linkedIn, linkedInWidget] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/page.tsx", import.meta.url), "utf8"),
@@ -25,6 +25,9 @@ test("public identity, editorial writing, and future-ready empty social surfaces
   ].map((project) => page.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
+  assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="activity-section"'));
+  assert.match(page, /className="mobile-nav"/);
+  assert.match(page, /What it taught me/);
   assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
   assert.match(blog, /Coming soon/);
   assert.match(blog, /First piece in progress/);
@@ -33,7 +36,7 @@ test("public identity, editorial writing, and future-ready empty social surfaces
   assert.match(layout, /Newsreader/);
   assert.match(layout, /https:\/\/joshuanguyen123\.github\.io/);
   assert.match(linkedIn, /linkedInPosts: ExternalPost\[\] = defineExternalPosts\(\[\]\)/);
-  assert.match(linkedIn, /linkedInProfileUrl: string \| null = null/);
+  assert.match(linkedIn, /linkedin\.com\/in\/joshua-nguyen-6a812a210/);
 });
 
 test("static architecture keeps a validated public live-feed fallback without a server API", async () => {

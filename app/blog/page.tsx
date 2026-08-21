@@ -1,4 +1,5 @@
 import { getPublishedPosts } from "@/lib/blog";
+import { linkedInProfileUrl } from "@/content/linkedin-posts";
 import Link from "next/link";
 
 export const metadata = {
@@ -24,7 +25,7 @@ export default function BlogIndex() {
       <header className="blog-masthead">
         <Link href="/" aria-label="Back to Joshua Nguyen's home page">Joshua Nguyen</Link>
         <span>Writing</span>
-        <span>Denver · 2026</span>
+        <span>Bozeman · 2026</span>
       </header>
 
       <section className="blog-intro">
@@ -77,7 +78,10 @@ export default function BlogIndex() {
 
       <footer className="blog-footer">
         <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
-        <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
+        <div className="blog-footer-links">
+          {linkedInProfileUrl ? <Link href={linkedInProfileUrl}>LinkedIn</Link> : null}
+          <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
+        </div>
       </footer>
     </main>
   );

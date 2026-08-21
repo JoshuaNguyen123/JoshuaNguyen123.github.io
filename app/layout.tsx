@@ -8,7 +8,7 @@ const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"
 
 const title = "Joshua Nguyen — FDE, AI Developer, Technical Researcher";
 const description =
-  "Joshua Nguyen builds practical AI systems and helps teams solve technical problems.";
+  "Joshua Nguyen is an AI developer and technical researcher who likes turning ideas into useful software and sharing what he learns.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://joshuanguyen123.github.io"),
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     description,
     type: "website",
     url: "/",
-    images: [{ url: "/og.png", width: 1536, height: 1024, alt: "Joshua Nguyen engineering activity portfolio" }],
+    images: [{ url: "/og-personal.jpg", width: 1536, height: 1024, alt: "Joshua Nguyen — AI developer and technical researcher in Bozeman, Montana" }],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
+  twitter: { card: "summary_large_image", title, description, images: ["/og-personal.jpg"] },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
