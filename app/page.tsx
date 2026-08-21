@@ -18,39 +18,21 @@ function loadActivitySnapshot(): ActivitySnapshot {
   return snapshot;
 }
 
+// Ordered by technical depth; only the first SHOWN_PROJECTS render for now.
+const SHOWN_PROJECTS = 3;
 const projects = [
   {
     number: "01",
-    title: "Personal AI Digest",
+    title: "Obsidian Research Agent",
     description:
-      "A self-hosted RAG pipeline that emails a grounded technical lesson twice a day. Ingest and delivery are fully decoupled and share only the knowledge store (SQLite, or Postgres with pgvector).",
+      "An Obsidian agent for research, writing, and bounded engineering work.",
     reflection:
-      "Grounding every generated sentence in a citation is what turns an LLM toy into something I trust enough to study from.",
-    discipline: "Python · RAG · Cloudflare Workers",
-    href: null,
+      "Autonomy becomes useful when people can see the plan, the tools, and the receipts.",
+    discipline: "TypeScript · Agent systems",
+    href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
   {
     number: "02",
-    title: "Teach Anything",
-    description:
-      "An adaptive learning engine that recomputes each day's session from the learner's memory state. FSRS-5 for forgetting, Beta posteriors per mastery level, and a pure engine with no I/O enforced by lint.",
-    reflection:
-      "Keeping the adaptive core deterministic made it replayable against real history, which is the only way to know if it beats a static schedule.",
-    discipline: "TypeScript · Learning systems",
-    href: null,
-  },
-  {
-    number: "03",
-    title: "Vault AI Toolkit",
-    description:
-      "Local search, live graphs, and grounded Q&A over Obsidian vaults, with a sidebar plugin and an MCP server so Cursor and Codex can pull vault context while coding.",
-    reflection:
-      "Read-only by default, audit-logged writes, and nothing leaves the machine. Privacy is a feature people can feel.",
-    discipline: "Python · TypeScript · MCP",
-    href: null,
-  },
-  {
-    number: "04",
     title: "Ladybug",
     description:
       "A private photo-and-writing ritual for two people: a deterministic product simulator, a Supabase-backed PWA, and the original SwiftUI and Firebase app.",
@@ -60,7 +42,37 @@ const projects = [
     href: null,
   },
   {
+    number: "03",
+    title: "Teach Anything",
+    description:
+      "An adaptive learning engine that recomputes each day's session from the learner's memory state. FSRS-5 for forgetting, Beta posteriors per mastery level, and a pure engine with no I/O enforced by lint.",
+    reflection:
+      "Keeping the adaptive core deterministic made it replayable against real history, which is the only way to know if it beats a static schedule.",
+    discipline: "TypeScript · Learning systems",
+    href: null,
+  },
+  {
+    number: "04",
+    title: "Personal AI Digest",
+    description:
+      "A self-hosted RAG pipeline that emails a grounded technical lesson twice a day. Ingest and delivery are fully decoupled and share only the knowledge store (SQLite, or Postgres with pgvector).",
+    reflection:
+      "Grounding every generated sentence in a citation is what turns an LLM toy into something I trust enough to study from.",
+    discipline: "Python · RAG · Cloudflare Workers",
+    href: null,
+  },
+  {
     number: "05",
+    title: "Vault AI Toolkit",
+    description:
+      "Local search, live graphs, and grounded Q&A over Obsidian vaults, with a sidebar plugin and an MCP server so Cursor and Codex can pull vault context while coding.",
+    reflection:
+      "Read-only by default, audit-logged writes, and nothing leaves the machine. Privacy is a feature people can feel.",
+    discipline: "Python · TypeScript · MCP",
+    href: null,
+  },
+  {
+    number: "06",
     title: "Private Code Review Bot",
     description:
       "A stateless, comment-only PR reviewer for private repos on a self-hosted GitHub Actions runner. Deterministic scoring rubric, CI signal ingestion, and an optional free-tier LLM narrative.",
@@ -68,16 +80,6 @@ const projects = [
       "Running git as argv lists instead of shell strings is boring, and boring is exactly what you want when refs come from the environment.",
     discipline: "Python · GitHub Actions",
     href: null,
-  },
-  {
-    number: "06",
-    title: "Obsidian Research Agent",
-    description:
-      "An Obsidian agent for research, writing, and bounded engineering work.",
-    reflection:
-      "Autonomy becomes useful when people can see the plan, the tools, and the receipts.",
-    discipline: "TypeScript · Agent systems",
-    href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
   {
     number: "07",
@@ -214,7 +216,7 @@ export default function Home() {
           <h2>Things I&apos;ve built.</h2>
         </div>
         <div className="project-ledger">
-          {projects.map((project) => {
+          {projects.slice(0, SHOWN_PROJECTS).map((project) => {
             const body = (
               <>
                 <span className="project-number">{project.number}</span>
