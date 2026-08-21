@@ -115,28 +115,24 @@ export default function Home() {
             <a className="primary-link" href="#work">See what I&apos;m building</a>
             <Link className="text-link" href="/blog/">Read my notes</Link>
           </div>
+          <dl className="hero-now" aria-label="About Joshua right now">
+            <div><dt>Now</dt><dd>Building reliable AI agents</dd></div>
+            <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
+            <div><dt>Interested in</dt><dd>AI, products, systems</dd></div>
+          </dl>
         </div>
-        <aside className="hero-side" aria-label="About Joshua right now">
+        <div className="hero-side">
           <div className="hero-portrait">
             <Image
               src="/joshua-nguyen.jpg"
               alt="Joshua Nguyen smiling outdoors by a lake"
               width={800}
               height={1000}
-              sizes="(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 38vw, 320px"
+              sizes="(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 38vw, 360px"
               priority
             />
           </div>
-          <div className="hero-now">
-            <span className="eyebrow">Now</span>
-            <p>Building reliable AI agents.</p>
-            <dl>
-              <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
-              <div><dt>Interested in</dt><dd>AI, products, systems</dd></div>
-              <div><dt>Usually doing</dt><dd>Building and learning</dd></div>
-            </dl>
-          </div>
-        </aside>
+        </div>
       </section>
 
       <section className="about-strip" id="about">
