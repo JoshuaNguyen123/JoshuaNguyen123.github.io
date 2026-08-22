@@ -111,7 +111,7 @@ main { max-width: 100vw; min-width: 0; overflow-x: clip; width: 100vw; }
 .data-dot--live { background: #3f8a5a; }
 .activity-notice { border-left: 2px solid var(--warm); color: #343a40; font-size: 12px; padding-left: 12px; }
 
-.summary-grid { border-bottom: 1px solid var(--dark-line); border-top: 1px solid var(--dark-line); display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-bottom: 34px; }
+.summary-grid { border-bottom: 1px solid var(--dark-line); border-top: 1px solid var(--dark-line); display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); margin-bottom: 34px; }
 .summary-metric { border-right: 1px solid var(--dark-line); padding: 22px 18px 21px 0; }
 .summary-metric:not(:first-child) { padding-left: 18px; }
 .summary-metric:last-child { border-right: 0; }
@@ -318,7 +318,7 @@ body > main > footer { align-items: center; background: #d9d5cb; border-top: 1px
   .site-header { grid-template-columns: 1fr auto; }.site-header > nav { display: none; }.mobile-nav { display: block; }
   .hero { align-items: start; grid-template-columns: var(--rail) 1fr; }.hero-side { grid-column: 2; margin: 48px 0 0; }.hero-side .hero-portrait { margin-left: 0; }
   .activity-workspace { grid-template-columns: minmax(0, 1fr); }.day-detail { position: static; }
-  .summary-grid { grid-template-columns: repeat(3, 1fr); }.summary-metric:nth-child(3n) { border-right: 0; }.summary-metric { border-bottom: 1px solid var(--dark-line); }.summary-metric:last-child { border-bottom: 0; border-right: 0; grid-column: 1 / -1; }
+  .summary-grid { grid-template-columns: repeat(4, 1fr); }.summary-metric:nth-child(4n) { border-right: 0; }.summary-metric { border-bottom: 1px solid var(--dark-line); }.summary-metric:nth-last-child(-n+4) { border-bottom: 0; }
   .methodology-grid { grid-template-columns: repeat(2, 1fr); }
   .project-ledger > a, .project-ledger > article { grid-template-columns: calc(var(--rail) - 34px) 1fr; }.project-meta { grid-column: 2; gap: 14px; }
   .writing-list > a { grid-template-columns: 1fr auto; }.writing-list time { grid-column: 1 / -1; }
@@ -332,7 +332,7 @@ body > main > footer { align-items: center; background: #d9d5cb; border-top: 1px
   .about-strip, .section-heading, .contact-section { display: block; }.about-strip .eyebrow, .section-heading .eyebrow, .contact-section > .eyebrow { display: block; margin-bottom: 28px; }.about-copy p:first-child { font-size: 21px; }.about-copy p { font-size: 16px; }
   .activity-section { max-width: 100vw; padding-left: 10px; padding-right: 10px; width: 100vw; }
   .activity-dashboard, .activity-toolbar { max-width: calc(100vw - 20px); width: calc(100vw - 20px); }.activity-toolbar { align-items: flex-start; flex-direction: column; gap: 24px; }.activity-toolbar h2 { font-size: 38px; }.activity-toolbar p { max-width: calc(100vw - 20px); }.year-selector { align-self: stretch; }.year-selector button { flex: 1; }
-  .summary-grid { grid-template-columns: repeat(2, 1fr); }.summary-metric:nth-child(n) { border-bottom: 1px solid var(--dark-line); border-right: 1px solid var(--dark-line); padding-left: 12px; }.summary-metric:nth-child(even) { border-right: 0; }.summary-metric:last-child { border-bottom: 0; border-right: 0; grid-column: 1 / -1; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }.summary-metric:nth-child(n) { border-bottom: 1px solid var(--dark-line); border-right: 1px solid var(--dark-line); padding-left: 12px; }.summary-metric:nth-child(even) { border-right: 0; }.summary-metric:nth-last-child(-n+2) { border-bottom: 0; }
   .activity-heatmap { padding-left: 10px; padding-right: 10px; }.heatmap-heading { align-items: flex-start; gap: 10px; }.heatmap-heading > div { flex-wrap: wrap; }.heatmap-body { gap: 0; }.weekday-labels { display: none; }.month-row { gap: 1px; margin-left: 0; }.week-grid, .week-column { gap: 1px; }.metric-selector { gap: 4px; justify-content: flex-start; }.metric-selector button + button { border-left: 1px solid var(--dark-line); }
   .section-heading h2 { font-size: 40px; }
   .project-ledger > a, .project-ledger > article { gap: 20px; grid-template-columns: 32px 1fr; }.project-story h3 { font-size: 30px; }.project-story p { font-size: 17px; }.project-story .project-reflection { font-size: 14px; }.project-meta { grid-column: 2; }

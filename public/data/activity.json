@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-21T10:27:00.837Z",
+  "generatedAt": "2026-08-22T04:46:58.323Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2025-01-01",
@@ -24,8 +24,8 @@
             "start": "2025-01-01",
             "end": "2026-08-21"
           },
-          "lastSyncedAt": "2026-08-21T10:27:00.826Z",
-          "lastAttemptedAt": "2026-08-21T10:27:00.826Z",
+          "lastSyncedAt": "2026-08-22T04:46:58.279Z",
+          "lastAttemptedAt": "2026-08-22T04:46:58.279Z",
           "days": [
             {
               "date": "2025-01-01",
@@ -3014,8 +3014,8 @@
             },
             {
               "date": "2026-08-21",
-              "value": 0,
-              "level": 0
+              "value": 11,
+              "level": 3
             }
           ]
         }
@@ -4734,7 +4734,7 @@
           "source": "Cursor usage-event export (daily presence only)",
           "coverage": {
             "start": "2026-01-02",
-            "end": "2026-08-11"
+            "end": "2026-08-21"
           },
           "lastSyncedAt": "2026-08-18T23:47:52.704Z",
           "lastAttemptedAt": "2026-08-18T23:47:52.704Z",
@@ -5848,6 +5848,56 @@
               "date": "2026-08-11",
               "value": 1,
               "level": 1
+            },
+            {
+              "date": "2026-08-12",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-13",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-14",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-15",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-16",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-17",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-18",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-08-19",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-08-20",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-08-21",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -6061,7 +6111,7 @@
             "methodology": "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.",
             "accuracy": "observed"
           },
-          "source": "Local Claude Code hooks and retained session timestamps",
+          "source": "Local Claude Code session event timestamps",
           "coverage": {
             "start": "2026-07-23",
             "end": "2026-08-18"
@@ -9191,7 +9241,7 @@
       },
       {
         "date": "2026-08-19",
-        "value": 40,
+        "value": 30,
         "level": 2
       },
       {
@@ -9201,8 +9251,8 @@
       },
       {
         "date": "2026-08-21",
-        "value": 0,
-        "level": 0
+        "value": 40,
+        "level": 2
       }
     ]
   },
@@ -9217,12 +9267,12 @@
       "longestStreak": 2
     },
     "2026": {
-      "contributions": 834,
+      "contributions": 845,
       "codexActiveSessionDays": 1131,
       "cursorActiveSessionDays": 1065,
       "cursorAppliedAiLineChanges": 189883,
       "claudeActiveSessionDays": 86,
-      "activeDays": 133,
+      "activeDays": 134,
       "longestStreak": 44
     }
   }

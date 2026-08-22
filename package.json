@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "node scripts/prepare-activity.mjs --fixtures && next dev",
-    "build": "node scripts/prepare-activity.mjs && next build",
+    "build": "node scripts/fetch-cursor-usage.mjs && node scripts/prepare-activity.mjs && next build",
     "start": "next start",
     "activity:export": "node scripts/export-local-activity.mjs",
     "activity:prepare": "node scripts/prepare-activity.mjs",
@@ -16,6 +16,7 @@
     "activity:backfill": "node scripts/live-activity-collector.mjs --full",
     "activity:backfill-history": "node scripts/backfill-history.mjs",
     "activity:import:cursor": "node scripts/import-cursor-usage.mjs",
+    "activity:fetch:cursor": "node scripts/fetch-cursor-usage.mjs",
     "activity:audit": "node scripts/audit-activity.mjs",
     "activity:hooks:preflight": "node scripts/hook-installer.mjs preflight",
     "activity:hooks:install": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-local-activity-hooks.ps1 -Action install",

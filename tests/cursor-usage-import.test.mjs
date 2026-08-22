@@ -66,9 +66,9 @@ test("Cursor usage imports merge monotonically without retaining raw event field
   for (const forbidden of ["private-cloud-id", "private-automation-id", "private-model", "Total Tokens", "Cost"]) assert.doesNotMatch(output, new RegExp(forbidden, "i"));
 });
 
-test("committed Cursor usage evidence verifies the expected 92 dates", async () => {
+test("committed Cursor usage evidence verifies the expected 95 dates", async () => {
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(new URL("../data/history-backfill.json", import.meta.url), "utf8")));
-  assert.equal(backfill.providers.cursor.usagePresence.length, 92);
+  assert.equal(backfill.providers.cursor.usagePresence.length, 95);
   assert.deepEqual(backfill.providers.cursor.usagePresence.slice(0, 7).map((day) => day.date), [
     "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
   ]);

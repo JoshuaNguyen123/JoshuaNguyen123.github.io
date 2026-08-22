@@ -2,6 +2,8 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { applyHistoryBackfill } from "./local-exporter.mjs";
+import { validateHistoryBackfill } from "./history-backfill-core.mjs";
 import {
   assembleSnapshot,
   createMetricSeries,
@@ -114,7 +116,20 @@ async function getLocalProviders() {
     || value.schemaVersion === 4 && value.privacyVersion === "aggregate-v4"
     || value.schemaVersion === SCHEMA_VERSION && value.privacyVersion === PRIVACY_VERSION;
   if (!supported || value.timeZone !== TIME_ZONE) throw new Error("Local activity snapshot schema is invalid");
-  return Object.fromEntries(["codex", "cursor", "claude-code"].map((provider) => [provider, upgradeProvider(provider, value.providers[provider])]));
+  const providers = Object.fromEntries(["codex", "cursor", "claude-code"].map((provider) => [provider, upgradeProvider(provider, value.providers[provider])]));
+  // The committed local snapshot already includes the backfill as of the last
+  // local export; re-applying it here picks up anything the build-time Cursor
+  // API fetch just added. The merge is a per-date max, so it is idempotent.
+  const backfillFile = path.join(ROOT, "data", "history-backfill.json");
+  if (existsSync(backfillFile)) {
+    try {
+      applyHistoryBackfill(providers, validateHistoryBackfill(await loadJson(backfillFile)));
+    } catch (error) {
+      process.stderr.write(`Activity prepare: ignoring history backfill: ${error.message}
+`);
+    }
+  }
+  return providers;
 }
 
 const { start, end } = rangeForBuild();

@@ -10,7 +10,7 @@ interface SummaryMetrics {
   claude: MetricActivitySnapshot;
 }
 
-export function ActivitySummary({ summary, metrics }: { summary: Summary; metrics: SummaryMetrics }) {
+export function ActivitySummary({ summary, currentStreak, metrics }: { summary: Summary; currentStreak: number; metrics: SummaryMetrics }) {
   const shown = (metric: MetricActivitySnapshot, value: number) => metric.status !== "unavailable" && metric.days.length ? value.toLocaleString("en-US") : "N/A";
   const daysContext = (metric: MetricActivitySnapshot, label = "active calendar days") => metric.status !== "unavailable" && metric.days.length
     ? `across ${countActiveDays(metric).toLocaleString("en-US")} ${label}`
@@ -28,6 +28,7 @@ export function ActivitySummary({ summary, metrics }: { summary: Summary; metric
     { value: shown(metrics.cursorLines, summary.cursorAppliedAiLineChanges), label: "Cursor applied AI line changes", context: daysContext(metrics.cursorLines, "edit-tracked days") },
     { value: shown(metrics.claude, summary.claudeActiveSessionDays), label: "Claude active session-days", context: daysContext(metrics.claude) },
     { value: summary.activeDays.toLocaleString("en-US"), label: "active days" },
+    { value: `${currentStreak}d`, label: "current streak", context: "consecutive active days through the latest observed day" },
     { value: `${summary.longestStreak}d`, label: "longest streak" },
   ];
   return <div className="summary-grid" aria-label="Observed activity summary">{items.map((item) => <div className="summary-metric" key={item.label}><strong>{item.value}</strong><span>{item.label}</span>{item.context ? <small>{item.context}</small> : null}</div>)}</div>;

@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import { combineCursorActivity } from "@/lib/activity/cursor";
+import { addDays } from "@/lib/activity/calendar";
+import { getCurrentStreak } from "@/lib/activity/streaks";
 import type {
   ActivityProvider,
   ActivitySnapshot,
@@ -137,6 +139,15 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     "claude-code": filteredMetrics.claude,
   };
   const filteredBuildIndex = useMemo(() => data.buildIndex.days.filter((day) => day.date >= selectedRange.start && day.date <= selectedRange.end), [data, selectedRange.end, selectedRange.start]);
+  // Current streak is independent of the selected year: it counts back from the
+  // latest observed day. If that day has no activity yet, count from the day before.
+  const currentStreak = useMemo(() => {
+    const activeDates = data.buildIndex.days.filter((day) => day.value > 0).map((day) => day.date);
+    const active = new Set(activeDates);
+    const latest = data.range.end;
+    const anchor = active.has(latest) ? latest : addDays(latest, -1);
+    return getCurrentStreak(activeDates, anchor);
+  }, [data]);
   const summary = data.summaries[String(selectedYear)] ?? { contributions: 0, codexActiveSessionDays: 0, cursorActiveSessionDays: 0, cursorAppliedAiLineChanges: 0, claudeActiveSessionDays: 0, activeDays: 0, longestStreak: 0 };
 
   function changeYear(year: number) {
@@ -167,7 +178,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${formatActivityTimestamp(data.generatedAt)}`
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`}
       </div>
-      <ActivitySummary summary={summary} metrics={{ ...filteredMetrics, cursorObserved }} />
+      <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{ ...filteredMetrics, cursorObserved }} />
 
       <div className="activity-workspace">
         <div className="heatmap-stack">
