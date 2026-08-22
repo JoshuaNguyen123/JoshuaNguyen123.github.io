@@ -7,7 +7,6 @@ import { validateHistoryBackfill } from "./history-backfill-core.mjs";
 import {
   assembleSnapshot,
   createMetricSeries,
-  dateInTimeZone,
   enumerateDates,
   METRICS,
   PRIVACY_VERSION,

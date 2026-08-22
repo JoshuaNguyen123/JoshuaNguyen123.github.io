@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-22T05:24:29.916Z",
+  "generatedAt": "2026-08-22T05:28:38.612Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2025-01-01",
@@ -24,8 +24,8 @@
             "start": "2025-01-01",
             "end": "2026-08-21"
           },
-          "lastSyncedAt": "2026-08-22T05:24:29.811Z",
-          "lastAttemptedAt": "2026-08-22T05:24:29.811Z",
+          "lastSyncedAt": "2026-08-22T05:28:38.589Z",
+          "lastAttemptedAt": "2026-08-22T05:28:38.589Z",
           "days": [
             {
               "date": "2025-01-01",
@@ -3014,8 +3014,8 @@
             },
             {
               "date": "2026-08-21",
-              "value": 13,
-              "level": 3
+              "value": 14,
+              "level": 4
             }
           ]
         }
@@ -9311,7 +9311,7 @@
       },
       {
         "date": "2026-08-21",
-        "value": 60,
+        "value": 65,
         "level": 3
       }
     ]
@@ -9327,7 +9327,7 @@
       "longestStreak": 2
     },
     "2026": {
-      "contributions": 847,
+      "contributions": 848,
       "codexActiveSessionDays": 1192,
       "cursorActiveSessionDays": 1065,
       "cursorAppliedAiLineChanges": 189883,
