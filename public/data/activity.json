@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-22T04:46:58.323Z",
+  "generatedAt": "2026-08-22T05:00:04.715Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2025-01-01",
@@ -24,8 +24,8 @@
             "start": "2025-01-01",
             "end": "2026-08-21"
           },
-          "lastSyncedAt": "2026-08-22T04:46:58.279Z",
-          "lastAttemptedAt": "2026-08-22T04:46:58.279Z",
+          "lastSyncedAt": "2026-08-22T05:00:04.632Z",
+          "lastAttemptedAt": "2026-08-22T05:00:04.632Z",
           "days": [
             {
               "date": "2025-01-01",

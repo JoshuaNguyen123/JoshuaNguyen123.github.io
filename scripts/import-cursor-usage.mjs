@@ -1,5 +1,6 @@
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
@@ -30,11 +31,30 @@ function fail(message) {
   throw new Error(`Cursor usage import: ${message}`);
 }
 
+// Cursor names its export "usage-events-YYYY-MM-DD.csv". --latest picks the most
+// recently modified one from the downloads directory so a refresh is one command.
+export function findLatestExport(directory) {
+  if (!existsSync(directory)) fail(`export directory ${directory} does not exist`);
+  const candidates = readdirSync(directory)
+    .filter((name) => /^usage-events-.*\.csv$/i.test(name))
+    .map((name) => {
+      const file = path.join(directory, name);
+      return { file, modified: statSync(file).mtimeMs };
+    })
+    .sort((a, b) => b.modified - a.modified);
+  if (!candidates.length) fail(`no usage-events-*.csv found in ${directory}`);
+  return candidates[0].file;
+}
+
 function parseArguments(argv) {
   const options = { input: null, out: path.join(ROOT, "data", "history-backfill.json") };
   const flags = { "--input": "input", "--out": "out" };
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
+    if (flag === "--latest") {
+      options.input = findLatestExport(process.env.CURSOR_EXPORT_DIR ?? path.join(homedir(), "Downloads"));
+      continue;
+    }
     const key = flags[flag];
     if (!key) fail(`unknown flag ${flag}`);
     const value = argv[index + 1];
@@ -42,7 +62,7 @@ function parseArguments(argv) {
     options[key] = path.resolve(value);
     index += 1;
   }
-  if (!options.input) fail("--input is required");
+  if (!options.input) fail("--input or --latest is required");
   return options;
 }
 

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "generatedAt": "2026-08-22T04:36:25.567Z",
+  "generatedAt": "2026-08-22T05:00:00.530Z",
   "timeZone": "America/Denver",
   "note": "Daily aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Dates and counts only; regenerating merges monotonically so recorded history never shrinks.",
   "options": {

@@ -2,9 +2,15 @@
 // data/history-backfill.json as usage-presence days, the same shape the CSV
 // importer produces. Runs before every dashboard build; with no key it is a no-op.
 //
-// Requires CURSOR_ADMIN_API_KEY (Cursor dashboard -> Settings -> Admin API keys;
-// the Admin API is a Teams/Enterprise feature). Only calendar-day presence is
-// kept: no emails, models, token counts, or costs are written to disk.
+// Requires CURSOR_ADMIN_API_KEY. Only calendar-day presence is kept: no emails,
+// models, token counts, or costs are written to disk.
+//
+// STATUS (verified 2026-08-22): the /teams/* endpoints are Teams/Enterprise only.
+// A user API key with admin:* scope on an individual Pro account returns 401 for
+// filtered-usage-events, daily-usage-data, and members alike. This script is
+// therefore dormant until the account is on a team plan; it no-ops without the
+// env var and never fails a build. Until then use `npm run activity:refresh:cursor`,
+// which imports the newest usage-events-*.csv export from the downloads folder.
 
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
