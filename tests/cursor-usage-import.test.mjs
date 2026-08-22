@@ -74,16 +74,18 @@ test("committed Cursor usage evidence verifies the expected 95 dates", async () 
   ]);
 });
 
-test("committed Cursor source union retains 91 session dates and adds seven usage-only dates", async () => {
+test("committed Cursor source union retains 91 session dates and adds ten usage-only dates", async () => {
   const local = JSON.parse(await readFile(new URL("../data/local-activity.json", import.meta.url), "utf8"));
   const sessions = new Set(local.providers.cursor.metrics.activeSessions.days.filter((day) => day.value > 0).map((day) => day.date));
   const usage = new Set(local.providers.cursor.metrics.usagePresence.days.filter((day) => day.value > 0).map((day) => day.date));
   assert.equal(sessions.size, 91);
-  assert.equal(usage.size, 92);
+  assert.equal(usage.size, 95);
   assert.equal([...sessions].filter((date) => usage.has(date)).length, 85);
-  assert.equal(new Set([...sessions, ...usage]).size, 98);
+  assert.equal(new Set([...sessions, ...usage]).size, 101);
   assert.deepEqual([...usage].filter((date) => !sessions.has(date)), [
     "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
+    // Cursor's local session DB stops at 2026-08-11; these three come from the CSV export.
+    "2026-08-19", "2026-08-20", "2026-08-21",
   ]);
   assert.deepEqual([...sessions].filter((date) => !usage.has(date)), [
     "2026-04-10", "2026-07-04", "2026-07-09", "2026-07-16", "2026-07-17", "2026-07-31",

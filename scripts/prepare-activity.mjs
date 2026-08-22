@@ -12,6 +12,7 @@ import {
   METRICS,
   PRIVACY_VERSION,
   PROVIDERS,
+  rangeForBuild,
   SCHEMA_VERSION,
   TIME_ZONE,
   unavailableProvider,
@@ -23,12 +24,6 @@ const ROOT = process.cwd();
 const fixtureMode = process.argv.includes("--fixtures");
 const isProduction = process.env.NODE_ENV === "production" || process.env.CI === "true";
 if (fixtureMode && isProduction) throw new Error("Fixture mode is forbidden in production and CI builds");
-
-function rangeForBuild() {
-  const today = dateInTimeZone(new Date());
-  const endYear = Number(today.slice(0, 4));
-  return { start: `${endYear - 1}-01-01`, end: today };
-}
 
 function fixtureProviders(start, end) {
   const dates = enumerateDates(start, end);

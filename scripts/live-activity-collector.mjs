@@ -9,6 +9,7 @@ import {
   createMetricSeries,
   dateInTimeZone,
   markProviderStale,
+  rangeForBuild,
   TIME_ZONE,
   upgradeSnapshot,
   validateRawProvider,
@@ -18,7 +19,9 @@ import { exportLocalActivity } from "./local-exporter.mjs";
 import { consumeHookSpool, mergeHookLedger, snapshotsMatch } from "./live-activity-core.mjs";
 
 const ROOT = process.cwd();
-const START_DATE = "2026-01-01";
+// Derived from the shared window so the live feed can never cover fewer years
+// than the bundled snapshot the page ships with.
+const START_DATE = rangeForBuild().start;
 
 function fail(message) {
   throw new Error(`Live activity collector: ${message}`);

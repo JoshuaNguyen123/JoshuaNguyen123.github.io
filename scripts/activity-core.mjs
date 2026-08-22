@@ -114,6 +114,16 @@ export function addDays(date, amount) {
   return new Date(Date.parse(`${date}T12:00:00Z`) + amount * DAY_MS).toISOString().slice(0, 10);
 }
 
+// Single source of truth for the published window. The site build and the live
+// feed collector MUST agree: if they drift, the dashboard renders one set of
+// year tabs from the bundled snapshot and then swaps to another when the live
+// feed lands, which looks like data disappearing on refresh.
+export function rangeForBuild(now = new Date()) {
+  const today = dateInTimeZone(now);
+  const endYear = Number(today.slice(0, 4));
+  return { start: `${endYear - 1}-01-01`, end: today };
+}
+
 export function enumerateDates(start, end) {
   const dates = [];
   for (let cursor = Date.parse(`${start}T12:00:00Z`); cursor <= Date.parse(`${end}T12:00:00Z`); cursor += DAY_MS) {
