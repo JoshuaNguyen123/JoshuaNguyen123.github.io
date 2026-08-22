@@ -33,7 +33,14 @@ jobs:
       - name: Build privacy-validated static export
         run: npm run build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NOT the Actions bot token. GitHub buckets contribution days by the
+          # requesting account's timezone, so the bot token (UTC) shifted days
+          # across midnight relative to the collector's feed (America/Denver),
+          # which made the summary tiles jump on page load. When this optional
+          # secret is absent the build falls back to the committed
+          # data/github-activity.json cache, which is written locally with the
+          # owner's token and therefore already matches the feed.
+          GITHUB_TOKEN: ${{ secrets.ACTIVITY_GITHUB_TOKEN }}
           GITHUB_USERNAME: JoshuaNguyen123
           CURSOR_ADMIN_API_KEY: ${{ secrets.CURSOR_ADMIN_API_KEY }}
           NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.NEXT_PUBLIC_WEB3FORMS_KEY }}
