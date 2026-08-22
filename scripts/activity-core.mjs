@@ -118,10 +118,18 @@ export function addDays(date, amount) {
 // feed collector MUST agree: if they drift, the dashboard renders one set of
 // year tabs from the bundled snapshot and then swaps to another when the live
 // feed lands, which looks like data disappearing on refresh.
+//
+// The window is the current year. Through the first weeks of January that would
+// leave a nearly empty dashboard, so the previous year is retained until the
+// current one has enough days to stand on its own.
+const CARRY_PREVIOUS_YEAR_DAYS = 60;
+
 export function rangeForBuild(now = new Date()) {
   const today = dateInTimeZone(now);
   const endYear = Number(today.slice(0, 4));
-  return { start: `${endYear - 1}-01-01`, end: today };
+  const elapsed = Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${endYear}-01-01T00:00:00Z`)) / 86_400_000);
+  const startYear = elapsed < CARRY_PREVIOUS_YEAR_DAYS ? endYear - 1 : endYear;
+  return { start: `${startYear}-01-01`, end: today };
 }
 
 export function enumerateDates(start, end) {

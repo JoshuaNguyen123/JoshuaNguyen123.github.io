@@ -3,9 +3,14 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { rangeForBuild } from "../scripts/activity-core.mjs";
 
-test("rangeForBuild is a rolling two-year window ending today", () => {
-  assert.deepEqual(rangeForBuild(new Date("2026-08-21T18:00:00Z")), { start: "2025-01-01", end: "2026-08-21" });
+test("rangeForBuild covers the current year once it has enough days", () => {
+  assert.deepEqual(rangeForBuild(new Date("2026-08-21T18:00:00Z")), { start: "2026-01-01", end: "2026-08-21" });
+  assert.deepEqual(rangeForBuild(new Date("2026-03-02T18:00:00Z")), { start: "2026-01-01", end: "2026-03-02" });
+});
+
+test("rangeForBuild keeps the previous year through early January", () => {
   assert.deepEqual(rangeForBuild(new Date("2027-01-01T18:00:00Z")), { start: "2026-01-01", end: "2027-01-01" });
+  assert.deepEqual(rangeForBuild(new Date("2027-02-28T18:00:00Z")), { start: "2026-01-01", end: "2027-02-28" });
 });
 
 // The bundled snapshot and the live feed must cover the same window. When they
@@ -26,5 +31,6 @@ test("the committed snapshot covers the full rolling window", async () => {
   const snapshot = JSON.parse(await readFile(new URL("../public/data/activity.json", import.meta.url), "utf8"));
   assert.equal(snapshot.range.start, rangeForBuild(new Date(snapshot.range.end + "T18:00:00Z")).start);
   const years = Object.keys(snapshot.summaries).sort();
-  assert.deepEqual(years, [snapshot.range.start.slice(0, 4), snapshot.range.end.slice(0, 4)]);
+  const expected = [...new Set([snapshot.range.start.slice(0, 4), snapshot.range.end.slice(0, 4)])];
+  assert.deepEqual(years, expected);
 });
