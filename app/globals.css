@@ -359,7 +359,9 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .contact-submit p { color: var(--body); font-size: 14px; margin: 0; }
 .contact-submit p.is-error { color: #8a2f1f; }
 .contact-links { padding-top: 4px; }
-.contact-links a { border-bottom: 1px solid #b5ab95; display: inline-block; font-family: var(--font-geist-sans), sans-serif; font-size: 14px; margin-top: 12px; padding-bottom: 2px; }
+/* Each link on its own line, and only as wide as its text, so the underlines
+   never run together. */
+.contact-links a { border-bottom: 1px solid #b5ab95; display: block; font-family: var(--font-geist-sans), sans-serif; font-size: 14px; margin-top: 12px; padding-bottom: 2px; width: fit-content; }
 .contact-links a:first-of-type { margin-top: 16px; }
 .contact-links a:hover { border-bottom-color: var(--ink); }
 
