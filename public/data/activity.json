@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-23T20:17:48.266Z",
+  "generatedAt": "2026-08-23T20:34:14.759Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-08-23"
           },
-          "lastSyncedAt": "2026-08-23T20:17:48.208Z",
-          "lastAttemptedAt": "2026-08-23T20:17:48.208Z",
+          "lastSyncedAt": "2026-08-23T20:34:14.720Z",
+          "lastAttemptedAt": "2026-08-23T20:34:14.720Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -4361,7 +4361,7 @@
             "methodology": "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.",
             "accuracy": "observed"
           },
-          "source": "Local Claude Code session event timestamps",
+          "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
             "end": "2026-08-22"

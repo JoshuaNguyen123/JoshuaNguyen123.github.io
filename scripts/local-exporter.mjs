@@ -116,7 +116,7 @@ export async function exportClaude(root) {
       if (timestamp && sessionId) counter.add(timestamp, sessionId);
     });
   }
-  return providerWithMetric("claude-code", "activeSessions", "Local Claude Code session event timestamps", counter.days());
+  return providerWithMetric("claude-code", "activeSessions", "Local Claude Code hooks and retained session timestamps", counter.days());
 }
 
 export function exportCursor(databasePath) {
@@ -192,7 +192,7 @@ export function applyHistoryBackfill(providers, backfill) {
   merge("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", backfill.providers.cursor.activeSessions);
   merge("cursor", "usagePresence", CURSOR_USAGE_SOURCE, backfill.providers.cursor.usagePresence);
   merge("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, backfill.providers.cursor.appliedLineChanges);
-  merge("claude-code", "activeSessions", "Local Claude Code session event timestamps", backfill.providers["claude-code"].activeSessions);
+  merge("claude-code", "activeSessions", "Local Claude Code hooks and retained session timestamps", backfill.providers["claude-code"].activeSessions);
   validateRawProvider("cursor", providers.cursor);
   validateRawProvider("claude-code", providers["claude-code"]);
   return providers;

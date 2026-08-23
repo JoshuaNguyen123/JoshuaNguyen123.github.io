@@ -155,8 +155,8 @@ export default function Home() {
         <div className="hero-copy">
           <h1>FDE, AI developer, and technical researcher.</h1>
           <p>
-            I like turning ideas into useful software, learning as I go, and helping
-            people through the tricky technical parts.
+            I build useful software, learn as I go, and help people through the
+            tricky parts.
           </p>
           <div className="hero-actions">
             <a className="primary-link" href="#work">See what I&apos;m building</a>
@@ -174,7 +174,7 @@ export default function Home() {
             alt="Joshua Nguyen smiling outdoors by a lake"
             width={800}
             height={1000}
-            sizes="(max-width: 760px) calc(100vw - 40px), 284px"
+            sizes="(max-width: 760px) calc(100vw - 40px), 384px"
             priority
           />
         </div>

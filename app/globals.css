@@ -158,7 +158,7 @@ button { color: inherit; }
 
 /* ---- Activity ---- */
 .activity-section { padding: clamp(48px, 5.4vw, 76px) var(--gutter-centered) 0; }
-.activity-dashboard { max-width: 100%; min-width: 0; transition: opacity .2s ease; }
+.activity-dashboard { max-width: 100%; min-width: 0; position: relative; transition: opacity .2s ease; }
 .activity-dashboard.is-loading { opacity: .72; }
 .activity-toolbar { align-items: baseline; display: flex; gap: 32px; justify-content: space-between; }
 .activity-toolbar h2 { font-size: 28px; font-weight: 400; letter-spacing: -.015em; margin: 18px 0 16px; }
@@ -230,8 +230,10 @@ button { color: inherit; }
   padding: 0; width: 100%;
 }
 button.heatmap-cell { cursor: pointer; transition: box-shadow .12s ease, transform .12s ease; }
-button.heatmap-cell:hover, button.heatmap-cell:focus-visible, button.heatmap-cell.is-selected {
-  box-shadow: 0 0 0 2px var(--ink); outline: 0; transform: scale(1.18); z-index: 1;
+/* The ring follows the selected date across every grid, including days a tool
+   has no coverage for, so the comparison never loses one column. */
+button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-selected {
+  box-shadow: inset 0 0 0 1px rgba(22, 19, 14, .16), 0 0 0 2px var(--ink); outline: 0; transform: scale(1.18); z-index: 1;
 }
 .heatmap-cell--outside { background: transparent; box-shadow: none; }
 /* No source coverage is marked by PATTERN, not hue, so it survives any kind of
@@ -335,6 +337,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, button.heatmap-cel
 .contact-form { min-width: 0; }
 .contact-fields { display: grid; gap: 28px; grid-template-columns: 1fr 1fr; }
 .contact-form label { display: block; }
+.contact-form > label { margin-top: 26px; }
 .contact-form label span {
   color: var(--faint); display: block; font-size: 12px; font-weight: 550; letter-spacing: .06em; text-transform: uppercase;
 }
@@ -345,7 +348,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, button.heatmap-cel
 .contact-form textarea { resize: vertical; }
 .contact-form input:focus-visible, .contact-form textarea:focus-visible { border-bottom-color: var(--ink); outline: 0; }
 .contact-honeypot { display: none; }
-.contact-form .h-captcha { margin: 20px 0 0; }
+.contact-form .h-captcha { margin: 26px 0 0; }
 .contact-submit { align-items: center; display: flex; flex-wrap: wrap; gap: 20px; margin-top: 24px; }
 .contact-submit button {
   background: var(--ink); border: 0; color: var(--paper); cursor: pointer;

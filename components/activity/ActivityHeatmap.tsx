@@ -104,7 +104,7 @@ export function ActivityHeatmap({
                     if (!covered || !point) {
                       return (
                         <span
-                          className="heatmap-cell heatmap-cell--unobserved"
+                          className={`heatmap-cell heatmap-cell--unobserved ${selectedDate === cell.date ? "is-selected" : ""}`}
                           key={cell.date}
                           title={`${readableDate} · no source coverage`}
                           aria-label={`${readableDate}: no ${title} source coverage`}
