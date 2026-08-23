@@ -15,6 +15,7 @@ import {
   validateRawProvider,
   validateSnapshot,
 } from "./activity-core.mjs";
+import { run as downloadCursorUsage } from "./download-cursor-usage.mjs";
 import { exportLocalActivity } from "./local-exporter.mjs";
 import { consumeHookSpool, mergeHookLedger, snapshotsMatch } from "./live-activity-core.mjs";
 
@@ -164,6 +165,15 @@ export async function collect({ publish = true, preflight = false } = {}) {
   const end = dateInTimeZone(now, TIME_ZONE);
   const remote = await readRemoteSnapshot(config);
   const previous = remote?.snapshot ?? await fallbackSnapshot();
+  // Best-effort Cursor dashboard CSV → usagePresence. Auth/network failures must
+  // not block the rest of the hourly feed (hooks + GitHub still publish).
+  if (!preflight) {
+    try {
+      await downloadCursorUsage([]);
+    } catch (error) {
+      process.stderr.write(`Live activity collector: ${error.message}\n`);
+    }
+  }
   const local = await exportLocalActivity();
   let localProviders;
   let hookStatus = "not-installed";

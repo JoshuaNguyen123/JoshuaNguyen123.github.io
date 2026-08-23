@@ -63,29 +63,29 @@ test("Cursor usage imports merge monotonically without retaining raw event field
     { date: "2026-01-02", value: 1 },
   ]);
   const output = await readFile(out, "utf8");
-  for (const forbidden of ["private-cloud-id", "private-automation-id", "private-model", "Total Tokens", "Cost"]) assert.doesNotMatch(output, new RegExp(forbidden, "i"));
+  for (const forbidden of ["private-cloud-id", "private-automation-id", "private-model", "Total Tokens", "Requests", "Cost"]) assert.doesNotMatch(output, new RegExp(forbidden, "i"));
 });
 
-test("committed Cursor usage evidence verifies the expected 95 dates", async () => {
+test("committed Cursor usage evidence verifies the expected 96 dates", async () => {
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(new URL("../data/history-backfill.json", import.meta.url), "utf8")));
-  assert.equal(backfill.providers.cursor.usagePresence.length, 95);
+  assert.equal(backfill.providers.cursor.usagePresence.length, 96);
   assert.deepEqual(backfill.providers.cursor.usagePresence.slice(0, 7).map((day) => day.date), [
     "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
   ]);
 });
 
-test("committed Cursor source union retains 91 session dates and adds ten usage-only dates", async () => {
+test("committed Cursor source union retains session dates and usage-only calendar evidence", async () => {
   const local = JSON.parse(await readFile(new URL("../data/local-activity.json", import.meta.url), "utf8"));
   const sessions = new Set(local.providers.cursor.metrics.activeSessions.days.filter((day) => day.value > 0).map((day) => day.date));
   const usage = new Set(local.providers.cursor.metrics.usagePresence.days.filter((day) => day.value > 0).map((day) => day.date));
-  assert.equal(sessions.size, 91);
-  assert.equal(usage.size, 95);
-  assert.equal([...sessions].filter((date) => usage.has(date)).length, 85);
-  assert.equal(new Set([...sessions, ...usage]).size, 101);
+  assert.equal(sessions.size, 94);
+  assert.equal(usage.size, 96);
+  assert.equal([...sessions].filter((date) => usage.has(date)).length, 88);
+  assert.equal(new Set([...sessions, ...usage]).size, 102);
   assert.deepEqual([...usage].filter((date) => !sessions.has(date)), [
     "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
-    // Cursor's local session DB stops at 2026-08-11; these three come from the CSV export.
-    "2026-08-19", "2026-08-20", "2026-08-21",
+    // Local session evidence covers Aug 19/21/22; Aug 20 remains usage-only.
+    "2026-08-20",
   ]);
   assert.deepEqual([...sessions].filter((date) => !usage.has(date)), [
     "2026-04-10", "2026-07-04", "2026-07-09", "2026-07-16", "2026-07-17", "2026-07-31",

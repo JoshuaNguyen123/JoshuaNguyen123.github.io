@@ -14,11 +14,11 @@ Get-Command gh -ErrorAction Stop | Out-Null
 $currentUser = "$env:USERDOMAIN\$env:USERNAME"
 $scriptHost = Join-Path $env:SystemRoot "System32\wscript.exe"
 $action = New-ScheduledTaskAction -Execute $scriptHost -Argument "//B //NoLogo `"$hiddenRunner`"" -WorkingDirectory $taskRoot
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 30) -RepetitionDuration (New-TimeSpan -Days 3650)
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration (New-TimeSpan -Days 3650)
 $settings = New-ScheduledTaskSettingsSet -Hidden -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 15)
 $principal = New-ScheduledTaskPrincipal -UserId $currentUser -LogonType Interactive -RunLevel Limited
 
-if ($PSCmdlet.ShouldProcess($TaskName, "Register the thirty-minute no-cost local activity collector")) {
+if ($PSCmdlet.ShouldProcess($TaskName, "Register the hourly no-cost local activity collector")) {
   Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
-  Write-Output "Scheduled task '$TaskName' is installed. It uses local hooks and the existing GitHub CLI login; no paid analytics service is required."
+  Write-Output "Scheduled task '$TaskName' is installed (hourly). It uses local Cursor auth, hooks, and the existing GitHub CLI login; no paid analytics service is required."
 }

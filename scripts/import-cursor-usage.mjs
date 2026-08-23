@@ -24,7 +24,7 @@ export const CURSOR_USAGE_HEADERS = [
   "Cache Read",
   "Output Tokens",
   "Total Tokens",
-  "Cost",
+  "Requests",
 ];
 
 function fail(message) {
@@ -112,8 +112,8 @@ function nonnegativeInteger(value, label, rowNumber) {
   return parsed;
 }
 
-function validCost(value, rowNumber) {
-  if (!value.trim()) fail(`row ${rowNumber} has invalid Cost`);
+function validRequests(value, rowNumber) {
+  if (!value.trim()) fail(`row ${rowNumber} has invalid Requests`);
 }
 
 export function reduceCursorUsageCsv(text, { now = new Date() } = {}) {
@@ -144,7 +144,7 @@ export function reduceCursorUsageCsv(text, { now = new Date() } = {}) {
     const outputTokens = nonnegativeInteger(row[9], "Output Tokens", rowNumber);
     const totalTokens = nonnegativeInteger(row[10], "Total Tokens", rowNumber);
     if (inputWithCacheWrite + inputWithoutCacheWrite + cacheRead + outputTokens !== totalTokens) fail(`row ${rowNumber} has inconsistent Total Tokens`);
-    validCost(row[11], rowNumber);
+    validRequests(row[11], rowNumber);
     dates.add(dateInTimeZone(timestamp, TIME_ZONE));
     if (!firstTimestamp || timestamp < firstTimestamp) firstTimestamp = timestamp;
     if (!lastTimestamp || timestamp > lastTimestamp) lastTimestamp = timestamp;

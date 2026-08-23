@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "timeZone": "America/Denver",
-  "generatedAt": "2026-08-22T05:20:25.642Z",
+  "generatedAt": "2026-08-23T04:36:09.640Z",
   "providers": {
     "codex": {
       "metrics": {
@@ -17,10 +17,10 @@
           "source": "Local Codex session event timestamps",
           "coverage": {
             "start": "2026-04-20",
-            "end": "2026-08-21"
+            "end": "2026-08-22"
           },
-          "lastSyncedAt": "2026-08-22T05:20:20.307Z",
-          "lastAttemptedAt": "2026-08-22T05:20:20.307Z",
+          "lastSyncedAt": "2026-08-23T04:36:08.529Z",
+          "lastAttemptedAt": "2026-08-23T04:36:08.529Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -301,6 +301,10 @@
             {
               "date": "2026-08-21",
               "value": 7
+            },
+            {
+              "date": "2026-08-22",
+              "value": 1
             }
           ]
         }
@@ -319,10 +323,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-08-21"
+            "end": "2026-08-22"
           },
-          "lastSyncedAt": "2026-08-22T05:20:25.642Z",
-          "lastAttemptedAt": "2026-08-22T05:20:25.642Z",
+          "lastSyncedAt": "2026-08-23T04:36:09.640Z",
+          "lastAttemptedAt": "2026-08-23T04:36:09.640Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -714,7 +718,7 @@
             },
             {
               "date": "2026-08-19",
-              "value": 0
+              "value": 4
             },
             {
               "date": "2026-08-20",
@@ -722,7 +726,11 @@
             },
             {
               "date": "2026-08-21",
-              "value": 0
+              "value": 1
+            },
+            {
+              "date": "2026-08-22",
+              "value": 6
             }
           ]
         },
@@ -737,10 +745,10 @@
           "source": "Cursor usage-event export (daily presence only)",
           "coverage": {
             "start": "2026-01-02",
-            "end": "2026-08-21"
+            "end": "2026-08-22"
           },
-          "lastSyncedAt": "2026-08-22T05:20:20.319Z",
-          "lastAttemptedAt": "2026-08-22T05:20:20.319Z",
+          "lastSyncedAt": "2026-08-23T04:36:08.531Z",
+          "lastAttemptedAt": "2026-08-23T04:36:08.531Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -1121,6 +1129,10 @@
             {
               "date": "2026-08-21",
               "value": 1
+            },
+            {
+              "date": "2026-08-22",
+              "value": 1
             }
           ]
         },
@@ -1135,10 +1147,10 @@
           "source": "Local Cursor edit hooks and AI code tracking history",
           "coverage": {
             "start": "2026-07-14",
-            "end": "2026-08-21"
+            "end": "2026-08-22"
           },
-          "lastSyncedAt": "2026-08-22T05:20:25.642Z",
-          "lastAttemptedAt": "2026-08-22T05:20:25.642Z",
+          "lastSyncedAt": "2026-08-23T04:36:09.640Z",
+          "lastAttemptedAt": "2026-08-23T04:36:09.640Z",
           "days": [
             {
               "date": "2026-07-14",
@@ -1194,7 +1206,7 @@
             },
             {
               "date": "2026-08-19",
-              "value": 0
+              "value": 5905
             },
             {
               "date": "2026-08-20",
@@ -1202,7 +1214,11 @@
             },
             {
               "date": "2026-08-21",
-              "value": 0
+              "value": 85
+            },
+            {
+              "date": "2026-08-22",
+              "value": 17302
             }
           ]
         }
@@ -1221,10 +1237,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-08-21"
+            "end": "2026-08-22"
           },
-          "lastSyncedAt": "2026-08-22T05:20:25.642Z",
-          "lastAttemptedAt": "2026-08-22T05:20:25.642Z",
+          "lastSyncedAt": "2026-08-23T04:36:09.640Z",
+          "lastAttemptedAt": "2026-08-23T04:36:09.640Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -1312,7 +1328,11 @@
             },
             {
               "date": "2026-08-21",
-              "value": 56
+              "value": 58
+            },
+            {
+              "date": "2026-08-22",
+              "value": 20
             }
           ]
         }

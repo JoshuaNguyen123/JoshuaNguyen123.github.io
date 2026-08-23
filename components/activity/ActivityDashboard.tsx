@@ -174,7 +174,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
       <div className="data-provenance" role="status">
         <span className={`data-dot data-dot--${data.mode}`} />
         {data.mode === "fixture" ? "Development fixtures — never published" : feedState === "live"
-          ? `Local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`
+          ? `Live activity feed · updated ${formatActivityTimestamp(data.generatedAt)}`
           : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${formatActivityTimestamp(data.generatedAt)}`
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`}
       </div>
@@ -215,12 +215,33 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           <div className={`activity-level activity-level--${selectedIndex?.level ?? 0}`}><span />{activityLabel(selectedIndex?.level ?? 0)}</div>
           <dl>
             {activityProviders.map((provider) => {
-              const metric = providerMetrics[provider];
+              // Day breakdown stays on comparable session/contribution counts even when the
+              // Cursor heatmap is switched to Observed activity / usage / line-change views.
+              const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions : providerMetrics[provider];
+              const detailPoint = provider === "cursor"
+                ? cursorSessionLookup.get(selectedDate)
+                : lookups[provider].get(selectedDate);
+              const usagePoint = cursorUsageLookup.get(selectedDate);
+              const linePoint = cursorLineLookup.get(selectedDate);
+              const cursorSessions = cursorSessionLookup.get(selectedDate)?.value ?? 0;
+              const cursorUsage = usagePoint?.value ?? 0;
               return (
                 <div key={provider}>
                   <dt><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />{providerLabels[provider]}</dt>
-                  <dd>{metric.status === "unavailable" ? "Source unavailable" : describeValue(lookups[provider].get(selectedDate), metric.definition)}</dd>
-                  {provider === "cursor" ? <small>{describeValue(cursorSessionLookup.get(selectedDate), filteredMetrics.cursorSessions.definition)} · {describeValue(cursorUsageLookup.get(selectedDate), filteredMetrics.cursorUsage.definition)} · {describeValue(cursorLineLookup.get(selectedDate), filteredMetrics.cursorLines.definition)}</small> : null}
+                  <dd>{detailMetric.status === "unavailable" ? "Source unavailable" : describeValue(detailPoint, detailMetric.definition)}</dd>
+                  {provider === "cursor" ? (
+                    <small>
+                      {filteredMetrics.cursorUsage.status === "unavailable"
+                        ? "Usage evidence unavailable"
+                        : cursorUsage > 0
+                          ? cursorSessions > 0
+                            ? "Usage evidence verified"
+                            : "Usage evidence only — no local session count"
+                          : "No usage evidence"}
+                      {" · "}
+                      {describeValue(linePoint, filteredMetrics.cursorLines.definition)}
+                    </small>
+                  ) : null}
                 </div>
               );
             })}

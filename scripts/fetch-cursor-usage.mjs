@@ -1,28 +1,22 @@
-// Pulls recent Cursor usage from the Cursor Admin API and merges it into
-// data/history-backfill.json as usage-presence days, the same shape the CSV
-// importer produces. Runs before every dashboard build; with no key it is a no-op.
+// Pulls Cursor usage into data/history-backfill.json as calendar-day presence only.
+// Primary: local Cursor auth (state.vscdb) → dashboard CSV. Optional fallback:
+// CURSOR_ADMIN_API_KEY Admin API (Teams/Enterprise). Never writes emails, models,
+// token counts, costs, or session tokens to disk.
 //
-// Requires CURSOR_ADMIN_API_KEY. Only calendar-day presence is kept: no emails,
-// models, token counts, or costs are written to disk.
-//
-// STATUS (verified 2026-08-22): the /teams/* endpoints are Teams/Enterprise only.
-// A user API key with admin:* scope on an individual Pro account returns 401 for
-// filtered-usage-events, daily-usage-data, and members alike. This script is
-// therefore dormant until the account is on a team plan; it no-ops without the
-// env var and never fails a build. Until then use `npm run activity:refresh:cursor`,
-// which imports the newest usage-events-*.csv export from the downloads folder.
+// Soft-fails on build unless CURSOR_FETCH_STRICT=1.
 
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
+import { run as downloadAndMergeDashboardCsv } from "./download-cursor-usage.mjs";
 import { buildHistoryBackfill, mergeHistoryBackfill, validateHistoryBackfill } from "./history-backfill-core.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const API_BASE = "https://api.cursor.com";
 const DEFAULT_DAYS = 7;
-const MAX_DAYS = 30; // Admin API limit per request
+const MAX_DAYS = 30;
 const PAGE_SIZE = 500;
 
 function fail(message) {
@@ -36,7 +30,9 @@ function parseArguments(argv) {
     const value = argv[index + 1];
     if (flag === "--days") {
       options.days = Number.parseInt(value, 10);
-      if (!Number.isInteger(options.days) || options.days < 1 || options.days > MAX_DAYS) fail(`--days must be 1-${MAX_DAYS}`);
+      if (!Number.isInteger(options.days) || options.days < 1 || options.days > MAX_DAYS) {
+        fail(`--days must be 1-${MAX_DAYS}`);
+      }
       index += 1;
     } else if (flag === "--out") {
       if (!value) fail("--out requires a value");
@@ -92,17 +88,11 @@ export function reduceUsageEvents(events, { now = new Date() } = {}) {
   return [...dates].sort().map((date) => ({ date, value: 1 }));
 }
 
-export async function run(argv, { env = process.env, fetchImpl = fetch, now = new Date() } = {}) {
-  const options = parseArguments(argv);
-  const apiKey = env.CURSOR_ADMIN_API_KEY?.trim();
-  if (!apiKey) return { skipped: true, reason: "CURSOR_ADMIN_API_KEY is not set" };
-
-  const endDate = now.getTime();
-  const startDate = endDate - options.days * 24 * 60 * 60 * 1000;
-  const events = await fetchUsageEvents({ apiKey, startDate, endDate, fetchImpl });
+async function mergeAdminUsageEvents(events, { out, now }) {
   const usagePresenceDays = reduceUsageEvents(events, { now });
-  if (!usagePresenceDays.length) return { skipped: false, events: events.length, addedDays: 0, observedDays: 0 };
-
+  if (!usagePresenceDays.length) {
+    return { skipped: false, source: "admin-api", events: events.length, addedDays: 0, observedDays: 0 };
+  }
   const incoming = buildHistoryBackfill({
     cursorSessionDays: [],
     cursorUsagePresenceDays: usagePresenceDays,
@@ -110,18 +100,19 @@ export async function run(argv, { env = process.env, fetchImpl = fetch, now = ne
     claudeSessionDays: [],
     generatedAt: now.toISOString(),
   });
-  const previous = existsSync(options.out) ? validateHistoryBackfill(JSON.parse(await readFile(options.out, "utf8"))) : null;
+  const previous = existsSync(out) ? validateHistoryBackfill(JSON.parse(await readFile(out, "utf8"))) : null;
   const previousDates = new Set(previous?.providers.cursor.usagePresence.map((day) => day.date) ?? []);
   const merged = previous ? mergeHistoryBackfill(previous, incoming) : incoming;
 
-  await mkdir(path.dirname(options.out), { recursive: true });
-  const temporary = `${options.out}.${process.pid}.tmp`;
+  await mkdir(path.dirname(out), { recursive: true });
+  const temporary = `${out}.${process.pid}.tmp`;
   await writeFile(temporary, `${JSON.stringify(merged, null, 2)}\n`, "utf8");
-  await rename(temporary, options.out);
+  await rename(temporary, out);
 
   return {
     skipped: false,
-    out: options.out,
+    source: "admin-api",
+    out,
     events: events.length,
     observedDays: usagePresenceDays.length,
     addedDays: usagePresenceDays.filter((day) => !previousDates.has(day.date)).length,
@@ -129,12 +120,38 @@ export async function run(argv, { env = process.env, fetchImpl = fetch, now = ne
   };
 }
 
+export async function run(argv, {
+  env = process.env,
+  fetchImpl = fetch,
+  now = new Date(),
+  downloadRun = downloadAndMergeDashboardCsv,
+} = {}) {
+  const options = parseArguments(argv);
+
+  try {
+    return await downloadRun(["--out", options.out], { env, fetchImpl, now });
+  } catch (downloadError) {
+    const apiKey = env.CURSOR_ADMIN_API_KEY?.trim();
+    if (!apiKey) {
+      return {
+        skipped: true,
+        reason: downloadError.message,
+        fallback: "CURSOR_ADMIN_API_KEY is not set",
+      };
+    }
+    process.stderr.write(`${downloadError.message}; falling back to Admin API\n`);
+    const endDate = now.getTime();
+    const startDate = endDate - options.days * 24 * 60 * 60 * 1000;
+    const events = await fetchUsageEvents({ apiKey, startDate, endDate, fetchImpl });
+    return mergeAdminUsageEvents(events, { out: options.out, now });
+  }
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const result = await run(process.argv.slice(2));
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   } catch (error) {
-    // A failed fetch must never break the site build; the committed backfill still stands.
     process.stderr.write(`${error.message}\n`);
     process.exitCode = process.env.CURSOR_FETCH_STRICT ? 1 : 0;
   }

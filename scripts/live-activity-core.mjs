@@ -107,10 +107,25 @@ function sessionDays(values) {
 }
 
 function combineBeforeInstall(backfillDays, hookDays, installedDate) {
-  return [
-    ...backfillDays.filter((day) => day.date < installedDate),
-    ...hookDays.filter((day) => day.date >= installedDate),
-  ].sort((left, right) => left.date.localeCompare(right.date));
+  const retained = new Map(backfillDays.map((day) => [day.date, day.value]));
+  const hooks = new Map(hookDays.map((day) => [day.date, day.value]));
+  const dates = new Set([
+    ...[...retained.keys()].filter((date) => date < installedDate),
+    ...hooks.keys(),
+    // Keep retained post-install evidence so an empty or partial hook ledger
+    // cannot erase local Cursor/Claude tracking that still exists on disk.
+    ...[...retained.keys()].filter((date) => date >= installedDate),
+  ]);
+  return [...dates]
+    .sort((left, right) => left.localeCompare(right))
+    .map((date) => {
+      const retainedValue = retained.get(date) ?? 0;
+      const hookValue = hooks.get(date) ?? 0;
+      return {
+        date,
+        value: date < installedDate ? retainedValue : Math.max(retainedValue, hookValue),
+      };
+    });
 }
 
 function installedCoverageDays(days, installedDate, today) {

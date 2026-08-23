@@ -68,7 +68,15 @@ export function reduceHookPayload(kind, payload, secret, now = new Date()) {
   if (!payload || typeof payload !== "object" || Array.isArray(payload) || typeof secret !== "string" || secret.length < 32) return null;
   const date = dateInTimeZone(now);
   if (kind === "cursor-session" || kind === "cursor-agent-edit" || kind === "cursor-tab-edit") {
-    const sessionKey = keyedSession(secret, "cursor", date, payload.conversation_id ?? payload.generation_id);
+    const sessionId = payload.conversation_id
+      ?? payload.conversationId
+      ?? payload.composer_id
+      ?? payload.composerId
+      ?? payload.generation_id
+      ?? payload.generationId
+      ?? payload.session_id
+      ?? payload.sessionId;
+    const sessionKey = keyedSession(secret, "cursor", date, sessionId);
     const lineChanges = kind === "cursor-agent-edit" ? sumCursorEdits(payload, false)
       : kind === "cursor-tab-edit" ? sumCursorEdits(payload, true) : 0;
     if (!sessionKey && lineChanges === 0) return null;
