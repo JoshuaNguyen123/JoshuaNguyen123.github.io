@@ -5,7 +5,13 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 // Web3Forms relays submissions to the email tied to the access key. The key is
 // public by design (it only identifies the inbox) and is baked in at build time.
 const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "";
-// Web3Forms' shared hCaptcha site key; the token is verified server-side by Web3Forms.
+// Web3Forms' shared hCaptcha site key for free plans (their "manual setup" path,
+// where hCaptcha is loaded directly rather than through the Web3Forms proxy script).
+// The checks below are CLIENT-SIDE ONLY. Web3Forms rejects a missing token only when
+// hCaptcha is enabled as the Block Spam option in the Web3Forms dashboard for this
+// access key; with that off, a direct POST carrying the key and browser-looking
+// Origin/Referer headers is accepted with no token at all. The key ships in the
+// bundle by design, so the dashboard setting is the only real enforcement.
 const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 const HCAPTCHA_SCRIPT = "https://js.hcaptcha.com/1/api.js";
 
