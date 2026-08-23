@@ -9,7 +9,7 @@ import type {
   ProviderMetricDefinition,
   ProviderStatus,
 } from "@/lib/activity/types";
-import type { CSSProperties } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 
 interface ActivityHeatmapProps {
   title: string;
@@ -22,6 +22,8 @@ interface ActivityHeatmapProps {
   status?: ProviderStatus;
   selectedDate: string;
   onDaySelect: (date: string) => void;
+  /** Fired only on a real press, so the day card never follows the pointer. */
+  onDayOpen?: (date: string, event: MouseEvent<HTMLButtonElement>) => void;
   featured?: boolean;
 }
 
@@ -45,6 +47,7 @@ export function ActivityHeatmap({
   status = "available",
   selectedDate,
   onDaySelect,
+  onDayOpen,
   featured = false,
 }: ActivityHeatmapProps) {
   const weeks = buildCalendarWeeks(startDate, endDate);
@@ -119,7 +122,7 @@ export function ActivityHeatmap({
                         aria-pressed={selectedDate === cell.date}
                         data-level={point.level}
                         title={`${readableDate} · ${value} · intensity ${point.level} of 5`}
-                        onClick={() => onDaySelect(cell.date!)}
+                        onClick={(event) => { onDaySelect(cell.date!); onDayOpen?.(cell.date!, event); }}
                         onFocus={() => onDaySelect(cell.date!)}
                         onMouseEnter={() => onDaySelect(cell.date!)}
                       />

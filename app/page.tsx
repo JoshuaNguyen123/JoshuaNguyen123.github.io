@@ -4,19 +4,9 @@ import { ContactForm } from "@/components/contact/ContactForm";
 // import { LinkedInWidget } from "@/components/social/LinkedInWidget";
 import { linkedInProfileUrl } from "@/content/linkedin-posts";
 import { getPublishedPosts } from "@/lib/blog";
-import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
-import type { ActivitySnapshot } from "@/lib/activity/types";
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { loadActivitySnapshot } from "@/lib/activity/load";
 import Image from "next/image";
 import Link from "next/link";
-
-function loadActivitySnapshot(): ActivitySnapshot {
-  const snapshotPath = path.join(process.cwd(), "public", "data", "activity.json");
-  const snapshot = parseActivitySnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
-  if (!snapshot) throw new Error("Bundled activity snapshot failed runtime validation");
-  return snapshot;
-}
 
 // Ordered by technical depth; only the first SHOWN_PROJECTS render for now.
 const SHOWN_PROJECTS = 3;
@@ -119,6 +109,18 @@ const interests = [
   ["Systems engineering", "Pipelines, runners, and local-first tools that keep working when no one is watching."],
 ] as const;
 
+const navLinks = [
+  { label: "About", href: "#about" },
+  { label: "Work", href: "#work" },
+  { label: "Writing", href: "/blog/" },
+  { label: "Activity", href: "#activity" },
+  { label: "Contact", href: "#contact" },
+] as const;
+
+function NavLink({ label, href }: { label: string; href: string }) {
+  return href.startsWith("#") ? <a href={href}>{label}</a> : <Link href={href}>{label}</Link>;
+}
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -139,27 +141,18 @@ export default function Home() {
           Joshua Nguyen
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#about">About</a>
-          <a href="#work">Work</a>
-          <Link href="/blog/">Writing</Link>
-          <a href="#activity">Activity</a>
-          <a href="#contact">Contact</a>
+          {navLinks.map((link) => <NavLink key={link.label} {...link} />)}
         </nav>
         <details className="mobile-nav">
           <summary>Menu</summary>
           <nav aria-label="Mobile navigation">
-            <a href="#about">About</a>
-            <a href="#work">Work</a>
-            <Link href="/blog/">Writing</Link>
-            <a href="#activity">Activity</a>
-            <a href="#contact">Contact</a>
+            {navLinks.map((link) => <NavLink key={link.label} {...link} />)}
           </nav>
         </details>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">Joshua Nguyen</span>
           <h1>FDE, AI developer, and technical researcher.</h1>
           <p>
             I like turning ideas into useful software, learning as I go, and helping
@@ -175,24 +168,22 @@ export default function Home() {
             <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
           </dl>
         </div>
-        <div className="hero-side">
-          <div className="hero-portrait">
-            <Image
-              src="/joshua-nguyen.jpg"
-              alt="Joshua Nguyen smiling outdoors by a lake"
-              width={800}
-              height={1000}
-              sizes="(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 38vw, 360px"
-              priority
-            />
-          </div>
+        <div className="hero-portrait">
+          <Image
+            src="/joshua-nguyen.jpg"
+            alt="Joshua Nguyen smiling outdoors by a lake"
+            width={800}
+            height={1000}
+            sizes="(max-width: 760px) calc(100vw - 40px), 284px"
+            priority
+          />
         </div>
       </section>
 
       <section className="about-strip" id="about">
-        <span className="eyebrow">About</span>
         <div className="about-copy">
-          <p>I like working on ambiguous problems.</p>
+          <span className="eyebrow">About</span>
+          <h2>I like working on ambiguous problems.</h2>
           <p>
             The part I enjoy most is when nobody is quite sure what the right
             answer is yet. I read what exists, build a rough first version, and
@@ -208,18 +199,23 @@ export default function Home() {
             approach most things.
           </p>
         </div>
+        <div className="about-aside">
+          <span className="eyebrow">Working on</span>
+          {interests.map(([title, description]) => (
+            <p key={title}>{title} — {description}</p>
+          ))}
+        </div>
       </section>
 
       <section className="work-section" id="work">
         <div className="section-heading">
-          <span className="eyebrow">Projects</span>
+          <span className="eyebrow">Work</span>
           <h2>Things I&apos;ve built.</h2>
         </div>
         <div className="project-ledger">
           {projects.slice(0, SHOWN_PROJECTS).map((project) => {
             const body = (
               <>
-                <span className="project-number">{project.number}</span>
                 <div className="project-story">
                   <h3>{project.title}</h3>
                   <p>{project.description}</p>
@@ -230,7 +226,9 @@ export default function Home() {
                 </div>
                 <div className="project-meta">
                   <span>{project.discipline}</span>
-                  <strong>{project.href ? "View project" : "Private repository"}</strong>
+                  {project.href
+                    ? <strong><span>View project</span></strong>
+                    : <strong className="is-private">Private repository</strong>}
                 </div>
               </>
             );
@@ -241,17 +239,25 @@ export default function Home() {
             );
           })}
         </div>
+        <p className="project-more">
+          <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">
+            See the rest on GitHub
+          </a>
+        </p>
+      </section>
+
+      <section className="activity-section" id="activity">
+        <ActivityDashboard initialData={activity} />
       </section>
 
       <section className="interests-section" id="interests">
-        <div className="section-heading section-heading--compact">
+        <div className="section-heading">
           <span className="eyebrow">Interests</span>
           <h2>What I&apos;m exploring.</h2>
         </div>
         <div className="interest-columns">
-          {interests.map(([title, description], index) => (
+          {interests.map(([title, description]) => (
             <article key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{title}</h3>
               <p>{description}</p>
             </article>
@@ -270,17 +276,20 @@ export default function Home() {
             <div className="writing-list">
               {posts.slice(0, 3).map((post) => (
                 <Link href={`/blog/${post.slug}/`} key={post.slug}>
-                  <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                  <div><h3>{post.title}</h3><p>{post.summary}</p></div>
-                  <span>{post.readingMinutes} min read</span>
+                  <div>
+                    <h3>{post.title}</h3>
+                    <p>{post.summary}</p>
+                  </div>
+                  <div>
+                    <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+                    <span>{post.readingMinutes} min read</span>
+                  </div>
                 </Link>
               ))}
             </div>
           ) : (
             <div className="writing-preview">
-              <p>
-                Short notes on what I build and learn.
-              </p>
+              <p>Short notes on what I build and learn.</p>
               <ul aria-label="Planned writing topics">
                 <li>Reliable agents</li>
                 <li>Privacy by design</li>
@@ -293,30 +302,32 @@ export default function Home() {
         {/* LinkedIn pulse paused; see notes/linkedin-pulse.md */}
       </section>
 
-      <section className="activity-section" id="activity">
-        <ActivityDashboard initialData={activity} />
-      </section>
-
       <section className="contact-section" id="contact">
-        <span className="eyebrow">Contact</span>
         <div>
+          <span className="eyebrow">Contact</span>
           <h2>Let&apos;s talk.</h2>
           <p>
             If you&apos;re building something thoughtful, or stuck on a tricky
             technical problem, I&apos;d be glad to hear about it.
           </p>
-          <ContactForm />
-          <div className="contact-links">
-            {linkedInProfileUrl ? (
-              <a href={linkedInProfileUrl} target="_blank" rel="noreferrer">LinkedIn</a>
-            ) : null}
-            <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">GitHub</a>
+          {/* The links live outside the form: ContactForm renders nothing when the
+              Web3Forms key is absent, and these should survive that. */}
+          <div className="contact-body">
+            <ContactForm />
+            <div className="contact-links">
+              <span className="eyebrow">Elsewhere</span>
+              <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">GitHub</a>
+              {linkedInProfileUrl ? (
+                <a href={linkedInProfileUrl} target="_blank" rel="noreferrer">LinkedIn</a>
+              ) : null}
+            </div>
           </div>
         </div>
       </section>
 
       <footer>
         <span>© {new Date().getFullYear()} Joshua Nguyen</span>
+        <span>Built with Next.js, published on GitHub Pages</span>
       </footer>
     </main>
   );

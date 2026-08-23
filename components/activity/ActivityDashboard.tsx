@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import Link from "next/link";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import { combineCursorActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
@@ -159,15 +160,50 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   const cursorSessionLookup = new Map(filteredMetrics.cursorSessions.days.map((day) => [day.date, day]));
   const cursorUsageLookup = new Map(filteredMetrics.cursorUsage.days.map((day) => [day.date, day]));
   const cursorLineLookup = new Map(filteredMetrics.cursorLines.days.map((day) => [day.date, day]));
-  const selectedIndex = filteredBuildIndex.find((day) => day.date === selectedDate);
-  const readableSelectedDate = new Date(`${selectedDate}T00:00:00Z`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+  // The day card is anchored to the square that was pressed, in coordinates
+  // relative to the dashboard, so it travels with the page rather than the viewport.
+  const dashRef = useRef<HTMLDivElement>(null);
+  const [dayCard, setDayCard] = useState<{ date: string; x: number; y: number } | null>(null);
+
+  const openDayCard = useCallback((date: string, event: MouseEvent<HTMLButtonElement>) => {
+    const host = dashRef.current?.getBoundingClientRect();
+    if (!host) return;
+    const cell = event.currentTarget.getBoundingClientRect();
+    const x = Math.min(Math.max(cell.left - host.left + cell.width / 2, 150), Math.max(host.width - 150, 150));
+    setDayCard({ date, x, y: cell.bottom - host.top + 10 });
+  }, []);
+
+  useEffect(() => {
+    if (!dayCard) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setDayCard(null); };
+    const onDown = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest(".day-detail") || target?.closest(".heatmap-cell")) return;
+      setDayCard(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => { document.removeEventListener("keydown", onKey); document.removeEventListener("mousedown", onDown); };
+  }, [dayCard]);
+
+  const cardIndex = dayCard ? filteredBuildIndex.find((day) => day.date === dayCard.date) : undefined;
+  const cardDate = dayCard
+    ? new Date(dayCard.date + "T00:00:00Z").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })
+    : "";
 
   return (
-    <div className="activity-dashboard">
+    <div className="activity-dashboard" ref={dashRef}>
       <div className="activity-toolbar">
-        <div><span className="eyebrow">Build activity / 02</span><h2>Engineering activity</h2><p>A year-by-year record from the tools I use.</p></div>
+        <div>
+          <span className="eyebrow">Activity</span>
+          <h2>A record of when I was building.</h2>
+          <p>Every square is one day, drawn from the tools I actually work in. It is a record, not a score, and it publishes daily counts only.</p>
+        </div>
         <div className="year-selector" aria-label="Activity year">
-          {availableYears.map((year) => <button type="button" key={year} className={year === selectedYear ? "is-active" : ""} aria-pressed={year === selectedYear} onClick={() => changeYear(year)}>{year}</button>)}
+          {availableYears.map((year) => (
+            <button type="button" key={year} className={year === selectedYear ? "is-active" : ""} aria-pressed={year === selectedYear} onClick={() => changeYear(year)}>{year}</button>
+          ))}
         </div>
       </div>
 
@@ -178,11 +214,27 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${formatActivityTimestamp(data.generatedAt)}`
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`}
       </div>
+
       <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{ ...filteredMetrics, cursorObserved }} />
 
       <div className="activity-workspace">
         <div className="heatmap-stack">
-          <ActivityHeatmap title="Build Index" provider="build-index" data={filteredBuildIndex} metric={buildIndexMetric} coverage={{ start: filteredBuildIndex[0]?.date ?? null, end: filteredBuildIndex.at(-1)?.date ?? null }} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={selectedDate} onDaySelect={setSelectedDate} featured />
+          <ActivityHeatmap title="Build Index" provider="build-index" data={filteredBuildIndex} metric={buildIndexMetric} coverage={{ start: filteredBuildIndex[0]?.date ?? null, end: filteredBuildIndex.at(-1)?.date ?? null }} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} featured />
+
+          <div className="activity-legend" aria-label="Activity intensity legend">
+            <div>
+              <span>Quieter day</span>
+              {[0, 1, 2, 3, 4, 5].map((level) => <i className={`level-${level}`} key={level} role="img" aria-label={`Intensity level ${level} of 5`} title={`Intensity level ${level} of 5`} />)}
+              <span>Busier day</span>
+            </div>
+            <div>
+              <i className="is-unobserved" role="img" aria-label="No source coverage" title="No source coverage" />
+              <span>Hatched: before that tool kept records. Each tool keeps its own hue at the same lightness steps.</span>
+            </div>
+          </div>
+
+          <p className="heatmap-group-label">By tool</p>
+
           {activityProviders.map((provider) => {
             const metric = providerMetrics[provider];
             return (
@@ -195,62 +247,70 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                     <button type="button" aria-pressed={cursorMetricId === "appliedLineChanges"} className={cursorMetricId === "appliedLineChanges" ? "is-active" : ""} onClick={() => setCursorMetricId("appliedLineChanges")}>Applied line changes</button>
                   </div>
                 ) : null}
-                <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={selectedDate} onDaySelect={setSelectedDate} />
+                <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} />
                 {provider === "claude-code" ? (
                   <p className="coverage-note">Coverage begins July 23, 2026. Claude Code deletes local session transcripts after 30 days by default, which erased earlier history before this feed launched—retention is now extended, so nothing is lost going forward.</p>
                 ) : null}
                 {provider === "cursor" && cursorMetricId === "appliedLineChanges" ? (
                   <p className="coverage-note">Line-change coverage begins July 14, 2026, when Cursor started keeping per-day edit records locally. Earlier days are shown as unobserved rather than estimated.</p>
                 ) : null}
-                {provider === "cursor" && (cursorMetricId === "observedActivity" || cursorMetricId === "usagePresence") ? (
-                  <p className="coverage-note">Usage-only dates come from a privacy-reduced first-party Cursor export. They prove that Cursor was used on that date but never invent a session count or publish model, token, cost, billing, or ID data.</p>
-                ) : null}
               </div>
             );
           })}
         </div>
 
-        <aside className="day-detail" aria-live="polite">
-          <span className="detail-kicker">Selected day</span><h3>{readableSelectedDate}</h3>
-          <div className={`activity-level activity-level--${selectedIndex?.level ?? 0}`}><span />{activityLabel(selectedIndex?.level ?? 0)}</div>
-          <dl>
-            {activityProviders.map((provider) => {
-              // Day breakdown stays on comparable session/contribution counts even when the
-              // Cursor heatmap is switched to Observed activity / usage / line-change views.
-              const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions : providerMetrics[provider];
-              const detailPoint = provider === "cursor"
-                ? cursorSessionLookup.get(selectedDate)
-                : lookups[provider].get(selectedDate);
-              const usagePoint = cursorUsageLookup.get(selectedDate);
-              const linePoint = cursorLineLookup.get(selectedDate);
-              const cursorSessions = cursorSessionLookup.get(selectedDate)?.value ?? 0;
-              const cursorUsage = usagePoint?.value ?? 0;
-              return (
-                <div key={provider}>
-                  <dt><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />{providerLabels[provider]}</dt>
-                  <dd>{detailMetric.status === "unavailable" ? "Source unavailable" : describeValue(detailPoint, detailMetric.definition)}</dd>
-                  {provider === "cursor" ? (
-                    <small>
-                      {filteredMetrics.cursorUsage.status === "unavailable"
-                        ? "Usage evidence unavailable"
-                        : cursorUsage > 0
-                          ? cursorSessions > 0
-                            ? "Usage evidence verified"
-                            : "Usage evidence only — no local session count"
-                          : "No usage evidence"}
-                      {" · "}
-                      {describeValue(linePoint, filteredMetrics.cursorLines.definition)}
-                    </small>
-                  ) : null}
-                </div>
-              );
-            })}
-          </dl>
-          <p className="detail-note">Only aggregate dates and counts are published. Prompts, code, filenames, paths, projects, repositories, titles, models, emails, and raw IDs never leave this machine.</p>
-        </aside>
+        {dayCard ? (
+          <aside className="day-detail" aria-live="polite" style={{ left: dayCard.x, top: dayCard.y, transform: "translateX(-50%)" }}>
+            <button type="button" className="day-detail-close" aria-label="Close day details" onClick={() => setDayCard(null)}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 2l9 9M11 2l-9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+            <span className="detail-kicker">Selected day</span>
+            <h3>{cardDate}</h3>
+            <div className={`activity-level activity-level--${cardIndex?.level ?? 0}`}><span />{activityLabel(cardIndex?.level ?? 0)}</div>
+            <dl>
+              {activityProviders.map((provider) => {
+                // The breakdown stays on comparable session/contribution counts even when
+                // the Cursor heatmap is switched to another view.
+                const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions : providerMetrics[provider];
+                const detailPoint = provider === "cursor" ? cursorSessionLookup.get(dayCard.date) : lookups[provider].get(dayCard.date);
+                const usagePoint = cursorUsageLookup.get(dayCard.date);
+                const linePoint = cursorLineLookup.get(dayCard.date);
+                const cursorSessions = cursorSessionLookup.get(dayCard.date)?.value ?? 0;
+                const cursorUsage = usagePoint?.value ?? 0;
+                return (
+                  <div key={provider}>
+                    <dt><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />{providerLabels[provider]}</dt>
+                    <dd>
+                      {detailMetric.status === "unavailable" ? "Source unavailable" : describeValue(detailPoint, detailMetric.definition)}
+                      {provider === "cursor" ? (
+                        <small>
+                          {filteredMetrics.cursorUsage.status === "unavailable"
+                            ? "Usage evidence unavailable"
+                            : cursorUsage > 0
+                              ? cursorSessions > 0
+                                ? "Usage evidence verified"
+                                : "Usage evidence only, no local session count"
+                              : "No usage evidence"}
+                          {linePoint && linePoint.value > 0 ? " · " + describeValue(linePoint, filteredMetrics.cursorLines.definition) : ""}
+                        </small>
+                      ) : null}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+            <p className="detail-note">Only aggregate dates and counts are published. Prompts, code, filenames, paths, projects, repositories, titles, models, emails, and raw IDs never leave this machine.</p>
+          </aside>
+        ) : null}
       </div>
 
-      <div className="activity-legend" aria-label="Activity intensity legend"><span>Less</span>{[0, 1, 2, 3, 4, 5].map((level) => <i className={`level-${level}`} key={level} role="img" aria-label={`Intensity level ${level} of 5`} title={`Intensity level ${level} of 5`} />)}<span>More</span></div>
+      <div className="activity-more">
+        <p>Aggregate counts only — never prompts, code, filenames, or project names. Press any square to read that day.</p>
+        <Link href="/activity/">Every metric, in depth</Link>
+      </div>
+
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
         <p className="index-disclaimer"><strong>Build Index:</strong> {data.buildIndex.formula} {data.buildIndex.disclaimer}</p>
@@ -265,7 +325,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                   <dl>
                     <dt>Status</dt><dd>{metric.status === "available" ? "Observed within coverage" : metric.status === "stale" ? "Last verified data retained" : "Unavailable"}</dd>
                     <dt>Source</dt><dd>{metric.source}</dd>
-                    <dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${metric.coverage.start} — ${metric.coverage.end}` : "Unavailable"}</dd>
+                    <dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? metric.coverage.start + " — " + metric.coverage.end : "Unavailable"}</dd>
                     <dt>Last sync</dt><dd>{metric.lastSyncedAt ? formatActivityTimestamp(metric.lastSyncedAt) : "Unavailable"}</dd>
                   </dl>
                 </section>
