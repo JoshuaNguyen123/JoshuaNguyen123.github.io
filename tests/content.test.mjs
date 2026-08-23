@@ -37,3 +37,38 @@ test("heatmap exposes exact keyboard, pointer, tooltip, and source-status hooks"
     assert.ok(source.includes(expected), `heatmap is missing ${expected}`);
   }
 });
+
+test("post markdown cannot ship script, event handlers, or javascript: URIs", async (context) => {
+  const root = await mkdtemp(path.join(tmpdir(), "portfolio-blog-xss-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const body = [
+    "<script>alert('a')</script>",
+    "<img src=x onerror=\"alert('b')\">",
+    "<a href=\"javascript:alert('c')\">click</a>",
+    "<iframe src=\"https://evil.example/\"></iframe>",
+    "<svg onload=\"alert('d')\"></svg>",
+    "<form action=\"javascript:alert('e')\"><button formaction=\"javascript:alert('f')\">go</button></form>",
+    "<object data=\"javascript:alert('g')\"></object>",
+    "",
+    "Normal **bold**, `code`, and a [safe link](https://example.com).",
+    "",
+    "## A heading",
+  ].join("\n");
+  await writeFile(
+    path.join(root, "probe.md"),
+    `---\nslug: probe\ntitle: Probe\nsummary: A real summary.\npublishedAt: 2026-08-23\ntags:\n  - engineering\ndraft: false\n---\n\n${body}`,
+  );
+
+  const [post] = getPublishedPosts(root);
+  const html = post.html.toLowerCase();
+  for (const payload of ["<script", "onerror", "onload", "javascript:", "<iframe", "<svg", "<form", "formaction", "<object"]) {
+    assert.ok(!html.includes(payload), `sanitizer leaked ${payload}: ${post.html}`);
+  }
+  // Legitimate editorial markup must survive.
+  assert.match(post.html, /<strong>bold<\/strong>/);
+  assert.match(post.html, /<code>code<\/code>/);
+  assert.match(post.html, /<h2[^>]*>A heading<\/h2>/);
+  assert.match(post.html, /href="https:\/\/example\.com"/);
+  // Outbound links get hardened rather than dropped.
+  assert.match(post.html, /rel="noreferrer noopener"/);
+});

@@ -437,7 +437,13 @@ body > main > footer, .blog-footer {
   .writing-list > a, .writing-preview, .contact-body, .blog-empty-note {
     gap: 32px; grid-template-columns: minmax(0, 1fr);
   }
-  .hero-portrait { max-width: 320px; }
+  /* 320px of a ~390px screen made the photo a full-screen scroll between the
+     hero facts and About. Keep it present but subordinate. */
+  .hero-portrait { max-width: 240px; }
+  /* Tighter cell gaps claw back width for a 34-column year on a phone. */
+  .month-row, .week-grid, .week-column { gap: 2px; }
+  .heatmap-body { gap: 0; }
+  .metric-selector { gap: 12px 16px; }
   .about-aside, .project-meta, .writing-list > a > div:last-child, .contact-links { padding-top: 0; }
   .hero-now { gap: 20px; grid-template-columns: minmax(0, 1fr); }
   .summary-grid, .heatmap-stack, .interest-columns, .methodology-grid,

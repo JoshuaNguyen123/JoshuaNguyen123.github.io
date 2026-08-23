@@ -1,5 +1,6 @@
 import matter from "gray-matter";
 import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
@@ -15,6 +16,45 @@ export interface BlogPostSummary {
 
 export interface BlogPost extends BlogPostSummary {
   html: string;
+}
+
+// marked emits raw HTML from Markdown verbatim, and the result is rendered with
+// dangerouslySetInnerHTML, so a post could otherwise ship script into every page.
+// Allow only what the editorial styles in globals.css actually target.
+const allowedTags = [
+  "p", "br", "hr", "blockquote", "pre", "code",
+  "h2", "h3", "h4", "ul", "ol", "li",
+  "strong", "em", "a", "img", "figure", "figcaption",
+  "table", "thead", "tbody", "tr", "th", "td",
+];
+
+const sanitizeOptions: sanitizeHtml.IOptions = {
+  allowedTags,
+  allowedAttributes: {
+    a: ["href", "title", "target", "rel"],
+    img: ["src", "alt", "title", "width", "height"],
+    code: ["class"],
+    th: ["scope"],
+  },
+  // http(s) and mailto only: blocks javascript:, data:, and vbscript: URIs.
+  allowedSchemes: ["http", "https", "mailto"],
+  allowedSchemesAppliedToAttributes: ["href", "src"],
+  allowProtocolRelative: false,
+  disallowedTagsMode: "discard",
+  transformTags: {
+    // Outbound links from posts should not leak referrer or window.opener.
+    a: (tagName, attribs) => ({
+      tagName,
+      attribs: /^https?:\/\//i.test(attribs.href ?? "") && !(attribs.href ?? "").includes("joshuanguyen123.github.io")
+        ? { ...attribs, target: "_blank", rel: "noreferrer noopener" }
+        : attribs,
+    }),
+  },
+};
+
+/** Renders post Markdown to HTML with raw HTML stripped to a known-safe subset. */
+export function renderPostHtml(markdown: string): string {
+  return sanitizeHtml(marked.parse(markdown) as string, sanitizeOptions);
 }
 
 const contentDirectory = path.join(process.cwd(), "content", "blog");
@@ -45,7 +85,7 @@ function readPost(filename: string, directory = contentDirectory): BlogPost {
   }
   const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/u).length;
   const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
-  return { ...data, publishedAt, readingMinutes, html: marked.parse(content) as string } as BlogPost;
+  return { ...data, publishedAt, readingMinutes, html: renderPostHtml(content) } as BlogPost;
 }
 
 export function getAllPosts(directory = contentDirectory): BlogPost[] {

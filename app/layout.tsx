@@ -33,6 +33,33 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/* GitHub Pages serves no headers, so policy ships in the markup. Next's
+            static export emits inline bootstrap scripts and has no nonce, so
+            script-src must permit unsafe-inline: this is defence in depth, NOT
+            the control that stops injected markup. Sanitizing post HTML in
+            lib/blog.ts is. What this still buys: no third-party script origins,
+            no base-tag hijacking, no plugins, and form posts and XHR confined to
+            known hosts, which blocks the usual exfiltration paths. */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={[
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' https://js.hcaptcha.com https://hcaptcha.com https://*.hcaptcha.com",
+            "style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com",
+            "img-src 'self' data: https://hcaptcha.com https://*.hcaptcha.com",
+            "font-src 'self'",
+            "connect-src 'self' https://api.web3forms.com https://raw.githubusercontent.com https://hcaptcha.com https://*.hcaptcha.com",
+            "frame-src https://hcaptcha.com https://*.hcaptcha.com",
+            "worker-src 'self' blob:",
+            "form-action 'self' https://api.web3forms.com",
+            "base-uri 'self'",
+            "object-src 'none'",
+            "upgrade-insecure-requests",
+          ].join("; ")}
+        />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable}`}>{children}</body>
     </html>
   );
