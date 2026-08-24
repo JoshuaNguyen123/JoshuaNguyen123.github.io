@@ -15,9 +15,9 @@ const projects = [
     number: "01",
     title: "Obsidian Research Agent",
     description:
-      "An Obsidian agent for research, writing, and bounded engineering work.",
+      "An Obsidian-native agent that can research, plan, use real tools, and write back to a vault while showing exactly what it did. I built the less glamorous parts too: sandboxing, approvals, replay, failure recovery, and receipts.",
     reflection:
-      "Autonomy becomes useful when people can see the plan, the tools, and the receipts.",
+      "Giving an agent more tools is easy. Making every tool real, bounded, and debuggable is the work. Also, autonomous is a very confident word for software that can still lose an argument with malformed JSON.",
     discipline: "TypeScript · Agent systems",
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
@@ -25,9 +25,9 @@ const projects = [
     number: "02",
     title: "Ladybug",
     description:
-      "A private photo-and-writing ritual for two people: a deterministic product simulator, a Supabase-backed PWA, and the original SwiftUI and Firebase app.",
+      "A private photo-and-writing ritual for exactly two people, built first as a deterministic product simulator, then as a Supabase-backed PWA alongside the original SwiftUI and Firebase app. The work spans access control, realtime state, uploads, privacy, and the small interactions that make a shared space feel personal.",
     reflection:
-      "A deterministic simulator let me verify the whole product on Windows before spending anything on cloud.",
+      "A two-person app sounds small until two phones, two accounts, uploads, notifications, realtime state, and feelings become one distributed system. The simulator saved me from paying cloud bills to discover basic product mistakes.",
     discipline: "TypeScript · Swift · Supabase",
     href: null,
   },
@@ -35,9 +35,9 @@ const projects = [
     number: "03",
     title: "Teach Anything",
     description:
-      "An adaptive learning engine that recomputes each day's session from the learner's memory state. FSRS-5 for forgetting, Beta posteriors per mastery level, and a pure engine with no I/O enforced by lint.",
+      "An adaptive learning engine that recomputes each session from the learner's actual memory state. It combines FSRS-5 forgetting curves, Beta posteriors by mastery level, sandboxed code exercises, and a deterministic core that can be replayed against learning history instead of merely claiming to adapt.",
     reflection:
-      "Keeping the adaptive core deterministic made it replayable against real history, which is the only way to know if it beats a static schedule.",
+      "Asking an LLM for a lesson is easy. Making Tuesday remember what Monday taught, and proving the schedule adapts instead of improvises, is the actual product.",
     discipline: "TypeScript · Learning systems",
     href: null,
   },
@@ -153,10 +153,11 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <h1>FDE, AI developer, and technical researcher.</h1>
+          <h1>FDE, AI Developer, and Technical Researcher.</h1>
           <p>
-            I build useful software, learn as I go, and help people through the
-            tricky parts.
+            I like building and testing systems across the stack—from data
+            pipelines and evaluation harnesses to small language models, RAG,
+            MCP tools, and the product layer that has to make them useful.
           </p>
           <div className="hero-actions">
             <a className="primary-link" href="#work">See what I&apos;m building</a>

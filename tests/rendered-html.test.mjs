@@ -3,16 +3,21 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("public identity, editorial writing, and public social surfaces are source-safe", async () => {
-  const [page, blog, article, layout, linkedIn, linkedInWidget] = await Promise.all([
+  const [page, blog, article, layout, linkedIn, linkedInWidget, activitySummary] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../content/linkedin-posts.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/social/LinkedInWidget.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/activity/ActivitySummary.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(page, /Joshua Nguyen/);
-  assert.match(page, /FDE, AI developer, and technical researcher\./);
+  assert.match(page, /FDE, AI Developer, and Technical Researcher\./);
+  assert.match(page, /building and testing systems across the stack/);
+  assert.match(page, /malformed JSON/);
+  assert.match(page, /one distributed system/);
+  assert.match(page, /Making Tuesday remember what Monday taught/);
   assert.match(page, /Obsidian Research Agent/);
   assert.match(page, /Engineering Activity Portfolio/);
   assert.match(page, /Environmental Quality ML Dashboard/);
@@ -37,6 +42,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(layout, /https:\/\/joshuanguyen123\.github\.io/);
   assert.match(linkedIn, /linkedInPosts: ExternalPost\[\] = defineExternalPosts\(\[\]\)/);
   assert.match(linkedIn, /linkedin\.com\/in\/joshua-nguyen-6a812a210/);
+  assert.match(activitySummary, /Cursor observed days/);
+  assert.match(activitySummary, /session records \+ privacy-reduced usage-date evidence/);
 });
 
 test("static architecture keeps a validated public live-feed fallback without a server API", async () => {
@@ -49,6 +56,7 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(config, /output: "export"/);
   assert.doesNotMatch(packageJson, /vinext|cloudflare|drizzle|wakatime/i);
   assert.match(dashboard, /parseActivitySnapshot/);
+  assert.match(dashboard, /shouldUseActivitySnapshot/);
   assert.match(dashboard, /cache: "no-store"/);
   assert.match(dashboard, /Verified bundled snapshot/);
   assert.match(dashboard, /Observed activity/);

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { combineCursorActivity, countActiveDays } from "@/lib/activity/cursor";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
+import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import type { ActivityProvider, ActivitySnapshot, MetricActivitySnapshot } from "@/lib/activity/types";
 import { activityProviders, providerLabels } from "@/lib/activity/types";
 
@@ -50,7 +51,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
         if (!snapshot || snapshot.mode !== "observed") throw new Error("Activity feed invalid");
         if (!cancelled) {
           setData((current) => {
-            const useLive = Date.parse(snapshot.generatedAt) > Date.parse(current.generatedAt);
+            const useLive = shouldUseActivitySnapshot(current, snapshot);
             setFeedState(useLive ? "live" : "bundled");
             return useLive ? snapshot : current;
           });

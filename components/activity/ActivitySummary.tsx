@@ -25,7 +25,12 @@ export function ActivitySummary({ summary, currentStreak, metrics }: { summary: 
         : undefined,
     },
     { value: shown(metrics.claude, summary.claudeActiveSessionDays), label: "Claude active session-days", context: daysContext(metrics.claude) },
-    { value: summary.activeDays.toLocaleString("en-US"), label: "active days" },
+    { value: summary.activeDays.toLocaleString("en-US"), label: "observed build days" },
+    {
+      value: shown(metrics.cursorObserved, countActiveDays(metrics.cursorObserved)),
+      label: "Cursor observed days",
+      context: "session records + privacy-reduced usage-date evidence",
+    },
     { value: `${currentStreak}d`, label: "current streak", context: "consecutive active days through the latest observed day" },
     { value: `${summary.longestStreak}d`, label: "longest streak" },
   ];

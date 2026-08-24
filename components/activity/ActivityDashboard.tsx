@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
+import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import { combineCursorActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
@@ -105,7 +106,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         if (cancelled) return;
         failures = 0;
         setData((current) => {
-          const useLive = Date.parse(snapshot.generatedAt) > Date.parse(current.generatedAt);
+          const useLive = shouldUseActivitySnapshot(current, snapshot);
           setFeedState(useLive ? "live" : "bundled");
           return useLive ? snapshot : current;
         });
