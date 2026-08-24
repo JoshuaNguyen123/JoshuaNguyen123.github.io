@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "generatedAt": "2026-08-24T06:39:10.128Z",
+  "generatedAt": "2026-08-24T08:12:33.500Z",
   "timeZone": "America/Denver",
   "note": "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.",
   "options": {
@@ -757,6 +757,10 @@
         },
         {
           "date": "2026-08-22",
+          "value": 1
+        },
+        {
+          "date": "2026-08-24",
           "value": 1
         }
       ],

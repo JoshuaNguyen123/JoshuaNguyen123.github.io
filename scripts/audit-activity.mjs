@@ -2,12 +2,16 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { addDays, validateSnapshot } from "./activity-core.mjs";
+import { validateHistoryBackfill } from "./history-backfill-core.mjs";
+import { applyHistoryBackfill } from "./local-exporter.mjs";
 
 const root = process.cwd();
 const publicFile = path.resolve(process.argv[2] ?? path.join(root, "public", "data", "activity.json"));
 const snapshot = validateSnapshot(JSON.parse(await readFile(publicFile, "utf8")));
 const github = JSON.parse(await readFile(path.join(root, "data", "github-activity.json"), "utf8"));
 const local = JSON.parse(await readFile(path.join(root, "data", "local-activity.json"), "utf8"));
+const historyBackfill = validateHistoryBackfill(JSON.parse(await readFile(path.join(root, "data", "history-backfill.json"), "utf8")));
+applyHistoryBackfill(local.providers, historyBackfill);
 const year = snapshot.range.end.slice(0, 4);
 
 function yearDays(metric) {

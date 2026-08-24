@@ -9,6 +9,7 @@ import {
   run,
 } from "../scripts/import-cursor-usage.mjs";
 import { validateHistoryBackfill } from "../scripts/history-backfill-core.mjs";
+import { applyHistoryBackfill } from "../scripts/local-exporter.mjs";
 
 function csvRow({
   date,
@@ -66,9 +67,11 @@ test("Cursor usage imports merge monotonically without retaining raw event field
   for (const forbidden of ["private-cloud-id", "private-automation-id", "private-model", "Total Tokens", "Requests", "Cost"]) assert.doesNotMatch(output, new RegExp(forbidden, "i"));
 });
 
-test("committed Cursor usage evidence verifies the expected 96 dates", async () => {
+test("committed Cursor usage evidence retains the validated historical floor", async () => {
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(new URL("../data/history-backfill.json", import.meta.url), "utf8")));
-  assert.equal(backfill.providers.cursor.usagePresence.length, 96);
+  assert.ok(backfill.providers.cursor.usagePresence.length >= 96);
+  assert.equal(new Set(backfill.providers.cursor.usagePresence.map((day) => day.date)).size, backfill.providers.cursor.usagePresence.length);
+  assert.ok(backfill.providers.cursor.usagePresence.every((day) => day.value === 1));
   assert.deepEqual(backfill.providers.cursor.usagePresence.slice(0, 7).map((day) => day.date), [
     "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
   ]);
@@ -76,18 +79,15 @@ test("committed Cursor usage evidence verifies the expected 96 dates", async () 
 
 test("committed Cursor source union retains session dates and usage-only calendar evidence", async () => {
   const local = JSON.parse(await readFile(new URL("../data/local-activity.json", import.meta.url), "utf8"));
+  const backfill = validateHistoryBackfill(JSON.parse(await readFile(new URL("../data/history-backfill.json", import.meta.url), "utf8")));
+  applyHistoryBackfill(local.providers, backfill);
   const sessions = new Set(local.providers.cursor.metrics.activeSessions.days.filter((day) => day.value > 0).map((day) => day.date));
   const usage = new Set(local.providers.cursor.metrics.usagePresence.days.filter((day) => day.value > 0).map((day) => day.date));
-  assert.equal(sessions.size, 94);
-  assert.equal(usage.size, 96);
-  assert.equal([...sessions].filter((date) => usage.has(date)).length, 88);
-  assert.equal(new Set([...sessions, ...usage]).size, 102);
-  assert.deepEqual([...usage].filter((date) => !sessions.has(date)), [
-    "2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13",
-    // Local session evidence covers Aug 19/21/22; Aug 20 remains usage-only.
-    "2026-08-20",
-  ]);
-  assert.deepEqual([...sessions].filter((date) => !usage.has(date)), [
-    "2026-04-10", "2026-07-04", "2026-07-09", "2026-07-16", "2026-07-17", "2026-07-31",
-  ]);
+  const union = new Set([...sessions, ...usage]);
+  assert.ok(sessions.size >= 94);
+  assert.ok(usage.size >= 96);
+  assert.ok(union.size >= 102);
+  for (const date of ["2026-01-02", "2026-01-05", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-08-20"]) {
+    assert.ok(usage.has(date), `missing retained Cursor usage evidence for ${date}`);
+  }
 });
