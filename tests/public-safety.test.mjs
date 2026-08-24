@@ -30,6 +30,23 @@ test("reviewed empty environment examples remain allowed", () => {
   assert.deepEqual(violations, []);
 });
 
+test("internal docs, duplicate snapshots, and unapproved public assets are rejected", () => {
+  const violations = validatePublicFiles([
+    file("README.md", "public repository overview"),
+    file("content/blog/real-post.md", "published article"),
+    file("design-qa.md", "internal review"),
+    file("content/blog/_README.md", "authoring instructions"),
+    file("activity.json", "{}"),
+    file("public/unused.png"),
+  ]);
+  assert.deepEqual(violations.map(({ path }) => path), [
+    "design-qa.md",
+    "content/blog/_README.md",
+    "activity.json",
+    "public/unused.png",
+  ]);
+});
+
 test("recognized credential shapes are rejected without retaining their values", () => {
   const samples = [
     "github" + "_pat_" + "A".repeat(48),

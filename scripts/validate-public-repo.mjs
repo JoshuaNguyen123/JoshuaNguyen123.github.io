@@ -5,6 +5,14 @@ import { pathToFileURL } from "node:url";
 
 const forbiddenBasenames = new Set(["agents.md", "claude.md"]);
 const forbiddenPathSegments = new Set([".claude"]);
+const allowedDocumentationPaths = new Set(["readme.md"]);
+const allowedPublicPaths = new Set([
+  "public/data/activity.json",
+  "public/favicon.svg",
+  "public/joshua-nguyen.jpg",
+  "public/og-personal.jpg",
+  "public/robots.txt",
+]);
 const allowedEnvironmentExamples = new Set([".env.example", ".env.live.example"]);
 const forbiddenCredentialExtensions = new Set([".key", ".p12", ".pfx", ".jks", ".keystore"]);
 const credentialDetectors = [
@@ -32,12 +40,17 @@ export function validatePublicFiles(files) {
   const violations = [];
   for (const file of files) {
     const repositoryPath = normalizeRepositoryPath(file.path);
-    const basename = path.posix.basename(repositoryPath).toLowerCase();
+    const normalizedPath = repositoryPath.toLowerCase();
+    const basename = path.posix.basename(normalizedPath);
     const extension = path.posix.extname(basename);
-    const pathSegments = repositoryPath.toLowerCase().split("/");
+    const pathSegments = normalizedPath.split("/");
+    const isPublishedBlogPost = /^content\/blog\/[^_/][^/]*\.mdx?$/.test(normalizedPath);
 
     if (forbiddenBasenames.has(basename)) violations.push({ path: repositoryPath, reason: "local agent instruction file is tracked" });
+    else if ([".md", ".mdx"].includes(extension) && !allowedDocumentationPaths.has(normalizedPath) && !isPublishedBlogPost) violations.push({ path: repositoryPath, reason: "non-published documentation is tracked" });
     if (pathSegments.some((segment) => forbiddenPathSegments.has(segment))) violations.push({ path: repositoryPath, reason: "local agent configuration is tracked" });
+    if (normalizedPath === "activity.json") violations.push({ path: repositoryPath, reason: "duplicate root activity snapshot is tracked" });
+    if (normalizedPath.startsWith("public/") && !allowedPublicPaths.has(normalizedPath)) violations.push({ path: repositoryPath, reason: "unapproved public asset is tracked" });
     if (basename.startsWith(".env") && !allowedEnvironmentExamples.has(basename)) violations.push({ path: repositoryPath, reason: "non-example environment file is tracked" });
     if (extension === ".pem" || forbiddenCredentialExtensions.has(extension)) violations.push({ path: repositoryPath, reason: "credential or private-key container is tracked" });
     if (!file.contents || isBinary(file.contents)) continue;
