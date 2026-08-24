@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-24T18:58:29.668Z",
+  "generatedAt": "2026-08-24T19:55:52.913Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-08-24"
           },
-          "lastSyncedAt": "2026-08-24T18:58:28.098Z",
-          "lastAttemptedAt": "2026-08-24T18:58:28.098Z",
+          "lastSyncedAt": "2026-08-24T19:55:52.083Z",
+          "lastAttemptedAt": "2026-08-24T19:55:52.083Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -950,7 +950,7 @@
             {
               "date": "2026-07-04",
               "value": 32,
-              "level": 5
+              "level": 4
             },
             {
               "date": "2026-07-05",
@@ -1204,8 +1204,8 @@
             },
             {
               "date": "2026-08-24",
-              "value": 30,
-              "level": 4
+              "value": 33,
+              "level": 5
             }
           ]
         }
@@ -1226,8 +1226,8 @@
             "start": "2026-04-20",
             "end": "2026-08-24"
           },
-          "lastSyncedAt": "2026-08-24T18:58:20.354Z",
-          "lastAttemptedAt": "2026-08-24T18:58:20.354Z",
+          "lastSyncedAt": "2026-08-24T19:55:47.163Z",
+          "lastAttemptedAt": "2026-08-24T19:55:47.163Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -1861,7 +1861,7 @@
             },
             {
               "date": "2026-08-24",
-              "value": 1,
+              "value": 2,
               "level": 1
             }
           ]
@@ -1883,8 +1883,8 @@
             "start": "2026-01-20",
             "end": "2026-08-24"
           },
-          "lastSyncedAt": "2026-08-24T18:58:28.079Z",
-          "lastAttemptedAt": "2026-08-24T18:58:28.079Z",
+          "lastSyncedAt": "2026-08-24T19:55:52.076Z",
+          "lastAttemptedAt": "2026-08-24T19:55:52.076Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -2986,8 +2986,8 @@
             "start": "2026-01-02",
             "end": "2026-08-24"
           },
-          "lastSyncedAt": "2026-08-24T18:58:20.369Z",
-          "lastAttemptedAt": "2026-08-24T18:58:20.369Z",
+          "lastSyncedAt": "2026-08-24T19:55:47.176Z",
+          "lastAttemptedAt": "2026-08-24T19:55:47.176Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4180,7 +4180,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-08-24T18:58:28.079Z",
+          "lastAttemptedAt": "2026-08-24T19:55:52.076Z",
           "days": []
         }
       }
@@ -4200,8 +4200,8 @@
             "start": "2026-07-23",
             "end": "2026-08-24"
           },
-          "lastSyncedAt": "2026-08-24T18:58:28.079Z",
-          "lastAttemptedAt": "2026-08-24T18:58:28.079Z",
+          "lastSyncedAt": "2026-08-24T19:55:52.076Z",
+          "lastAttemptedAt": "2026-08-24T19:55:52.076Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4365,8 +4365,8 @@
             },
             {
               "date": "2026-08-24",
-              "value": 35,
-              "level": 4
+              "value": 36,
+              "level": 5
             }
           ]
         }
@@ -5300,7 +5300,7 @@
       },
       {
         "date": "2026-07-04",
-        "value": 67,
+        "value": 60,
         "level": 3
       },
       {
@@ -5555,18 +5555,18 @@
       },
       {
         "date": "2026-08-24",
-        "value": 50,
+        "value": 60,
         "level": 3
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 889,
-      "codexActiveSessionDays": 1196,
+      "contributions": 892,
+      "codexActiveSessionDays": 1197,
       "cursorActiveSessionDays": 1077,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 295,
+      "claudeActiveSessionDays": 296,
       "activeDays": 137,
       "longestStreak": 44
     }
