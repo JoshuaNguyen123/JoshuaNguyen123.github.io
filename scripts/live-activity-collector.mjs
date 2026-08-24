@@ -20,6 +20,7 @@ import { exportLocalActivity } from "./local-exporter.mjs";
 import { consumeHookSpool, mergeHookLedger, snapshotsMatch } from "./live-activity-core.mjs";
 
 const ROOT = process.cwd();
+export const GITHUB_REQUEST_TIMEOUT_MS = 30_000;
 // Derived from the shared window so the live feed can never cover fewer years
 // than the bundled snapshot the page ships with.
 const START_DATE = rangeForBuild().start;
@@ -71,6 +72,7 @@ async function githubRequest(config, endpoint, options = {}) {
   const url = `https://api.github.com/repos/${config.repository}${endpoint ? `/${endpoint}` : ""}`;
   const response = await fetch(url, {
     ...options,
+    signal: options.signal ?? AbortSignal.timeout(GITHUB_REQUEST_TIMEOUT_MS),
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${config.token}`,
@@ -135,6 +137,7 @@ async function fetchGitHubProvider(config, start, end, now) {
     const toDate = year === Number(end.slice(0, 4)) ? end : `${year}-12-31`;
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
+      signal: AbortSignal.timeout(GITHUB_REQUEST_TIMEOUT_MS),
       headers: { Authorization: `bearer ${config.token}`, "Content-Type": "application/json", "User-Agent": "joshua-nguyen-local-activity-collector/2.0" },
       body: JSON.stringify({
         query: "query($login:String!,$from:DateTime!,$to:DateTime!){user(login:$login){contributionsCollection(from:$from,to:$to){contributionCalendar{weeks{contributionDays{date contributionCount}}}}}}",

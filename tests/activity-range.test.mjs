@@ -27,6 +27,16 @@ test("the build and the live collector derive their window from the same helper"
   }
 });
 
+test("the live collector bounds every GitHub network request", async () => {
+  const collector = await readFile(new URL("../scripts/live-activity-collector.mjs", import.meta.url), "utf8");
+  assert.match(collector, /GITHUB_REQUEST_TIMEOUT_MS\s*=\s*30_000/);
+  assert.equal(
+    collector.match(/AbortSignal\.timeout\(GITHUB_REQUEST_TIMEOUT_MS\)/g)?.length,
+    2,
+    "REST and GraphQL requests must both have a timeout",
+  );
+});
+
 test("the committed snapshot covers the full rolling window", async () => {
   const snapshot = JSON.parse(await readFile(new URL("../public/data/activity.json", import.meta.url), "utf8"));
   assert.equal(snapshot.range.start, rangeForBuild(new Date(snapshot.range.end + "T18:00:00Z")).start);
