@@ -7,6 +7,7 @@ import test from "node:test";
 import { CURSOR_USAGE_HEADERS } from "../scripts/import-cursor-usage.mjs";
 import {
   CURSOR_EXPORT_URL,
+  CURSOR_EXPORT_TIMEOUT_MS,
   buildCursorSessionCookie,
   cursorStateDbPath,
   downloadCursorUsageCsv,
@@ -88,6 +89,8 @@ test("downloadCursorUsageCsv sends the session cookie and rejects HTML", async (
   });
   assert.equal(body, csv);
   assert.equal(calls[0].url, CURSOR_EXPORT_URL);
+  assert.equal(calls[0].init.signal.aborted, false);
+  assert.equal(CURSOR_EXPORT_TIMEOUT_MS, 30_000);
   assert.match(calls[0].init.headers.Cookie, /^WorkosCursorSessionToken=/);
   // Cookie is percent-encoded; the raw JWT must not appear as a separate header field.
   assert.equal(calls[0].init.headers.Authorization, undefined);

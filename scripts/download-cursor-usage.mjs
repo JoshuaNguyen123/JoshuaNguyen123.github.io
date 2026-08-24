@@ -15,6 +15,7 @@ import { reduceCursorUsageCsv } from "./import-cursor-usage.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const CURSOR_EXPORT_URL = "https://cursor.com/api/dashboard/export-usage-events-csv";
+export const CURSOR_EXPORT_TIMEOUT_MS = 30_000;
 
 function fail(message) {
   throw new Error(`Cursor usage download: ${message}`);
@@ -100,11 +101,13 @@ export async function downloadCursorUsageCsv({
   fetchImpl = fetch,
   dbPath = cursorStateDbPath(env),
   readToken = readCursorAccessToken,
+  timeoutMs = CURSOR_EXPORT_TIMEOUT_MS,
 } = {}) {
   const token = readToken(dbPath);
   const cookie = buildCursorSessionCookie(token);
   const response = await fetchImpl(CURSOR_EXPORT_URL, {
     method: "GET",
+    signal: AbortSignal.timeout(timeoutMs),
     headers: {
       Cookie: `WorkosCursorSessionToken=${cookie}`,
       "User-Agent": "joshua-nguyen-cursor-usage-download/1.0",
