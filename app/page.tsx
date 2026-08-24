@@ -269,9 +269,9 @@ export default function Home() {
           <header>
             <div>
               <span className="eyebrow">Writing</span>
-              <h2 id="home-writing-title">Notes.</h2>
+              <h2 id="home-writing-title">Read my notes.</h2>
             </div>
-            <Link href="/blog/">Visit the notebook</Link>
+            <Link href="/blog/">Open the notebook</Link>
           </header>
           {posts.length > 0 ? (
             <div className="writing-list">
@@ -290,7 +290,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="writing-preview">
-              <p>Short notes on what I build and learn.</p>
+              <p>Notes from building software, including the parts that looked easy right before they weren&apos;t.</p>
               <ul aria-label="Planned writing topics">
                 <li>Reliable agents</li>
                 <li>Privacy by design</li>

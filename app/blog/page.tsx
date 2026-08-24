@@ -29,8 +29,8 @@ export default function BlogIndex() {
 
       <section className="blog-intro">
         <span className="eyebrow">Writing</span>
-        <h1>Notes on building.</h1>
-        <p>AI systems, research, and lessons from the work.</p>
+        <h1>Notes from the build.</h1>
+        <p>A running record of what worked and why the &ldquo;quick fix&rdquo; now has its own folder.</p>
       </section>
 
       {leadPost ? (

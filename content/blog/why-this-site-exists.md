@@ -1,7 +1,7 @@
 ---
 slug: why-this-site-exists
 title: Why this site exists
-summary: A short note on building in public, keeping the private parts private, and treating a portfolio as a record of learning.
+summary: Notes from building software, including the parts that looked easy right before they weren't.
 publishedAt: 2026-08-21
 tags:
   - building in public
@@ -9,22 +9,22 @@ tags:
 draft: false
 ---
 
-This site started as a place to collect projects. Over time, I realized that a list of repositories did not say much about how I work, what I care about, or what I learned along the way.
+This site started as a project list. It looked tidy and explained almost nothing. A repository can show the code. It rarely explains why I chose the awkward solution or how a "small fix" became architecture.
 
-I like problems that are still a little fuzzy. My usual process is to research the problem, build a small version, test the parts that matter, and make the result easier for someone else to understand. The finished project matters, but so do the decisions that shaped it.
+Most of my work starts fuzzy. I read until I have a theory, then build the smallest useful version. Reality usually finds the embarrassing parts faster than I do.
 
-## A portfolio should show the process
+## Keep some of the sawdust
 
-Project pages are snapshots. They show what exists now, but they often hide the false starts, tradeoffs, and small discoveries that made the work useful.
+Project pages show the finished shape. They sand off the false starts and the decisions that only made sense after something broke.
 
-That is why this site includes both selected projects and an engineering activity record. The activity view is not a productivity score. It is a simple record of when I was building, gathered from the tools I use and reduced to aggregate counts.
+This site keeps some of the sawdust. The activity page records days when my tools saw real work. It is not a productivity score. Nobody needs a leaderboard for opening Cursor.
 
-The private parts stay private. Prompts, file paths, code contents, credentials, and detailed work traces do not belong in a public dashboard. I would rather show less data and be clear about what it means than publish a more impressive number without context.
+Private stays private. The dashboard publishes totals, not prompts, file paths, source code, credentials, or detailed work traces. A smaller honest number is more useful than a large mysterious one.
 
-## Why I am writing here
+## Why write any of this
 
-Writing gives me a place to capture what a repository cannot: why I chose one direction, what failed, what surprised me, and what I would do differently next time.
+Repositories remember what changed. I want these notes to remember why, especially when the first idea was wrong.
 
-I expect these notes to be short and practical. Some will be about reliable AI agents. Others will be about privacy, developer tools, or the ordinary work of turning an idea into something people can use.
+Expect short reports from the messier side of AI systems and developer tools. If I learn something the expensive way, I may as well amortize it.
 
-This is still a work in progress, which is part of the point. I am building it from Bozeman, learning as I go, and leaving a clearer trail for the next version of the work.
+I am writing this from Bozeman. The site is a work in progress, like nearly every piece of software pretending otherwise.

@@ -4,7 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 for (const file of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/data/activity.json", "out/og-personal.jpg"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
-for (const expected of ["Joshua Nguyen", "FDE, AI Developer, and Technical Researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "not productivity", "Codex active session-days", "Claude active session-days", "Cursor active session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
+for (const expected of ["Joshua Nguyen", "FDE, AI Developer, and Technical Researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Read my notes.", "not productivity", "Codex active session-days", "Claude active session-days", "Cursor active session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
@@ -19,11 +19,11 @@ for (const expected of ["What it taught me", "Bozeman, Montana", "Mobile navigat
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 const blogHtml = await readFile(path.join(root, "out", "blog", "index.html"), "utf8");
-for (const expected of ["Why this site exists", "building in public", "August 21, 2026"]) {
+for (const expected of ["Notes from the build.", "quick fix", "Why this site exists", "building in public", "August 21, 2026"]) {
   if (!blogHtml.includes(expected)) throw new Error(`Static blog export is missing ${expected}`);
 }
 const articleHtml = await readFile(path.join(root, "out", "blog", "why-this-site-exists", "index.html"), "utf8");
-for (const expected of ["A portfolio should show the process", "The private parts stay private", "Why I am writing here"]) {
+for (const expected of ["Keep some of the sawdust", "Nobody needs a leaderboard for opening Cursor", "Why write any of this"]) {
   if (!articleHtml.includes(expected)) throw new Error(`Static article export is missing ${expected}`);
 }
 for (const forbidden of ["Josh B.", "/api/activity", "WakaTime", "active minutes", "token totals", "Cursor Team Admin API", "Anthropic organization analytics"]) {
