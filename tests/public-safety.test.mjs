@@ -15,10 +15,11 @@ test("agent instructions, real environment files, and key containers are rejecte
   const violations = validatePublicFiles([
     file("AGENTS.md", "local guidance"),
     file("nested/CLAUDE.md", "local guidance"),
+    file(".claude/launch.json", "{}"),
     file(".env.local", "TOKEN=local"),
     file("certificates/signing.p12"),
   ]);
-  assert.equal(violations.length, 4);
+  assert.equal(violations.length, 5);
 });
 
 test("reviewed empty environment examples remain allowed", () => {

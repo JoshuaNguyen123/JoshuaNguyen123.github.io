@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const forbiddenBasenames = new Set(["agents.md", "claude.md"]);
+const forbiddenPathSegments = new Set([".claude"]);
 const allowedEnvironmentExamples = new Set([".env.example", ".env.live.example"]);
 const forbiddenCredentialExtensions = new Set([".key", ".p12", ".pfx", ".jks", ".keystore"]);
 const credentialDetectors = [
@@ -33,8 +34,10 @@ export function validatePublicFiles(files) {
     const repositoryPath = normalizeRepositoryPath(file.path);
     const basename = path.posix.basename(repositoryPath).toLowerCase();
     const extension = path.posix.extname(basename);
+    const pathSegments = repositoryPath.toLowerCase().split("/");
 
     if (forbiddenBasenames.has(basename)) violations.push({ path: repositoryPath, reason: "local agent instruction file is tracked" });
+    if (pathSegments.some((segment) => forbiddenPathSegments.has(segment))) violations.push({ path: repositoryPath, reason: "local agent configuration is tracked" });
     if (basename.startsWith(".env") && !allowedEnvironmentExamples.has(basename)) violations.push({ path: repositoryPath, reason: "non-example environment file is tracked" });
     if (extension === ".pem" || forbiddenCredentialExtensions.has(extension)) violations.push({ path: repositoryPath, reason: "credential or private-key container is tracked" });
     if (!file.contents || isBinary(file.contents)) continue;
