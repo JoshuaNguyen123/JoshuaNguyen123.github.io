@@ -1,0 +1,17 @@
+{
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	"name": "joshua-portfolio-blog-admin",
+	"main": "src/index.mjs",
+	"compatibility_date": "2026-08-24",
+	"workers_dev": true,
+	"preview_urls": false,
+	"vars": {
+    "OAUTH_CALLBACK_URL": "https://joshua-portfolio-blog-admin.personal-ai-digest.workers.dev/auth/callback"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "SESSIONS",
+			"id": "95889be6a4754bd7b6e81770de366f4d"
+		}
+	]
+}

@@ -437,6 +437,35 @@ body > main > footer, .blog-footer {
 .article-footer { border-top: 1px solid var(--hair); margin: 72px auto 96px; max-width: var(--measure); padding-top: 24px; }
 .article-footer a { border-bottom: 1px solid #b5ab95; font-family: var(--font-geist-sans), sans-serif; font-size: 14px; padding-bottom: 2px; }
 
+/* ---- Private blog editor ---- */
+.admin-shell { margin: 0 auto; max-width: 1280px; min-height: 100vh; padding: 0 var(--gutter) 80px; }
+.admin-masthead { align-items: baseline; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding: 34px 0 22px; }
+.admin-masthead > a { font-size: 20px; font-weight: 500; }
+.admin-masthead > span { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; }
+.admin-auth { margin: clamp(64px, 10vw, 140px) auto; max-width: 640px; }
+.admin-auth h1, .admin-toolbar h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 400; letter-spacing: -.025em; margin: 18px 0; }
+.admin-auth > p { color: var(--body); font-size: 19px; line-height: 1.65; margin-bottom: 30px; }
+.admin-auth code { background: var(--hair); font-family: var(--font-geist-mono); font-size: .8em; padding: 2px 4px; }
+.admin-editor { padding-top: clamp(44px, 6vw, 78px); }
+.admin-toolbar { align-items: flex-start; display: flex; justify-content: space-between; }
+.admin-toolbar h1 { margin-bottom: 0; }
+.admin-post-picker { align-items: center; border-bottom: 1px solid var(--hair); border-top: 1px solid var(--ink); display: grid; gap: 24px; grid-template-columns: 120px minmax(0, 1fr); margin: 40px 0; padding: 22px 0; }
+.admin-form label, .admin-post-picker label { color: var(--muted); display: grid; font-family: var(--font-geist-sans), sans-serif; font-size: 13px; gap: 8px; }
+.admin-post-picker select, .admin-form input, .admin-form textarea { background: #fffdf8; border: 1px solid var(--hair); border-radius: 0; color: var(--ink); font: inherit; padding: 11px 12px; width: 100%; }
+.admin-post-picker select:focus, .admin-form input:focus, .admin-form textarea:focus { border-color: var(--ink); outline: 2px solid transparent; }
+.admin-edit-grid { display: grid; gap: 48px; grid-template-columns: minmax(0, 1fr) minmax(360px, .8fr); }
+.admin-form { display: grid; gap: 20px; }
+.admin-field-row { display: grid; gap: 18px; grid-template-columns: minmax(170px, .55fr) minmax(0, 1fr); }
+.admin-markdown { font-family: var(--font-geist-mono), monospace !important; font-size: 14px !important; line-height: 1.6; resize: vertical; }
+.admin-preview { border-left: 1px solid var(--hair); min-width: 0; padding-left: 32px; }
+.admin-preview iframe { background: #fffdf8; border: 1px solid var(--hair); height: 720px; margin-top: 14px; width: 100%; }
+.admin-actions { display: flex; gap: 12px; justify-content: flex-end; }
+.primary-button, .quiet-button { border-radius: 0; cursor: pointer; font-family: var(--font-geist-sans), sans-serif; font-size: 14px; padding: 11px 16px; }
+.primary-button { background: var(--ink); border: 1px solid var(--ink); color: #fffdf8; }
+.quiet-button { background: transparent; border: 1px solid var(--hair); color: var(--ink); }
+.primary-button:disabled, .quiet-button:disabled { cursor: wait; opacity: .55; }
+.admin-status { color: var(--body); font-family: var(--font-geist-sans), sans-serif; font-size: 14px; margin: 0; }
+
 @media (max-width: 1080px) {
   :root { --measure: minmax(0, 1fr); --rail: 240px; }
   .hero, .about-strip, .project-ledger > a, .project-ledger > article,
@@ -446,6 +475,8 @@ body > main > footer, .blog-footer {
   .heatmap-stack { gap: 28px 32px; }
   .summary-grid, .tool-provenance, .activity-definition-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .interest-columns, .methodology-grid, .activity-glossary dl, .blog-index-list, .blog-empty ul { grid-template-columns: repeat(2, 1fr); }
+  .admin-edit-grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-preview { border-left: 0; border-top: 1px solid var(--hair); padding-left: 0; padding-top: 32px; }
 }
 
 @media (max-width: 760px) {
@@ -476,6 +507,10 @@ body > main > footer, .blog-footer {
   .blog-empty li { border-right: 0; padding-left: 0; }
   .day-detail { width: min(292px, calc(100vw - 32px)); }
   body > main > footer, .blog-footer { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .admin-toolbar, .admin-masthead { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .admin-post-picker, .admin-field-row { grid-template-columns: minmax(0, 1fr); }
+  .admin-actions { justify-content: stretch; }
+  .admin-actions button { flex: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

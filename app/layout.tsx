@@ -49,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             "style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com",
             "img-src 'self' data: https://hcaptcha.com https://*.hcaptcha.com",
             "font-src 'self'",
-            "connect-src 'self' https://api.web3forms.com https://raw.githubusercontent.com https://hcaptcha.com https://*.hcaptcha.com",
+            "connect-src 'self' https://api.web3forms.com https://raw.githubusercontent.com https://joshua-portfolio-blog-admin.personal-ai-digest.workers.dev https://hcaptcha.com https://*.hcaptcha.com",
             "frame-src https://hcaptcha.com https://*.hcaptcha.com",
             "worker-src 'self' blob:",
             "form-action 'self' https://api.web3forms.com",
