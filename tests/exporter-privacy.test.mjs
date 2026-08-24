@@ -27,7 +27,8 @@ test("local exporter emits aggregate sessions without prompts, paths, code, file
   const snapshot = await exportLocalActivity({ codexRoot, claudeRoot, cursorDatabase: databasePath, historyBackfill: path.join(testRoot, "missing-backfill.json") });
   assert.equal(snapshot.providers.codex.metrics.activeSessions.days.length, 2);
   assert.equal(snapshot.providers.cursor.metrics.activeSessions.days[0].value, 1);
-  assert.deepEqual(snapshot.providers.cursor.metrics.appliedLineChanges.days, [{ date: "2026-01-03", value: 1 }]);
+  assert.equal(snapshot.providers.cursor.metrics.appliedLineChanges.status, "unavailable");
+  assert.deepEqual(snapshot.providers.cursor.metrics.appliedLineChanges.days, []);
   assert.equal(snapshot.providers["claude-code"].metrics.activeSessions.days[0].value, 1);
   const output = JSON.stringify(snapshot);
   for (const forbidden of ["PRIVATE", "SECRET", "private.ts", "C:/private", "codex-raw-secret", "claude-raw-secret", "cursor-conversation-secret", "cursor-request-secret"]) assert.ok(!output.includes(forbidden), `export leaked ${forbidden}`);
@@ -75,11 +76,11 @@ test("history backfill file merges by per-date max and never breaks the export w
   const empty = path.join(testRoot, "none");
   const snapshot = await exportLocalActivity({ codexRoot: empty, claudeRoot: empty, cursorDatabase: databasePath, historyBackfill: backfillFile });
   assert.deepEqual(snapshot.providers.cursor.metrics.activeSessions.days, [{ date: "2026-02-01", value: 4 }, { date: "2026-07-14", value: 1 }]);
-  assert.deepEqual(snapshot.providers.cursor.metrics.appliedLineChanges.days, [{ date: "2026-07-14", value: 5 }]);
+  assert.equal(snapshot.providers.cursor.metrics.appliedLineChanges.status, "unavailable");
   assert.deepEqual(snapshot.providers["claude-code"].metrics.activeSessions.days, [{ date: "2026-03-01", value: 2 }]);
   assert.equal(snapshot.providers.cursor.metrics.activeSessions.coverage.start, "2026-02-01");
 
   await writeFile(backfillFile, JSON.stringify({ v: 1, corrupted: true }));
   const fallback = await exportLocalActivity({ codexRoot: empty, claudeRoot: empty, cursorDatabase: databasePath, historyBackfill: backfillFile });
-  assert.deepEqual(fallback.providers.cursor.metrics.appliedLineChanges.days, [{ date: "2026-07-14", value: 3 }]);
+  assert.equal(fallback.providers.cursor.metrics.appliedLineChanges.status, "unavailable");
 });

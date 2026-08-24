@@ -65,11 +65,9 @@ test("concurrent spool files are consumed once and merged with partial backfill"
     { date: "2026-01-03", value: 5 },
   ]);
   assert.deepEqual(providers.cursor.metrics.appliedLineChanges.days, [
-    { date: "2026-01-01", value: 7 },
-    { date: "2026-01-02", value: 9 },
     { date: "2026-01-03", value: 24 },
   ]);
-  assert.equal(providers.cursor.metrics.appliedLineChanges.coverage.start, "2026-01-01");
+  assert.equal(providers.cursor.metrics.appliedLineChanges.coverage.start, "2026-01-03");
 });
 
 test("publisher no-op comparison ignores freshness but detects aggregate changes", () => {

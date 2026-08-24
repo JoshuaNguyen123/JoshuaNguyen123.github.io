@@ -36,7 +36,7 @@ export const METRICS = {
     appliedLineChanges: {
       label: "applied AI line changes",
       unit: "applied-ai-line-changes",
-      methodology: "Daily line additions plus deletions computed in memory after local Cursor Agent or Tab edits. This is not Cursor's Team Admin API accepted-lines metric.",
+      methodology: "Daily additions plus deletions captured directly by local Cursor Agent or Tab edit hooks. Historical database tracking records are not line changes and are never included.",
       accuracy: "observed",
     },
   },
@@ -80,8 +80,8 @@ export const ALLOWED_SOURCES = {
       "Synthetic local development fixture",
     ],
     appliedLineChanges: [
-      "Local Cursor edit hooks and AI code tracking history",
       "Local Cursor Agent and Tab edit hooks",
+      "Local Cursor edit hooks and AI code tracking history",
       "Synthetic local development fixture",
       "Legacy Cursor aggregate feed",
     ],

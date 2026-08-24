@@ -52,8 +52,8 @@ function githubToken() {
 }
 
 function configuration() {
-  const branch = process.env.ACTIVITY_DATA_BRANCH?.trim() || "activity-data";
-  const feedPath = process.env.ACTIVITY_DATA_PATH?.trim() || "activity.json";
+  const branch = process.env.ACTIVITY_DATA_BRANCH?.trim() || "main";
+  const feedPath = process.env.ACTIVITY_DATA_PATH?.trim() || "public/data/activity.json";
   const repository = process.env.GITHUB_REPOSITORY?.trim() || "JoshuaNguyen123/JoshuaNguyen123.github.io";
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) fail("GITHUB_REPOSITORY must be owner/repository");
   if (!/^[A-Za-z0-9._/-]+$/.test(branch) || !/^[A-Za-z0-9._/-]+$/.test(feedPath) || feedPath.startsWith("/")) fail("activity branch or path contains unsafe characters");
@@ -88,12 +88,12 @@ async function githubRequest(config, endpoint, options = {}) {
 async function readRemoteSnapshot(config) {
   const result = await githubRequest(config, `contents/${config.feedPath}?ref=${encodeURIComponent(config.branch)}`, { allowMissing: true });
   if (!result.body) return null;
-  if (typeof result.body.content !== "string" || typeof result.body.sha !== "string") fail("activity-data branch contains a malformed feed file");
+  if (typeof result.body.content !== "string" || typeof result.body.sha !== "string") fail("activity feed branch contains a malformed feed file");
   try {
     const parsed = JSON.parse(Buffer.from(result.body.content.replace(/\n/g, ""), "base64").toString("utf8"));
     return { snapshot: upgradeSnapshot(parsed), sha: result.body.sha };
   } catch {
-    fail("activity-data branch feed failed validation");
+    fail("activity feed branch failed validation");
   }
 }
 
@@ -161,8 +161,8 @@ async function fallbackSnapshot() {
 export async function collect({ publish = true, preflight = false } = {}) {
   await loadEnvFile();
   const config = configuration();
-  const now = new Date().toISOString();
-  const end = dateInTimeZone(now, TIME_ZONE);
+  const collectionStartedAt = new Date().toISOString();
+  const end = dateInTimeZone(collectionStartedAt, TIME_ZONE);
   const remote = await readRemoteSnapshot(config);
   const previous = remote?.snapshot ?? await fallbackSnapshot();
   // Best-effort Cursor dashboard CSV → usagePresence. Auth/network failures must
@@ -180,24 +180,24 @@ export async function collect({ publish = true, preflight = false } = {}) {
   const hookConfigExists = existsSync(path.join(config.activityHome, "config.json"));
   try {
     const hookState = await consumeHookSpool(config.activityHome);
-    localProviders = mergeHookLedger(local.providers, hookState, now);
+    localProviders = mergeHookLedger(local.providers, hookState, new Date().toISOString());
     hookStatus = "installed";
   } catch {
     localProviders = local.providers;
     if (hookConfigExists && previous) {
-      localProviders.cursor = markProviderStale("cursor", previous.providers.cursor, now);
-      localProviders["claude-code"] = markProviderStale("claude-code", previous.providers["claude-code"], now);
+      localProviders.cursor = markProviderStale("cursor", previous.providers.cursor, new Date().toISOString());
+      localProviders["claude-code"] = markProviderStale("claude-code", previous.providers["claude-code"], new Date().toISOString());
       hookStatus = "stale";
     }
   }
   let github;
   try {
-    github = await fetchGitHubProvider(config, START_DATE, end, now);
+    github = await fetchGitHubProvider(config, START_DATE, end, new Date().toISOString());
   } catch (error) {
     if (!previous) throw error;
-    github = markProviderStale("github", previous.providers.github, now);
+    github = markProviderStale("github", previous.providers.github, new Date().toISOString());
   }
-  const snapshot = assembleSnapshot({ github, ...localProviders }, { start: START_DATE, end, generatedAt: now });
+  const snapshot = assembleSnapshot({ github, ...localProviders }, { start: START_DATE, end, generatedAt: new Date().toISOString() });
   if (preflight) {
     return { published: false, changed: false, hookStatus, range: snapshot.range, repository: config.repository };
   }

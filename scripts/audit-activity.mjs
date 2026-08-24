@@ -65,7 +65,9 @@ assertMetric("GitHub contributions", metrics.github, sources.github, summary.con
 assertMetric("Codex sessions", metrics.codex, sources.codex, summary.codexActiveSessionDays);
 assertMetric("Cursor sessions", metrics.cursorSessions, sources.cursorSessions, summary.cursorActiveSessionDays);
 assertMetric("Cursor usage presence", metrics.cursorUsage, sources.cursorUsage);
-assertMetric("Cursor applied lines", metrics.cursorLines, sources.cursorLines, summary.cursorAppliedAiLineChanges);
+assert.equal(metrics.cursorLines.status, "unavailable", "Cursor line changes must remain unavailable until direct edit hooks record measured diffs");
+assert.equal(sources.cursorLines.status, "unavailable", "Source aggregate still exposes retired Cursor tracking rows as line changes");
+assert.equal(summary.cursorAppliedAiLineChanges, 0, "Retired Cursor line-change summary must be zero");
 assertMetric("Claude Code sessions", metrics.claude, sources.claude, summary.claudeActiveSessionDays);
 
 const cursorFeedDates = new Set([...activeDates(metrics.cursorSessions), ...activeDates(metrics.cursorUsage)]);
@@ -105,7 +107,6 @@ const rows = [
   ["Cursor sessions", "active session-days", metrics.cursorSessions, total(metrics.cursorSessions), total(sources.cursorSessions), activeDates(metrics.cursorSessions).length],
   ["Cursor usage evidence", "observed dates", metrics.cursorUsage, activeDates(metrics.cursorUsage).length, activeDates(sources.cursorUsage).length, activeDates(metrics.cursorUsage).length],
   ["Cursor observed union", "observed dates", { ...metrics.cursorSessions, source: "Cursor sessions + usage-presence union", coverage: cursorObservedCoverage }, cursorFeedDates.size, cursorSourceDates.size, cursorFeedDates.size],
-  ["Cursor applied lines", metrics.cursorLines.definition.unit, metrics.cursorLines, total(metrics.cursorLines), total(sources.cursorLines), activeDates(metrics.cursorLines).length],
   ["Claude Code sessions", "active session-days", metrics.claude, total(metrics.claude), total(sources.claude), activeDates(metrics.claude).length],
 ];
 console.log(`Activity audit passed for ${year}; completed dates and the captured current date reconcile to source-native aggregates.`);

@@ -59,8 +59,8 @@ test("backfill unions composer ids across bubbles, headers, and tracking rows on
     { date: "2026-02-01", value: 2 },
     { date: "2026-07-14", value: 1 },
   ]);
-  // Exact line history counts tracked rows with a conversation id only.
-  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, [{ date: "2026-07-14", value: 2 }]);
+  // ai_code_hashes rows are tracking records, not measured line diffs.
+  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, []);
   assert.equal(backfill.options.approximateLines, false);
   const output = JSON.stringify(backfill);
   for (const forbidden of ["PRIVATE", "SECRET", "request-secret", "C:/private", COMPOSER_A, COMPOSER_B, "bubble-1"]) {
@@ -78,23 +78,15 @@ test("re-running merges by per-date max so recorded history never shrinks", asyn
   database.close();
   await run(flags);
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(out, "utf8")));
-  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, [
-    { date: "2026-07-14", value: 2 },
-    { date: "2026-07-15", value: 1 },
-  ]);
+  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, []);
 });
 
-test("approximate lines are opt-in and restricted to days before exact tracking begins", async (context) => {
+test("approximate and tracking-row line counts remain retired", async (context) => {
   const { out, flags } = await fixture(context);
   await run([...flags, "--approximate-lines"]);
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(out, "utf8")));
-  assert.equal(backfill.options.approximateLines, true);
-  // Composer A: 120 total lines on its 2026-03-01 lastUpdatedAt day (before exact start 2026-07-14).
-  // Composer B: lastUpdatedAt 2026-08-01 is on/after exact start, so its lump sum is excluded.
-  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, [
-    { date: "2026-03-01", value: 120 },
-    { date: "2026-07-14", value: 2 },
-  ]);
+  assert.equal(backfill.options.approximateLines, false);
+  assert.deepEqual(backfill.providers.cursor.appliedLineChanges, []);
 });
 
 test("validateHistoryBackfill rejects unexpected fields and unsorted days", () => {

@@ -103,7 +103,7 @@ function collectCursorState(stateDb, sessions) {
   }
 }
 
-function collectCursorTracking(trackingDb, sessions, lines) {
+function collectCursorTracking(trackingDb, sessions) {
   if (!existsSync(trackingDb)) {
     process.stderr.write(`History backfill: Cursor tracking database not found at ${trackingDb}; skipping line history\n`);
     return;
@@ -118,7 +118,6 @@ function collectCursorTracking(trackingDb, sessions, lines) {
       const timestamp = epochToIso(row.observedAt);
       if (!timestamp) continue;
       sessions.add(timestamp, String(row.conversationId));
-      lines.add(timestamp, 1);
     }
   } finally {
     database.close();
@@ -161,19 +160,15 @@ function summarize(label, days) {
 async function run(argv) {
   const options = parseArguments(argv);
   const sessions = new DailyIdentitySets();
-  const lines = new DailyTally();
   collectCursorState(options.stateDb, sessions);
-  collectCursorTracking(options.trackingDb, sessions, lines);
-  let cursorLineDays = lines.days();
-  if (options.approximateLines) {
-    cursorLineDays = [...collectApproximateLines(options.stateDb, cursorLineDays), ...cursorLineDays].sort((left, right) => left.date.localeCompare(right.date));
-  }
+  collectCursorTracking(options.trackingDb, sessions);
+  const cursorLineDays = [];
   const claude = await exportClaude(options.claudeRoot);
   let backfill = buildHistoryBackfill({
     cursorSessionDays: sessions.days(),
     cursorLineDays,
     claudeSessionDays: claude.metrics.activeSessions.days,
-    approximateLines: options.approximateLines,
+    approximateLines: false,
   });
   if (existsSync(options.out)) {
     const previous = validateHistoryBackfill(JSON.parse(await readFile(options.out, "utf8")));

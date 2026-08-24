@@ -1,7 +1,7 @@
 import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
 
 export const HISTORY_BACKFILL_VERSION = 2;
-export const HISTORY_BACKFILL_NOTE = "Daily aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Dates and counts only; regenerating merges monotonically so recorded history never shrinks.";
+export const HISTORY_BACKFILL_NOTE = "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.";
 
 const PROVIDER_SERIES = {
   cursor: ["activeSessions", "usagePresence", "appliedLineChanges"],
@@ -110,9 +110,10 @@ function validateV1HistoryBackfill(value) {
     ...value,
     v: HISTORY_BACKFILL_VERSION,
     note: HISTORY_BACKFILL_NOTE,
+    options: { approximateLines: false },
     providers: {
       ...value.providers,
-      cursor: { ...value.providers.cursor, usagePresence: [] },
+      cursor: { ...value.providers.cursor, usagePresence: [], appliedLineChanges: [] },
     },
   };
 }
@@ -131,7 +132,18 @@ export function validateHistoryBackfill(value) {
     exactKeys(value.providers[provider], seriesIds, `providers.${provider}`);
     for (const seriesId of seriesIds) validateSeries(value.providers[provider][seriesId], `providers.${provider}.${seriesId}`);
   }
-  return value;
+  // Version 2 files may contain the retired ai_code_hashes row count in the
+  // appliedLineChanges slot. It was never a line-diff measurement, so sanitize
+  // it at every read boundary instead of allowing an old file to republish it.
+  return {
+    ...value,
+    note: HISTORY_BACKFILL_NOTE,
+    options: { approximateLines: false },
+    providers: {
+      ...value.providers,
+      cursor: { ...value.providers.cursor, appliedLineChanges: [] },
+    },
+  };
 }
 
 export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDays = [], cursorLineDays, claudeSessionDays, approximateLines = false, generatedAt = new Date().toISOString() }) {
@@ -162,7 +174,7 @@ export function mergeHistoryBackfill(previous, next) {
     cursorUsagePresenceDays: mergeBackfillDays(prior.providers.cursor.usagePresence, incoming.providers.cursor.usagePresence),
     cursorLineDays: mergeBackfillDays(prior.providers.cursor.appliedLineChanges, incoming.providers.cursor.appliedLineChanges),
     claudeSessionDays: mergeBackfillDays(prior.providers["claude-code"].activeSessions, incoming.providers["claude-code"].activeSessions),
-    approximateLines: prior.options.approximateLines || incoming.options.approximateLines,
+    approximateLines: false,
     generatedAt: incoming.generatedAt,
   });
 }

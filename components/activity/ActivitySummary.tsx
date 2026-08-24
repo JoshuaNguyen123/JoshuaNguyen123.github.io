@@ -6,7 +6,6 @@ interface SummaryMetrics {
   codex: MetricActivitySnapshot;
   cursorObserved: MetricActivitySnapshot;
   cursorSessions: MetricActivitySnapshot;
-  cursorLines: MetricActivitySnapshot;
   claude: MetricActivitySnapshot;
 }
 
@@ -25,7 +24,6 @@ export function ActivitySummary({ summary, currentStreak, metrics }: { summary: 
         ? `${countActiveDays(metrics.cursorSessions).toLocaleString("en-US")} session-counted days · ${countActiveDays(metrics.cursorObserved).toLocaleString("en-US")} observed days`
         : undefined,
     },
-    { value: shown(metrics.cursorLines, summary.cursorAppliedAiLineChanges), label: "Cursor applied AI line changes", context: daysContext(metrics.cursorLines, "edit-tracked days") },
     { value: shown(metrics.claude, summary.claudeActiveSessionDays), label: "Claude active session-days", context: daysContext(metrics.claude) },
     { value: summary.activeDays.toLocaleString("en-US"), label: "active days" },
     { value: `${currentStreak}d`, label: "current streak", context: "consecutive active days through the latest observed day" },

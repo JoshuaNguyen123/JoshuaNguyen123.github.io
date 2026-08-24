@@ -2,10 +2,15 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-for (const file of ["out/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/data/activity.json", "out/og-personal.jpg"]) await access(path.join(root, file));
+for (const file of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/data/activity.json", "out/og-personal.jpg"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
-for (const expected of ["Joshua Nguyen", "FDE, AI developer, and technical researcher.", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "not productivity", "Codex active session-days", "Claude active session-days", "Cursor active session-days", "Cursor applied AI line changes", "Observed activity", "Usage evidence"]) {
+for (const expected of ["Joshua Nguyen", "FDE, AI developer, and technical researcher.", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "not productivity", "Codex active session-days", "Claude active session-days", "Cursor active session-days", "Observed activity", "Usage evidence"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
+}
+if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
+const activityHtml = await readFile(path.join(root, "out", "activity", "index.html"), "utf8");
+for (const expected of ["Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
+  if (!activityHtml.includes(expected)) throw new Error(`Activity definitions page is missing ${expected}`);
 }
 const projectPositions = ["Obsidian Research Agent", "Ladybug", "Teach Anything"].map((project) => html.indexOf(project));
 if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");

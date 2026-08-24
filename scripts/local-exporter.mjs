@@ -10,11 +10,12 @@ import {
   SCHEMA_VERSION,
   PRIVACY_VERSION,
   TIME_ZONE,
+  unavailableMetric,
   validateRawProvider,
 } from "./activity-core.mjs";
 import { mergeBackfillDays, validateHistoryBackfill } from "./history-backfill-core.mjs";
 
-const CURSOR_LINES_SOURCE = "Local Cursor edit hooks and AI code tracking history";
+const CURSOR_LINES_SOURCE = "Local Cursor Agent and Tab edit hooks";
 const CURSOR_USAGE_SOURCE = "Cursor usage-event export (daily presence only)";
 const DEFAULT_HISTORY_BACKFILL = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "history-backfill.json");
 
@@ -123,17 +124,6 @@ export function exportCursor(databasePath) {
   const activeSource = "Local Cursor hooks and retained conversation timestamps";
   const attemptedAt = new Date().toISOString();
   const counter = new DailyIdentityCounter();
-  const lineTotals = new Map();
-  const dateCache = new Map();
-  const bucketDate = (timestamp) => {
-    const cacheKey = timestamp.slice(0, 13);
-    let date = dateCache.get(cacheKey);
-    if (!date) {
-      date = dateInTimeZone(timestamp);
-      dateCache.set(cacheKey, date);
-    }
-    return date;
-  };
   if (existsSync(databasePath)) {
     const database = new DatabaseSync(databasePath, { readOnly: true });
     try {
@@ -147,8 +137,6 @@ export function exportCursor(databasePath) {
             const timestamp = epochToIso(row.observedAt);
             if (!timestamp) continue;
             counter.add(timestamp, String(row.conversationId));
-            const date = bucketDate(timestamp);
-            lineTotals.set(date, (lineTotals.get(date) ?? 0) + 1);
           }
         }
       }
@@ -157,14 +145,11 @@ export function exportCursor(databasePath) {
     }
   }
   const activeDays = counter.days();
-  const lineDays = [...lineTotals.entries()]
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([date, value]) => ({ date, value }));
   const result = {
     metrics: {
       activeSessions: createMetricSeries("cursor", "activeSessions", activeSource, activeDays, { lastAttemptedAt: attemptedAt }),
       usagePresence: createMetricSeries("cursor", "usagePresence", CURSOR_USAGE_SOURCE, [], { lastAttemptedAt: attemptedAt }),
-      appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, lineDays, { lastAttemptedAt: attemptedAt }),
+      appliedLineChanges: unavailableMetric("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, { attemptedAt }),
     },
   };
   validateRawProvider("cursor", result);
@@ -191,7 +176,6 @@ export function applyHistoryBackfill(providers, backfill) {
   };
   merge("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", backfill.providers.cursor.activeSessions);
   merge("cursor", "usagePresence", CURSOR_USAGE_SOURCE, backfill.providers.cursor.usagePresence);
-  merge("cursor", "appliedLineChanges", CURSOR_LINES_SOURCE, backfill.providers.cursor.appliedLineChanges);
   merge("claude-code", "activeSessions", "Local Claude Code hooks and retained session timestamps", backfill.providers["claude-code"].activeSessions);
   validateRawProvider("cursor", providers.cursor);
   validateRawProvider("claude-code", providers["claude-code"]);

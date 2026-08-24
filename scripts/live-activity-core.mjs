@@ -9,6 +9,7 @@ import {
   markMetricStale,
   METRICS,
   TIME_ZONE,
+  unavailableMetric,
   upgradeProvider,
   validateRawProvider,
 } from "./activity-core.mjs";
@@ -16,7 +17,7 @@ import { validateSpoolEvent } from "./local-hook-core.mjs";
 
 export const LOCAL_SOURCES = {
   cursorSessions: "Local Cursor hooks and retained conversation timestamps",
-  cursorLines: "Local Cursor edit hooks and AI code tracking history",
+  cursorLines: "Local Cursor Agent and Tab edit hooks",
   claudeSessions: "Local Claude Code hooks and retained session timestamps",
 };
 
@@ -141,8 +142,9 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
   const claudeBackfill = upgradeProvider("claude-code", backfillProviders["claude-code"]);
   const cursorHookSessions = installedCoverageDays(sessionDays(hookState.ledger.providers.cursor.sessions), installedDate, today);
   const cursorSessions = combineBeforeInstall(cursorBackfill.metrics.activeSessions.days, cursorHookSessions, installedDate);
-  const cursorHookLines = installedCoverageDays(objectDays(hookState.ledger.providers.cursor.lineChanges), installedDate, today);
-  const cursorLines = combineBeforeInstall(cursorBackfill.metrics.appliedLineChanges.days, cursorHookLines, installedDate);
+  const cursorLineEvents = objectDays(hookState.ledger.providers.cursor.lineChanges);
+  const firstCursorLineDate = cursorLineEvents[0]?.date;
+  const cursorLines = firstCursorLineDate ? installedCoverageDays(cursorLineEvents, firstCursorLineDate, today) : [];
   const claudeHookSessions = installedCoverageDays(sessionDays(hookState.ledger.providers["claude-code"].sessions), installedDate, today);
   const claudeSessions = combineBeforeInstall(claudeBackfill.metrics.activeSessions.days, claudeHookSessions, installedDate);
   const providers = {
@@ -155,11 +157,13 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
           lastAttemptedAt: now,
         }),
         usagePresence: cursorBackfill.metrics.usagePresence,
-        appliedLineChanges: createMetricSeries("cursor", "appliedLineChanges", LOCAL_SOURCES.cursorLines, cursorLines, {
-          coverage: cursorLines.length ? { start: cursorLines[0].date, end: today } : { start: installedDate, end: today },
-          lastSyncedAt: now,
-          lastAttemptedAt: now,
-        }),
+        appliedLineChanges: cursorLines.length
+          ? createMetricSeries("cursor", "appliedLineChanges", LOCAL_SOURCES.cursorLines, cursorLines, {
+            coverage: { start: cursorLines[0].date, end: today },
+            lastSyncedAt: now,
+            lastAttemptedAt: now,
+          })
+          : unavailableMetric("cursor", "appliedLineChanges", LOCAL_SOURCES.cursorLines, { attemptedAt: now }),
       },
     },
     "claude-code": {

@@ -18,12 +18,19 @@ const definitions = {
   cursor: {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Cursor conversations observed on each America/Denver calendar day from retained timestamps or installed user hooks.", accuracy: "observed" },
     usagePresence: { label: "verified usage days", unit: "observed-usage", methodology: "Binary America/Denver calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.", accuracy: "observed" },
-    appliedLineChanges: { label: "applied AI line changes", unit: "applied-ai-line-changes", methodology: "Daily line additions plus deletions computed in memory after local Cursor Agent or Tab edits. This is not Cursor's Team Admin API accepted-lines metric.", accuracy: "observed" },
+    appliedLineChanges: { label: "applied AI line changes", unit: "applied-ai-line-changes", methodology: "Daily additions plus deletions captured directly by local Cursor Agent or Tab edit hooks. Historical database tracking records are not line changes and are never included.", accuracy: "observed" },
   },
   "claude-code": {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.", accuracy: "observed" },
   },
 } as const;
+
+const retiredCursorLineDefinition: ProviderMetricDefinition = {
+  label: "applied AI line changes",
+  unit: "applied-ai-line-changes",
+  methodology: "Daily line additions plus deletions computed in memory after local Cursor Agent or Tab edits. This is not Cursor's Team Admin API accepted-lines metric.",
+  accuracy: "observed",
+};
 
 const sources = {
   github: { contributions: ["GitHub public contribution calendar", "Synthetic local development fixture"] },
@@ -31,7 +38,7 @@ const sources = {
   cursor: {
     activeSessions: ["Local Cursor hooks and retained conversation timestamps", "Local Cursor hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
     usagePresence: ["Cursor usage-event export (daily presence only)", "Synthetic local development fixture"],
-    appliedLineChanges: ["Local Cursor edit hooks and AI code tracking history", "Local Cursor Agent and Tab edit hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
+    appliedLineChanges: ["Local Cursor Agent and Tab edit hooks", "Local Cursor edit hooks and AI code tracking history", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
   },
   "claude-code": { activeSessions: ["Local Claude Code hooks and retained session timestamps", "Local Claude Code session event timestamps", "Local Claude Code hooks", "Synthetic local development fixture", "Legacy Claude aggregate feed"] },
 } as const;
@@ -91,7 +98,9 @@ function parseMetric(provider: ActivityProvider, metricId: string, input: unknow
   const definition = record(value.definition);
   const coverage = record(value.coverage);
   const days = parseDays(value.days);
-  if (!definition || !sameDefinition(definition, expected) || !coverage || !hasExactKeys(coverage, ["start", "end"]) || !days) return null;
+  const definitionMatches = definition && (sameDefinition(definition, expected)
+    || provider === "cursor" && metricId === "appliedLineChanges" && sameDefinition(definition, retiredCursorLineDefinition));
+  if (!definitionMatches || !coverage || !hasExactKeys(coverage, ["start", "end"]) || !days) return null;
   const coverageValid = coverage.start === null && coverage.end === null
     || isoDate(coverage.start) && isoDate(coverage.end) && coverage.start <= coverage.end;
   if (!coverageValid || !(value.lastSyncedAt === null || timestamp(value.lastSyncedAt)) || !(value.lastAttemptedAt === null || timestamp(value.lastAttemptedAt))) return null;
@@ -193,6 +202,12 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
       : parseLegacyProviders(snapshot.providers, version);
   const parsedBuildDays = parseDays(buildIndex.days, { buildIndex: true });
   if (!providers || !parsedBuildDays) return null;
+  const retiredLineMetric = providers.cursor.metrics.appliedLineChanges;
+  providers.cursor.metrics.appliedLineChanges = unavailableMetric(
+    "cursor",
+    "appliedLineChanges",
+    retiredLineMetric.lastAttemptedAt,
+  );
   const buildDays = parsedBuildDays.map((day) => day.value > 0 && day.level === 0 ? { ...day, level: 1 as const } : day);
   const summariesOutput: ActivitySnapshot["summaries"] = {};
   for (const [year, summaryInput] of Object.entries(summaries)) {
@@ -208,7 +223,7 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
       contributions: summary.contributions as number,
       codexActiveSessionDays: summary.codexActiveSessionDays as number,
       cursorActiveSessionDays: version >= 4 ? summary.cursorActiveSessionDays as number : 0,
-      cursorAppliedAiLineChanges: version >= 4 ? summary.cursorAppliedAiLineChanges as number : version === 3 ? summary.cursorAcceptedAiLineChanges as number : 0,
+      cursorAppliedAiLineChanges: 0,
       claudeActiveSessionDays: summary.claudeActiveSessionDays as number,
       activeDays: summary.activeDays as number,
       longestStreak: summary.longestStreak as number,

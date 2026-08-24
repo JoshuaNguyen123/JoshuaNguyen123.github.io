@@ -321,14 +321,32 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .activity-page { padding: clamp(40px, 4.5vw, 60px) var(--gutter-centered) 0; }
 .activity-page h1 { font-size: clamp(30px, 3.3vw, 38px); font-weight: 400; letter-spacing: -.017em; line-height: 1.2; margin: 22px 0; max-width: 760px; }
 .activity-page > p { color: var(--body); font-size: 19px; line-height: 1.64; max-width: var(--measure); }
+.activity-current, .activity-glossary { border-top: 1px solid var(--hair); margin-top: 34px; padding-top: 28px; }
+.activity-current .section-heading h2, .activity-glossary .section-heading h2 {
+  font-size: clamp(24px, 2.7vw, 31px); font-weight: 400; letter-spacing: -.015em; margin: 14px 0 0;
+}
+.activity-current .section-heading p { color: var(--body); font-size: 15px; line-height: 1.65; margin-top: 12px; max-width: 700px; }
+.activity-definition-summary { display: grid; gap: 26px 34px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; }
+.activity-definition-summary article { border-top: 1px solid var(--hair); padding-top: 14px; }
+.activity-definition-summary strong { display: block; font-size: 31px; font-weight: 380; letter-spacing: -.03em; }
+.activity-definition-summary span, .activity-definition-summary small { display: block; font-family: var(--font-geist-sans), sans-serif; }
+.activity-definition-summary span { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.activity-definition-summary small { color: var(--faint); font-size: 12px; line-height: 1.5; margin-top: 5px; }
+.activity-glossary dl { display: grid; gap: 24px 42px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 26px 0 0; }
+.activity-glossary dl > div { border-top: 1px solid var(--hair); padding-top: 14px; }
+.activity-glossary dt { font-family: var(--font-geist-sans), sans-serif; font-size: 13px; font-weight: 550; }
+.activity-glossary dd { color: var(--body); font-size: 15px; line-height: 1.65; margin: 8px 0 0; }
 .tool-block { border-top: 1px solid var(--hair); padding: 26px 0 28px; }
 .tool-blocks { margin-top: 28px; }
 .tool-block h2 { font-family: var(--font-geist-sans), sans-serif; font-size: 16px; font-weight: 500; margin: 0; }
 .tool-block:first-of-type { border-top: 1px solid var(--ink); }
 .tool-block:last-of-type { border-bottom: 1px solid var(--hair); }
-.tool-provenance { display: grid; gap: 24px; grid-template-columns: repeat(4, 1fr); margin-bottom: 22px; }
+.tool-provenance { display: grid; gap: 24px; grid-template-columns: repeat(5, 1fr); margin-bottom: 22px; }
 .tool-provenance dt { color: var(--faint); font-family: var(--font-geist-sans), sans-serif; font-size: 12px; font-weight: 550; letter-spacing: .07em; text-transform: uppercase; }
 .tool-provenance dd { color: var(--body); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
+.metric-limit { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; line-height: 1.6; margin: 9px 0 18px; max-width: 760px; }
+.metric-limit strong, .metric-retirement-note strong { color: var(--ink); font-weight: 550; }
+.metric-retirement-note { background: rgba(213, 94, 0, .06); border-left: 2px solid #d55e00; color: var(--body); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; line-height: 1.65; margin: 18px 0 0; max-width: 820px; padding: 12px 15px; }
 
 /* ---- Contact ---- */
 .contact-section h2 { font-size: 28px; font-weight: 400; letter-spacing: -.015em; margin: 18px 0 16px; }
@@ -426,8 +444,8 @@ body > main > footer, .blog-footer {
     gap: 32px; grid-template-columns: minmax(0, 1fr) 240px;
   }
   .heatmap-stack { gap: 28px 32px; }
-  .summary-grid, .tool-provenance { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .interest-columns, .methodology-grid, .blog-index-list, .blog-empty ul { grid-template-columns: repeat(2, 1fr); }
+  .summary-grid, .tool-provenance, .activity-definition-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .interest-columns, .methodology-grid, .activity-glossary dl, .blog-index-list, .blog-empty ul { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 760px) {
@@ -446,7 +464,7 @@ body > main > footer, .blog-footer {
   .metric-selector { gap: 12px 16px; }
   .about-aside, .project-meta, .writing-list > a > div:last-child, .contact-links { padding-top: 0; }
   .hero-now { gap: 20px; grid-template-columns: minmax(0, 1fr); }
-  .summary-grid, .heatmap-stack, .interest-columns, .methodology-grid,
+  .summary-grid, .activity-definition-summary, .heatmap-stack, .interest-columns, .methodology-grid, .activity-glossary dl,
   .tool-provenance, .blog-index-list, .blog-empty ul, .contact-fields {
     grid-template-columns: minmax(0, 1fr);
   }

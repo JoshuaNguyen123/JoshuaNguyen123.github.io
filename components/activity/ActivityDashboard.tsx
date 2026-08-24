@@ -18,7 +18,7 @@ import { ActivityHeatmap } from "./ActivityHeatmap";
 import { ActivitySummary } from "./ActivitySummary";
 
 const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
-  ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/activity-data/activity.json";
+  ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/main/public/data/activity.json";
 const pollDelayMs = 300_000;
 const maxRetryDelayMs = 1_800_000;
 const activityTimestampFormatter = new Intl.DateTimeFormat("en-US", {
@@ -81,12 +81,12 @@ function filterMetric(metric: MetricActivitySnapshot, start: string, end: string
   return { ...metric, days: metric.days.filter((day) => day.date >= start && day.date <= end) };
 }
 
-type FeedState = "checking" | "live" | "fallback";
+type FeedState = "checking" | "live" | "fallback" | "bundled";
 
 export function ActivityDashboard({ initialData }: { initialData: ActivitySnapshot }) {
   const [data, setData] = useState(initialData);
   const [feedState, setFeedState] = useState<FeedState>("checking");
-  const [cursorMetricId, setCursorMetricId] = useState<"observedActivity" | "activeSessions" | "usagePresence" | "appliedLineChanges">("observedActivity");
+  const [cursorMetricId, setCursorMetricId] = useState<"observedActivity" | "activeSessions" | "usagePresence">("observedActivity");
   const availableYears = yearsInSnapshot(data);
   const [selectedYear, setSelectedYear] = useState(() => defaultYear(initialData));
   const selectedRange = yearRange(selectedYear, data);
@@ -104,8 +104,11 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         if (!snapshot || snapshot.mode !== "observed") throw new Error("Live activity feed failed validation");
         if (cancelled) return;
         failures = 0;
-        setData((current) => snapshot.generatedAt === current.generatedAt ? current : snapshot);
-        setFeedState("live");
+        setData((current) => {
+          const useLive = Date.parse(snapshot.generatedAt) > Date.parse(current.generatedAt);
+          setFeedState(useLive ? "live" : "bundled");
+          return useLive ? snapshot : current;
+        });
       } catch {
         if (cancelled) return;
         failures += 1;
@@ -122,7 +125,6 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     codex: filterMetric(data.providers.codex.metrics.activeSessions, selectedRange.start, selectedRange.end),
     cursorSessions: filterMetric(data.providers.cursor.metrics.activeSessions, selectedRange.start, selectedRange.end),
     cursorUsage: filterMetric(data.providers.cursor.metrics.usagePresence, selectedRange.start, selectedRange.end),
-    cursorLines: filterMetric(data.providers.cursor.metrics.appliedLineChanges, selectedRange.start, selectedRange.end),
     claude: filterMetric(data.providers["claude-code"].metrics.activeSessions, selectedRange.start, selectedRange.end),
   }), [data, selectedRange.end, selectedRange.start]);
   const cursorObserved = useMemo(
@@ -131,8 +133,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   );
   const cursorMetric = cursorMetricId === "observedActivity" ? cursorObserved
     : cursorMetricId === "activeSessions" ? filteredMetrics.cursorSessions
-      : cursorMetricId === "usagePresence" ? filteredMetrics.cursorUsage
-        : filteredMetrics.cursorLines;
+      : filteredMetrics.cursorUsage;
   const providerMetrics: Record<ActivityProvider, MetricActivitySnapshot> = {
     github: filteredMetrics.github,
     codex: filteredMetrics.codex,
@@ -159,7 +160,6 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   const lookups = Object.fromEntries(Object.entries(providerMetrics).map(([provider, metric]) => [provider, new Map(metric.days.map((day) => [day.date, day]))])) as Record<ActivityProvider, Map<string, DailyActivityPoint>>;
   const cursorSessionLookup = new Map(filteredMetrics.cursorSessions.days.map((day) => [day.date, day]));
   const cursorUsageLookup = new Map(filteredMetrics.cursorUsage.days.map((day) => [day.date, day]));
-  const cursorLineLookup = new Map(filteredMetrics.cursorLines.days.map((day) => [day.date, day]));
 
   // The day card is anchored to the square that was pressed, in coordinates
   // relative to the dashboard, so it travels with the page rather than the viewport.
@@ -211,6 +211,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         <span className={`data-dot data-dot--${data.mode}`} />
         {data.mode === "fixture" ? "Development fixtures — never published" : feedState === "live"
           ? `Live activity feed · updated ${formatActivityTimestamp(data.generatedAt)}`
+          : feedState === "bundled" ? `Verified bundled snapshot · newer than live feed · updated ${formatActivityTimestamp(data.generatedAt)}`
           : feedState === "fallback" ? `Verified bundled snapshot · live feed unavailable · updated ${formatActivityTimestamp(data.generatedAt)}`
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt)}`}
       </div>
@@ -244,15 +245,11 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                     <button type="button" aria-pressed={cursorMetricId === "observedActivity"} className={cursorMetricId === "observedActivity" ? "is-active" : ""} onClick={() => setCursorMetricId("observedActivity")}>Observed activity</button>
                     <button type="button" aria-pressed={cursorMetricId === "activeSessions"} className={cursorMetricId === "activeSessions" ? "is-active" : ""} onClick={() => setCursorMetricId("activeSessions")}>Active sessions</button>
                     <button type="button" aria-pressed={cursorMetricId === "usagePresence"} className={cursorMetricId === "usagePresence" ? "is-active" : ""} onClick={() => setCursorMetricId("usagePresence")}>Usage evidence</button>
-                    <button type="button" aria-pressed={cursorMetricId === "appliedLineChanges"} className={cursorMetricId === "appliedLineChanges" ? "is-active" : ""} onClick={() => setCursorMetricId("appliedLineChanges")}>Applied line changes</button>
                   </div>
                 ) : null}
                 <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} />
                 {provider === "claude-code" ? (
                   <p className="coverage-note">Coverage begins July 23, 2026. Claude Code deletes local session transcripts after 30 days by default, which erased earlier history before this feed launched—retention is now extended, so nothing is lost going forward.</p>
-                ) : null}
-                {provider === "cursor" && cursorMetricId === "appliedLineChanges" ? (
-                  <p className="coverage-note">Line-change coverage begins July 14, 2026, when Cursor started keeping per-day edit records locally. Earlier days are shown as unobserved rather than estimated.</p>
                 ) : null}
               </div>
             );
@@ -276,7 +273,6 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                 const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions : providerMetrics[provider];
                 const detailPoint = provider === "cursor" ? cursorSessionLookup.get(dayCard.date) : lookups[provider].get(dayCard.date);
                 const usagePoint = cursorUsageLookup.get(dayCard.date);
-                const linePoint = cursorLineLookup.get(dayCard.date);
                 const cursorSessions = cursorSessionLookup.get(dayCard.date)?.value ?? 0;
                 const cursorUsage = usagePoint?.value ?? 0;
                 return (
@@ -293,7 +289,6 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                                 ? "Usage evidence verified"
                                 : "Usage evidence only, no local session count"
                               : "No usage evidence"}
-                          {linePoint && linePoint.value > 0 ? " · " + describeValue(linePoint, filteredMetrics.cursorLines.definition) : ""}
                         </small>
                       ) : null}
                     </dd>
@@ -319,7 +314,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           {activityProviders.map((provider) => (
             <article key={provider}>
               <div><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" /><h3>{providerLabels[provider]}</h3></div>
-              {Object.values(data.providers[provider].metrics).map((metric) => (
+              {Object.entries(data.providers[provider].metrics).filter(([metricId]) => metricId !== "appliedLineChanges").map(([, metric]) => (
                 <section className="metric-method" key={metric.definition.unit}>
                   <strong>{metric.definition.label}</strong><p>{metric.definition.methodology}</p>
                   <dl>
