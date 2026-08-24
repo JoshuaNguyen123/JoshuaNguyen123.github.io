@@ -251,54 +251,39 @@ export default function Home() {
         <ActivityDashboard initialData={activity} />
       </section>
 
-      <section className="interests-section" id="interests">
-        <div className="section-heading">
-          <span className="eyebrow">Interests</span>
-          <h2>What I&apos;m exploring.</h2>
-        </div>
-        <div className="interest-columns">
-          {interests.map(([title, description]) => (
-            <article key={title}>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
-          ))}
-        </div>
-
-        <section className="home-writing" aria-labelledby="home-writing-title">
-          <header>
-            <div>
-              <span className="eyebrow">Writing</span>
-              <h2 id="home-writing-title">Read my notes.</h2>
-            </div>
-            <Link href="/blog/">Open the notebook</Link>
-          </header>
-          {posts.length > 0 ? (
-            <div className="writing-list">
-              {posts.slice(0, 3).map((post) => (
-                <Link href={`/blog/${post.slug}/`} key={post.slug}>
-                  <div>
-                    <h3>{post.title}</h3>
-                    <p>{post.summary}</p>
-                  </div>
-                  <div>
-                    <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                    <span>{post.readingMinutes} min read</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="writing-preview">
-              <p>Notes from building software, including the parts that looked easy right before they weren&apos;t.</p>
-              <ul aria-label="Planned writing topics">
-                <li>Reliable agents</li>
-                <li>Privacy by design</li>
-                <li>Building in public</li>
-              </ul>
-            </div>
-          )}
-        </section>
+      <section className="writing-section home-writing" aria-labelledby="home-writing-title">
+        <header>
+          <div>
+            <span className="eyebrow">Writing</span>
+            <h2 id="home-writing-title">Read my notes.</h2>
+          </div>
+          <Link href="/blog/">Open the notebook</Link>
+        </header>
+        {posts.length > 0 ? (
+          <div className="writing-list">
+            {posts.slice(0, 3).map((post) => (
+              <Link href={`/blog/${post.slug}/`} key={post.slug}>
+                <div>
+                  <h3>{post.title}</h3>
+                  <p>{post.summary}</p>
+                </div>
+                <div>
+                  <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+                  <span>{post.readingMinutes} min read</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="writing-preview">
+            <p>Notes from building software, including the parts that looked easy right before they weren&apos;t.</p>
+            <ul aria-label="Planned writing topics">
+              <li>Reliable agents</li>
+              <li>Privacy by design</li>
+              <li>Building in public</li>
+            </ul>
+          </div>
+        )}
 
         {/* LinkedIn pulse paused; see notes/linkedin-pulse.md */}
       </section>
@@ -326,7 +311,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer>
+      <footer className="home-footer">
         <span>© {new Date().getFullYear()} Joshua Nguyen</span>
         <span>Built with Next.js, published on GitHub Pages</span>
       </footer>
