@@ -61,7 +61,8 @@ button { color: inherit; }
   justify-content: space-between;
   padding: 34px var(--gutter-centered) 22px;
 }
-.wordmark { font-size: 20px; font-weight: 500; letter-spacing: -.01em; }
+.wordmark { border-bottom: 1px solid #b5ab95; display: inline-block; font-size: 20px; font-weight: 500; letter-spacing: -.01em; padding-bottom: 2px; }
+.wordmark:hover, .wordmark:focus-visible { border-color: var(--ink); }
 .site-header > nav { color: var(--muted); display: flex; font-size: 13px; gap: 30px; }
 .site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); }
 .site-header > nav a[aria-current="page"] { border-bottom: 1px solid var(--ink); color: var(--ink); padding-bottom: 2px; }
@@ -391,7 +392,8 @@ body > main > footer, .blog-footer {
 /* ---- Blog ---- */
 .blog-shell { margin: 0 auto; max-width: var(--container); min-height: 100vh; padding: 0 var(--gutter); }
 .blog-masthead { align-items: baseline; border-bottom: 1px solid var(--line); display: flex; gap: 24px; justify-content: space-between; padding: 34px 0 22px; }
-.blog-masthead > a:first-child { font-size: 20px; font-weight: 500; letter-spacing: -.01em; }
+.blog-masthead > a:first-child { border-bottom: 1px solid #b5ab95; display: inline-block; font-size: 20px; font-weight: 500; letter-spacing: -.01em; padding-bottom: 2px; }
+.blog-masthead > a:first-child:hover, .blog-masthead > a:first-child:focus-visible { border-color: var(--ink); }
 .blog-masthead > a:nth-child(2), .blog-masthead > span:nth-child(2) { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; }
 .blog-intro { padding: clamp(56px, 7vw, 104px) 0 clamp(40px, 5vw, 64px); }
 .blog-intro h1 { font-size: clamp(30px, 3.3vw, 42px); font-weight: 400; letter-spacing: -.022em; line-height: 1.12; margin: 22px 0; max-width: 720px; }
@@ -439,7 +441,8 @@ body > main > footer, .blog-footer {
 /* ---- Private blog editor ---- */
 .admin-shell { margin: 0 auto; max-width: 1280px; min-height: 100vh; padding: 0 var(--gutter) 80px; }
 .admin-masthead { align-items: baseline; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding: 34px 0 22px; }
-.admin-masthead > a { font-size: 20px; font-weight: 500; }
+.admin-masthead > a { border-bottom: 1px solid #b5ab95; display: inline-block; font-size: 20px; font-weight: 500; padding-bottom: 2px; }
+.admin-masthead > a:hover, .admin-masthead > a:focus-visible { border-color: var(--ink); }
 .admin-masthead > span { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; }
 .admin-auth { margin: clamp(64px, 10vw, 140px) auto; max-width: 640px; }
 .admin-auth h1, .admin-toolbar h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 400; letter-spacing: -.025em; margin: 18px 0; }
@@ -448,7 +451,10 @@ body > main > footer, .blog-footer {
 .admin-editor { padding-top: clamp(44px, 6vw, 78px); }
 .admin-toolbar { align-items: flex-start; display: flex; justify-content: space-between; }
 .admin-toolbar h1 { margin-bottom: 0; }
+.admin-hint { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 14px; margin: 6px 0 0; }
 .admin-post-picker { align-items: center; border-bottom: 1px solid var(--hair); border-top: 1px solid var(--ink); display: grid; gap: 24px; grid-template-columns: 120px minmax(0, 1fr); margin: 40px 0; padding: 22px 0; }
+.admin-post-picker-row { display: flex; gap: 12px; }
+.admin-post-picker-row select { flex: 1; }
 .admin-form label, .admin-post-picker label { color: var(--muted); display: grid; font-family: var(--font-geist-sans), sans-serif; font-size: 13px; gap: 8px; }
 .admin-post-picker select, .admin-form input, .admin-form textarea { background: #fffdf8; border: 1px solid var(--hair); border-radius: 0; color: var(--ink); font: inherit; padding: 11px 12px; width: 100%; }
 .admin-post-picker select:focus, .admin-form input:focus, .admin-form textarea:focus { border-color: var(--ink); outline: 2px solid transparent; }
@@ -513,6 +519,7 @@ body > main > footer, .blog-footer {
   .home-footer { margin-top: 64px; }
   .admin-toolbar, .admin-masthead { align-items: flex-start; flex-direction: column; gap: 12px; }
   .admin-post-picker, .admin-field-row { grid-template-columns: minmax(0, 1fr); }
+  .admin-post-picker-row { flex-direction: column; }
   .admin-actions { justify-content: stretch; }
   .admin-actions button { flex: 1; }
 }

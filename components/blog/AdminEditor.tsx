@@ -174,16 +174,20 @@ export function AdminEditor() {
         <div>
           <span className="eyebrow">Signed in as JoshuaNguyen123</span>
           <h1>Blog editor</h1>
+          <p className="admin-hint">Click the New post button to start writing, or pick a post below to keep editing it.</p>
         </div>
         <button className="quiet-button" type="button" onClick={signOut}>Sign out</button>
       </div>
 
       <div className="admin-post-picker">
-        <label htmlFor="admin-post">Post</label>
-        <select id="admin-post" value={post.sha ? post.slug : ""} onChange={(event) => choosePost(event.target.value)}>
-          <option value="">New post</option>
-          {posts.map((item) => <option value={item.slug} key={item.slug}>{item.draft ? "Draft: " : ""}{item.title}</option>)}
-        </select>
+        <label htmlFor="admin-post">Edit existing</label>
+        <div className="admin-post-picker-row">
+          <select id="admin-post" value={post.sha ? post.slug : ""} onChange={(event) => choosePost(event.target.value)}>
+            <option value="">New post</option>
+            {posts.map((item) => <option value={item.slug} key={item.slug}>{item.draft ? "Draft: " : ""}{item.title}</option>)}
+          </select>
+          <button className="primary-button" type="button" onClick={() => choosePost("")}>+ New post</button>
+        </div>
       </div>
 
       <div className="admin-edit-grid">
