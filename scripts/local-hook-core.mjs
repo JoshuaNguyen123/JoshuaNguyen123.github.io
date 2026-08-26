@@ -3,6 +3,9 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const TIME_ZONE = "America/Denver";
+const MAX_EXACT_DIFF_CHARACTERS = 250_000;
+const MAX_EXACT_DIFF_LINES = 10_000;
+const MAX_EXACT_DIFF_CELLS = 2_000_000;
 
 function dateInTimeZone(value) {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -20,13 +23,33 @@ function lines(value) {
   return value.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
 }
 
+function lineCount(value) {
+  if (typeof value !== "string" || value.length === 0) return 0;
+  let count = 1;
+  for (let index = 0; index < value.length; index += 1) {
+    if (value[index] === "\n") count += 1;
+    else if (value[index] === "\r" && value[index + 1] !== "\n") count += 1;
+  }
+  return count;
+}
+
+function replacementCounts(oldText, newText) {
+  const deletions = lineCount(oldText);
+  const additions = lineCount(newText);
+  return { additions, deletions, total: additions + deletions };
+}
+
 export function lineChangeCounts(oldText, newText) {
+  if (oldText === newText) return { additions: 0, deletions: 0, total: 0 };
+  if (typeof oldText !== "string" || typeof newText !== "string") return replacementCounts(oldText, newText);
+  if (oldText.length + newText.length > MAX_EXACT_DIFF_CHARACTERS) return replacementCounts(oldText, newText);
   const before = lines(oldText);
   const after = lines(newText);
   const n = before.length;
   const m = after.length;
   if (!n) return { additions: m, deletions: 0, total: m };
   if (!m) return { additions: 0, deletions: n, total: n };
+  if (n + m > MAX_EXACT_DIFF_LINES || n * m > MAX_EXACT_DIFF_CELLS) return replacementCounts(oldText, newText);
   const frontier = new Map([[1, 0]]);
   for (let distance = 0; distance <= n + m; distance += 1) {
     for (let diagonal = -distance; diagonal <= distance; diagonal += 2) {

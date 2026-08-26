@@ -31,6 +31,8 @@ const allowedTags = [
 const sanitizeOptions: sanitizeHtml.IOptions = {
   allowedTags,
   allowedAttributes: {
+    // target/rel are permitted only so transformTags can add canonical values;
+    // author-provided values are removed before the sanitized output is emitted.
     a: ["href", "title", "target", "rel"],
     img: ["src", "alt", "title", "width", "height"],
     code: ["class"],
@@ -43,12 +45,15 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
   disallowedTagsMode: "discard",
   transformTags: {
     // Outbound links from posts should not leak referrer or window.opener.
-    a: (tagName, attribs) => ({
-      tagName,
-      attribs: /^https?:\/\//i.test(attribs.href ?? "") && !(attribs.href ?? "").includes("joshuanguyen123.github.io")
-        ? { ...attribs, target: "_blank", rel: "noreferrer noopener" }
-        : attribs,
-    }),
+    a: (tagName, attribs) => {
+      const safeAttributes = Object.fromEntries(Object.entries(attribs).filter(([name]) => name !== "target" && name !== "rel"));
+      let outbound = false;
+      try {
+        const destination = new URL(attribs.href ?? "", "https://joshuanguyen123.github.io");
+        outbound = ["http:", "https:"].includes(destination.protocol) && destination.origin !== "https://joshuanguyen123.github.io";
+      } catch { /* The sanitizer removes invalid URLs. */ }
+      return { tagName, attribs: outbound ? { ...safeAttributes, target: "_blank", rel: "noreferrer noopener" } : safeAttributes };
+    },
   },
 };
 
@@ -60,9 +65,13 @@ export function renderPostHtml(markdown: string): string {
 const contentDirectory = path.join(process.cwd(), "content", "blog");
 const frontmatterKeys = new Set(["slug", "title", "summary", "publishedAt", "tags", "draft"]);
 
+export function parseBlogFrontmatter(source: string) {
+  return matter(source);
+}
+
 function readPost(filename: string, directory = contentDirectory): BlogPost {
   const source = readFileSync(path.join(directory, filename), "utf8");
-  const { data, content } = matter(source);
+  const { data, content } = parseBlogFrontmatter(source);
   const publishedAt = data.publishedAt instanceof Date ? data.publishedAt.toISOString().slice(0, 10) : data.publishedAt;
   const unknownKeys = Object.keys(data).filter((key) => !frontmatterKeys.has(key));
   if (unknownKeys.length) throw new Error(`Unknown blog frontmatter: ${unknownKeys.join(", ")}`);

@@ -10,18 +10,48 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  pr-verify:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run public-safety:check
+      - run: npm test
+      - name: Build secret-free static export
+        run: npm run build
+        env:
+          GITHUB_USERNAME: JoshuaNguyen123
+          NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
+          NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${{ vars.NEXT_PUBLIC_HCAPTCHA_SITE_KEY }}
+      - run: npm run privacy:check
+      - run: npm run smoke
+
+  build:
+    if: github.event_name != 'pull_request'
+    # Only the deploy job needs Pages write; this one just uploads an artifact.
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v5
         with:
           node-version: 24
@@ -43,18 +73,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIVITY_GITHUB_TOKEN }}
           GITHUB_USERNAME: JoshuaNguyen123
           CURSOR_ADMIN_API_KEY: ${{ secrets.CURSOR_ADMIN_API_KEY }}
-          NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.NEXT_PUBLIC_WEB3FORMS_KEY }}
+          NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
+          NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${{ vars.NEXT_PUBLIC_HCAPTCHA_SITE_KEY }}
       - run: npm run privacy:check
       - run: npm run smoke
-      - if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
-      - if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: out
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

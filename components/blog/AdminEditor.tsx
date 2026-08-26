@@ -7,7 +7,6 @@ import { buildBlogSource } from "@/lib/blog/source-format.mjs";
 const apiBase = process.env.NEXT_PUBLIC_BLOG_ADMIN_API_URL
   ?? "https://joshua-portfolio-blog-admin.personal-ai-digest.workers.dev";
 const siteOrigin = "https://joshuanguyen123.github.io";
-const sessionKey = "portfolio-blog-admin-session";
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 type EditablePost = {
@@ -19,6 +18,7 @@ type EditablePost = {
   draft: boolean;
   body: string;
   sha?: string;
+  stored?: boolean;
 };
 
 const today = () => new Intl.DateTimeFormat("en-CA", {
@@ -36,6 +36,7 @@ const emptyPost = (): EditablePost => ({
   tags: [],
   draft: true,
   body: "",
+  stored: false,
 });
 
 function slugify(value: string) {
@@ -97,6 +98,7 @@ export function AdminEditor() {
   const [status, setStatus] = useState("");
   const [failed, setFailed] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [framed, setFramed] = useState(false);
 
   const tags = useMemo(
     () => tagsInput.split(",").map((tag) => tag.trim()).filter(Boolean),
@@ -106,7 +108,7 @@ export function AdminEditor() {
   const issues = useMemo(() => describeIssues(post, tags), [post, tags]);
   const fingerprint = useMemo(() => JSON.stringify({ ...post, sha: undefined, tagsInput }), [post, tagsInput]);
   const dirty = baseline !== "" && fingerprint !== baseline;
-  const isNew = !post.sha;
+  const isNew = !post.stored;
 
   const titleRef = useAutoHeight(post.title, !previewing);
   const bodyRef = useAutoHeight(post.body, !previewing);
@@ -137,7 +139,6 @@ export function AdminEditor() {
     const body = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (response.status === 401) {
-        sessionStorage.removeItem(sessionKey);
         setSession(null);
         setAuthState("signed-out");
       }
@@ -154,14 +155,23 @@ export function AdminEditor() {
 
   useEffect(() => {
     let cancelled = false;
+    // An embedded editor never authenticates. The hash is cleared before
+    // anything else runs so a hostile parent cannot read the returned session
+    // out of the URL, and both state updates are deferred into the timer below
+    // because setting state synchronously inside an effect cascades renders.
+    const embedded = window.top !== window.self;
     const hash = new URLSearchParams(window.location.hash.slice(1));
-    const returnedSession = hash.get("session");
-    if (returnedSession) {
-      sessionStorage.setItem(sessionKey, returnedSession);
+    const activeSession = embedded ? null : hash.get("session");
+    if (embedded || hash.has("session")) {
       history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
     }
-    const activeSession = returnedSession ?? sessionStorage.getItem(sessionKey);
     const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      if (embedded) {
+        setFramed(true);
+        setAuthState("signed-out");
+        return;
+      }
       if (!activeSession) {
         setAuthState("signed-out");
         return;
@@ -214,6 +224,13 @@ export function AdminEditor() {
       setFailed(true);
       return;
     }
+    const publishing = !draft;
+    const unpublishing = post.stored && !post.draft && draft;
+    if ((publishing || unpublishing) && !window.confirm(
+      unpublishing
+        ? "Unpublish this post? It will be removed from the live site and kept as a private draft. Published revisions remain in Git history."
+        : "Publish these changes to the public site? This creates a public Git commit.",
+    )) return;
     setSaving(true);
     setStatus("");
     setFailed(false);
@@ -226,8 +243,10 @@ export function AdminEditor() {
       });
       const refreshed = await loadPosts();
       openPost(refreshed.find((item) => item.slug === next.slug) ?? result.post);
-      setStatus(draft
-        ? "Draft saved. It stays private until you publish it."
+      setStatus(unpublishing
+        ? "Unpublished. The private draft is stored outside the public repository; previously published revisions remain in Git history."
+        : draft
+          ? "Private draft saved outside the public repository."
         : "Published. The site rebuilds in about a minute.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "The post could not be saved");
@@ -240,7 +259,6 @@ export function AdminEditor() {
   const signOut = async () => {
     if (dirty && !window.confirm("Discard the unsaved changes to this post?")) return;
     try { await request("/api/logout", { method: "POST", body: "{}" }); } catch { /* The local session is cleared either way. */ }
-    sessionStorage.removeItem(sessionKey);
     setSession(null);
     setAuthState("signed-out");
     setPosts([]);
@@ -249,6 +267,14 @@ export function AdminEditor() {
 
   if (authState === "checking") return (
     <section className="admin-auth"><p>Checking your editor session…</p></section>
+  );
+
+  if (framed) return (
+    <section className="admin-auth">
+      <span className="eyebrow">Admin blocked</span>
+      <h1>Open the editor directly.</h1>
+      <p>For your security, the admin editor does not run inside another page or embedded frame.</p>
+    </section>
   );
 
   if (authState === "signed-out") return (
@@ -360,7 +386,7 @@ export function AdminEditor() {
                     setPost((current) => ({
                       ...current,
                       title,
-                      slug: current.sha ? current.slug : slugify(title),
+                      slug: current.stored ? current.slug : slugify(title),
                     }));
                   }}
                 />
@@ -423,8 +449,8 @@ export function AdminEditor() {
           <div className="admin-actions">
             <p className="admin-actions-note">
               {post.draft || isNew
-                ? "Publishing commits the post and rebuilds the public site."
-                : "This post is live. Saving it as a draft removes it from the site."}
+                ? "Drafts stay outside the public repository. Publishing creates a public commit and rebuilds the site."
+                : "This post is live. Unpublishing removes it from the current site, but published revisions remain in Git history."}
             </p>
             <div className="admin-actions-buttons">
               <button className="quiet-button" type="button" disabled={saving} onClick={() => save(true)}>

@@ -34,6 +34,8 @@ test("hook installer merges idempotently, backs up, and removes only owned hooks
   assert.equal(claude.hooks.SessionStart[0].hooks.filter((entry) => /activity-hook-runtime/i.test(entry.command)).length, 1);
   assert.equal(cursor.hooks.sessionStart.filter((entry) => entry.command === "existing-cursor-command").length, 1);
   assert.equal(cursor.hooks.sessionStart.filter((entry) => /activity-hook-runtime/i.test(entry.command)).length, 1);
+  const installedCommand = cursor.hooks.sessionStart.find((entry) => /activity-hook-runtime/i.test(entry.command)).command;
+  assert.ok(installedCommand.startsWith(`"${process.execPath}"`), "installed hooks must pin the current Node runtime by absolute path");
   assert.equal(run("uninstall", profile, activityHome).status, 0);
   const after = JSON.parse(await readFile(path.join(profile, ".claude", "settings.json"), "utf8"));
   assert.equal(after.theme, "dark");

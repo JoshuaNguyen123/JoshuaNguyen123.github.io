@@ -72,3 +72,19 @@ test("post markdown cannot ship script, event handlers, or javascript: URIs", as
   // Outbound links get hardened rather than dropped.
   assert.match(post.html, /rel="noreferrer noopener"/);
 });
+
+test("post link hardening uses exact origins and ignores author-supplied window controls", async (context) => {
+  const root = await mkdtemp(path.join(tmpdir(), "portfolio-blog-links-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const body = [
+    '<a href="https://joshuanguyen123.github.io@evil.example/path" target="named" rel="opener">credential-shaped host</a>',
+    '<a href="https://evil.example/?next=joshuanguyen123.github.io" target="named">query trick</a>',
+    '<a href="https://joshuanguyen123.github.io/blog/" target="_blank" rel="opener">internal</a>',
+  ].join("\n");
+  await writeFile(path.join(root, "links.md"), `---\nslug: links\ntitle: Links\nsummary: Link checks.\npublishedAt: 2026-08-25\ntags: [security]\ndraft: false\n---\n\n${body}`);
+  const html = getPublishedPosts(root)[0].html;
+  assert.match(html, /href="https:\/\/joshuanguyen123\.github\.io@evil\.example\/path" target="_blank" rel="noreferrer noopener"/);
+  assert.match(html, /href="https:\/\/evil\.example\/\?next=joshuanguyen123\.github\.io" target="_blank" rel="noreferrer noopener"/);
+  assert.match(html, /href="https:\/\/joshuanguyen123\.github\.io\/blog\/">internal<\/a>/);
+  assert.doesNotMatch(html, /target="named"|rel="opener"/);
+});

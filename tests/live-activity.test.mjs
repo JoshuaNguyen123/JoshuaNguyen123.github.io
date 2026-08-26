@@ -15,6 +15,15 @@ test("Cursor line diff handles LF, CRLF, replacements, additions, and deletions"
   assert.deepEqual(lineChangeCounts("a\nb", ""), { additions: 0, deletions: 2, total: 2 });
 });
 
+test("Cursor line diff bounds adversarial inputs before quadratic work", () => {
+  const before = `${"before\n".repeat(40_000)}tail`;
+  const after = `${"after\n".repeat(40_000)}tail`;
+  const started = performance.now();
+  assert.deepEqual(lineChangeCounts(before, after), { additions: 40_001, deletions: 40_001, total: 80_002 });
+  assert.ok(performance.now() - started < 1_000, "bounded fallback should remain linear");
+  assert.deepEqual(lineChangeCounts(before, before), { additions: 0, deletions: 0, total: 0 });
+});
+
 test("Cursor Agent and Tab hooks reduce raw payloads to privacy-safe aggregates", () => {
   const now = new Date("2026-01-02T08:00:00Z");
   const agent = reduceHookPayload("cursor-agent-edit", { conversation_id: "private-conversation", file_path: "C:/secret.ts", model: "private-model", edits: [{ old_string: "a", new_string: "b\nc" }] }, secret, now);

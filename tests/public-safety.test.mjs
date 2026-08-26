@@ -47,6 +47,18 @@ test("internal docs, duplicate snapshots, and unapproved public assets are rejec
   ]);
 });
 
+test("blog drafts cannot be tracked in the public repository", () => {
+  const violations = validatePublicFiles([
+    file("content/blog/private-notes.md", "---\nslug: private-notes\ndraft: true\n---\nPrivate"),
+    file("content/blog/spaced-private-notes.md", "---\nslug: spaced-private-notes\ndraft : true\n---\nPrivate"),
+    file("content/blog/public-post.md", "---\nslug: public-post\ndraft: false\n---\nPublic"),
+  ]);
+  assert.deepEqual(violations, [
+    { path: "content/blog/private-notes.md", reason: "private draft is tracked in the public repository" },
+    { path: "content/blog/spaced-private-notes.md", reason: "private draft is tracked in the public repository" },
+  ]);
+});
+
 test("recognized credential shapes are rejected without retaining their values", () => {
   const samples = [
     "github" + "_pat_" + "A".repeat(48),

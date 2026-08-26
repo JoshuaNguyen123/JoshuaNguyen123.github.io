@@ -13,5 +13,24 @@
 			"binding": "SESSIONS",
 			"id": "95889be6a4754bd7b6e81770de366f4d"
 		}
+	],
+	"ratelimits": [
+		{
+			"name": "AUTH_START_RATE_LIMITER",
+			"namespace_id": "4720250826",
+			"simple": { "limit": 10, "period": 60 }
+		},
+		{
+			"name": "AUTH_CALLBACK_RATE_LIMITER",
+			"namespace_id": "4720250827",
+			"simple": { "limit": 10, "period": 60 }
+		},
+		{
+			// The contact relay is the only unauthenticated write path, and each
+			// accepted submission spends part of the Web3Forms monthly quota.
+			"name": "CONTACT_RATE_LIMITER",
+			"namespace_id": "4720250828",
+			"simple": { "limit": 3, "period": 60 }
+		}
 	]
 }

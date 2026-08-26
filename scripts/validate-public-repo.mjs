@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
+import { parseBlogFrontmatter } from "../lib/blog.ts";
 
 const forbiddenBasenames = new Set(["agents.md", "claude.md"]);
 const forbiddenPathSegments = new Set([".claude"]);
@@ -56,6 +57,13 @@ export function validatePublicFiles(files) {
     if (!file.contents || isBinary(file.contents)) continue;
 
     const contents = file.contents.toString("utf8");
+    if (isPublishedBlogPost) {
+      try {
+        if (parseBlogFrontmatter(contents).data.draft === true) violations.push({ path: repositoryPath, reason: "private draft is tracked in the public repository" });
+      } catch {
+        violations.push({ path: repositoryPath, reason: "blog frontmatter cannot be parsed safely" });
+      }
+    }
     for (const [label, pattern] of credentialDetectors) {
       if (pattern.test(contents)) violations.push({ path: repositoryPath, reason: `${label} pattern detected` });
     }

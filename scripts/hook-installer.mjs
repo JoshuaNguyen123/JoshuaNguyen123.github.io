@@ -14,6 +14,7 @@ const RUNTIME = path.join(RUNTIME_DIR, "activity-hook-runtime.mjs");
 const CURSOR_CONFIG = path.join(USER_HOME, ".cursor", "hooks.json");
 const CLAUDE_CONFIG = path.join(USER_HOME, ".claude", "settings.json");
 const OWNED_MARKER = RUNTIME.replaceAll("/", "\\");
+const NODE_RUNTIME = process.execPath;
 
 function fail(message) {
   throw new Error(`Local activity hooks: ${message}`);
@@ -43,7 +44,7 @@ async function atomicJson(file, value, { backup = true } = {}) {
 }
 
 function command(kind) {
-  return `node "${RUNTIME}" ${kind}`;
+  return `"${NODE_RUNTIME.replaceAll('"', '\\"')}" "${RUNTIME}" ${kind}`;
 }
 
 function cursorEntry(kind) {
