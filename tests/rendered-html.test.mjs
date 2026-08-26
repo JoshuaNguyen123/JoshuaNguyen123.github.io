@@ -76,7 +76,8 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(dashboard, /Verified bundled snapshot/);
   assert.match(dashboard, /Observed activity/);
   assert.match(dashboard, /Usage evidence/);
-  assert.match(dashboard, /Each heatmap square is one America\/Denver calendar date/);
+  assert.match(dashboard, /Every square is one calendar day, on America\/Denver time/);
+  assert.match(dashboard, /observed activity, not productivity/);
   assert.match(dashboard, /activityTimestampFormatter/);
   assert.match(dashboard, /timeZone: "America\/Denver"/);
   assert.doesNotMatch(dashboard, /new Date\([^)]*\)\.toLocaleString\(\)/);

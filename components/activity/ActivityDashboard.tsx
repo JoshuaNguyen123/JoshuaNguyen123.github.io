@@ -7,7 +7,6 @@ import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import { combineCursorActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
-import { summaryCardExplanations, summaryCardLabels, summaryCardOrder } from "@/lib/activity/summary-cards";
 import type {
   ActivityProvider,
   ActivitySnapshot,
@@ -308,31 +307,14 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         <Link href="/activity/">Every metric, in depth</Link>
       </div>
 
+      {/* High-level only: the exact definitions, sources, coverage windows,
+          and shading math live on /activity, linked below. */}
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
-        <p className="index-disclaimer"><strong>Build Index:</strong> {data.buildIndex.formula} {data.buildIndex.disclaimer}</p>
-        <p className="index-disclaimer"><strong>Session-days and tiles:</strong> Each heatmap square is one America/Denver calendar date. Session-day totals sum distinct sessions observed on each date, so several sessions can share one square and a session active across dates counts once on each date. Providers are attributed by tool: Cursor calls to Claude models remain Cursor activity, while Claude Code uses Claude Code&apos;s own sessions and hooks.</p>
-        {summaryCardOrder.map((id) => (
-          <p className="index-disclaimer" key={id}><strong>{summaryCardLabels[id]}:</strong> {summaryCardExplanations[id]}</p>
-        ))}
-        <div className="methodology-grid">
-          {activityProviders.map((provider) => (
-            <article key={provider}>
-              <div><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" /><h3>{providerLabels[provider]}</h3></div>
-              {Object.entries(data.providers[provider].metrics).filter(([metricId]) => metricId !== "appliedLineChanges").map(([, metric]) => (
-                <section className="metric-method" key={metric.definition.unit}>
-                  <strong>{metric.definition.label}</strong><p>{metric.definition.methodology}</p>
-                  <dl>
-                    <dt>Status</dt><dd>{metric.status === "available" ? "Observed within coverage" : metric.status === "stale" ? "Last verified data retained" : "Unavailable"}</dd>
-                    <dt>Source</dt><dd>{metric.source}</dd>
-                    <dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? metric.coverage.start + " — " + metric.coverage.end : "Unavailable"}</dd>
-                    <dt>Last sync</dt><dd>{metric.lastSyncedAt ? formatActivityTimestamp(metric.lastSyncedAt) : "Unavailable"}</dd>
-                  </dl>
-                </section>
-              ))}
-            </article>
-          ))}
-        </div>
+        <p className="index-disclaimer">Every square is one calendar day, on America/Denver time. If a tool saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
+        <p className="index-disclaimer">Shading is relative. Each tool grades its days against its own year — darker means busier than my usual, not busy by some absolute bar — and the Build Index averages those grades into one picture. It describes observed activity, not productivity.</p>
+        <p className="index-disclaimer">Only daily counts are published. Prompts, code, filenames, and project names never leave my machine.</p>
+        <p className="index-disclaimer">The exact definitions, sources, coverage windows, and the shading math live at <Link href="/activity/">Every metric, in depth</Link>.</p>
       </details>
     </div>
   );

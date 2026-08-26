@@ -143,6 +143,19 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
         </dl>
       </section>
 
+      <section className="activity-glossary" aria-labelledby="shading-definitions">
+        <div className="section-heading">
+          <span className="eyebrow">Intensity</span>
+          <h2 id="shading-definitions">How a day earns its shade.</h2>
+        </div>
+        <dl>
+          <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter of those days gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays cream, and a Cursor day verified only by usage evidence always shows the lightest shade, because I know I was there but not how much I did.</dd></div>
+          <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
+          <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
+          <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
+        </dl>
+      </section>
+
       <section className="activity-glossary" aria-labelledby="plain-english-definitions">
         <div className="section-heading">
           <span className="eyebrow">Plain-English definitions</span>
