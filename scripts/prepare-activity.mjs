@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { applyHistoryBackfill } from "./local-exporter.mjs";
 import { validateHistoryBackfill } from "./history-backfill-core.mjs";
+import { mergePublishedHistory } from "./activity-published-history.mjs";
 import {
   assembleSnapshot,
   createMetricSeries,
@@ -126,10 +127,29 @@ async function getLocalProviders() {
   return providers;
 }
 
+// CI only ever sees the committed local export, which trails what the local
+// publisher has already pushed. Merging the published snapshot forward keeps a
+// rebuild from regressing the live feed. See activity-published-history.mjs.
+async function carryPublishedHistory(providers, snapshotFile) {
+  if (!existsSync(snapshotFile)) return providers;
+  let published;
+  try {
+    published = await loadJson(snapshotFile);
+  } catch (error) {
+    process.stderr.write(`Activity prepare: ignoring unreadable published snapshot: ${error.message}\n`);
+    return providers;
+  }
+  return mergePublishedHistory(providers, published, {
+    onSkip: (reason) => process.stderr.write(`Activity prepare: not carrying published history (${reason})\n`),
+    onCarry: (provider, added) => console.log(`Carried ${added} previously published ${provider} session-days forward`),
+  });
+}
+
 const { start, end } = rangeForBuild();
-const providers = fixtureMode ? fixtureProviders(start, end) : { github: await getGitHubProvider(start, end), ...await getLocalProviders() };
-const snapshot = assembleSnapshot(providers, { start, end, mode: fixtureMode ? "fixture" : "observed" });
 const output = path.join(ROOT, "public", "data", "activity.json");
+const collected = fixtureMode ? fixtureProviders(start, end) : { github: await getGitHubProvider(start, end), ...await getLocalProviders() };
+const providers = fixtureMode ? collected : await carryPublishedHistory(collected, output);
+const snapshot = assembleSnapshot(providers, { start, end, mode: fixtureMode ? "fixture" : "observed" });
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`Prepared ${snapshot.mode} activity snapshot for ${start} through ${end}`);
