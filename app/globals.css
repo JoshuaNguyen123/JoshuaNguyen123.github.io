@@ -324,7 +324,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
   font-size: clamp(24px, 2.7vw, 31px); font-weight: 400; letter-spacing: -.015em; margin: 14px 0 0;
 }
 .activity-current .section-heading p { color: var(--body); font-size: 15px; line-height: 1.65; margin-top: 12px; max-width: 700px; }
-.activity-definition-summary { display: grid; gap: 26px 34px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; }
+.activity-definition-summary { display: grid; gap: 26px 34px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 26px; }
 .activity-definition-summary article { border-top: 1px solid var(--hair); padding-top: 14px; }
 .activity-definition-summary strong { display: block; font-size: 31px; font-weight: 380; letter-spacing: -.03em; }
 .activity-definition-summary span, .activity-definition-summary small { display: block; font-family: var(--font-geist-sans), sans-serif; }

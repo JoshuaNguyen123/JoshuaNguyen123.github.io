@@ -4,6 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { combineCursorActivity, countActiveDays } from "@/lib/activity/cursor";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
+import { addDays } from "@/lib/activity/calendar";
+import { getCurrentStreak } from "@/lib/activity/streaks";
+import {
+  activeDaysNote,
+  cursorDaysNote,
+  summaryCardExplanations,
+  summaryCardLabels,
+  summaryCardNotes,
+  summaryCardOrder,
+} from "@/lib/activity/summary-cards";
 import type { ActivityProvider, ActivitySnapshot, MetricActivitySnapshot } from "@/lib/activity/types";
 import { activityProviders, providerLabels } from "@/lib/activity/types";
 
@@ -35,6 +45,12 @@ function formatDay(value: string): string {
 
 function total(metric: MetricActivitySnapshot, year: string): number {
   return metric.days.filter((day) => day.date.startsWith(year)).reduce((sum, day) => sum + day.value, 0);
+}
+
+// Active-day counts must be restricted to the displayed year so they always
+// match the dashboard, which filters its metrics to the selected year.
+function yearMetric(metric: MetricActivitySnapshot, year: string): MetricActivitySnapshot {
+  return { ...metric, days: metric.days.filter((day) => day.date.startsWith(year)) };
 }
 
 export function ActivityDefinitions({ initialData }: { initialData: ActivitySnapshot }) {
@@ -71,13 +87,23 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
     data.providers.cursor.metrics.activeSessions,
     data.providers.cursor.metrics.usagePresence,
   ), [data]);
+  const cursorObservedYear = yearMetric(cursorObserved, year);
+  // Same computation as the dashboard: count back from the latest observed
+  // day across the whole record, skipping a not-yet-active day in progress.
+  const currentStreak = useMemo(() => {
+    const activeDates = data.buildIndex.days.filter((day) => day.value > 0).map((day) => day.date);
+    const anchor = new Set(activeDates).has(data.range.end) ? data.range.end : addDays(data.range.end, -1);
+    return getCurrentStreak(activeDates, anchor);
+  }, [data]);
   const overview = [
-    { value: summary.contributions, label: "GitHub contributions", context: `${countActiveDays(data.providers.github.metrics.contributions)} active days` },
-    { value: summary.codexActiveSessionDays, label: "Codex session-days", context: `${countActiveDays(data.providers.codex.metrics.activeSessions)} active days` },
-    { value: summary.cursorActiveSessionDays, label: "Cursor session-days", context: `${countActiveDays(data.providers.cursor.metrics.activeSessions)} session-counted days · ${countActiveDays(cursorObserved)} observed days` },
-    { value: summary.claudeActiveSessionDays, label: "Claude Code session-days", context: `${countActiveDays(data.providers["claude-code"].metrics.activeSessions)} active days` },
-    { value: summary.activeDays, label: "Observed build days", context: "At least one covered source recorded activity" },
-    { value: summary.longestStreak, label: "Longest observed streak", context: "Consecutive Build Index days" },
+    { value: summary.contributions, label: summaryCardLabels.contributions, context: activeDaysNote(countActiveDays(yearMetric(data.providers.github.metrics.contributions, year))) },
+    { value: summary.codexActiveSessionDays, label: summaryCardLabels.codexSessionDays, context: activeDaysNote(countActiveDays(yearMetric(data.providers.codex.metrics.activeSessions, year))) },
+    { value: summary.cursorActiveSessionDays, label: summaryCardLabels.cursorSessionDays, context: cursorDaysNote(countActiveDays(yearMetric(data.providers.cursor.metrics.activeSessions, year)), countActiveDays(cursorObservedYear)) },
+    { value: summary.claudeActiveSessionDays, label: summaryCardLabels.claudeSessionDays, context: activeDaysNote(countActiveDays(yearMetric(data.providers["claude-code"].metrics.activeSessions, year))) },
+    { value: summary.activeDays, label: summaryCardLabels.observedBuildDays, context: summaryCardNotes.observedBuildDays },
+    { value: countActiveDays(cursorObservedYear), label: summaryCardLabels.cursorObservedDays, context: summaryCardNotes.cursorObservedDays },
+    { value: currentStreak, label: summaryCardLabels.currentStreak, context: summaryCardNotes.currentStreak },
+    { value: summary.longestStreak, label: summaryCardLabels.longestStreak, context: summaryCardNotes.longestStreak },
   ];
 
   return (
@@ -103,6 +129,18 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="activity-glossary" aria-labelledby="number-definitions">
+        <div className="section-heading">
+          <span className="eyebrow">Number by number</span>
+          <h2 id="number-definitions">What each number counts, exactly.</h2>
+        </div>
+        <dl>
+          {summaryCardOrder.map((id) => (
+            <div key={id}><dt>{summaryCardLabels[id]}</dt><dd>{summaryCardExplanations[id]}</dd></div>
+          ))}
+        </dl>
       </section>
 
       <section className="activity-glossary" aria-labelledby="plain-english-definitions">

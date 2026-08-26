@@ -13,6 +13,8 @@ test("public identity, editorial writing, and public social surfaces are source-
     readFile(new URL("../components/activity/ActivitySummary.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
+  const summaryCards = await readFile(new URL("../lib/activity/summary-cards.ts", import.meta.url), "utf8");
+  const definitions = await readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8");
   assert.match(page, /Joshua Nguyen/);
   assert.match(page, /FDE, AI Developer, and Technical Researcher\./);
   assert.match(page, /building and testing systems across the stack/);
@@ -47,8 +49,13 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(layout, /https:\/\/joshuanguyen123\.github\.io/);
   assert.match(linkedIn, /linkedInPosts: ExternalPost\[\] = defineExternalPosts\(\[\]\)/);
   assert.match(linkedIn, /linkedin\.com\/in\/joshua-nguyen-6a812a210/);
-  assert.match(activitySummary, /Cursor observed days/);
-  assert.match(activitySummary, /session records \+ privacy-reduced usage-date evidence/);
+  // Card labels and notes live in the shared summary-cards module so the
+  // dashboard and /activity can never drift apart; both surfaces must use it.
+  assert.match(summaryCards, /Cursor observed days/);
+  assert.match(summaryCards, /session records \+ privacy-reduced usage-date evidence/);
+  assert.match(activitySummary, /from "@\/lib\/activity\/summary-cards"/);
+  assert.match(definitions, /from "@\/lib\/activity\/summary-cards"/);
+  assert.match(definitions, /summaryCardExplanations/);
   const mobileStyles = styles.slice(styles.indexOf("@media (max-width: 760px)"), styles.indexOf("@media (prefers-reduced-motion: reduce)"));
   assert.match(mobileStyles, /\.home-writing \.writing-list > a,[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.match(mobileStyles, /\.home-writing \.writing-list > a\s*\{[^}]*gap:\s*18px/);

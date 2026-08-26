@@ -7,6 +7,7 @@ import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import { combineCursorActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
+import { summaryCardExplanations, summaryCardLabels, summaryCardOrder } from "@/lib/activity/summary-cards";
 import type {
   ActivityProvider,
   ActivitySnapshot,
@@ -311,6 +312,9 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         <summary>How this activity is measured</summary>
         <p className="index-disclaimer"><strong>Build Index:</strong> {data.buildIndex.formula} {data.buildIndex.disclaimer}</p>
         <p className="index-disclaimer"><strong>Session-days and tiles:</strong> Each heatmap square is one America/Denver calendar date. Session-day totals sum distinct sessions observed on each date, so several sessions can share one square and a session active across dates counts once on each date. Providers are attributed by tool: Cursor calls to Claude models remain Cursor activity, while Claude Code uses Claude Code&apos;s own sessions and hooks.</p>
+        {summaryCardOrder.map((id) => (
+          <p className="index-disclaimer" key={id}><strong>{summaryCardLabels[id]}:</strong> {summaryCardExplanations[id]}</p>
+        ))}
         <div className="methodology-grid">
           {activityProviders.map((provider) => (
             <article key={provider}>
