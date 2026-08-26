@@ -36,13 +36,32 @@ test("admin UI keeps bearer sessions in memory and blocks framed operation", asy
   assert.match(source, /published revisions remain in Git history/i);
 });
 
-test("contact form sends only to the server-side verification boundary", async () => {
+test("contact form prefers the verifying worker and only falls back while it is unconfigured", async () => {
   const form = await repositoryFile("components/contact/ContactForm.tsx");
   const policy = await repositoryFile("app/layout.tsx");
   assert.match(form, /NEXT_PUBLIC_CONTACT_API_URL/);
   assert.match(form, /captchaToken/);
-  assert.doesNotMatch(form, /NEXT_PUBLIC_WEB3FORMS_KEY|api\.web3forms\.com|access_key/);
-  assert.doesNotMatch(policy, /api\.web3forms\.com/);
+  // Configuring the worker must switch the destination, not merely add one.
+  assert.match(form, /usesWorker \? CONTACT_API_URL : "https:\/\/api\.web3forms\.com\/submit"/);
+  assert.match(form, /const usesWorker = Boolean\(CONTACT_API_URL && HCAPTCHA_SITE_KEY\)/);
+  // The provider origin is admitted only for as long as that fallback is live.
+  const web3formsLines = policy.split("\n").filter((line) => line.includes("api.web3forms.com"));
+  assert.ok(web3formsLines.length > 0, "the fallback still needs its origin");
+  for (const line of web3formsLines) {
+    assert.match(line, /contactUsesWorker \?|const web3formsOrigin/, "the provider origin must never be unconditional");
+  }
+});
+
+test("the contact form is never dropped from the page when a backend is configured", async () => {
+  const form = await repositoryFile("components/contact/ContactForm.tsx");
+  // Rendering nothing is reserved for the case where there is genuinely nowhere
+  // to post; either backend must keep the form on the page.
+  assert.match(form, /const isConfigured = usesWorker \|\| Boolean\(WEB3FORMS_KEY\)/);
+  assert.match(form, /if \(!isConfigured\) return null;/);
+  assert.equal((form.match(/return null;/g) ?? []).length, 1, "only the unconfigured case may render nothing");
+
+  const smoke = await repositoryFile("scripts/smoke-export.mjs");
+  assert.match(smoke, /contact-form/, "the export smoke test must prove the form shipped");
 });
 
 test("scheduled collector runs from a copied owner-only dependency closure", async () => {

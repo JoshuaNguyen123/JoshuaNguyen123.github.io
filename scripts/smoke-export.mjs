@@ -12,6 +12,17 @@ const activityHtml = await readFile(path.join(root, "out", "activity", "index.ht
 for (const expected of ["Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
   if (!activityHtml.includes(expected)) throw new Error(`Activity definitions page is missing ${expected}`);
 }
+// A contact backend is configured, so the form must actually be in the export.
+// Switching backends once silently dropped it from the live site: the component
+// renders nothing when it has nowhere to post, and that read as a normal build.
+const contactConfigured = Boolean(process.env.NEXT_PUBLIC_CONTACT_API_URL && process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY)
+  || Boolean(process.env.NEXT_PUBLIC_WEB3FORMS_KEY);
+if (contactConfigured) {
+  for (const expected of ["contact-form", "h-captcha", "Send message"]) {
+    if (!html.includes(expected)) throw new Error(`Static export is missing the contact form (${expected})`);
+  }
+}
+
 const projectPositions = ["Obsidian Research Agent", "Ladybug", "Teach Anything"].map((project) => html.indexOf(project));
 if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");
 if (html.indexOf('class="work-section"') > html.indexOf('class="activity-section"')) throw new Error("Static export shows activity before selected work");

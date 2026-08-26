@@ -30,6 +30,12 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description, images: ["/og-personal.jpg"] },
 };
 
+// The contact form posts directly to Web3Forms until the verifying worker is
+// configured, so the provider origin is admitted only while that fallback is
+// live. Configuring the worker tightens the policy on the next build.
+const contactUsesWorker = Boolean(process.env.NEXT_PUBLIC_CONTACT_API_URL && process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY);
+const web3formsOrigin = contactUsesWorker ? "" : " https://api.web3forms.com";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
@@ -49,10 +55,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             "style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com",
             "img-src 'self' data: https://hcaptcha.com https://*.hcaptcha.com",
             "font-src 'self'",
-            "connect-src 'self' https://raw.githubusercontent.com https://joshua-portfolio-blog-admin.personal-ai-digest.workers.dev https://hcaptcha.com https://*.hcaptcha.com",
+            `connect-src 'self' https://raw.githubusercontent.com https://joshua-portfolio-blog-admin.personal-ai-digest.workers.dev https://hcaptcha.com https://*.hcaptcha.com${web3formsOrigin}`,
             "frame-src https://hcaptcha.com https://*.hcaptcha.com",
             "worker-src 'self' blob:",
-            "form-action 'self'",
+            `form-action 'self'${web3formsOrigin}`,
             "base-uri 'self'",
             "object-src 'none'",
             "upgrade-insecure-requests",
