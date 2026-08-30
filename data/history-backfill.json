@@ -1,7 +1,7 @@
 {
   "v": 2,
-  "generatedAt": "2026-08-24T08:12:33.500Z",
-  "timeZone": "America/Denver",
+  "generatedAt": "2026-08-30T07:58:00.979Z",
+  "timeZone": "America/Los_Angeles",
   "note": "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.",
   "options": {
     "approximateLines": false
@@ -592,6 +592,10 @@
           "value": 1
         },
         {
+          "date": "2026-05-30",
+          "value": 1
+        },
+        {
           "date": "2026-05-31",
           "value": 1
         },
@@ -704,6 +708,10 @@
           "value": 1
         },
         {
+          "date": "2026-07-09",
+          "value": 1
+        },
+        {
           "date": "2026-07-10",
           "value": 1
         },
@@ -721,6 +729,10 @@
         },
         {
           "date": "2026-07-15",
+          "value": 1
+        },
+        {
+          "date": "2026-07-19",
           "value": 1
         },
         {
@@ -761,6 +773,18 @@
         },
         {
           "date": "2026-08-24",
+          "value": 1
+        },
+        {
+          "date": "2026-08-25",
+          "value": 1
+        },
+        {
+          "date": "2026-08-26",
+          "value": 1
+        },
+        {
+          "date": "2026-08-27",
           "value": 1
         }
       ],

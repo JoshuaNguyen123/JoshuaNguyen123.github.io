@@ -2,7 +2,7 @@
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
   "mode": "observed",
-  "generatedAt": "2026-08-30T07:57:20.290Z",
+  "generatedAt": "2026-08-30T07:59:19.818Z",
   "timeZone": "America/Los_Angeles",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-08-30"
           },
-          "lastSyncedAt": "2026-08-30T07:57:19.883Z",
-          "lastAttemptedAt": "2026-08-30T07:57:19.883Z",
+          "lastSyncedAt": "2026-08-30T07:59:19.806Z",
+          "lastAttemptedAt": "2026-08-30T07:59:19.806Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -4280,7 +4280,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-08-30T07:57:19.881Z",
+          "lastAttemptedAt": "2026-08-30T07:43:18.832Z",
           "days": []
         }
       }

@@ -14,6 +14,7 @@ import {
   PROVIDERS,
   rangeForBuild,
   SCHEMA_VERSION,
+  isTimeZone,
   TIME_ZONE,
   unavailableProvider,
   upgradeProvider,
@@ -98,11 +99,11 @@ async function getGitHubProvider(start, end) {
 
 async function getLocalProviders() {
   const file = path.join(ROOT, "data", "local-activity.json");
-  if (!existsSync(file)) return {
+  if (!existsSync(file)) return { timeZone: TIME_ZONE, providers: {
     codex: unavailableProvider("codex"),
     cursor: unavailableProvider("cursor"),
     "claude-code": unavailableProvider("claude-code"),
-  };
+  } };
   const value = await loadJson(file);
   const topKeys = Object.keys(value).sort().join(",");
   if (topKeys !== ["generatedAt", "privacyVersion", "providers", "schemaVersion", "timeZone"].sort().join(",")) throw new Error("Local activity snapshot contains unexpected properties");
@@ -110,7 +111,7 @@ async function getLocalProviders() {
     || value.schemaVersion === 3 && value.privacyVersion === "aggregate-v3"
     || value.schemaVersion === 4 && value.privacyVersion === "aggregate-v4"
     || value.schemaVersion === SCHEMA_VERSION && value.privacyVersion === PRIVACY_VERSION;
-  if (!supported || value.timeZone !== TIME_ZONE) throw new Error("Local activity snapshot schema is invalid");
+  if (!supported || !isTimeZone(value.timeZone)) throw new Error("Local activity snapshot schema is invalid");
   const providers = Object.fromEntries(["codex", "cursor", "claude-code"].map((provider) => [provider, upgradeProvider(provider, value.providers[provider])]));
   // The committed local snapshot already includes the backfill as of the last
   // local export; re-applying it here picks up anything the build-time Cursor
@@ -124,7 +125,7 @@ async function getLocalProviders() {
 `);
     }
   }
-  return providers;
+  return { timeZone: value.timeZone, providers };
 }
 
 // CI only ever sees the committed local export, which trails what the local
@@ -147,9 +148,13 @@ async function carryPublishedHistory(providers, snapshotFile) {
 
 const { start, end } = rangeForBuild();
 const output = path.join(ROOT, "public", "data", "activity.json");
-const collected = fixtureMode ? fixtureProviders(start, end) : { github: await getGitHubProvider(start, end), ...await getLocalProviders() };
+const local = fixtureMode ? null : await getLocalProviders();
+const collected = fixtureMode ? fixtureProviders(start, end) : { github: await getGitHubProvider(start, end), ...local.providers };
+// The days were bucketed when they were exported, so the snapshot must report
+// that zone rather than whatever this build happens to be running with.
+const snapshotTimeZone = fixtureMode ? TIME_ZONE : local.timeZone;
 const providers = fixtureMode ? collected : await carryPublishedHistory(collected, output);
-const snapshot = assembleSnapshot(providers, { start, end, mode: fixtureMode ? "fixture" : "observed" });
+const snapshot = assembleSnapshot(providers, { start, end, mode: fixtureMode ? "fixture" : "observed", timeZone: snapshotTimeZone });
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`Prepared ${snapshot.mode} activity snapshot for ${start} through ${end}`);

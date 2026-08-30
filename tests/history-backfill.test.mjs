@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
-import { mergeBackfillDays, validateHistoryBackfill } from "../scripts/history-backfill-core.mjs";
+import { createDayBucketer, mergeBackfillDays, validateHistoryBackfill } from "../scripts/history-backfill-core.mjs";
 import { run } from "../scripts/backfill-history.mjs";
 
 const COMPOSER_A = "11111111-1111-1111-1111-111111111111";
@@ -115,4 +115,20 @@ test("mergeBackfillDays is a monotone per-date max", () => {
     mergeBackfillDays([{ date: "2026-01-01", value: 5 }, { date: "2026-01-03", value: 2 }], [{ date: "2026-01-01", value: 3 }, { date: "2026-01-02", value: 4 }]),
     [{ date: "2026-01-01", value: 5 }, { date: "2026-01-02", value: 4 }, { date: "2026-01-03", value: 2 }],
   );
+});
+
+test("day bucketing keys on the instant, so an offset timestamp is not aliased", () => {
+  const bucket = createDayBucketer("America/Denver");
+  // Both share the cache key "2026-02-01T23" but are twelve hours apart, and
+  // they land on different Denver days. Keying on the string prefix dropped the
+  // offset, so the second call inherited the first's date.
+  assert.equal(bucket("2026-02-01T23:00:00Z"), "2026-02-01");
+  assert.equal(bucket("2026-02-01T23:00:00-12:00"), "2026-02-02");
+});
+
+test("day bucketing is independent of the host machine timezone", () => {
+  const bucket = createDayBucketer("America/Denver");
+  // 06:59:59Z is still the previous day in Denver (MST, UTC-7).
+  assert.equal(bucket("2026-01-01T06:59:59Z"), "2025-12-31");
+  assert.equal(bucket("2026-01-01T07:00:00Z"), "2026-01-01");
 });

@@ -1,4 +1,54 @@
-export const TIME_ZONE = "America/Denver";
+import { readFileSync } from "node:fs";
+
+export const HOME_TIME_ZONE = "America/Denver";
+
+// The calendar day a session lands on depends entirely on the zone it is
+// bucketed in, and the answer people actually want is "the day I was living
+// when I did the work". Pinning one zone silently misfiles every late-evening
+// session while travelling: at 23:00 Pacific it is already tomorrow in Denver,
+// so Saturday's work is filed under Sunday and Saturday reads as a day off --
+// which is also how a streak breaks without anyone touching the data.
+//
+// Set ACTIVITY_TIME_ZONE while away from home; it defaults to home.
+// .env.live is read here rather than by each entry point because TIME_ZONE is
+// resolved at import time: a loader that runs in a module body executes after
+// every static import has already been evaluated, so it would be too late. The
+// scheduled collector depends on this -- it publishes hourly, and without it a
+// background run would quietly re-bucket everything back to the home zone.
+function timeZoneFromEnvFile() {
+  try {
+    const contents = readFileSync(new URL("../.env.live", import.meta.url), "utf8");
+    for (const rawLine of contents.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith("#")) continue;
+      const separator = line.indexOf("=");
+      if (separator < 1 || line.slice(0, separator).trim() !== "ACTIVITY_TIME_ZONE") continue;
+      let value = line.slice(separator + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1);
+      return value || null;
+    }
+  } catch { /* absent or unreadable: fall back to the home zone */ }
+  return null;
+}
+
+export function resolveTimeZone(value = process.env.ACTIVITY_TIME_ZONE ?? timeZoneFromEnvFile()) {
+  if (!value) return HOME_TIME_ZONE;
+  if (!isTimeZone(value)) throw new Error(`ACTIVITY_TIME_ZONE is not a valid IANA time zone: ${value}`);
+  return value;
+}
+
+/** True for any zone this runtime's Intl actually understands. */
+export function isTimeZone(value) {
+  if (typeof value !== "string" || !value) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const TIME_ZONE = resolveTimeZone();
 export const PROVIDERS = ["github", "codex", "cursor", "claude-code"];
 export const SCHEMA_VERSION = 5;
 export const PRIVACY_VERSION = "aggregate-v5";
@@ -16,7 +66,7 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: "Distinct Codex sessions with an observed event on each America/Denver calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
+      methodology: `Distinct Codex sessions with an observed event on each ${TIME_ZONE} calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.`,
       accuracy: "observed",
     },
   },
@@ -24,13 +74,13 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: "Distinct local Cursor conversations observed on each America/Denver calendar day from retained timestamps or installed user hooks.",
+      methodology: `Distinct local Cursor conversations observed on each ${TIME_ZONE} calendar day from retained timestamps or installed user hooks.`,
       accuracy: "observed",
     },
     usagePresence: {
       label: "verified usage days",
       unit: "observed-usage",
-      methodology: "Binary America/Denver calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.",
+      methodology: `Binary ${TIME_ZONE} calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.`,
       accuracy: "observed",
     },
     appliedLineChanges: {
@@ -44,7 +94,7 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.",
+      methodology: `Distinct local Claude Code sessions with an observed event on each ${TIME_ZONE} calendar day from retained timestamps or installed user hooks.`,
       accuracy: "observed",
     },
   },
@@ -194,9 +244,16 @@ function isTimestamp(value) {
   return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }
 
-function sameObject(left, right) {
+// Methodology prose names the zone the days were bucketed in, so a snapshot
+// exported from one zone must still validate against METRICS built in another.
+// Without this, any rebuild that does not happen to share the exporter's zone
+// -- CI, which never sets ACTIVITY_TIME_ZONE -- fails outright.
+const ZONE_TOKEN = /(?:Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)\/[A-Za-z_-]+|UTC/g;
+
+function sameDefinition(left, right) {
+  const normalize = (value) => (typeof value === "string" ? value.replace(ZONE_TOKEN, "{tz}") : value);
   return Boolean(left && right)
-    && Object.entries(left).every(([key, value]) => right[key] === value)
+    && Object.entries(left).every(([key, value]) => normalize(right[key]) === normalize(value))
     && Object.keys(left).length === Object.keys(right).length;
 }
 
@@ -249,7 +306,7 @@ export function validateMetricSeries(provider, metricId, value, { publicDays = f
   if (!Object.hasOwn(METRICS[provider] ?? {}, metricId)) throw new Error(`${provider} has an unknown metric`);
   if (!["available", "stale", "unavailable"].includes(value.status)) throw new Error(`${provider}.${metricId} has invalid status`);
   assertExactKeys(value.definition, ["label", "unit", "methodology", "accuracy"], `${provider}.${metricId}.definition`);
-  if (!sameObject(value.definition, METRICS[provider][metricId])) throw new Error(`${provider}.${metricId} has a non-allowlisted definition`);
+  if (!sameDefinition(value.definition, METRICS[provider][metricId])) throw new Error(`${provider}.${metricId} has a non-allowlisted definition`);
   if (!ALLOWED_SOURCES[provider][metricId].includes(value.source)) throw new Error(`${provider}.${metricId} has a non-allowlisted source`);
   assertExactKeys(value.coverage, ["start", "end"], `${provider}.${metricId}.coverage`);
   const coverageValid = value.coverage.start === null && value.coverage.end === null
@@ -325,7 +382,7 @@ function validateLegacySnapshot(snapshot) {
       : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4 : null;
   if (!version) throw new Error("Unsupported activity schema");
   assertExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
-  if (!["observed", "fixture"].includes(snapshot.mode) || snapshot.timeZone !== TIME_ZONE || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid legacy snapshot metadata");
+  if (!["observed", "fixture"].includes(snapshot.mode) || !isTimeZone(snapshot.timeZone) || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid legacy snapshot metadata");
   assertExactKeys(snapshot.range, ["start", "end"], "snapshot.range");
   if (!isDate(snapshot.range.start) || !isDate(snapshot.range.end) || snapshot.range.start > snapshot.range.end) throw new Error("Invalid legacy snapshot range");
   assertExactKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
@@ -377,7 +434,7 @@ export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
   }
   assertExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
   if (snapshot.mode === "fixture" && !allowFixtures) throw new Error("Fixture telemetry cannot be published");
-  if (!["observed", "fixture"].includes(snapshot.mode) || snapshot.timeZone !== TIME_ZONE || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid snapshot metadata");
+  if (!["observed", "fixture"].includes(snapshot.mode) || !isTimeZone(snapshot.timeZone) || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid snapshot metadata");
   assertExactKeys(snapshot.range, ["start", "end"], "snapshot.range");
   if (!isDate(snapshot.range.start) || !isDate(snapshot.range.end) || snapshot.range.start > snapshot.range.end) throw new Error("Invalid snapshot range");
   assertExactKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
@@ -391,9 +448,19 @@ export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
   return snapshot;
 }
 
-export function assembleSnapshot(rawProviders, { start, end, mode = "observed", generatedAt = new Date().toISOString() }) {
+export function assembleSnapshot(rawProviders, { start, end, mode = "observed", generatedAt = new Date().toISOString(), timeZone = TIME_ZONE }) {
   const normalizedRaw = Object.fromEntries(PROVIDERS.map((provider) => [provider, upgradeProvider(provider, rawProviders[provider])]));
   const providers = Object.fromEntries(PROVIDERS.map((provider) => [provider, completeProvider(provider, normalizedRaw[provider], start, end)]));
+  // The definitions come from METRICS, which names whatever zone the *building*
+  // machine resolved. CI never sets ACTIVITY_TIME_ZONE, so without this a
+  // scheduled rebuild would publish prose saying "America/Denver calendar day"
+  // inside a snapshot whose timeZone is America/Los_Angeles. The published
+  // methodology must describe the data it ships with.
+  for (const provider of Object.values(providers)) {
+    for (const metric of Object.values(provider.metrics)) {
+      metric.definition = { ...metric.definition, methodology: metric.definition.methodology.replace(ZONE_TOKEN, timeZone) };
+    }
+  }
   const indexLookups = Object.fromEntries(PROVIDERS.map((provider) => {
     if (provider === "cursor") {
       const candidates = [providers.cursor.metrics.activeSessions, providers.cursor.metrics.usagePresence]
@@ -442,7 +509,7 @@ export function assembleSnapshot(rawProviders, { start, end, mode = "observed", 
     privacyVersion: PRIVACY_VERSION,
     mode,
     generatedAt,
-    timeZone: TIME_ZONE,
+    timeZone,
     range: { start, end },
     providers,
     buildIndex: {

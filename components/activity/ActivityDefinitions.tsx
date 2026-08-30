@@ -20,8 +20,8 @@ import { activityProviders, providerLabels } from "@/lib/activity/types";
 const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
   ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/main/public/data/activity.json";
 
-const timestampFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "America/Denver",
+const timestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US", {
+  timeZone,
   year: "numeric",
   month: "long",
   day: "numeric",
@@ -111,7 +111,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
       <div className="data-provenance" role="status">
         <span className={`data-dot data-dot--${feedState === "live" ? "live" : data.mode}`} />
         {feedState === "live" ? "Live activity feed" : feedState === "bundled" ? "Verified bundled snapshot · newer than live feed" : feedState === "fallback" ? "Verified bundled snapshot · live feed unavailable" : "Verified bundled snapshot · checking live feed"}
-        {` · through ${formatDay(data.range.end)} · updated ${timestampFormatter.format(new Date(data.generatedAt))}`}
+        {` · through ${formatDay(data.range.end)} · updated ${timestampFormatter(data.timeZone).format(new Date(data.generatedAt))}`}
       </div>
 
       <section className="activity-current" aria-labelledby="current-numbers">
@@ -162,7 +162,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
           <h2 id="plain-english-definitions">Four distinctions that keep the record honest.</h2>
         </div>
         <dl>
-          <div><dt>Session-day</dt><dd>One distinct tool session observed on one America/Denver calendar date. The same session can count again if it remains active on another date.</dd></div>
+          <div><dt>Session-day</dt><dd>One distinct tool session observed on one {data.timeZone} calendar date. The same session can count again if it remains active on another date.</dd></div>
           <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. For Cursor, first-party usage evidence can verify the date without creating a session count.</dd></div>
           <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
           <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>
@@ -188,7 +188,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
                   <div><dt>{year} total</dt><dd>{metric.status === "unavailable" ? "Unavailable" : total(metric, year).toLocaleString("en-US")}</dd></div>
                   <div><dt>Source</dt><dd>{metric.source}</dd></div>
                   <div><dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${formatDay(metric.coverage.start)} — ${formatDay(metric.coverage.end)}` : "Unavailable"}</dd></div>
-                  <div><dt>Last verified</dt><dd>{metric.lastSyncedAt ? timestampFormatter.format(new Date(metric.lastSyncedAt)) : "Unavailable"}</dd></div>
+                  <div><dt>Last verified</dt><dd>{metric.lastSyncedAt ? timestampFormatter(data.timeZone).format(new Date(metric.lastSyncedAt)) : "Unavailable"}</dd></div>
                 </dl>
               </section>
             ))}

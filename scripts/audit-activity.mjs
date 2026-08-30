@@ -29,6 +29,10 @@ function previouslyPublished() {
   if (result.status !== 0 || !result.stdout) return null;
   try {
     const parsed = validateSnapshot(JSON.parse(result.stdout));
+    // Kept unconditional across zones: prepare-activity carries the published
+    // snapshot forward by per-date max regardless of the zone it was bucketed
+    // in, so the audit must reconcile against that same carried history or it
+    // would expect a coverage window the feed legitimately exceeds.
     return parsed.mode === "observed" ? parsed : null;
   } catch {
     return null;

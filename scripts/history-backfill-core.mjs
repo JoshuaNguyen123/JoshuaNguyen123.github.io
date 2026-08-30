@@ -1,4 +1,4 @@
-import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
+import { dateInTimeZone, isTimeZone, TIME_ZONE } from "./activity-core.mjs";
 
 export const HISTORY_BACKFILL_VERSION = 2;
 export const HISTORY_BACKFILL_NOTE = "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.";
@@ -25,8 +25,11 @@ function exactKeys(value, expected, label) {
 export function createDayBucketer(timeZone = TIME_ZONE) {
   const cache = new Map();
   return (timestamp) => {
-    if (typeof timestamp !== "string" || Number.isNaN(Date.parse(timestamp))) return null;
-    const cacheKey = timestamp.slice(0, 13);
+    const instant = typeof timestamp === "string" ? Date.parse(timestamp) : Number.NaN;
+    if (typeof timestamp !== "string" || Number.isNaN(instant)) return null;
+    // See DailyIdentityCounter in local-exporter.mjs: keying on the raw string
+    // prefix dropped the offset and aliased instants hours apart.
+    const cacheKey = Math.floor(instant / 60_000);
     let date = cache.get(cacheKey);
     if (!date) {
       date = dateInTimeZone(timestamp, timeZone);
@@ -96,7 +99,7 @@ function validateV1HistoryBackfill(value) {
   exactKeys(value, ["v", "generatedAt", "timeZone", "note", "options", "providers"], "backfill file");
   if (value.v !== 1) fail(`unsupported version ${value.v}`);
   if (typeof value.generatedAt !== "string" || Number.isNaN(Date.parse(value.generatedAt))) fail("generatedAt must be a timestamp");
-  if (value.timeZone !== TIME_ZONE) fail(`timeZone must be ${TIME_ZONE}`);
+  if (!isTimeZone(value.timeZone)) fail("timeZone must be a valid IANA time zone");
   if (typeof value.note !== "string") fail("note must be a string");
   exactKeys(value.options, ["approximateLines"], "options");
   if (typeof value.options.approximateLines !== "boolean") fail("options.approximateLines must be a boolean");
@@ -123,7 +126,7 @@ export function validateHistoryBackfill(value) {
   exactKeys(value, ["v", "generatedAt", "timeZone", "note", "options", "providers"], "backfill file");
   if (value.v !== HISTORY_BACKFILL_VERSION) fail(`unsupported version ${value.v}`);
   if (typeof value.generatedAt !== "string" || Number.isNaN(Date.parse(value.generatedAt))) fail("generatedAt must be a timestamp");
-  if (value.timeZone !== TIME_ZONE) fail(`timeZone must be ${TIME_ZONE}`);
+  if (!isTimeZone(value.timeZone)) fail("timeZone must be a valid IANA time zone");
   if (typeof value.note !== "string") fail("note must be a string");
   exactKeys(value.options, ["approximateLines"], "options");
   if (typeof value.options.approximateLines !== "boolean") fail("options.approximateLines must be a boolean");

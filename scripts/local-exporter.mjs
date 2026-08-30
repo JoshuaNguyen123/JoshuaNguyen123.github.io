@@ -49,8 +49,14 @@ class DailyIdentityCounter {
   #dateCache = new Map();
 
   add(timestamp, transientId) {
-    if (!timestamp || !transientId || Number.isNaN(Date.parse(timestamp))) return;
-    const cacheKey = timestamp.slice(0, 13);
+    const instant = timestamp ? Date.parse(timestamp) : Number.NaN;
+    if (!timestamp || !transientId || Number.isNaN(instant)) return;
+    // Key on the instant, not the string. Keying on the first 13 characters
+    // discarded the offset, so "…T23:00:00Z" and "…T23:00:00-07:00" — seven
+    // hours apart — collided and the second inherited the first's date. Whole
+    // minutes are safe for every IANA zone, including the :45 offsets, because
+    // a local date can only turn over on a minute boundary.
+    const cacheKey = Math.floor(instant / 60_000);
     let date = this.#dateCache.get(cacheKey);
     if (!date) {
       date = dateInTimeZone(timestamp);

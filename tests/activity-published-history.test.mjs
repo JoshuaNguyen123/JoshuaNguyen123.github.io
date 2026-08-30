@@ -151,7 +151,7 @@ test("fixture, foreign-schema, and damaged snapshots are refused without failing
     claudeDays: [{ date: "2026-08-22", value: 7 }],
   };
 
-  for (const overrides of [{ mode: "fixture" }, { schemaVersion: SCHEMA_VERSION - 1 }, { privacyVersion: "aggregate-v1" }, { timeZone: "UTC" }]) {
+  for (const overrides of [{ mode: "fixture" }, { schemaVersion: SCHEMA_VERSION - 1 }, { privacyVersion: "aggregate-v1" }, { timeZone: "Not/AZone" }]) {
     const providers = localProviders(base);
     const skipped = [];
     mergePublishedHistory(providers, publishedSnapshot(richer, overrides), { onSkip: (reason) => skipped.push(reason) });

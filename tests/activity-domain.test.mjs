@@ -4,6 +4,9 @@ import {
   assembleSnapshot,
   createMetricSeries,
   dateInTimeZone,
+  HOME_TIME_ZONE,
+  isTimeZone,
+  resolveTimeZone,
   normalizeLevels,
   unavailableProvider,
   upgradeSnapshot,
@@ -24,10 +27,11 @@ function provider(name, metricId, days, syncedAt = "2026-08-10T12:00:00Z") {
 }
 
 test("America/Denver grouping respects standard and daylight midnight boundaries", () => {
-  assert.equal(dateInTimeZone("2026-01-01T06:59:59Z"), "2025-12-31");
-  assert.equal(dateInTimeZone("2026-01-01T07:00:00Z"), "2026-01-01");
-  assert.equal(dateInTimeZone("2026-07-01T05:59:59Z"), "2026-06-30");
-  assert.equal(dateInTimeZone("2026-07-01T06:00:00Z"), "2026-07-01");
+  const denver = (value) => dateInTimeZone(value, "America/Denver");
+  assert.equal(denver("2026-01-01T06:59:59Z"), "2025-12-31");
+  assert.equal(denver("2026-01-01T07:00:00Z"), "2026-01-01");
+  assert.equal(denver("2026-07-01T05:59:59Z"), "2026-06-30");
+  assert.equal(denver("2026-07-01T06:00:00Z"), "2026-07-01");
 });
 
 test("normalization is monotonic and preserves zero", () => {
@@ -123,4 +127,41 @@ test("aggregate-v4 snapshots upgrade compatibly with unavailable usage presence"
   const upgraded = upgradeSnapshot(legacy);
   assert.equal(upgraded.schemaVersion, 5);
   assert.equal(upgraded.providers.cursor.metrics.usagePresence.status, "unavailable");
+});
+
+test("the bucketing zone is configurable, defaults home, and rejects nonsense", () => {
+  assert.equal(resolveTimeZone(""), HOME_TIME_ZONE);
+  assert.equal(resolveTimeZone(null), HOME_TIME_ZONE);
+  assert.equal(resolveTimeZone("America/Los_Angeles"), "America/Los_Angeles");
+  assert.throws(() => resolveTimeZone("Mars/Olympus"), /not a valid IANA time zone/);
+  assert.ok(isTimeZone("Asia/Kathmandu"));
+  assert.ok(!isTimeZone("Not/AZone"));
+});
+
+test("a day is bucketed in the zone it is given, not the host or a fixed pin", () => {
+  // 06:30Z is the hour where the two disagree: still Saturday 23:30 in
+  // Pacific, already Sunday 00:30 in Denver. This is the exact misfiling that
+  // emptied Saturday 2026-08-29 and cut a 24-day streak down to 1.
+  const instant = "2026-08-30T06:30:00Z";
+  assert.equal(dateInTimeZone(instant, "America/Los_Angeles"), "2026-08-29");
+  assert.equal(dateInTimeZone(instant, "America/Denver"), "2026-08-30");
+});
+
+test("a snapshot records the zone its days were bucketed in", () => {
+  const providers = {
+    github: provider("github", "contributions", [{ date: "2026-08-29", value: 3 }]),
+    codex: unavailableProvider("codex"),
+    cursor: unavailableProvider("cursor"),
+    "claude-code": unavailableProvider("claude-code"),
+  };
+  const snapshot = assembleSnapshot(providers, {
+    start: "2026-08-01",
+    end: "2026-08-30",
+    generatedAt: "2026-08-30T12:00:00Z",
+    timeZone: "America/Los_Angeles",
+  });
+  assert.equal(snapshot.timeZone, "America/Los_Angeles");
+  // A rebuild elsewhere must still accept it: CI never sets ACTIVITY_TIME_ZONE,
+  // and rejecting here would fail the build on correct data.
+  assert.doesNotThrow(() => validateSnapshot(snapshot));
 });

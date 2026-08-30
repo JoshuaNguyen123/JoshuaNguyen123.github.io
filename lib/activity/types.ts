@@ -68,7 +68,7 @@ export interface ActivitySnapshot {
   privacyVersion: "aggregate-v5";
   mode: "observed" | "fixture";
   generatedAt: string;
-  timeZone: "America/Denver";
+  timeZone: string;
   range: { start: string; end: string };
   providers: ActivityProviders;
   buildIndex: BuildIndexSnapshot;

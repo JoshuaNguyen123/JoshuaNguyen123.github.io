@@ -70,9 +70,23 @@ function integer(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 0;
 }
 
+const ZONE_TOKEN = /(?:Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)\/[A-Za-z_-]+|UTC/g;
+
+function isTimeZone(value: unknown): value is string {
+  if (typeof value !== "string" || !value) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Compares definitions with the time-zone name normalised away. */
 function sameDefinition(value: Record<string, unknown>, expected: ProviderMetricDefinition): boolean {
+  const normalise = (input: unknown) => typeof input === "string" ? input.replace(ZONE_TOKEN, "{tz}") : input;
   return hasExactKeys(value, ["label", "unit", "methodology", "accuracy"])
-    && Object.entries(expected).every(([key, expectedValue]) => value[key] === expectedValue);
+    && Object.entries(expected).every(([key, expectedValue]) => normalise(value[key]) === normalise(expectedValue));
 }
 
 function parseDays(value: unknown, { buildIndex = false } = {}): DailyActivityPoint[] | null {
@@ -107,7 +121,7 @@ function parseMetric(provider: ActivityProvider, metricId: string, input: unknow
   if (value.status === "unavailable" && (coverage.start !== null || days.length)) return null;
   return {
     status: value.status as MetricActivitySnapshot["status"],
-    definition: { ...expected },
+    definition: { ...expected, methodology: typeof definition.methodology === "string" ? definition.methodology : expected.methodology },
     source: value.source,
     coverage: { start: coverage.start as string | null, end: coverage.end as string | null },
     lastSyncedAt: value.lastSyncedAt as string | null,
@@ -192,7 +206,7 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
     : snapshot.schemaVersion === 3 && snapshot.privacyVersion === "aggregate-v3" ? 3
       : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4
         : snapshot.schemaVersion === 5 && snapshot.privacyVersion === "aggregate-v5" ? 5 : null;
-  if (!version || (snapshot.mode !== "observed" && snapshot.mode !== "fixture") || snapshot.timeZone !== "America/Denver" || !timestamp(snapshot.generatedAt)) return null;
+  if (!version || (snapshot.mode !== "observed" && snapshot.mode !== "fixture") || !isTimeZone(snapshot.timeZone) || !timestamp(snapshot.generatedAt)) return null;
   const range = record(snapshot.range);
   const buildIndex = record(snapshot.buildIndex);
   const summaries = record(snapshot.summaries);
@@ -234,7 +248,7 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
     privacyVersion: "aggregate-v5",
     mode: snapshot.mode,
     generatedAt: snapshot.generatedAt,
-    timeZone: "America/Denver",
+    timeZone: snapshot.timeZone,
     range: { start: range.start, end: range.end },
     providers,
     buildIndex: { label: "Build Index", formula: buildIndex.formula, disclaimer: buildIndex.disclaimer, days: buildDays },

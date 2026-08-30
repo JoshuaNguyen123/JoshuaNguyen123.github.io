@@ -21,7 +21,7 @@ import {
   createMetricSeries,
   PRIVACY_VERSION,
   SCHEMA_VERSION,
-  TIME_ZONE,
+  isTimeZone,
   validateRawProvider,
 } from "./activity-core.mjs";
 import { mergeBackfillDays } from "./history-backfill-core.mjs";
@@ -66,7 +66,7 @@ export function isMergeableSnapshot(snapshot) {
     && snapshot.mode === "observed"
     && snapshot.schemaVersion === SCHEMA_VERSION
     && snapshot.privacyVersion === PRIVACY_VERSION
-    && snapshot.timeZone === TIME_ZONE;
+    && isTimeZone(snapshot.timeZone);
 }
 
 export function totalRecordedDays(provider) {

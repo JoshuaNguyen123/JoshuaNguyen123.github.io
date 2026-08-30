@@ -76,10 +76,16 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(dashboard, /Verified bundled snapshot/);
   assert.match(dashboard, /Observed activity/);
   assert.match(dashboard, /Usage evidence/);
-  assert.match(dashboard, /Every square is one calendar day, on America\/Denver time/);
+  // The zone is whatever the snapshot was bucketed in, so the copy names it
+  // from the data rather than asserting one hard-coded zone.
+  assert.match(dashboard, /Every square is one calendar day, on \{data\.timeZone\} time/);
   assert.match(dashboard, /observed activity, not productivity/);
   assert.match(dashboard, /activityTimestampFormatter/);
-  assert.match(dashboard, /timeZone: "America\/Denver"/);
+  // Still an explicit zone rather than the viewer's locale -- it is now taken
+  // from the snapshot instead of hard-coded, so timestamps read in the zone the
+  // data was actually bucketed in.
+  assert.match(dashboard, /activityTimestampFormatter = \(timeZone: string\) =>/);
+  assert.match(dashboard, /new Intl\.DateTimeFormat\("en-US", \{\s+timeZone,/);
   assert.doesNotMatch(dashboard, /new Date\([^)]*\)\.toLocaleString\(\)/);
   assert.match(parser, /hasExactKeys/);
   assert.match(parser, /aggregate-v5/);
