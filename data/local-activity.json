@@ -1,8 +1,8 @@
 {
   "schemaVersion": 5,
   "privacyVersion": "aggregate-v5",
-  "timeZone": "America/Los_Angeles",
-  "generatedAt": "2026-08-30T07:43:18.832Z",
+  "timeZone": "America/Denver",
+  "generatedAt": "2026-08-31T21:20:13.983Z",
   "providers": {
     "codex": {
       "metrics": {
@@ -11,7 +11,7 @@
           "definition": {
             "label": "active sessions",
             "unit": "active-sessions",
-            "methodology": "Distinct Codex sessions with an observed event on each America/Los_Angeles calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
+            "methodology": "Distinct Codex sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling). Annual totals are active-session-days, not lifetime sessions or token usage.",
             "accuracy": "observed"
           },
           "source": "Local Codex session event timestamps",
@@ -19,8 +19,8 @@
             "start": "2026-04-20",
             "end": "2026-08-29"
           },
-          "lastSyncedAt": "2026-08-30T07:43:17.370Z",
-          "lastAttemptedAt": "2026-08-30T07:43:17.370Z",
+          "lastSyncedAt": "2026-08-31T21:20:02.366Z",
+          "lastAttemptedAt": "2026-08-31T21:20:02.366Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -345,16 +345,16 @@
           "definition": {
             "label": "active sessions",
             "unit": "active-sessions",
-            "methodology": "Distinct local Cursor conversations observed on each America/Los_Angeles calendar day from retained timestamps or installed user hooks.",
+            "methodology": "Distinct local Cursor conversations observed on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.",
             "accuracy": "observed"
           },
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-08-30"
+            "end": "2026-08-31"
           },
-          "lastSyncedAt": "2026-08-30T07:43:18.832Z",
-          "lastAttemptedAt": "2026-08-30T07:43:18.832Z",
+          "lastSyncedAt": "2026-08-31T21:20:13.983Z",
+          "lastAttemptedAt": "2026-08-31T21:20:13.983Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -791,6 +791,10 @@
             {
               "date": "2026-08-30",
               "value": 0
+            },
+            {
+              "date": "2026-08-31",
+              "value": 2
             }
           ]
         },
@@ -799,7 +803,7 @@
           "definition": {
             "label": "verified usage days",
             "unit": "observed-usage",
-            "methodology": "Binary America/Los_Angeles calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.",
+            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.",
             "accuracy": "observed"
           },
           "source": "Cursor usage-event export (daily presence only)",
@@ -807,8 +811,8 @@
             "start": "2026-01-02",
             "end": "2026-08-27"
           },
-          "lastSyncedAt": "2026-08-30T07:43:17.371Z",
-          "lastAttemptedAt": "2026-08-30T07:43:17.371Z",
+          "lastSyncedAt": "2026-08-31T21:20:02.369Z",
+          "lastAttemptedAt": "2026-08-31T21:20:02.369Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -1226,7 +1230,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-08-30T07:43:18.832Z",
+          "lastAttemptedAt": "2026-08-31T21:20:13.983Z",
           "days": []
         }
       }
@@ -1238,16 +1242,16 @@
           "definition": {
             "label": "active sessions",
             "unit": "active-sessions",
-            "methodology": "Distinct local Claude Code sessions with an observed event on each America/Los_Angeles calendar day from retained timestamps or installed user hooks.",
+            "methodology": "Distinct local Claude Code sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.",
             "accuracy": "observed"
           },
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-08-30"
+            "end": "2026-08-31"
           },
-          "lastSyncedAt": "2026-08-30T07:43:18.832Z",
-          "lastAttemptedAt": "2026-08-30T07:43:18.832Z",
+          "lastSyncedAt": "2026-08-31T21:20:13.983Z",
+          "lastAttemptedAt": "2026-08-31T21:20:13.983Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -1371,7 +1375,11 @@
             },
             {
               "date": "2026-08-30",
-              "value": 6
+              "value": 8
+            },
+            {
+              "date": "2026-08-31",
+              "value": 5
             }
           ]
         }

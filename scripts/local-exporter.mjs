@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import {
   createMetricSeries,
   dateInTimeZone,
+  HOME_TIME_ZONE,
+  mergeWriteOnceDays,
   SCHEMA_VERSION,
   PRIVACY_VERSION,
   TIME_ZONE,
@@ -172,6 +174,43 @@ async function loadHistoryBackfill(file) {
   }
 }
 
+async function loadPreviousLocal(file) {
+  if (!file || !existsSync(file)) return null;
+  try {
+    const value = JSON.parse(await readFile(file, "utf8"));
+    if (!value?.providers || typeof value.timeZone !== "string") return null;
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+function applyWriteOnceFreeze(providers, previous, today, stampZone) {
+  if (!previous?.providers) return providers;
+  const sameZone = previous.timeZone === stampZone;
+  for (const provider of ["codex", "cursor", "claude-code"]) {
+    const prior = previous.providers[provider];
+    if (!prior?.metrics) continue;
+    for (const [metricId, metric] of Object.entries(providers[provider].metrics)) {
+      const frozen = prior.metrics[metricId];
+      if (!frozen?.days) continue;
+      providers[provider].metrics[metricId] = createMetricSeries(
+        provider,
+        metricId,
+        metric.source,
+        mergeWriteOnceDays(frozen.days, metric.days, { today, sameZone }),
+        {
+          lastAttemptedAt: metric.lastAttemptedAt ?? undefined,
+          lastSyncedAt: metric.lastSyncedAt ?? undefined,
+          status: metric.status === "unavailable" && !frozen.days.length ? "unavailable" : undefined,
+        },
+      );
+    }
+    validateRawProvider(provider, providers[provider]);
+  }
+  return providers;
+}
+
 export function applyHistoryBackfill(providers, backfill) {
   if (!backfill) return providers;
   const merge = (provider, metricId, source, staticDays) => {
@@ -188,7 +227,7 @@ export function applyHistoryBackfill(providers, backfill) {
   return providers;
 }
 
-export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase, historyBackfill } = {}) {
+export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot, cursorDatabase, historyBackfill, previousSnapshot, previousFile } = {}) {
   const profile = homedir();
   const configuredCodexRoot = codexRoot ?? process.env.CODEX_ACTIVITY_ROOT ?? path.join(profile, ".codex", "sessions");
   const providers = {
@@ -198,10 +237,12 @@ export async function exportLocalActivity({ codexRoot, codexDatabase, claudeRoot
   };
   const backfill = await loadHistoryBackfill(historyBackfill ?? process.env.ACTIVITY_HISTORY_BACKFILL ?? DEFAULT_HISTORY_BACKFILL);
   applyHistoryBackfill(providers, backfill);
+  const previous = previousSnapshot ?? await loadPreviousLocal(previousFile);
+  applyWriteOnceFreeze(providers, previous, dateInTimeZone(new Date()), TIME_ZONE);
   return {
     schemaVersion: SCHEMA_VERSION,
     privacyVersion: PRIVACY_VERSION,
-    timeZone: TIME_ZONE,
+    timeZone: HOME_TIME_ZONE,
     generatedAt: new Date().toISOString(),
     providers,
   };

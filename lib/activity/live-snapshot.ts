@@ -13,15 +13,15 @@ const definitions = {
     contributions: { label: "public contributions", unit: "contributions", methodology: "Daily public contribution count from GitHub's contribution calendar.", accuracy: "observed" },
   },
   codex: {
-    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct Codex sessions with an observed event on each America/Denver calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.", accuracy: "observed" },
+    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct Codex sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling). Annual totals are active-session-days, not lifetime sessions or token usage.", accuracy: "observed" },
   },
   cursor: {
-    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Cursor conversations observed on each America/Denver calendar day from retained timestamps or installed user hooks.", accuracy: "observed" },
-    usagePresence: { label: "verified usage days", unit: "observed-usage", methodology: "Binary America/Denver calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.", accuracy: "observed" },
+    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Cursor conversations observed on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.", accuracy: "observed" },
+    usagePresence: { label: "verified usage days", unit: "observed-usage", methodology: "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.", accuracy: "observed" },
     appliedLineChanges: { label: "applied AI line changes", unit: "applied-ai-line-changes", methodology: "Daily additions plus deletions captured directly by local Cursor Agent or Tab edit hooks. Historical database tracking records are not line changes and are never included.", accuracy: "observed" },
   },
   "claude-code": {
-    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Claude Code sessions with an observed event on each America/Denver calendar day from retained timestamps or installed user hooks.", accuracy: "observed" },
+    activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Claude Code sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.", accuracy: "observed" },
   },
 } as const;
 

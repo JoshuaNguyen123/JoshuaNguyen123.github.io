@@ -61,7 +61,7 @@ export const summaryCardExplanations: Record<SummaryCardId, string> = {
   contributions:
     "This is what GitHub's public contribution calendar counts for me: commits, pull requests, issues, and reviews. The note underneath is how many separate days had at least one of them. It is a tally of events, not effort — a one-line fix and an all-day refactor look identical here.",
   codexSessionDays:
-    "Every distinct Codex session counts once for each calendar day it was active (days are America/Denver), and I add those up over the year. Work past midnight and the same session counts on both days — that is the quirk of the unit. Prompts, tokens, and hours never enter into it.",
+    "Every distinct Codex session counts once for the calendar day it was active — home base America/Denver, living-local when I travel — and I add those up over the year. Work past midnight and the same session counts on both days — that is the quirk of the unit. Prompts, tokens, and hours never enter into it.",
   cursorSessionDays:
     "Same idea as Codex: distinct Cursor sessions per day, added up over the year, from the conversation timestamps Cursor keeps locally. Session-counted days are days with at least one of those records. Observed days adds days where Cursor's own usage export proves I used it even though no session record survived — those days get verified, but I never invent a session count for them.",
   claudeSessionDays:

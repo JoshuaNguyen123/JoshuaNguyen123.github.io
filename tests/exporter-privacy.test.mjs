@@ -25,6 +25,7 @@ test("local exporter emits aggregate sessions without prompts, paths, code, file
   database.close();
 
   const snapshot = await exportLocalActivity({ codexRoot, claudeRoot, cursorDatabase: databasePath, historyBackfill: path.join(testRoot, "missing-backfill.json") });
+  assert.equal(snapshot.timeZone, "America/Denver");
   assert.equal(snapshot.providers.codex.metrics.activeSessions.days.length, 2);
   assert.equal(snapshot.providers.cursor.metrics.activeSessions.days[0].value, 1);
   assert.equal(snapshot.providers.cursor.metrics.appliedLineChanges.status, "unavailable");
@@ -83,4 +84,34 @@ test("history backfill file merges by per-date max and never breaks the export w
   await writeFile(backfillFile, JSON.stringify({ v: 1, corrupted: true }));
   const fallback = await exportLocalActivity({ codexRoot: empty, claudeRoot: empty, cursorDatabase: databasePath, historyBackfill: backfillFile });
   assert.equal(fallback.providers.cursor.metrics.appliedLineChanges.status, "unavailable");
+});
+
+test("a later stamp zone does not move already-exported days", async (context) => {
+  const testRoot = await mkdtemp(path.join(tmpdir(), "write-once-"));
+  context.after(async () => { await rm(testRoot, { recursive: true, force: true }); });
+  const previous = {
+    timeZone: "America/Los_Angeles",
+    providers: {
+      codex: {
+        metrics: {
+          activeSessions: {
+            status: "available",
+            days: [{ date: "2026-08-29", value: 3 }],
+          },
+        },
+      },
+    },
+  };
+  const snapshot = await exportLocalActivity({
+    codexRoot: path.join(testRoot, "none"),
+    claudeRoot: path.join(testRoot, "none2"),
+    cursorDatabase: path.join(testRoot, "missing.db"),
+    historyBackfill: path.join(testRoot, "missing-backfill.json"),
+    previousSnapshot: previous,
+  });
+  assert.deepEqual(
+    snapshot.providers.codex.metrics.activeSessions.days.filter((day) => day.date === "2026-08-29"),
+    [{ date: "2026-08-29", value: 3 }],
+  );
+  assert.equal(snapshot.timeZone, "America/Denver");
 });

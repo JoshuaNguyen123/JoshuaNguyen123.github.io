@@ -5,7 +5,7 @@ import { mergeHookLedger, readHookState } from "./live-activity-core.mjs";
 import { exportLocalActivity } from "./local-exporter.mjs";
 
 const output = path.resolve(process.env.ACTIVITY_OUTPUT ?? path.join("data", "local-activity.json"));
-const retainedSnapshot = await exportLocalActivity();
+const retainedSnapshot = await exportLocalActivity({ previousFile: output });
 const activityHome = process.env.ENGINEERING_ACTIVITY_HOME
   ?? path.join(process.env.LOCALAPPDATA ?? path.join(homedir(), "AppData", "Local"), "EngineeringActivity");
 let snapshot = retainedSnapshot;

@@ -1,22 +1,11 @@
 import { createHmac, randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { dateInTimeZone, isTimeZone, stampTimeZone } from "./activity-core.mjs";
 
-const TIME_ZONE = "America/Denver";
 const MAX_EXACT_DIFF_CHARACTERS = 250_000;
 const MAX_EXACT_DIFF_LINES = 10_000;
 const MAX_EXACT_DIFF_CELLS = 2_000_000;
-
-function dateInTimeZone(value) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: TIME_ZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date(value));
-  const get = (type) => parts.find((part) => part.type === type)?.value;
-  return `${get("year")}-${get("month")}-${get("day")}`;
-}
 
 function lines(value) {
   if (typeof value !== "string" || value.length === 0) return [];
@@ -87,9 +76,10 @@ function keyedSession(secret, provider, date, identifier) {
   return createHmac("sha256", secret).update(`${provider}\0${date}\0${identifier}`).digest("base64url");
 }
 
-export function reduceHookPayload(kind, payload, secret, now = new Date()) {
+export function reduceHookPayload(kind, payload, secret, now = new Date(), timeZone = stampTimeZone()) {
   if (!payload || typeof payload !== "object" || Array.isArray(payload) || typeof secret !== "string" || secret.length < 32) return null;
-  const date = dateInTimeZone(now);
+  const date = dateInTimeZone(now, timeZone);
+  const at = now instanceof Date ? now.toISOString() : new Date(now).toISOString();
   if (kind === "cursor-session" || kind === "cursor-agent-edit" || kind === "cursor-tab-edit") {
     const sessionId = payload.conversation_id
       ?? payload.conversationId
@@ -103,21 +93,27 @@ export function reduceHookPayload(kind, payload, secret, now = new Date()) {
     const lineChanges = kind === "cursor-agent-edit" ? sumCursorEdits(payload, false)
       : kind === "cursor-tab-edit" ? sumCursorEdits(payload, true) : 0;
     if (!sessionKey && lineChanges === 0) return null;
-    return { v: 1, provider: "cursor", date, event: kind, sessionKey, lineChanges };
+    return { v: 1, provider: "cursor", date, timeZone, at, event: kind, sessionKey, lineChanges };
   }
   if (kind === "claude-session" || kind === "claude-activity") {
     const sessionKey = keyedSession(secret, "claude-code", date, payload.session_id);
     if (!sessionKey) return null;
-    return { v: 1, provider: "claude-code", date, event: kind, sessionKey, lineChanges: 0 };
+    return { v: 1, provider: "claude-code", date, timeZone, at, event: kind, sessionKey, lineChanges: 0 };
   }
   return null;
 }
 
 export function validateSpoolEvent(event) {
   if (!event || typeof event !== "object" || Array.isArray(event)) throw new Error("Invalid aggregate hook event");
-  const keys = Object.keys(event).sort().join(",");
-  if (keys !== ["date", "event", "lineChanges", "provider", "sessionKey", "v"].sort().join(",")) throw new Error("Aggregate hook event contains unexpected fields");
+  const required = ["date", "event", "lineChanges", "provider", "sessionKey", "v"];
+  const optional = new Set(["timeZone", "at"]);
+  const keys = Object.keys(event);
+  if (required.some((key) => !Object.hasOwn(event, key)) || keys.some((key) => !required.includes(key) && !optional.has(key))) {
+    throw new Error("Aggregate hook event contains unexpected fields");
+  }
   if (event.v !== 1 || !["cursor", "claude-code"].includes(event.provider) || !/^\d{4}-\d{2}-\d{2}$/.test(event.date)) throw new Error("Invalid aggregate hook event metadata");
+  if (event.timeZone != null && !isTimeZone(event.timeZone)) throw new Error("Invalid aggregate hook event time zone");
+  if (event.at != null && (typeof event.at !== "string" || Number.isNaN(Date.parse(event.at)))) throw new Error("Invalid aggregate hook event timestamp");
   if (event.sessionKey !== null && (typeof event.sessionKey !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(event.sessionKey))) throw new Error("Invalid aggregate session key");
   if (!Number.isInteger(event.lineChanges) || event.lineChanges < 0) throw new Error("Invalid aggregate line count");
   if (typeof event.event !== "string" || !["cursor-session", "cursor-agent-edit", "cursor-tab-edit", "claude-session", "claude-activity"].includes(event.event)) throw new Error("Invalid aggregate event type");

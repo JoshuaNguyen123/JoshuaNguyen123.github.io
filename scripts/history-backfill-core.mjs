@@ -1,4 +1,4 @@
-import { dateInTimeZone, isTimeZone, TIME_ZONE } from "./activity-core.mjs";
+import { dateInTimeZone, HOME_TIME_ZONE, isTimeZone, mergeWriteOnceDays, TIME_ZONE } from "./activity-core.mjs";
 
 export const HISTORY_BACKFILL_VERSION = 2;
 export const HISTORY_BACKFILL_NOTE = "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.";
@@ -75,11 +75,7 @@ export class DailyTally {
 }
 
 export function mergeBackfillDays(previous, next) {
-  const byDate = new Map(previous.map((day) => [day.date, day.value]));
-  for (const day of next) byDate.set(day.date, Math.max(byDate.get(day.date) ?? 0, day.value));
-  return [...byDate.entries()]
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([date, value]) => ({ date, value }));
+  return mergeWriteOnceDays(previous, next, { sameZone: true });
 }
 
 function validateSeries(series, label) {
@@ -153,7 +149,7 @@ export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDay
   return validateHistoryBackfill({
     v: HISTORY_BACKFILL_VERSION,
     generatedAt,
-    timeZone: TIME_ZONE,
+    timeZone: HOME_TIME_ZONE,
     note: HISTORY_BACKFILL_NOTE,
     options: { approximateLines },
     providers: {
@@ -172,11 +168,14 @@ export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDay
 export function mergeHistoryBackfill(previous, next) {
   const prior = validateHistoryBackfill(previous);
   const incoming = validateHistoryBackfill(next);
+  const today = dateInTimeZone(new Date());
+  const sameZone = prior.timeZone === incoming.timeZone;
+  const merge = (frozen, nextDays) => mergeWriteOnceDays(frozen, nextDays, { today, sameZone });
   return buildHistoryBackfill({
-    cursorSessionDays: mergeBackfillDays(prior.providers.cursor.activeSessions, incoming.providers.cursor.activeSessions),
-    cursorUsagePresenceDays: mergeBackfillDays(prior.providers.cursor.usagePresence, incoming.providers.cursor.usagePresence),
-    cursorLineDays: mergeBackfillDays(prior.providers.cursor.appliedLineChanges, incoming.providers.cursor.appliedLineChanges),
-    claudeSessionDays: mergeBackfillDays(prior.providers["claude-code"].activeSessions, incoming.providers["claude-code"].activeSessions),
+    cursorSessionDays: merge(prior.providers.cursor.activeSessions, incoming.providers.cursor.activeSessions),
+    cursorUsagePresenceDays: merge(prior.providers.cursor.usagePresence, incoming.providers.cursor.usagePresence),
+    cursorLineDays: merge(prior.providers.cursor.appliedLineChanges, incoming.providers.cursor.appliedLineChanges),
+    claudeSessionDays: merge(prior.providers["claude-code"].activeSessions, incoming.providers["claude-code"].activeSessions),
     approximateLines: false,
     generatedAt: incoming.generatedAt,
   });

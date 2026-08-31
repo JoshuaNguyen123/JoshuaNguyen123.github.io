@@ -30,7 +30,7 @@ test("usage events reduce to unique presence days and drop bad or future timesta
     { timestamp: Date.parse("2026-08-21T23:00:00Z") },
     { timestamp: "nonsense" },
     { timestamp: now.getTime() + 60 * 60 * 1000 },
-  ], { now });
+  ], { now, timeZone: "America/Denver" });
   // America/Denver: 02:00Z and 05:00Z on the 20th are still the evening of the 19th.
   assert.deepEqual(days.map((day) => day.date), ["2026-08-19", "2026-08-21"]);
   assert.ok(days.every((day) => day.value === 1));

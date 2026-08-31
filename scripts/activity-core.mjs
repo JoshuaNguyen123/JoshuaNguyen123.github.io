@@ -2,19 +2,16 @@ import { readFileSync } from "node:fs";
 
 export const HOME_TIME_ZONE = "America/Denver";
 
-// The calendar day a session lands on depends entirely on the zone it is
-// bucketed in, and the answer people actually want is "the day I was living
-// when I did the work". Pinning one zone silently misfiles every late-evening
-// session while travelling: at 23:00 Pacific it is already tomorrow in Denver,
-// so Saturday's work is filed under Sunday and Saturday reads as a day off --
-// which is also how a streak breaks without anyone touching the data.
+// Days are living-local and write-once. Home is America/Denver; while
+// travelling, new events stamp the calendar day of the machine timezone.
+// Changing the stamp zone later must not rewrite history — that is how a
+// pinned Denver zone emptied a Pacific Saturday and cut a 24-day streak to 1.
 //
-// Set ACTIVITY_TIME_ZONE while away from home; it defaults to home.
-// .env.live is read here rather than by each entry point because TIME_ZONE is
-// resolved at import time: a loader that runs in a module body executes after
-// every static import has already been evaluated, so it would be too late. The
-// scheduled collector depends on this -- it publishes hourly, and without it a
-// background run would quietly re-bucket everything back to the home zone.
+// ACTIVITY_TIME_ZONE is a forward-only override (wrong OS zone, or an
+// explicit home pin). It is not a travel toggle and never re-buckets past days.
+// .env.live is read here because TIME_ZONE is resolved at import time: a
+// loader in a module body runs after static imports, which is too late for
+// the hourly collector.
 function timeZoneFromEnvFile() {
   try {
     const contents = readFileSync(new URL("../.env.live", import.meta.url), "utf8");
@@ -27,14 +24,8 @@ function timeZoneFromEnvFile() {
       if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1);
       return value || null;
     }
-  } catch { /* absent or unreadable: fall back to the home zone */ }
+  } catch { /* absent or unreadable: fall through */ }
   return null;
-}
-
-export function resolveTimeZone(value = process.env.ACTIVITY_TIME_ZONE ?? timeZoneFromEnvFile()) {
-  if (!value) return HOME_TIME_ZONE;
-  if (!isTimeZone(value)) throw new Error(`ACTIVITY_TIME_ZONE is not a valid IANA time zone: ${value}`);
-  return value;
 }
 
 /** True for any zone this runtime's Intl actually understands. */
@@ -48,7 +39,26 @@ export function isTimeZone(value) {
   }
 }
 
-export const TIME_ZONE = resolveTimeZone();
+/** Parse an explicit IANA zone. Empty/null means the named home base. */
+export function resolveTimeZone(value = process.env.ACTIVITY_TIME_ZONE ?? timeZoneFromEnvFile()) {
+  if (!value) return HOME_TIME_ZONE;
+  if (!isTimeZone(value)) throw new Error(`ACTIVITY_TIME_ZONE is not a valid IANA time zone: ${value}`);
+  return value;
+}
+
+export function machineTimeZone() {
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return isTimeZone(zone) ? zone : null;
+}
+
+/** Zone for *new* stamps: forward pin, else the machine clock, else home. */
+export function stampTimeZone(value = process.env.ACTIVITY_TIME_ZONE ?? timeZoneFromEnvFile()) {
+  if (value) return resolveTimeZone(value);
+  return machineTimeZone() ?? HOME_TIME_ZONE;
+}
+
+export const TIME_ZONE = stampTimeZone();
+export const LIVING_LOCAL_DAY = `the calendar day the work happened (home base ${HOME_TIME_ZONE}; living-local when travelling)`;
 export const PROVIDERS = ["github", "codex", "cursor", "claude-code"];
 export const SCHEMA_VERSION = 5;
 export const PRIVACY_VERSION = "aggregate-v5";
@@ -66,7 +76,7 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: `Distinct Codex sessions with an observed event on each ${TIME_ZONE} calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.`,
+      methodology: `Distinct Codex sessions with an observed event on ${LIVING_LOCAL_DAY}. Annual totals are active-session-days, not lifetime sessions or token usage.`,
       accuracy: "observed",
     },
   },
@@ -74,13 +84,13 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: `Distinct local Cursor conversations observed on each ${TIME_ZONE} calendar day from retained timestamps or installed user hooks.`,
+      methodology: `Distinct local Cursor conversations observed on ${LIVING_LOCAL_DAY} from retained timestamps or installed user hooks.`,
       accuracy: "observed",
     },
     usagePresence: {
       label: "verified usage days",
       unit: "observed-usage",
-      methodology: `Binary ${TIME_ZONE} calendar-day presence from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.`,
+      methodology: `Binary presence on ${LIVING_LOCAL_DAY} from Cursor's first-party usage export. It verifies activity without inferring a session count or publishing models, tokens, costs, billing kinds, or IDs.`,
       accuracy: "observed",
     },
     appliedLineChanges: {
@@ -94,7 +104,7 @@ export const METRICS = {
     activeSessions: {
       label: "active sessions",
       unit: "active-sessions",
-      methodology: `Distinct local Claude Code sessions with an observed event on each ${TIME_ZONE} calendar day from retained timestamps or installed user hooks.`,
+      methodology: `Distinct local Claude Code sessions with an observed event on ${LIVING_LOCAL_DAY} from retained timestamps or installed user hooks.`,
       accuracy: "observed",
     },
   },
@@ -162,6 +172,36 @@ export function dateInTimeZone(value, timeZone = TIME_ZONE) {
 
 export function addDays(date, amount) {
   return new Date(Date.parse(`${date}T12:00:00Z`) + amount * DAY_MS).toISOString().slice(0, 10);
+}
+
+/** Per-date maximum union. Same-zone re-exports and first-time sources use this. */
+export function mergeMaxDays(previous = [], next = []) {
+  const byDate = new Map(previous.map((day) => [day.date, day.value]));
+  for (const day of next) byDate.set(day.date, Math.max(byDate.get(day.date) ?? 0, day.value));
+  return [...byDate.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([date, value]) => ({ date, value }));
+}
+
+// When the stamp zone changes, completed days stay where they were written.
+// Incoming dates before `today` that were not already frozen are re-bucket
+// ghosts and are dropped. Today and later still take the per-date max.
+export function mergeWriteOnceDays(frozenDays = [], incomingDays = [], { today, sameZone = true } = {}) {
+  if (sameZone || !frozenDays.length) return mergeMaxDays(frozenDays, incomingDays);
+  const frozen = new Map(frozenDays.map((day) => [day.date, day.value]));
+  const incoming = new Map(incomingDays.map((day) => [day.date, day.value]));
+  const dates = new Set([
+    ...frozen.keys(),
+    ...[...incoming.keys()].filter((date) => !today || date >= today),
+  ]);
+  return [...dates]
+    .sort((left, right) => left.localeCompare(right))
+    .map((date) => ({
+      date,
+      value: today && date < today
+        ? frozen.get(date) ?? 0
+        : Math.max(frozen.get(date) ?? 0, incoming.get(date) ?? 0),
+    }));
 }
 
 // Single source of truth for the published window. The site build and the live
@@ -299,6 +339,22 @@ export function unavailableProvider(provider, sources = {}, { attemptedAt = null
       unavailableMetric(provider, metricId, sources[metricId] ?? ALLOWED_SOURCES[provider][metricId][0], { attemptedAt }),
     ])),
   };
+}
+
+export function adoptCurrentDefinitions(value, provider) {
+  if (!value || typeof value !== "object") return value;
+  if (provider) {
+    const clone = structuredClone(value);
+    for (const [metricId, metric] of Object.entries(clone.metrics ?? {})) {
+      if (metric && METRICS[provider][metricId]) metric.definition = { ...METRICS[provider][metricId] };
+    }
+    return clone;
+  }
+  const clone = structuredClone(value);
+  for (const name of PROVIDERS) {
+    if (clone.providers?.[name]) clone.providers[name] = adoptCurrentDefinitions(clone.providers[name], name);
+  }
+  return clone;
 }
 
 export function validateMetricSeries(provider, metricId, value, { publicDays = false } = {}) {
@@ -451,11 +507,11 @@ export function validateSnapshot(snapshot, { allowFixtures = false } = {}) {
 export function assembleSnapshot(rawProviders, { start, end, mode = "observed", generatedAt = new Date().toISOString(), timeZone = TIME_ZONE }) {
   const normalizedRaw = Object.fromEntries(PROVIDERS.map((provider) => [provider, upgradeProvider(provider, rawProviders[provider])]));
   const providers = Object.fromEntries(PROVIDERS.map((provider) => [provider, completeProvider(provider, normalizedRaw[provider], start, end)]));
-  // The definitions come from METRICS, which names whatever zone the *building*
-  // machine resolved. CI never sets ACTIVITY_TIME_ZONE, so without this a
-  // scheduled rebuild would publish prose saying "America/Denver calendar day"
-  // inside a snapshot whose timeZone is America/Los_Angeles. The published
-  // methodology must describe the data it ships with.
+  // METRICS names the home base. assembleSnapshot still rewrites any IANA
+  // token to the snapshot zone so a rebuild whose TIME_ZONE differs (CI never
+  // sets ACTIVITY_TIME_ZONE) cannot publish mismatched prose. The published
+  // timeZone is the home emphasis, not a claim that every historical day was
+  // bucketed in that one zone.
   for (const provider of Object.values(providers)) {
     for (const metric of Object.values(provider.metrics)) {
       metric.definition = { ...metric.definition, methodology: metric.definition.methodology.replace(ZONE_TOKEN, timeZone) };

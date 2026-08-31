@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { addDays, validateSnapshot } from "./activity-core.mjs";
+import { addDays, adoptCurrentDefinitions, validateSnapshot } from "./activity-core.mjs";
 import { validateHistoryBackfill } from "./history-backfill-core.mjs";
 import { applyHistoryBackfill } from "./local-exporter.mjs";
 
@@ -28,7 +28,7 @@ function previouslyPublished() {
   });
   if (result.status !== 0 || !result.stdout) return null;
   try {
-    const parsed = validateSnapshot(JSON.parse(result.stdout));
+    const parsed = validateSnapshot(adoptCurrentDefinitions(JSON.parse(result.stdout)));
     // Kept unconditional across zones: prepare-activity carries the published
     // snapshot forward by per-date max regardless of the zone it was bucketed
     // in, so the audit must reconcile against that same carried history or it

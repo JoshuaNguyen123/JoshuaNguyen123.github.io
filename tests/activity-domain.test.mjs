@@ -6,7 +6,10 @@ import {
   dateInTimeZone,
   HOME_TIME_ZONE,
   isTimeZone,
+  machineTimeZone,
+  mergeWriteOnceDays,
   resolveTimeZone,
+  stampTimeZone,
   normalizeLevels,
   unavailableProvider,
   upgradeSnapshot,
@@ -136,6 +139,26 @@ test("the bucketing zone is configurable, defaults home, and rejects nonsense", 
   assert.throws(() => resolveTimeZone("Mars/Olympus"), /not a valid IANA time zone/);
   assert.ok(isTimeZone("Asia/Kathmandu"));
   assert.ok(!isTimeZone("Not/AZone"));
+});
+
+test("new stamps follow a forward pin, else the machine clock, else home", () => {
+  assert.equal(stampTimeZone("America/Los_Angeles"), "America/Los_Angeles");
+  assert.equal(stampTimeZone("America/Denver"), HOME_TIME_ZONE);
+  assert.equal(stampTimeZone(""), machineTimeZone() ?? HOME_TIME_ZONE);
+  assert.equal(stampTimeZone(null), machineTimeZone() ?? HOME_TIME_ZONE);
+});
+
+test("a zone change freezes completed days and only appends today onward", () => {
+  const frozen = [{ date: "2026-08-29", value: 4 }, { date: "2026-08-30", value: 2 }];
+  const incoming = [{ date: "2026-08-29", value: 9 }, { date: "2026-08-31", value: 1 }];
+  assert.deepEqual(
+    mergeWriteOnceDays(frozen, incoming, { today: "2026-08-31", sameZone: false }),
+    [{ date: "2026-08-29", value: 4 }, { date: "2026-08-30", value: 2 }, { date: "2026-08-31", value: 1 }],
+  );
+  assert.deepEqual(
+    mergeWriteOnceDays(frozen, incoming, { today: "2026-08-31", sameZone: true }),
+    [{ date: "2026-08-29", value: 9 }, { date: "2026-08-30", value: 2 }, { date: "2026-08-31", value: 1 }],
+  );
 });
 
 test("a day is bucketed in the zone it is given, not the host or a fixed pin", () => {

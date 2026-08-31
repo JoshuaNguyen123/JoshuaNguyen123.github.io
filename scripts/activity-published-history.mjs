@@ -10,14 +10,16 @@
 // later, and the two disagree in between.
 //
 // So every build merges the published snapshot forward before assembling:
-// per-date maximum, union coverage, freshest metadata. The merge is monotone
-// and idempotent, which matches how history-backfill.json is applied, and it
-// guarantees a rebuild can only ever match or exceed what is already public.
+// per-date maximum, union coverage, freshest metadata. Published day keys are
+// facts: a later stamp-zone change must not move counts between dates, only
+// add new dates or raise the same-date value. The merge is monotone and
+// idempotent, which matches how history-backfill.json is applied.
 //
 // GitHub is deliberately left out. Every build fetches the contribution
 // calendar directly, and that answer is authoritative in a way that a previous
 // snapshot is not.
 import {
+  adoptCurrentDefinitions,
   createMetricSeries,
   PRIVACY_VERSION,
   SCHEMA_VERSION,
@@ -89,7 +91,7 @@ export function mergePublishedHistory(providers, snapshot, { onSkip, onCarry } =
   for (const provider of LOCAL_HISTORY_PROVIDERS) {
     const before = totalRecordedDays(providers[provider]);
     try {
-      const published = validateRawProvider(provider, snapshot.providers?.[provider], { publicDays: true });
+      const published = validateRawProvider(provider, adoptCurrentDefinitions(snapshot.providers?.[provider], provider), { publicDays: true });
       const metrics = Object.fromEntries(Object.entries(providers[provider].metrics).map(([metricId, metric]) => [
         metricId,
         published.metrics[metricId] ? mergeMetric(provider, metricId, published.metrics[metricId], metric) : metric,

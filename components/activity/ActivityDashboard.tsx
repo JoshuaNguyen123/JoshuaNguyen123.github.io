@@ -311,7 +311,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           and shading math live on /activity, linked below. */}
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
-        <p className="index-disclaimer">Every square is one calendar day, on {data.timeZone} time. If a tool saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
+        <p className="index-disclaimer">Every square is one calendar day: home base America/Denver, living-local when I travel. If a tool saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
         <p className="index-disclaimer">Shading is relative. Each tool grades its days against its own year — darker means busier than my usual, not busy by some absolute bar — and the Build Index averages those grades into one picture. It describes observed activity, not productivity.</p>
         <p className="index-disclaimer">Only daily counts are published. Prompts, code, filenames, and project names never leave my machine.</p>
         <p className="index-disclaimer">The exact definitions, sources, coverage windows, and the shading math live at <Link href="/activity/">Every metric, in depth</Link>.</p>

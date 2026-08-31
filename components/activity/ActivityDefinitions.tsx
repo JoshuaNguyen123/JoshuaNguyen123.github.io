@@ -162,7 +162,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
           <h2 id="plain-english-definitions">Four distinctions that keep the record honest.</h2>
         </div>
         <dl>
-          <div><dt>Session-day</dt><dd>One distinct tool session observed on one {data.timeZone} calendar date. The same session can count again if it remains active on another date.</dd></div>
+          <div><dt>Session-day</dt><dd>One distinct tool session observed on the calendar day the work happened (home base America/Denver; living-local when travelling). The same session can count again if it remains active on another date.</dd></div>
           <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. For Cursor, first-party usage evidence can verify the date without creating a session count.</dd></div>
           <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
           <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>

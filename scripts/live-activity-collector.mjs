@@ -8,6 +8,7 @@ import {
   assembleSnapshot,
   createMetricSeries,
   dateInTimeZone,
+  HOME_TIME_ZONE,
   markProviderStale,
   rangeForBuild,
   TIME_ZONE,
@@ -177,7 +178,12 @@ export async function collect({ publish = true, preflight = false } = {}) {
       process.stderr.write(`Live activity collector: ${error.message}\n`);
     }
   }
-  const local = await exportLocalActivity();
+  const local = await exportLocalActivity({
+    previousFile: path.join(ROOT, "data", "local-activity.json"),
+    previousSnapshot: previous
+      ? { timeZone: previous.timeZone, providers: previous.providers }
+      : undefined,
+  });
   let localProviders;
   let hookStatus = "not-installed";
   const hookConfigExists = existsSync(path.join(config.activityHome, "config.json"));
@@ -200,7 +206,7 @@ export async function collect({ publish = true, preflight = false } = {}) {
     if (!previous) throw error;
     github = markProviderStale("github", previous.providers.github, new Date().toISOString());
   }
-  const snapshot = assembleSnapshot({ github, ...localProviders }, { start: START_DATE, end, generatedAt: new Date().toISOString() });
+  const snapshot = assembleSnapshot({ github, ...localProviders }, { start: START_DATE, end, generatedAt: new Date().toISOString(), timeZone: HOME_TIME_ZONE });
   if (preflight) {
     return { published: false, changed: false, hookStatus, range: snapshot.range, repository: config.repository };
   }

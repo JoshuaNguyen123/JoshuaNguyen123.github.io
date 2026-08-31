@@ -170,6 +170,50 @@ test("fixture, foreign-schema, and damaged snapshots are refused without failing
   assert.equal(providers.cursor.metrics.activeSessions.days.length, 1);
 });
 
+test("published history still carries when methodology wording has changed", () => {
+  const providers = localProviders({
+    codexDays: [{ date: "2026-08-29", value: 1 }],
+    cursorDays: [{ date: "2026-08-29", value: 1 }],
+    claudeDays: [{ date: "2026-08-29", value: 1 }],
+  });
+  const snapshot = publishedSnapshot({
+    codexDays: [{ date: "2026-08-29", value: 4 }, { date: "2026-08-30", value: 2 }],
+    cursorDays: [{ date: "2026-08-29", value: 3 }],
+    claudeDays: [{ date: "2026-08-29", value: 5 }],
+  });
+  snapshot.providers.codex.metrics.activeSessions.definition = {
+    ...snapshot.providers.codex.metrics.activeSessions.definition,
+    methodology: "Distinct Codex sessions with an observed event on each America/Los_Angeles calendar day. Annual totals are active-session-days, not lifetime sessions or token usage.",
+  };
+
+  mergePublishedHistory(providers, snapshot);
+
+  assert.deepEqual(providers.codex.metrics.activeSessions.days, [
+    { date: "2026-08-29", value: 4 },
+    { date: "2026-08-30", value: 2 },
+  ]);
+});
+
+test("published day keys survive a stamp-zone change on the incoming export", () => {
+  const providers = localProviders({
+    codexDays: [{ date: "2026-08-29", value: 1 }],
+    cursorDays: [{ date: "2026-08-29", value: 1 }],
+    claudeDays: [{ date: "2026-08-29", value: 1 }],
+  });
+  const snapshot = publishedSnapshot({
+    codexDays: [{ date: "2026-08-29", value: 4 }, { date: "2026-08-30", value: 2 }],
+    cursorDays: [{ date: "2026-08-29", value: 3 }],
+    claudeDays: [{ date: "2026-08-29", value: 5 }],
+  }, { timeZone: "America/Los_Angeles" });
+
+  mergePublishedHistory(providers, snapshot);
+
+  assert.deepEqual(providers.codex.metrics.activeSessions.days, [
+    { date: "2026-08-29", value: 4 },
+    { date: "2026-08-30", value: 2 },
+  ]);
+});
+
 test("GitHub is never carried forward, because every build refetches it", () => {
   const providers = localProviders({ codexDays: [], cursorDays: [], claudeDays: [] });
   providers.github = providerOf("github", {

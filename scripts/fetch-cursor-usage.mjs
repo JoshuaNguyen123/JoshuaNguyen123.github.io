@@ -76,14 +76,14 @@ export async function fetchUsageEvents({ apiKey, startDate, endDate, fetchImpl =
   return events;
 }
 
-export function reduceUsageEvents(events, { now = new Date() } = {}) {
+export function reduceUsageEvents(events, { now = new Date(), timeZone = TIME_ZONE } = {}) {
   const dates = new Set();
   for (const event of events) {
     const raw = event?.timestamp;
     const timestamp = typeof raw === "number" ? new Date(raw) : new Date(Number.parseInt(String(raw), 10) || raw);
     if (Number.isNaN(timestamp.valueOf())) continue;
     if (timestamp.getTime() > now.getTime() + 5 * 60_000) continue;
-    dates.add(dateInTimeZone(timestamp, TIME_ZONE));
+    dates.add(dateInTimeZone(timestamp, timeZone));
   }
   return [...dates].sort().map((date) => ({ date, value: 1 }));
 }

@@ -3,7 +3,7 @@ import { mkdtemp, readdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { createMetricSeries, unavailableProvider } from "../scripts/activity-core.mjs";
+import { createMetricSeries, dateInTimeZone, unavailableProvider } from "../scripts/activity-core.mjs";
 import { lineChangeCounts, reduceHookPayload, writeSpoolEvent } from "../scripts/local-hook-core.mjs";
 import { applySpoolEvents, consumeHookSpool, mergeHookLedger, readHookState, snapshotsMatch, validateLedger } from "../scripts/live-activity-core.mjs";
 
@@ -34,12 +34,24 @@ test("Cursor Agent and Tab hooks reduce raw payloads to privacy-safe aggregates"
   assert.doesNotMatch(output, /secret|private|conversation|generation|model|file/i);
 });
 
-test("Claude hooks map sessions to the Denver day and daily keyed hashes deduplicate", () => {
-  const first = reduceHookPayload("claude-session", { session_id: "private-session", transcript_path: "C:/secret.jsonl" }, secret, new Date("2026-01-02T06:59:59Z"));
-  const second = reduceHookPayload("claude-activity", { session_id: "private-session", tool_input: { file_path: "C:/secret.ts" } }, secret, new Date("2026-01-02T06:59:59Z"));
+test("Claude hooks map sessions to the stamped day and daily keyed hashes deduplicate", () => {
+  const now = new Date("2026-01-02T06:59:59Z");
+  const first = reduceHookPayload("claude-session", { session_id: "private-session", transcript_path: "C:/secret.jsonl" }, secret, now, "America/Denver");
+  const second = reduceHookPayload("claude-activity", { session_id: "private-session", tool_input: { file_path: "C:/secret.ts" } }, secret, now, "America/Denver");
   assert.equal(first.date, "2026-01-01");
+  assert.equal(first.timeZone, "America/Denver");
+  assert.equal(first.at, now.toISOString());
   const ledger = applySpoolEvents(validateLedger({ v: 1, providers: { cursor: { sessions: {}, lineChanges: {} }, "claude-code": { sessions: {} } } }), [first, second]);
   assert.equal(ledger.providers["claude-code"].sessions["2026-01-01"].length, 1);
+});
+
+test("hooks stamp the living-local day, so a Pacific evening is not Denver's tomorrow", () => {
+  const now = new Date("2026-08-30T06:30:00Z");
+  const pacific = reduceHookPayload("claude-session", { session_id: "private-session" }, secret, now, "America/Los_Angeles");
+  const home = reduceHookPayload("claude-session", { session_id: "private-session" }, secret, now, "America/Denver");
+  assert.equal(pacific.date, "2026-08-29");
+  assert.equal(home.date, dateInTimeZone(now, "America/Denver"));
+  assert.equal(home.date, "2026-08-30");
 });
 
 test("concurrent spool files are consumed once and merged with partial backfill", async (context) => {

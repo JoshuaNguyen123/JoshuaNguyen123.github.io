@@ -1,7 +1,9 @@
 // Read-only diagnostic for timezone-boundary misattribution.
 //
-// Answers one question: if the calendar day were computed in a different zone,
-// which days would change, and would any streak change with them?
+// Production days are write-once and living-local (home base America/Denver).
+// This script does not rewrite anything. It answers: if those raw timestamps
+// were *re-bucketed* in a different zone, which days would move, and what
+// would that do to the streak? Denver is the home comparison zone.
 //
 // It re-reads the original local sources, which still carry raw event
 // timestamps, because the committed exports keep bare dates only. It writes
@@ -15,9 +17,8 @@ import { DatabaseSync } from "node:sqlite";
 import { addDays, TIME_ZONE } from "./activity-core.mjs";
 
 const MACHINE_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
-// Denver is the pinned zone; the rest are the plausible alternatives a
-// traveller actually occupies. Duplicates collapse so the table stays short.
-const ZONES = [...new Set([TIME_ZONE, "America/Los_Angeles", MACHINE_ZONE, "UTC"])];
+// Home first, then the trip zone and whatever this machine is on.
+const ZONES = [...new Set(["America/Denver", TIME_ZONE, "America/Los_Angeles", MACHINE_ZONE, "UTC"])];
 const BOUNDARY_MINUTES = 90;
 
 const args = new Set(process.argv.slice(2));

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
+import { dateInTimeZone, TIME_ZONE } from "../scripts/activity-core.mjs";
 import { createDayBucketer, mergeBackfillDays, validateHistoryBackfill } from "../scripts/history-backfill-core.mjs";
 import { run } from "../scripts/backfill-history.mjs";
 
@@ -53,10 +54,14 @@ test("backfill unions composer ids across bubbles, headers, and tracking rows on
   const { out, flags } = await fixture(context);
   await run(flags);
   const backfill = validateHistoryBackfill(JSON.parse(await readFile(out, "utf8")));
-  // 2026-02-01: composer A (bubble + header) and composer B (bubble + header) -> 2, deduplicated across sources.
-  // 2026-02-02T06:59:59Z buckets to the previous Denver day, so 2026-02-01 stays the only February day.
+  // 2026-02-01: composer A (bubble + header) and composer B (bubble + header) -> 2.
+  // 2026-02-02T06:59:59Z is still 2026-02-01 in Denver; in UTC it is its own day.
+  const lateBubbleDay = dateInTimeZone("2026-02-02T06:59:59Z", TIME_ZONE);
+  const february = lateBubbleDay === "2026-02-01"
+    ? [{ date: "2026-02-01", value: 2 }]
+    : [{ date: "2026-02-01", value: 2 }, { date: lateBubbleDay, value: 1 }];
   assert.deepEqual(backfill.providers.cursor.activeSessions, [
-    { date: "2026-02-01", value: 2 },
+    ...february,
     { date: "2026-07-14", value: 1 },
   ]);
   // ai_code_hashes rows are tracking records, not measured line diffs.

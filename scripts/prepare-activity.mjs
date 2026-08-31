@@ -9,6 +9,7 @@ import {
   assembleSnapshot,
   createMetricSeries,
   enumerateDates,
+  HOME_TIME_ZONE,
   METRICS,
   PRIVACY_VERSION,
   PROVIDERS,
@@ -150,9 +151,9 @@ const { start, end } = rangeForBuild();
 const output = path.join(ROOT, "public", "data", "activity.json");
 const local = fixtureMode ? null : await getLocalProviders();
 const collected = fixtureMode ? fixtureProviders(start, end) : { github: await getGitHubProvider(start, end), ...local.providers };
-// The days were bucketed when they were exported, so the snapshot must report
-// that zone rather than whatever this build happens to be running with.
-const snapshotTimeZone = fixtureMode ? TIME_ZONE : local.timeZone;
+// Home emphasis on the published snapshot. Historical days stay where they
+// were stamped; this is not a re-bucket.
+const snapshotTimeZone = fixtureMode ? TIME_ZONE : HOME_TIME_ZONE;
 const providers = fixtureMode ? collected : await carryPublishedHistory(collected, output);
 const snapshot = assembleSnapshot(providers, { start, end, mode: fixtureMode ? "fixture" : "observed", timeZone: snapshotTimeZone });
 await mkdir(path.dirname(output), { recursive: true });
