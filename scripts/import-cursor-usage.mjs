@@ -3,7 +3,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
+import { dateInTimeZone, HOME_TIME_ZONE } from "./activity-core.mjs";
 import {
   buildHistoryBackfill,
   mergeHistoryBackfill,
@@ -145,7 +145,7 @@ export function reduceCursorUsageCsv(text, { now = new Date() } = {}) {
     const totalTokens = nonnegativeInteger(row[10], "Total Tokens", rowNumber);
     if (inputWithCacheWrite + inputWithoutCacheWrite + cacheRead + outputTokens !== totalTokens) fail(`row ${rowNumber} has inconsistent Total Tokens`);
     validRequests(row[11], rowNumber);
-    dates.add(dateInTimeZone(timestamp, TIME_ZONE));
+    dates.add(dateInTimeZone(timestamp, HOME_TIME_ZONE));
     if (!firstTimestamp || timestamp < firstTimestamp) firstTimestamp = timestamp;
     if (!lastTimestamp || timestamp > lastTimestamp) lastTimestamp = timestamp;
   }

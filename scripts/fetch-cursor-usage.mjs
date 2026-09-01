@@ -9,7 +9,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { dateInTimeZone, TIME_ZONE } from "./activity-core.mjs";
+import { dateInTimeZone, HOME_TIME_ZONE } from "./activity-core.mjs";
 import { run as downloadAndMergeDashboardCsv } from "./download-cursor-usage.mjs";
 import { buildHistoryBackfill, mergeHistoryBackfill, validateHistoryBackfill } from "./history-backfill-core.mjs";
 
@@ -76,7 +76,7 @@ export async function fetchUsageEvents({ apiKey, startDate, endDate, fetchImpl =
   return events;
 }
 
-export function reduceUsageEvents(events, { now = new Date(), timeZone = TIME_ZONE } = {}) {
+export function reduceUsageEvents(events, { now = new Date(), timeZone = HOME_TIME_ZONE } = {}) {
   const dates = new Set();
   for (const event of events) {
     const raw = event?.timestamp;
