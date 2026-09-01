@@ -111,6 +111,7 @@ async function getLocalProviders() {
   const supported = value.schemaVersion === 2 && value.privacyVersion === "aggregate-v2"
     || value.schemaVersion === 3 && value.privacyVersion === "aggregate-v3"
     || value.schemaVersion === 4 && value.privacyVersion === "aggregate-v4"
+    || value.schemaVersion === 5 && value.privacyVersion === "aggregate-v5"
     || value.schemaVersion === SCHEMA_VERSION && value.privacyVersion === PRIVACY_VERSION;
   if (!supported || !isTimeZone(value.timeZone)) throw new Error("Local activity snapshot schema is invalid");
   const providers = Object.fromEntries(["codex", "cursor", "claude-code"].map((provider) => [provider, upgradeProvider(provider, value.providers[provider])]));

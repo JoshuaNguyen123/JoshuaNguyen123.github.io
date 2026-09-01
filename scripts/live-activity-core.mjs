@@ -173,6 +173,7 @@ export function mergeHookLedger(backfillProviders, hookState, now = new Date().t
           lastSyncedAt: now,
           lastAttemptedAt: now,
         }),
+        repositoryEvidence: claudeBackfill.metrics.repositoryEvidence,
       },
     },
   };

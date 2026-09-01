@@ -14,6 +14,7 @@ const definitions = {
   },
   codex: {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct Codex sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling). Annual totals are active-session-days, not lifetime sessions or token usage.", accuracy: "observed" },
+    repositoryEvidence: { label: "GitHub repository evidence", unit: "observed-usage", methodology: "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from provider-attributed GitHub commits and pull requests. It verifies Codex activity without inventing a session count.", accuracy: "observed" },
   },
   cursor: {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Cursor conversations observed on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.", accuracy: "observed" },
@@ -22,6 +23,7 @@ const definitions = {
   },
   "claude-code": {
     activeSessions: { label: "active sessions", unit: "active-sessions", methodology: "Distinct local Claude Code sessions with an observed event on the calendar day the work happened (home base America/Denver; living-local when travelling) from retained timestamps or installed user hooks.", accuracy: "observed" },
+    repositoryEvidence: { label: "GitHub repository evidence", unit: "observed-usage", methodology: "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Claude-authored GitHub commits, Claude Code session links, and provider-attributed pull requests. It verifies activity without inventing a session count.", accuracy: "observed" },
   },
 } as const;
 
@@ -34,20 +36,26 @@ const retiredCursorLineDefinition: ProviderMetricDefinition = {
 
 const sources = {
   github: { contributions: ["GitHub public contribution calendar", "Synthetic local development fixture"] },
-  codex: { activeSessions: ["Local Codex log database (timestamp and thread_id only)", "Local Codex session event timestamps", "Synthetic local development fixture"] },
+  codex: {
+    activeSessions: ["Local Codex log database (timestamp and thread_id only)", "Local Codex session event timestamps", "Synthetic local development fixture"],
+    repositoryEvidence: ["GitHub provider-attributed PR and commit dates", "Synthetic local development fixture"],
+  },
   cursor: {
     activeSessions: ["Local Cursor hooks and retained conversation timestamps", "Local Cursor hooks", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
     usagePresence: ["Cursor usage-event export (daily presence only)", "Synthetic local development fixture"],
     appliedLineChanges: ["Local Cursor Agent and Tab edit hooks", "Local Cursor edit hooks and AI code tracking history", "Synthetic local development fixture", "Legacy Cursor aggregate feed"],
   },
-  "claude-code": { activeSessions: ["Local Claude Code hooks and retained session timestamps", "Local Claude Code session event timestamps", "Local Claude Code hooks", "Synthetic local development fixture", "Legacy Claude aggregate feed"] },
+  "claude-code": {
+    activeSessions: ["Local Claude Code hooks and retained session timestamps", "Local Claude Code session event timestamps", "Local Claude Code hooks", "Synthetic local development fixture", "Legacy Claude aggregate feed"],
+    repositoryEvidence: ["GitHub provider-attributed PR and commit dates", "Synthetic local development fixture"],
+  },
 } as const;
 
 const providerMetricIds = {
   github: ["contributions"],
-  codex: ["activeSessions"],
+  codex: ["activeSessions", "repositoryEvidence"],
   cursor: ["activeSessions", "usagePresence", "appliedLineChanges"],
-  "claude-code": ["activeSessions"],
+  "claude-code": ["activeSessions", "repositoryEvidence"],
 } as const;
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -136,16 +144,18 @@ function unavailableMetric(provider: ActivityProvider, metricId: string, attempt
   return { status: "unavailable", definition: { ...definition }, source, coverage: { start: null, end: null }, lastSyncedAt: null, lastAttemptedAt: attemptedAt, days: [] };
 }
 
-function parseNestedProviders(input: unknown, version: 4 | 5): ActivityProviders | null {
+function parseNestedProviders(input: unknown, version: 4 | 5 | 6): ActivityProviders | null {
   const providerInput = record(input);
   if (!providerInput || !hasExactKeys(providerInput, activityProviders)) return null;
   const output = {} as ActivityProviders;
   for (const provider of activityProviders) {
     const wrapper = record(providerInput[provider]);
     const metrics = wrapper && record(wrapper.metrics);
-    const ids = version === 4 && provider === "cursor"
-      ? ["activeSessions", "appliedLineChanges"] as const
-      : providerMetricIds[provider];
+    const ids = version < 6 && (provider === "codex" || provider === "claude-code")
+      ? ["activeSessions"] as const
+      : version === 4 && provider === "cursor"
+        ? ["activeSessions", "appliedLineChanges"] as const
+        : providerMetricIds[provider];
     if (!wrapper || !hasExactKeys(wrapper, ["metrics"]) || !metrics || !hasExactKeys(metrics, ids)) return null;
     const parsed: Record<string, MetricActivitySnapshot> = {};
     for (const metricId of ids) {
@@ -154,6 +164,7 @@ function parseNestedProviders(input: unknown, version: 4 | 5): ActivityProviders
       parsed[metricId] = metric;
     }
     if (provider === "cursor" && version === 4) parsed.usagePresence = unavailableMetric("cursor", "usagePresence");
+    if ((provider === "codex" || provider === "claude-code") && version < 6) parsed.repositoryEvidence = unavailableMetric(provider, "repositoryEvidence");
     (output as Record<string, unknown>)[provider] = { metrics: parsed };
   }
   return output;
@@ -205,15 +216,18 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
   const version = snapshot.schemaVersion === 2 && snapshot.privacyVersion === "aggregate-v2" ? 2
     : snapshot.schemaVersion === 3 && snapshot.privacyVersion === "aggregate-v3" ? 3
       : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4
-        : snapshot.schemaVersion === 5 && snapshot.privacyVersion === "aggregate-v5" ? 5 : null;
+        : snapshot.schemaVersion === 5 && snapshot.privacyVersion === "aggregate-v5" ? 5
+          : snapshot.schemaVersion === 6 && snapshot.privacyVersion === "aggregate-v6" ? 6 : null;
   if (!version || (snapshot.mode !== "observed" && snapshot.mode !== "fixture") || !isTimeZone(snapshot.timeZone) || !timestamp(snapshot.generatedAt)) return null;
   const range = record(snapshot.range);
   const buildIndex = record(snapshot.buildIndex);
   const summaries = record(snapshot.summaries);
   if (!range || !hasExactKeys(range, ["start", "end"]) || !isoDate(range.start) || !isoDate(range.end) || range.start > range.end || !buildIndex || !hasExactKeys(buildIndex, ["label", "formula", "disclaimer", "days"]) || buildIndex.label !== "Build Index" || typeof buildIndex.formula !== "string" || typeof buildIndex.disclaimer !== "string" || !summaries) return null;
-  const providers = version === 5 ? parseNestedProviders(snapshot.providers, 5)
-    : version === 4 ? parseNestedProviders(snapshot.providers, 4)
-      : parseLegacyProviders(snapshot.providers, version);
+  const providers = version === 6 ? parseNestedProviders(snapshot.providers, 6)
+    : version === 5 ? parseNestedProviders(snapshot.providers, 5)
+      : version === 4 ? parseNestedProviders(snapshot.providers, 4)
+        : version === 3 ? parseLegacyProviders(snapshot.providers, 3)
+          : parseLegacyProviders(snapshot.providers, 2);
   const parsedBuildDays = parseDays(buildIndex.days, { buildIndex: true });
   if (!providers || !parsedBuildDays) return null;
   const retiredLineMetric = providers.cursor.metrics.appliedLineChanges;
@@ -244,8 +258,8 @@ export function parseActivitySnapshot(input: unknown): ActivitySnapshot | null {
     };
   }
   return {
-    schemaVersion: 5,
-    privacyVersion: "aggregate-v5",
+    schemaVersion: 6,
+    privacyVersion: "aggregate-v6",
     mode: snapshot.mode,
     generatedAt: snapshot.generatedAt,
     timeZone: snapshot.timeZone,

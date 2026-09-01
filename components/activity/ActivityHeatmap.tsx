@@ -24,6 +24,8 @@ interface ActivityHeatmapProps {
   onDaySelect: (date: string) => void;
   /** Fired only on a real press, so the day card never follows the pointer. */
   onDayOpen?: (date: string, event: MouseEvent<HTMLButtonElement>) => void;
+  /** Dates verified only by provider-attributed GitHub repository evidence. */
+  repositoryEvidenceOnlyDates?: string[];
   featured?: boolean;
 }
 
@@ -48,10 +50,12 @@ export function ActivityHeatmap({
   selectedDate,
   onDaySelect,
   onDayOpen,
+  repositoryEvidenceOnlyDates = [],
   featured = false,
 }: ActivityHeatmapProps) {
   const weeks = buildCalendarWeeks(startDate, endDate);
   const byDate = new Map(data.map((point) => [point.date, point]));
+  const repositoryEvidenceOnly = new Set(repositoryEvidenceOnlyDates);
   const palette = providerPalettes[provider];
   const paletteStyle = Object.fromEntries(
     palette.map((color, level) => [`--cell-level-${level}`, color]),
@@ -113,15 +117,17 @@ export function ActivityHeatmap({
                       );
                     }
                     const value = formatValue(point.value, metric, provider);
+                    const isRepositoryEvidenceOnly = repositoryEvidenceOnly.has(cell.date);
+                    const evidenceLabel = isRepositoryEvidenceOnly ? " · GitHub repository evidence" : "";
                     return (
                       <button
                         type="button"
                         key={cell.date}
-                        className={`heatmap-cell level-${point.level} ${selectedDate === cell.date ? "is-selected" : ""}`}
-                        aria-label={`${readableDate}: ${value} observed from ${title}`}
+                        className={`heatmap-cell level-${point.level} ${isRepositoryEvidenceOnly ? "is-repository-evidence" : ""} ${selectedDate === cell.date ? "is-selected" : ""}`}
+                        aria-label={`${readableDate}: ${isRepositoryEvidenceOnly ? "GitHub repository evidence" : value} observed from ${title}`}
                         aria-pressed={selectedDate === cell.date}
                         data-level={point.level}
-                        title={`${readableDate} · ${value} · intensity ${point.level} of 5`}
+                        title={`${readableDate} · ${value}${evidenceLabel} · intensity ${point.level} of 5`}
                         onClick={(event) => { onDaySelect(cell.date!); onDayOpen?.(cell.date!, event); }}
                         onFocus={() => onDaySelect(cell.date!)}
                         onMouseEnter={() => onDaySelect(cell.date!)}

@@ -1,11 +1,12 @@
 import { dateInTimeZone, HOME_TIME_ZONE, isTimeZone, mergeWriteOnceDays, TIME_ZONE } from "./activity-core.mjs";
 
-export const HISTORY_BACKFILL_VERSION = 2;
-export const HISTORY_BACKFILL_NOTE = "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.";
+export const HISTORY_BACKFILL_VERSION = 3;
+export const HISTORY_BACKFILL_NOTE = "Daily session aggregates recovered from retained local Cursor databases and Claude Code transcripts, plus privacy-reduced Cursor usage exports and provider-attributed GitHub repository evidence. GitHub evidence is binary presence only and never invents a session count. Database tracking rows are not treated as line changes. Dates and counts only.";
 
 const PROVIDER_SERIES = {
+  codex: ["repositoryEvidence"],
   cursor: ["activeSessions", "usagePresence", "appliedLineChanges"],
-  "claude-code": ["activeSessions"],
+  "claude-code": ["activeSessions", "repositoryEvidence"],
 };
 
 function fail(message) {
@@ -91,17 +92,20 @@ function validateSeries(series, label) {
   return series;
 }
 
-function validateV1HistoryBackfill(value) {
+function upgradeLegacyHistoryBackfill(value) {
   exactKeys(value, ["v", "generatedAt", "timeZone", "note", "options", "providers"], "backfill file");
-  if (value.v !== 1) fail(`unsupported version ${value.v}`);
+  if (![1, 2].includes(value.v)) fail(`unsupported version ${value.v}`);
   if (typeof value.generatedAt !== "string" || Number.isNaN(Date.parse(value.generatedAt))) fail("generatedAt must be a timestamp");
   if (!isTimeZone(value.timeZone)) fail("timeZone must be a valid IANA time zone");
   if (typeof value.note !== "string") fail("note must be a string");
   exactKeys(value.options, ["approximateLines"], "options");
   if (typeof value.options.approximateLines !== "boolean") fail("options.approximateLines must be a boolean");
-  const v1Series = { cursor: ["activeSessions", "appliedLineChanges"], "claude-code": ["activeSessions"] };
-  exactKeys(value.providers, Object.keys(v1Series), "providers");
-  for (const [provider, seriesIds] of Object.entries(v1Series)) {
+  const legacySeries = {
+    cursor: value.v === 1 ? ["activeSessions", "appliedLineChanges"] : ["activeSessions", "usagePresence", "appliedLineChanges"],
+    "claude-code": ["activeSessions"],
+  };
+  exactKeys(value.providers, Object.keys(legacySeries), "providers");
+  for (const [provider, seriesIds] of Object.entries(legacySeries)) {
     exactKeys(value.providers[provider], seriesIds, `providers.${provider}`);
     for (const seriesId of seriesIds) validateSeries(value.providers[provider][seriesId], `providers.${provider}.${seriesId}`);
   }
@@ -111,14 +115,19 @@ function validateV1HistoryBackfill(value) {
     note: HISTORY_BACKFILL_NOTE,
     options: { approximateLines: false },
     providers: {
-      ...value.providers,
-      cursor: { ...value.providers.cursor, usagePresence: [], appliedLineChanges: [] },
+      codex: { repositoryEvidence: [] },
+      cursor: {
+        ...value.providers.cursor,
+        usagePresence: value.v === 1 ? [] : value.providers.cursor.usagePresence,
+        appliedLineChanges: [],
+      },
+      "claude-code": { ...value.providers["claude-code"], repositoryEvidence: [] },
     },
   };
 }
 
 export function validateHistoryBackfill(value) {
-  if (value?.v === 1) return validateV1HistoryBackfill(value);
+  if (value?.v === 1 || value?.v === 2) return upgradeLegacyHistoryBackfill(value);
   exactKeys(value, ["v", "generatedAt", "timeZone", "note", "options", "providers"], "backfill file");
   if (value.v !== HISTORY_BACKFILL_VERSION) fail(`unsupported version ${value.v}`);
   if (typeof value.generatedAt !== "string" || Number.isNaN(Date.parse(value.generatedAt))) fail("generatedAt must be a timestamp");
@@ -145,7 +154,7 @@ export function validateHistoryBackfill(value) {
   };
 }
 
-export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDays = [], cursorLineDays, claudeSessionDays, approximateLines = false, generatedAt = new Date().toISOString() }) {
+export function buildHistoryBackfill({ codexRepositoryEvidenceDays = [], cursorSessionDays, cursorUsagePresenceDays = [], cursorLineDays, claudeSessionDays, claudeRepositoryEvidenceDays = [], approximateLines = false, generatedAt = new Date().toISOString() }) {
   return validateHistoryBackfill({
     v: HISTORY_BACKFILL_VERSION,
     generatedAt,
@@ -153,6 +162,9 @@ export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDay
     note: HISTORY_BACKFILL_NOTE,
     options: { approximateLines },
     providers: {
+      codex: {
+        repositoryEvidence: validateSeries(codexRepositoryEvidenceDays, "codex repository-evidence days"),
+      },
       cursor: {
         activeSessions: validateSeries(cursorSessionDays, "cursor session days"),
         usagePresence: validateSeries(cursorUsagePresenceDays, "cursor usage-presence days"),
@@ -160,6 +172,7 @@ export function buildHistoryBackfill({ cursorSessionDays, cursorUsagePresenceDay
       },
       "claude-code": {
         activeSessions: validateSeries(claudeSessionDays, "claude session days"),
+        repositoryEvidence: validateSeries(claudeRepositoryEvidenceDays, "claude repository-evidence days"),
       },
     },
   });
@@ -172,10 +185,12 @@ export function mergeHistoryBackfill(previous, next) {
   const sameZone = prior.timeZone === incoming.timeZone;
   const merge = (frozen, nextDays) => mergeWriteOnceDays(frozen, nextDays, { today, sameZone });
   return buildHistoryBackfill({
+    codexRepositoryEvidenceDays: merge(prior.providers.codex.repositoryEvidence, incoming.providers.codex.repositoryEvidence),
     cursorSessionDays: merge(prior.providers.cursor.activeSessions, incoming.providers.cursor.activeSessions),
     cursorUsagePresenceDays: merge(prior.providers.cursor.usagePresence, incoming.providers.cursor.usagePresence),
     cursorLineDays: merge(prior.providers.cursor.appliedLineChanges, incoming.providers.cursor.appliedLineChanges),
     claudeSessionDays: merge(prior.providers["claude-code"].activeSessions, incoming.providers["claude-code"].activeSessions),
+    claudeRepositoryEvidenceDays: merge(prior.providers["claude-code"].repositoryEvidence, incoming.providers["claude-code"].repositoryEvidence),
     approximateLines: false,
     generatedAt: incoming.generatedAt,
   });

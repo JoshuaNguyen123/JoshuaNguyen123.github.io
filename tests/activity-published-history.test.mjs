@@ -26,7 +26,7 @@ function published(series) {
 }
 
 function providerOf(provider, metrics) {
-  return validateRawProvider(provider, { metrics });
+  return validateRawProvider(provider, { metrics: { ...unavailableProvider(provider).metrics, ...metrics } });
 }
 
 function localProviders({ codexDays, cursorDays, claudeDays, syncedAt = "2026-08-23T00:00:00.000Z" }) {

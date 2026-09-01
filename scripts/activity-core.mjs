@@ -60,8 +60,8 @@ export function stampTimeZone(value = process.env.ACTIVITY_TIME_ZONE ?? timeZone
 export const TIME_ZONE = stampTimeZone();
 export const LIVING_LOCAL_DAY = `the calendar day the work happened (home base ${HOME_TIME_ZONE}; living-local when travelling)`;
 export const PROVIDERS = ["github", "codex", "cursor", "claude-code"];
-export const SCHEMA_VERSION = 5;
-export const PRIVACY_VERSION = "aggregate-v5";
+export const SCHEMA_VERSION = 6;
+export const PRIVACY_VERSION = "aggregate-v6";
 
 export const METRICS = {
   github: {
@@ -77,6 +77,12 @@ export const METRICS = {
       label: "active sessions",
       unit: "active-sessions",
       methodology: `Distinct Codex sessions with an observed event on ${LIVING_LOCAL_DAY}. Annual totals are active-session-days, not lifetime sessions or token usage.`,
+      accuracy: "observed",
+    },
+    repositoryEvidence: {
+      label: "GitHub repository evidence",
+      unit: "observed-usage",
+      methodology: `Binary presence on ${LIVING_LOCAL_DAY} from provider-attributed GitHub commits and pull requests. It verifies Codex activity without inventing a session count.`,
       accuracy: "observed",
     },
   },
@@ -107,14 +113,20 @@ export const METRICS = {
       methodology: `Distinct local Claude Code sessions with an observed event on ${LIVING_LOCAL_DAY} from retained timestamps or installed user hooks.`,
       accuracy: "observed",
     },
+    repositoryEvidence: {
+      label: "GitHub repository evidence",
+      unit: "observed-usage",
+      methodology: `Binary presence on ${LIVING_LOCAL_DAY} from Claude-authored GitHub commits, Claude Code session links, and provider-attributed pull requests. It verifies activity without inventing a session count.`,
+      accuracy: "observed",
+    },
   },
 };
 
 export const INDEX_METRICS = {
-  github: "contributions",
-  codex: "activeSessions",
-  cursor: "activeSessions",
-  "claude-code": "activeSessions",
+  github: ["contributions"],
+  codex: ["activeSessions", "repositoryEvidence"],
+  cursor: ["activeSessions", "usagePresence"],
+  "claude-code": ["activeSessions", "repositoryEvidence"],
 };
 
 export const ALLOWED_SOURCES = {
@@ -125,6 +137,10 @@ export const ALLOWED_SOURCES = {
     activeSessions: [
       "Local Codex log database (timestamp and thread_id only)",
       "Local Codex session event timestamps",
+      "Synthetic local development fixture",
+    ],
+    repositoryEvidence: [
+      "GitHub provider-attributed PR and commit dates",
       "Synthetic local development fixture",
     ],
   },
@@ -153,6 +169,10 @@ export const ALLOWED_SOURCES = {
       "Local Claude Code hooks",
       "Synthetic local development fixture",
       "Legacy Claude aggregate feed",
+    ],
+    repositoryEvidence: [
+      "GitHub provider-attributed PR and commit dates",
+      "Synthetic local development fixture",
     ],
   },
 };
@@ -399,7 +419,7 @@ function completeMetric(provider, metricId, raw, start, end) {
   const days = enumerateDates(first, last).map((date) => ({ date, value: byDate.get(date) ?? 0, level: 0 }));
   for (const year of new Set(days.map((day) => day.date.slice(0, 4)))) {
     const yearDays = days.filter((day) => day.date.startsWith(year));
-    const levels = metricId === "usagePresence"
+    const levels = metricId === "usagePresence" || metricId === "repositoryEvidence"
       ? yearDays.map((day) => (day.value > 0 ? 1 : 0))
       : normalizeLevels(yearDays.map((day) => day.value));
     yearDays.forEach((day, index) => { day.level = levels[index]; });
@@ -435,25 +455,26 @@ function validateBuildIndex(buildIndex) {
 function validateLegacySnapshot(snapshot) {
   const version = snapshot.schemaVersion === 2 && snapshot.privacyVersion === "aggregate-v2" ? 2
     : snapshot.schemaVersion === 3 && snapshot.privacyVersion === "aggregate-v3" ? 3
-      : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4 : null;
+      : snapshot.schemaVersion === 4 && snapshot.privacyVersion === "aggregate-v4" ? 4
+        : snapshot.schemaVersion === 5 && snapshot.privacyVersion === "aggregate-v5" ? 5 : null;
   if (!version) throw new Error("Unsupported activity schema");
   assertExactKeys(snapshot, ["schemaVersion", "privacyVersion", "mode", "generatedAt", "timeZone", "range", "providers", "buildIndex", "summaries"], "snapshot");
   if (!["observed", "fixture"].includes(snapshot.mode) || !isTimeZone(snapshot.timeZone) || !isTimestamp(snapshot.generatedAt)) throw new Error("Invalid legacy snapshot metadata");
   assertExactKeys(snapshot.range, ["start", "end"], "snapshot.range");
   if (!isDate(snapshot.range.start) || !isDate(snapshot.range.end) || snapshot.range.start > snapshot.range.end) throw new Error("Invalid legacy snapshot range");
   assertExactKeys(snapshot.providers, PROVIDERS, "snapshot.providers");
-  if (version === 4) {
-    const v4Metrics = {
+  if (version === 4 || version === 5) {
+    const legacyMetrics = {
       github: ["contributions"],
       codex: ["activeSessions"],
-      cursor: ["activeSessions", "appliedLineChanges"],
+      cursor: version === 5 ? ["activeSessions", "usagePresence", "appliedLineChanges"] : ["activeSessions", "appliedLineChanges"],
       "claude-code": ["activeSessions"],
     };
     for (const provider of PROVIDERS) {
       const wrapper = snapshot.providers[provider];
       assertExactKeys(wrapper, ["metrics"], provider);
-      assertExactKeys(wrapper.metrics, v4Metrics[provider], `${provider}.metrics`);
-      for (const metricId of v4Metrics[provider]) validateMetricSeries(provider, metricId, wrapper.metrics[metricId], { publicDays: true });
+      assertExactKeys(wrapper.metrics, legacyMetrics[provider], `${provider}.metrics`);
+      for (const metricId of legacyMetrics[provider]) validateMetricSeries(provider, metricId, wrapper.metrics[metricId], { publicDays: true });
     }
     validateBuildIndex(snapshot.buildIndex);
     for (const [year, summary] of Object.entries(snapshot.summaries)) {
@@ -518,20 +539,17 @@ export function assembleSnapshot(rawProviders, { start, end, mode = "observed", 
     }
   }
   const indexLookups = Object.fromEntries(PROVIDERS.map((provider) => {
-    if (provider === "cursor") {
-      const candidates = [providers.cursor.metrics.activeSessions, providers.cursor.metrics.usagePresence]
-        .filter((metric) => metric.status !== "unavailable");
-      const dates = new Set(candidates.flatMap((metric) => metric.days.map((day) => day.date)));
-      return [provider, {
-        metric: { status: candidates.length ? "available" : "unavailable" },
-        days: new Map([...dates].map((date) => [date, {
-          date,
-          level: Math.max(...candidates.map((metric) => metric.days.find((day) => day.date === date)?.level ?? 0)),
-        }])),
-      }];
-    }
-    const metric = providers[provider].metrics[INDEX_METRICS[provider]];
-    return [provider, { metric, days: new Map(metric.days.map((day) => [day.date, day])) }];
+    const candidates = INDEX_METRICS[provider]
+      .map((metricId) => providers[provider].metrics[metricId])
+      .filter((metric) => metric.status !== "unavailable");
+    const dates = new Set(candidates.flatMap((metric) => metric.days.map((day) => day.date)));
+    return [provider, {
+      metric: { status: candidates.length ? "available" : "unavailable" },
+      days: new Map([...dates].map((date) => [date, {
+        date,
+        level: Math.max(...candidates.map((metric) => metric.days.find((day) => day.date === date)?.level ?? 0)),
+      }])),
+    }];
   }));
   const buildDays = enumerateDates(start, end).flatMap((date) => {
     const scores = PROVIDERS.flatMap((provider) => {
@@ -570,8 +588,8 @@ export function assembleSnapshot(rawProviders, { start, end, mode = "observed", 
     providers,
     buildIndex: {
       label: "Build Index",
-      formula: "Equal-weight mean of GitHub contributions, Codex active sessions, Cursor observed activity, and Claude Code active sessions when each provider has coverage.",
-      disclaimer: "Cursor observed activity uses session intensity when available and a light-activity floor for a date verified only by the first-party usage export. Usage evidence and applied line changes never give Cursor extra weight. The index describes observed activity, not productivity.",
+      formula: "Equal-weight mean of GitHub contributions and each AI tool's observed activity when that provider has coverage.",
+      disclaimer: "Codex and Claude Code observed activity use session intensity when available and a light-activity floor for dates verified only by provider-attributed GitHub evidence. Cursor uses the same floor for first-party usage evidence. Presence evidence never invents session counts or gives a provider extra weight. The index describes observed activity, not productivity.",
       days: buildDays,
     },
     summaries,
@@ -645,7 +663,7 @@ export function upgradeSnapshot(snapshot) {
   if (snapshot.schemaVersion === SCHEMA_VERSION) return snapshot;
   const providers = Object.fromEntries(PROVIDERS.map((provider) => [
     provider,
-    snapshot.schemaVersion === 4
+    snapshot.schemaVersion === 4 || snapshot.schemaVersion === 5
       ? upgradeProvider(provider, snapshot.providers[provider])
       : legacyProviderToV4(provider, snapshot.providers[provider]),
   ]));

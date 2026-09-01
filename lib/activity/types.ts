@@ -3,7 +3,7 @@ export type ActivityChannel = ActivityProvider | "build-index";
 export type ActivityLevel = 0 | 1 | 2 | 3 | 4 | 5;
 export type ActivityUnit = "contributions" | "active-sessions" | "observed-usage" | "applied-ai-line-changes" | "normalized-index";
 export type ProviderStatus = "available" | "stale" | "unavailable";
-export type ActivityMetricId = "contributions" | "activeSessions" | "usagePresence" | "appliedLineChanges";
+export type ActivityMetricId = "contributions" | "activeSessions" | "repositoryEvidence" | "usagePresence" | "appliedLineChanges";
 
 export interface DailyActivityPoint {
   date: string;
@@ -35,9 +35,9 @@ export interface MetricActivitySnapshot {
 
 export interface ProviderMetricMap {
   github: { contributions: MetricActivitySnapshot };
-  codex: { activeSessions: MetricActivitySnapshot };
+  codex: { activeSessions: MetricActivitySnapshot; repositoryEvidence: MetricActivitySnapshot };
   cursor: { activeSessions: MetricActivitySnapshot; usagePresence: MetricActivitySnapshot; appliedLineChanges: MetricActivitySnapshot };
-  "claude-code": { activeSessions: MetricActivitySnapshot };
+  "claude-code": { activeSessions: MetricActivitySnapshot; repositoryEvidence: MetricActivitySnapshot };
 }
 
 export type ProviderActivitySnapshot<P extends ActivityProvider = ActivityProvider> = {
@@ -64,8 +64,8 @@ export interface ActivitySummary {
 }
 
 export interface ActivitySnapshot {
-  schemaVersion: 5;
-  privacyVersion: "aggregate-v5";
+  schemaVersion: 6;
+  privacyVersion: "aggregate-v6";
   mode: "observed" | "fixture";
   generatedAt: string;
   timeZone: string;
