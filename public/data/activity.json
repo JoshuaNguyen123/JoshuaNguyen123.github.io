@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 5,
-  "privacyVersion": "aggregate-v5",
+  "schemaVersion": 6,
+  "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-01T19:27:48.819Z",
+  "generatedAt": "2026-09-01T20:03:31.631Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-09-01"
           },
-          "lastSyncedAt": "2026-09-01T19:27:47.711Z",
-          "lastAttemptedAt": "2026-09-01T19:27:47.711Z",
+          "lastSyncedAt": "2026-09-01T20:03:31.012Z",
+          "lastAttemptedAt": "2026-09-01T20:03:31.012Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1244,7 +1244,7 @@
             },
             {
               "date": "2026-09-01",
-              "value": 27,
+              "value": 28,
               "level": 4
             }
           ]
@@ -1266,8 +1266,8 @@
             "start": "2026-04-20",
             "end": "2026-09-01"
           },
-          "lastSyncedAt": "2026-09-01T19:27:44.733Z",
-          "lastAttemptedAt": "2026-09-01T19:27:44.733Z",
+          "lastSyncedAt": "2026-09-01T20:03:26.280Z",
+          "lastAttemptedAt": "2026-09-01T20:03:26.280Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -1941,8 +1941,36 @@
             },
             {
               "date": "2026-09-01",
-              "value": 6,
-              "level": 2
+              "value": 9,
+              "level": 3
+            }
+          ]
+        },
+        "repositoryEvidence": {
+          "status": "available",
+          "definition": {
+            "label": "GitHub repository evidence",
+            "unit": "observed-usage",
+            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from provider-attributed GitHub commits and pull requests. It verifies Codex activity without inventing a session count.",
+            "accuracy": "observed"
+          },
+          "source": "GitHub provider-attributed PR and commit dates",
+          "coverage": {
+            "start": "2026-04-07",
+            "end": "2026-04-08"
+          },
+          "lastSyncedAt": "2026-09-01T20:03:30.979Z",
+          "lastAttemptedAt": "2026-09-01T20:03:30.979Z",
+          "days": [
+            {
+              "date": "2026-04-07",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-08",
+              "value": 1,
+              "level": 1
             }
           ]
         }
@@ -1963,8 +1991,8 @@
             "start": "2026-01-20",
             "end": "2026-09-01"
           },
-          "lastSyncedAt": "2026-09-01T19:27:47.707Z",
-          "lastAttemptedAt": "2026-09-01T19:27:47.707Z",
+          "lastSyncedAt": "2026-09-01T20:03:31.005Z",
+          "lastAttemptedAt": "2026-09-01T20:03:31.005Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3106,8 +3134,8 @@
             "start": "2026-01-02",
             "end": "2026-09-01"
           },
-          "lastSyncedAt": "2026-09-01T19:27:44.734Z",
-          "lastAttemptedAt": "2026-09-01T19:27:44.734Z",
+          "lastSyncedAt": "2026-09-01T20:03:26.281Z",
+          "lastAttemptedAt": "2026-09-01T20:03:26.281Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4340,7 +4368,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-01T19:27:47.707Z",
+          "lastAttemptedAt": "2026-09-01T20:03:31.005Z",
           "days": []
         }
       }
@@ -4360,8 +4388,8 @@
             "start": "2026-07-23",
             "end": "2026-09-01"
           },
-          "lastSyncedAt": "2026-09-01T19:27:47.707Z",
-          "lastAttemptedAt": "2026-09-01T19:27:47.707Z",
+          "lastSyncedAt": "2026-09-01T20:03:31.005Z",
+          "lastAttemptedAt": "2026-09-01T20:03:31.005Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4565,8 +4593,136 @@
             },
             {
               "date": "2026-09-01",
-              "value": 10,
+              "value": 11,
               "level": 3
+            }
+          ]
+        },
+        "repositoryEvidence": {
+          "status": "available",
+          "definition": {
+            "label": "GitHub repository evidence",
+            "unit": "observed-usage",
+            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Claude-authored GitHub commits, Claude Code session links, and provider-attributed pull requests. It verifies activity without inventing a session count.",
+            "accuracy": "observed"
+          },
+          "source": "GitHub provider-attributed PR and commit dates",
+          "coverage": {
+            "start": "2026-04-07",
+            "end": "2026-04-28"
+          },
+          "lastSyncedAt": "2026-09-01T20:03:30.981Z",
+          "lastAttemptedAt": "2026-09-01T20:03:30.981Z",
+          "days": [
+            {
+              "date": "2026-04-07",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-08",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-09",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-10",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-11",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-12",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-13",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-14",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-15",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-16",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-17",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-18",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-19",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-20",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-21",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-22",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-23",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-24",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-25",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-26",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-04-27",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-04-28",
+              "value": 1,
+              "level": 1
             }
           ]
         }
@@ -4575,8 +4731,8 @@
   },
   "buildIndex": {
     "label": "Build Index",
-    "formula": "Equal-weight mean of GitHub contributions, Codex active sessions, Cursor observed activity, and Claude Code active sessions when each provider has coverage.",
-    "disclaimer": "Cursor observed activity uses session intensity when available and a light-activity floor for a date verified only by the first-party usage export. Usage evidence and applied line changes never give Cursor extra weight. The index describes observed activity, not productivity.",
+    "formula": "Equal-weight mean of GitHub contributions and each AI tool's observed activity when that provider has coverage.",
+    "disclaimer": "Codex and Claude Code observed activity use session intensity when available and a light-activity floor for dates verified only by provider-attributed GitHub evidence. Cursor uses the same floor for first-party usage evidence. Presence evidence never invents session counts or gives a provider extra weight. The index describes observed activity, not productivity.",
     "days": [
       {
         "date": "2026-01-01",
@@ -5060,38 +5216,38 @@
       },
       {
         "date": "2026-04-07",
-        "value": 30,
-        "level": 2
-      },
-      {
-        "date": "2026-04-08",
-        "value": 60,
-        "level": 3
-      },
-      {
-        "date": "2026-04-09",
-        "value": 60,
-        "level": 3
-      },
-      {
-        "date": "2026-04-10",
-        "value": 10,
+        "value": 25,
         "level": 1
       },
       {
-        "date": "2026-04-11",
+        "date": "2026-04-08",
         "value": 40,
         "level": 2
       },
       {
+        "date": "2026-04-09",
+        "value": 47,
+        "level": 2
+      },
+      {
+        "date": "2026-04-10",
+        "value": 7,
+        "level": 1
+      },
+      {
+        "date": "2026-04-11",
+        "value": 33,
+        "level": 2
+      },
+      {
         "date": "2026-04-12",
-        "value": 10,
+        "value": 7,
         "level": 1
       },
       {
         "date": "2026-04-13",
-        "value": 30,
-        "level": 2
+        "value": 20,
+        "level": 1
       },
       {
         "date": "2026-04-14",
@@ -5100,13 +5256,13 @@
       },
       {
         "date": "2026-04-15",
-        "value": 40,
-        "level": 2
+        "value": 27,
+        "level": 1
       },
       {
         "date": "2026-04-16",
-        "value": 50,
-        "level": 3
+        "value": 40,
+        "level": 2
       },
       {
         "date": "2026-04-17",
@@ -5115,42 +5271,42 @@
       },
       {
         "date": "2026-04-18",
-        "value": 30,
-        "level": 2
+        "value": 27,
+        "level": 1
       },
       {
         "date": "2026-04-19",
-        "value": 40,
+        "value": 33,
         "level": 2
       },
       {
         "date": "2026-04-20",
-        "value": 67,
+        "value": 55,
         "level": 3
       },
       {
         "date": "2026-04-21",
-        "value": 33,
+        "value": 30,
         "level": 2
       },
       {
         "date": "2026-04-22",
-        "value": 40,
+        "value": 30,
         "level": 2
       },
       {
         "date": "2026-04-23",
-        "value": 33,
-        "level": 2
+        "value": 25,
+        "level": 1
       },
       {
         "date": "2026-04-24",
-        "value": 40,
+        "value": 35,
         "level": 2
       },
       {
         "date": "2026-04-25",
-        "value": 33,
+        "value": 30,
         "level": 2
       },
       {
@@ -5160,12 +5316,12 @@
       },
       {
         "date": "2026-04-27",
-        "value": 0,
-        "level": 0
+        "value": 5,
+        "level": 1
       },
       {
         "date": "2026-04-28",
-        "value": 7,
+        "value": 10,
         "level": 1
       },
       {
@@ -5795,19 +5951,19 @@
       },
       {
         "date": "2026-09-01",
-        "value": 50,
+        "value": 55,
         "level": 3
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 1108,
-      "codexActiveSessionDays": 1342,
+      "contributions": 1109,
+      "codexActiveSessionDays": 1345,
       "cursorActiveSessionDays": 1089,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 529,
-      "activeDays": 146,
+      "claudeActiveSessionDays": 530,
+      "activeDays": 147,
       "longestStreak": 44
     }
   }
