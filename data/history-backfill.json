@@ -1,12 +1,24 @@
 {
-  "v": 2,
-  "generatedAt": "2026-08-30T07:58:00.979Z",
-  "timeZone": "America/Los_Angeles",
-  "note": "Daily session aggregates recovered from retained local Cursor databases, privacy-reduced Cursor usage exports, and Claude Code transcripts. Database tracking rows are not treated as line changes. Dates and counts only.",
+  "v": 3,
+  "generatedAt": "2026-09-01T20:02:33.117Z",
+  "timeZone": "America/Denver",
+  "note": "Daily session aggregates recovered from retained local Cursor databases and Claude Code transcripts, plus privacy-reduced Cursor usage exports and provider-attributed GitHub repository evidence. GitHub evidence is binary presence only and never invents a session count. Database tracking rows are not treated as line changes. Dates and counts only.",
   "options": {
     "approximateLines": false
   },
   "providers": {
+    "codex": {
+      "repositoryEvidence": [
+        {
+          "date": "2026-04-07",
+          "value": 1
+        },
+        {
+          "date": "2026-04-08",
+          "value": 1
+        }
+      ]
+    },
     "cursor": {
       "activeSessions": [
         {
@@ -786,6 +798,14 @@
         {
           "date": "2026-08-27",
           "value": 1
+        },
+        {
+          "date": "2026-08-31",
+          "value": 1
+        },
+        {
+          "date": "2026-09-01",
+          "value": 1
         }
       ],
       "appliedLineChanges": []
@@ -847,6 +867,60 @@
         {
           "date": "2026-08-13",
           "value": 2
+        }
+      ],
+      "repositoryEvidence": [
+        {
+          "date": "2026-04-07",
+          "value": 1
+        },
+        {
+          "date": "2026-04-08",
+          "value": 1
+        },
+        {
+          "date": "2026-04-09",
+          "value": 1
+        },
+        {
+          "date": "2026-04-11",
+          "value": 1
+        },
+        {
+          "date": "2026-04-16",
+          "value": 1
+        },
+        {
+          "date": "2026-04-18",
+          "value": 1
+        },
+        {
+          "date": "2026-04-19",
+          "value": 1
+        },
+        {
+          "date": "2026-04-20",
+          "value": 1
+        },
+        {
+          "date": "2026-04-21",
+          "value": 1
+        },
+        {
+          "date": "2026-04-24",
+          "value": 1
+        },
+        {
+          "date": "2026-04-25",
+          "value": 1
+        },
+        {
+          "date": "2026-04-27",
+          "value": 1
+        },
+        {
+          "date": "2026-04-28",
+          "value": 1
         }
       ]
     }

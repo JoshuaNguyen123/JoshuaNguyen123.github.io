@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } fr
 import Link from "next/link";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
-import { combineCursorActivity } from "@/lib/activity/cursor";
+import { combineCursorActivity, combineRepositoryActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
 import type {
@@ -36,7 +36,7 @@ const activityTimestampFormatter = (timeZone: string) => new Intl.DateTimeFormat
 const buildIndexMetric: ProviderMetricDefinition = {
   label: "normalized index",
   unit: "normalized-index",
-  methodology: "Equal-weight mean of GitHub contributions, Codex sessions, combined Cursor observed activity, and Claude Code sessions when each provider has coverage.",
+  methodology: "Equal-weight mean of GitHub contributions and each AI tool's observed activity when that provider has coverage.",
   accuracy: "observed",
 };
 
@@ -123,23 +123,33 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
 
   const filteredMetrics = useMemo(() => ({
     github: filterMetric(data.providers.github.metrics.contributions, selectedRange.start, selectedRange.end),
-    codex: filterMetric(data.providers.codex.metrics.activeSessions, selectedRange.start, selectedRange.end),
+    codexSessions: filterMetric(data.providers.codex.metrics.activeSessions, selectedRange.start, selectedRange.end),
+    codexEvidence: filterMetric(data.providers.codex.metrics.repositoryEvidence, selectedRange.start, selectedRange.end),
     cursorSessions: filterMetric(data.providers.cursor.metrics.activeSessions, selectedRange.start, selectedRange.end),
     cursorUsage: filterMetric(data.providers.cursor.metrics.usagePresence, selectedRange.start, selectedRange.end),
-    claude: filterMetric(data.providers["claude-code"].metrics.activeSessions, selectedRange.start, selectedRange.end),
+    claudeSessions: filterMetric(data.providers["claude-code"].metrics.activeSessions, selectedRange.start, selectedRange.end),
+    claudeEvidence: filterMetric(data.providers["claude-code"].metrics.repositoryEvidence, selectedRange.start, selectedRange.end),
   }), [data, selectedRange.end, selectedRange.start]);
   const cursorObserved = useMemo(
     () => combineCursorActivity(filteredMetrics.cursorSessions, filteredMetrics.cursorUsage),
     [filteredMetrics.cursorSessions, filteredMetrics.cursorUsage],
+  );
+  const codexObserved = useMemo(
+    () => combineRepositoryActivity(filteredMetrics.codexSessions, filteredMetrics.codexEvidence, "Codex"),
+    [filteredMetrics.codexEvidence, filteredMetrics.codexSessions],
+  );
+  const claudeObserved = useMemo(
+    () => combineRepositoryActivity(filteredMetrics.claudeSessions, filteredMetrics.claudeEvidence, "Claude Code"),
+    [filteredMetrics.claudeEvidence, filteredMetrics.claudeSessions],
   );
   const cursorMetric = cursorMetricId === "observedActivity" ? cursorObserved
     : cursorMetricId === "activeSessions" ? filteredMetrics.cursorSessions
       : filteredMetrics.cursorUsage;
   const providerMetrics: Record<ActivityProvider, MetricActivitySnapshot> = {
     github: filteredMetrics.github,
-    codex: filteredMetrics.codex,
+    codex: codexObserved,
     cursor: cursorMetric,
-    "claude-code": filteredMetrics.claude,
+    "claude-code": claudeObserved,
   };
   const filteredBuildIndex = useMemo(() => data.buildIndex.days.filter((day) => day.date >= selectedRange.start && day.date <= selectedRange.end), [data, selectedRange.end, selectedRange.start]);
   // Current streak is independent of the selected year: it counts back from the
@@ -159,8 +169,16 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   }
 
   const lookups = Object.fromEntries(Object.entries(providerMetrics).map(([provider, metric]) => [provider, new Map(metric.days.map((day) => [day.date, day]))])) as Record<ActivityProvider, Map<string, DailyActivityPoint>>;
+  const codexSessionLookup = new Map(filteredMetrics.codexSessions.days.map((day) => [day.date, day]));
+  const codexEvidenceLookup = new Map(filteredMetrics.codexEvidence.days.map((day) => [day.date, day]));
   const cursorSessionLookup = new Map(filteredMetrics.cursorSessions.days.map((day) => [day.date, day]));
   const cursorUsageLookup = new Map(filteredMetrics.cursorUsage.days.map((day) => [day.date, day]));
+  const claudeSessionLookup = new Map(filteredMetrics.claudeSessions.days.map((day) => [day.date, day]));
+  const claudeEvidenceLookup = new Map(filteredMetrics.claudeEvidence.days.map((day) => [day.date, day]));
+  const repositoryEvidenceOnlyDates: Partial<Record<ActivityProvider, string[]>> = {
+    codex: filteredMetrics.codexEvidence.days.filter((day) => day.value > 0 && (codexSessionLookup.get(day.date)?.value ?? 0) === 0).map((day) => day.date),
+    "claude-code": filteredMetrics.claudeEvidence.days.filter((day) => day.value > 0 && (claudeSessionLookup.get(day.date)?.value ?? 0) === 0).map((day) => day.date),
+  };
 
   // The day card is anchored to the square that was pressed, in coordinates
   // relative to the dashboard, so it travels with the page rather than the viewport.
@@ -217,7 +235,13 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt, data.timeZone)}`}
       </div>
 
-      <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{ ...filteredMetrics, cursorObserved }} />
+      <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{
+        github: filteredMetrics.github,
+        codex: filteredMetrics.codexSessions,
+        cursorObserved,
+        cursorSessions: filteredMetrics.cursorSessions,
+        claude: filteredMetrics.claudeSessions,
+      }} />
 
       <div className="activity-workspace">
         <div className="heatmap-stack">
@@ -231,7 +255,11 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
             </div>
             <div>
               <i className="is-unobserved" role="img" aria-label="No source coverage" title="No source coverage" />
-              <span>Hatched: before that tool kept records. Each tool keeps its own hue at the same lightness steps.</span>
+              <span>Hatched: no surviving source coverage.</span>
+            </div>
+            <div>
+              <i className="is-repository-evidence" role="img" aria-label="GitHub repository evidence" title="GitHub repository evidence" />
+              <span>Light outlined: GitHub repository evidence without a retained session count.</span>
             </div>
           </div>
 
@@ -248,9 +276,11 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                     <button type="button" aria-pressed={cursorMetricId === "usagePresence"} className={cursorMetricId === "usagePresence" ? "is-active" : ""} onClick={() => setCursorMetricId("usagePresence")}>Usage evidence</button>
                   </div>
                 ) : null}
-                <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} />
+                <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} repositoryEvidenceOnlyDates={repositoryEvidenceOnlyDates[provider]} />
                 {provider === "claude-code" ? (
-                  <p className="coverage-note">Coverage begins July 23, 2026. Claude Code deletes local session transcripts after 30 days by default, which erased earlier history before this feed launched—retention is now extended, so nothing is lost going forward.</p>
+                  <p className="coverage-note">GitHub repository evidence begins April 7, 2026. Retained local Claude Code sessions begin July 23; evidence-only days use the light outlined shade and never invent a session count.</p>
+                ) : provider === "codex" ? (
+                  <p className="coverage-note">GitHub repository evidence begins April 7, 2026. Retained local Codex sessions begin April 20; evidence-only days use the light outlined shade.</p>
                 ) : null}
               </div>
             );
@@ -271,16 +301,27 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
               {activityProviders.map((provider) => {
                 // The breakdown stays on comparable session/contribution counts even when
                 // the Cursor heatmap is switched to another view.
-                const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions : providerMetrics[provider];
-                const detailPoint = provider === "cursor" ? cursorSessionLookup.get(dayCard.date) : lookups[provider].get(dayCard.date);
+                const detailMetric = provider === "cursor" ? filteredMetrics.cursorSessions
+                  : provider === "codex" ? filteredMetrics.codexSessions
+                    : provider === "claude-code" ? filteredMetrics.claudeSessions
+                      : providerMetrics[provider];
+                const detailPoint = provider === "cursor" ? cursorSessionLookup.get(dayCard.date)
+                  : provider === "codex" ? codexSessionLookup.get(dayCard.date)
+                    : provider === "claude-code" ? claudeSessionLookup.get(dayCard.date)
+                      : lookups[provider].get(dayCard.date);
                 const usagePoint = cursorUsageLookup.get(dayCard.date);
                 const cursorSessions = cursorSessionLookup.get(dayCard.date)?.value ?? 0;
                 const cursorUsage = usagePoint?.value ?? 0;
+                const repositoryEvidence = provider === "codex" ? codexEvidenceLookup.get(dayCard.date)?.value ?? 0
+                  : provider === "claude-code" ? claudeEvidenceLookup.get(dayCard.date)?.value ?? 0 : 0;
+                const sessionValue = detailPoint?.value ?? 0;
                 return (
                   <div key={provider}>
                     <dt><span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />{providerLabels[provider]}</dt>
                     <dd>
-                      {detailMetric.status === "unavailable" ? "Source unavailable" : describeValue(detailPoint, detailMetric.definition)}
+                      {repositoryEvidence > 0 && sessionValue === 0
+                        ? "GitHub repository evidence"
+                        : detailMetric.status === "unavailable" ? "Source unavailable" : describeValue(detailPoint, detailMetric.definition)}
                       {provider === "cursor" ? (
                         <small>
                           {filteredMetrics.cursorUsage.status === "unavailable"
@@ -291,6 +332,8 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
                                 : "Usage evidence only, no local session count"
                               : "No usage evidence"}
                         </small>
+                      ) : repositoryEvidence > 0 ? (
+                        <small>{sessionValue > 0 ? "Repository evidence also verified" : "No retained local session count"}</small>
                       ) : null}
                     </dd>
                   </div>
@@ -311,7 +354,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           and shading math live on /activity, linked below. */}
       <details className="methodology-panel">
         <summary>How this activity is measured</summary>
-        <p className="index-disclaimer">Every square is one calendar day: home base America/Denver, living-local when I travel. If a tool saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
+        <p className="index-disclaimer">Every square is one calendar day: home base America/Denver, living-local when I travel. If a tool or a provider-attributed GitHub record saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
         <p className="index-disclaimer">Shading is relative. Each tool grades its days against its own year — darker means busier than my usual, not busy by some absolute bar — and the Build Index averages those grades into one picture. It describes observed activity, not productivity.</p>
         <p className="index-disclaimer">Only daily counts are published. Prompts, code, filenames, and project names never leave my machine.</p>
         <p className="index-disclaimer">The exact definitions, sources, coverage windows, and the shading math live at <Link href="/activity/">Every metric, in depth</Link>.</p>

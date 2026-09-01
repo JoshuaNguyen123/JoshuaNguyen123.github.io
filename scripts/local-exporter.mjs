@@ -8,6 +8,7 @@ import {
   createMetricSeries,
   dateInTimeZone,
   HOME_TIME_ZONE,
+  METRICS,
   mergeWriteOnceDays,
   SCHEMA_VERSION,
   PRIVACY_VERSION,
@@ -84,7 +85,15 @@ function epochToIso(value) {
 }
 
 function providerWithMetric(provider, metricId, source, days) {
-  const result = { metrics: { [metricId]: createMetricSeries(provider, metricId, source, days) } };
+  const metrics = Object.fromEntries(Object.keys(METRICS[provider]).map((id) => [
+    id,
+    id === metricId
+      ? createMetricSeries(provider, metricId, source, days)
+      : unavailableMetric(provider, id, METRICS[provider][id].label === "GitHub repository evidence"
+        ? "GitHub provider-attributed PR and commit dates"
+        : undefined),
+  ]));
+  const result = { metrics };
   validateRawProvider(provider, result);
   return result;
 }
@@ -214,14 +223,17 @@ function applyWriteOnceFreeze(providers, previous, today, stampZone) {
 export function applyHistoryBackfill(providers, backfill) {
   if (!backfill) return providers;
   const merge = (provider, metricId, source, staticDays) => {
-    const metric = providers[provider].metrics[metricId];
+    const metric = providers[provider].metrics[metricId] ?? unavailableMetric(provider, metricId, source);
     providers[provider].metrics[metricId] = createMetricSeries(provider, metricId, source, mergeBackfillDays(staticDays, metric.days), {
       lastAttemptedAt: metric.lastAttemptedAt ?? undefined,
     });
   };
+  merge("codex", "repositoryEvidence", "GitHub provider-attributed PR and commit dates", backfill.providers.codex.repositoryEvidence);
   merge("cursor", "activeSessions", "Local Cursor hooks and retained conversation timestamps", backfill.providers.cursor.activeSessions);
   merge("cursor", "usagePresence", CURSOR_USAGE_SOURCE, backfill.providers.cursor.usagePresence);
   merge("claude-code", "activeSessions", "Local Claude Code hooks and retained session timestamps", backfill.providers["claude-code"].activeSessions);
+  merge("claude-code", "repositoryEvidence", "GitHub provider-attributed PR and commit dates", backfill.providers["claude-code"].repositoryEvidence);
+  validateRawProvider("codex", providers.codex);
   validateRawProvider("cursor", providers.cursor);
   validateRawProvider("claude-code", providers["claude-code"]);
   return providers;

@@ -41,7 +41,7 @@ try {
   if (!html.includes("Codex session-days") || !html.includes("Observed activity") || html.includes("Cursor applied AI line changes")) {
     throw new Error("Served dashboard is missing reconciled activity labels");
   }
-  if (activity.schemaVersion !== 5 || activity.privacyVersion !== "aggregate-v5" || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.usagePresence || !activity.providers?.cursor?.metrics?.appliedLineChanges) {
+  if (activity.schemaVersion !== 6 || activity.privacyVersion !== "aggregate-v6" || !activity.providers?.codex?.metrics?.repositoryEvidence || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.usagePresence || !activity.providers?.cursor?.metrics?.appliedLineChanges || !activity.providers?.["claude-code"]?.metrics?.repositoryEvidence) {
     throw new Error("Served activity snapshot has an unexpected reconciliation state");
   }
   console.log("Local production HTTP smoke test passed");

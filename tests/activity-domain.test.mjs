@@ -18,9 +18,9 @@ import {
 
 const source = {
   github: { contributions: "GitHub public contribution calendar" },
-  codex: { activeSessions: "Local Codex session event timestamps" },
+  codex: { activeSessions: "Local Codex session event timestamps", repositoryEvidence: "GitHub provider-attributed PR and commit dates" },
   cursor: { activeSessions: "Local Cursor hooks", usagePresence: "Cursor usage-event export (daily presence only)", appliedLineChanges: "Local Cursor Agent and Tab edit hooks" },
-  "claude-code": { activeSessions: "Local Claude Code session event timestamps" },
+  "claude-code": { activeSessions: "Local Claude Code session event timestamps", repositoryEvidence: "GitHub provider-attributed PR and commit dates" },
 };
 
 function provider(name, metricId, days, syncedAt = "2026-08-10T12:00:00Z") {
@@ -56,11 +56,29 @@ test("Build Index gives Cursor one observed-activity input even when all Cursor 
     "claude-code": unavailableProvider("claude-code"),
   }, { start: "2026-01-01", end: "2026-01-02", generatedAt: "2026-01-03T00:00:00Z" });
   assert.deepEqual(snapshot.buildIndex.days.map(({ value, level }) => ({ value, level })), [{ value: 47, level: 2 }, { value: 73, level: 4 }]);
-  assert.equal(snapshot.schemaVersion, 5);
-  assert.equal(snapshot.privacyVersion, "aggregate-v5");
+  assert.equal(snapshot.schemaVersion, 6);
+  assert.equal(snapshot.privacyVersion, "aggregate-v6");
   assert.equal(snapshot.summaries["2026"].cursorActiveSessionDays, 2);
   assert.equal(snapshot.summaries["2026"].cursorAppliedAiLineChanges, 1000);
-  assert.match(snapshot.buildIndex.disclaimer, /never give Cursor extra weight/);
+  assert.match(snapshot.buildIndex.disclaimer, /never invents session counts or gives a provider extra weight/);
+});
+
+test("GitHub repository evidence fills earlier Codex and Claude dates without inventing sessions", () => {
+  const codex = unavailableProvider("codex");
+  codex.metrics.repositoryEvidence = createMetricSeries("codex", "repositoryEvidence", source.codex.repositoryEvidence, [{ date: "2026-04-07", value: 1 }]);
+  const claude = unavailableProvider("claude-code");
+  claude.metrics.repositoryEvidence = createMetricSeries("claude-code", "repositoryEvidence", source["claude-code"].repositoryEvidence, [{ date: "2026-04-08", value: 1 }]);
+  const snapshot = assembleSnapshot({
+    github: unavailableProvider("github"),
+    codex,
+    cursor: unavailableProvider("cursor"),
+    "claude-code": claude,
+  }, { start: "2026-04-07", end: "2026-04-08", generatedAt: "2026-04-09T00:00:00Z" });
+  assert.deepEqual(snapshot.providers.codex.metrics.repositoryEvidence.days, [{ date: "2026-04-07", value: 1, level: 1 }]);
+  assert.deepEqual(snapshot.providers["claude-code"].metrics.repositoryEvidence.days, [{ date: "2026-04-08", value: 1, level: 1 }]);
+  assert.deepEqual(snapshot.buildIndex.days.map(({ value, level }) => ({ value, level })), [{ value: 20, level: 1 }, { value: 20, level: 1 }]);
+  assert.equal(snapshot.summaries["2026"].codexActiveSessionDays, 0);
+  assert.equal(snapshot.summaries["2026"].claudeActiveSessionDays, 0);
 });
 
 test("Cursor usage evidence fills missing dates at light activity without inventing sessions", () => {
@@ -125,11 +143,15 @@ test("aggregate-v4 snapshots upgrade compatibly with unavailable usage presence"
   const legacy = structuredClone(current);
   legacy.schemaVersion = 4;
   legacy.privacyVersion = "aggregate-v4";
+  delete legacy.providers.codex.metrics.repositoryEvidence;
   delete legacy.providers.cursor.metrics.usagePresence;
+  delete legacy.providers["claude-code"].metrics.repositoryEvidence;
   validateSnapshot(legacy);
   const upgraded = upgradeSnapshot(legacy);
-  assert.equal(upgraded.schemaVersion, 5);
+  assert.equal(upgraded.schemaVersion, 6);
   assert.equal(upgraded.providers.cursor.metrics.usagePresence.status, "unavailable");
+  assert.equal(upgraded.providers.codex.metrics.repositoryEvidence.status, "unavailable");
+  assert.equal(upgraded.providers["claude-code"].metrics.repositoryEvidence.status, "unavailable");
 });
 
 test("the bucketing zone is configurable, defaults home, and rejects nonsense", () => {

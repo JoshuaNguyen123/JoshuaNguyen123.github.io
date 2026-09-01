@@ -32,9 +32,9 @@ const timestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US"
 
 const limitations: Record<ActivityProvider, string> = {
   github: "A contribution is a public GitHub calendar event. It is not a measure of hours, difficulty, or code quality.",
-  codex: "A session active on two dates contributes one session-day to each date. This does not count prompts, requests, tokens, or time spent.",
+  codex: "A session active on two dates contributes one session-day to each date. GitHub repository evidence verifies only the date and provider; it does not create a session count.",
   cursor: "Session counts come from retained conversation timestamps. Usage evidence only confirms that Cursor was used on a date; it never invents a session count.",
-  "claude-code": "Only retained Claude Code transcripts and hook events are counted. Cursor activity using a Claude model remains Cursor activity.",
+  "claude-code": "Retained transcripts and hooks produce session counts. Provider-attributed GitHub evidence verifies only the date; Cursor activity using a Claude model remains Cursor activity.",
 };
 
 function formatDay(value: string): string {
@@ -149,7 +149,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
           <h2 id="shading-definitions">How a day earns its shade.</h2>
         </div>
         <dl>
-          <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter of those days gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays cream, and a Cursor day verified only by usage evidence always shows the lightest shade, because I know I was there but not how much I did.</dd></div>
+          <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays cream. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
           <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
           <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
           <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
@@ -163,7 +163,7 @@ export function ActivityDefinitions({ initialData }: { initialData: ActivitySnap
         </div>
         <dl>
           <div><dt>Session-day</dt><dd>One distinct tool session observed on the calendar day the work happened (home base America/Denver; living-local when travelling). The same session can count again if it remains active on another date.</dd></div>
-          <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. For Cursor, first-party usage evidence can verify the date without creating a session count.</dd></div>
+          <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. First-party Cursor usage or provider-attributed GitHub evidence can verify a date without creating a session count.</dd></div>
           <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
           <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>
         </dl>

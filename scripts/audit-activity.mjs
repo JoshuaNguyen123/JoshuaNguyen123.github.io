@@ -127,18 +127,22 @@ function assertMetric(label, feed, source, carried, embeddedTotal) {
 const metrics = {
   github: snapshot.providers.github.metrics.contributions,
   codex: snapshot.providers.codex.metrics.activeSessions,
+  codexEvidence: snapshot.providers.codex.metrics.repositoryEvidence,
   cursorSessions: snapshot.providers.cursor.metrics.activeSessions,
   cursorUsage: snapshot.providers.cursor.metrics.usagePresence,
   cursorLines: snapshot.providers.cursor.metrics.appliedLineChanges,
   claude: snapshot.providers["claude-code"].metrics.activeSessions,
+  claudeEvidence: snapshot.providers["claude-code"].metrics.repositoryEvidence,
 };
 const sources = {
   github: github.metrics.contributions,
   codex: local.providers.codex.metrics.activeSessions,
+  codexEvidence: local.providers.codex.metrics.repositoryEvidence,
   cursorSessions: local.providers.cursor.metrics.activeSessions,
   cursorUsage: local.providers.cursor.metrics.usagePresence,
   cursorLines: local.providers.cursor.metrics.appliedLineChanges,
   claude: local.providers["claude-code"].metrics.activeSessions,
+  claudeEvidence: local.providers["claude-code"].metrics.repositoryEvidence,
 };
 // GitHub is refetched on every build and is never carried forward, so it still
 // reconciles to its source alone.
@@ -146,21 +150,25 @@ const published = previouslyPublished();
 const carried = {
   github: null,
   codex: published?.providers.codex.metrics.activeSessions ?? null,
+  codexEvidence: published?.providers.codex.metrics.repositoryEvidence ?? null,
   cursorSessions: published?.providers.cursor.metrics.activeSessions ?? null,
   cursorUsage: published?.providers.cursor.metrics.usagePresence ?? null,
   cursorLines: published?.providers.cursor.metrics.appliedLineChanges ?? null,
   claude: published?.providers["claude-code"].metrics.activeSessions ?? null,
+  claudeEvidence: published?.providers["claude-code"].metrics.repositoryEvidence ?? null,
 };
 
 const summary = snapshot.summaries[year];
 assertMetric("GitHub contributions", metrics.github, sources.github, carried.github, summary.contributions);
 assertMetric("Codex sessions", metrics.codex, sources.codex, carried.codex, summary.codexActiveSessionDays);
+assertMetric("Codex repository evidence", metrics.codexEvidence, sources.codexEvidence, carried.codexEvidence);
 assertMetric("Cursor sessions", metrics.cursorSessions, sources.cursorSessions, carried.cursorSessions, summary.cursorActiveSessionDays);
 assertMetric("Cursor usage presence", metrics.cursorUsage, sources.cursorUsage, carried.cursorUsage);
 assert.equal(metrics.cursorLines.status, "unavailable", "Cursor line changes must remain unavailable until direct edit hooks record measured diffs");
 assert.equal(sources.cursorLines.status, "unavailable", "Source aggregate still exposes retired Cursor tracking rows as line changes");
 assert.equal(summary.cursorAppliedAiLineChanges, 0, "Retired Cursor line-change summary must be zero");
 assertMetric("Claude Code sessions", metrics.claude, sources.claude, carried.claude, summary.claudeActiveSessionDays);
+assertMetric("Claude Code repository evidence", metrics.claudeEvidence, sources.claudeEvidence, carried.claudeEvidence);
 
 const cursorFeedDates = new Set([...activeDates(metrics.cursorSessions), ...activeDates(metrics.cursorUsage)]);
 const cursorSourceDates = new Set([
@@ -175,11 +183,15 @@ const cursorObservedCoverage = {
 
 const providerLookups = {
   github: new Map(metrics.github.days.map((day) => [day.date, day])),
-  codex: new Map(metrics.codex.days.map((day) => [day.date, day])),
+  codex: new Map([...new Set([...metrics.codex.days.map((day) => day.date), ...metrics.codexEvidence.days.map((day) => day.date)])].map((date) => [date, {
+    level: Math.max(metrics.codex.days.find((day) => day.date === date)?.level ?? 0, metrics.codexEvidence.days.find((day) => day.date === date)?.level ?? 0),
+  }])),
   cursor: new Map([...new Set([...metrics.cursorSessions.days.map((day) => day.date), ...metrics.cursorUsage.days.map((day) => day.date)])].map((date) => [date, {
     level: Math.max(metrics.cursorSessions.days.find((day) => day.date === date)?.level ?? 0, metrics.cursorUsage.days.find((day) => day.date === date)?.level ?? 0),
   }])),
-  "claude-code": new Map(metrics.claude.days.map((day) => [day.date, day])),
+  "claude-code": new Map([...new Set([...metrics.claude.days.map((day) => day.date), ...metrics.claudeEvidence.days.map((day) => day.date)])].map((date) => [date, {
+    level: Math.max(metrics.claude.days.find((day) => day.date === date)?.level ?? 0, metrics.claudeEvidence.days.find((day) => day.date === date)?.level ?? 0),
+  }])),
 };
 for (const point of snapshot.buildIndex.days) {
   const levels = Object.values(providerLookups).flatMap((lookup) => lookup.has(point.date) ? [lookup.get(point.date).level] : []);
@@ -199,10 +211,12 @@ for (const [summaryYear, values] of Object.entries(snapshot.summaries)) {
 const rows = [
   ["GitHub contributions", metrics.github.definition.unit, metrics.github, total(metrics.github), total(sources.github), activeDates(metrics.github).length],
   ["Codex sessions", "active session-days", metrics.codex, total(metrics.codex), expectedTotal(expectedDays(sources.codex, carried.codex)), activeDates(metrics.codex).length],
+  ["Codex repository evidence", "observed dates", metrics.codexEvidence, activeDates(metrics.codexEvidence).length, expectedActive(expectedDays(sources.codexEvidence, carried.codexEvidence)).length, activeDates(metrics.codexEvidence).length],
   ["Cursor sessions", "active session-days", metrics.cursorSessions, total(metrics.cursorSessions), expectedTotal(expectedDays(sources.cursorSessions, carried.cursorSessions)), activeDates(metrics.cursorSessions).length],
   ["Cursor usage evidence", "observed dates", metrics.cursorUsage, activeDates(metrics.cursorUsage).length, expectedActive(expectedDays(sources.cursorUsage, carried.cursorUsage)).length, activeDates(metrics.cursorUsage).length],
   ["Cursor observed union", "observed dates", { ...metrics.cursorSessions, source: "Cursor sessions + usage-presence union", coverage: cursorObservedCoverage }, cursorFeedDates.size, cursorSourceDates.size, cursorFeedDates.size],
   ["Claude Code sessions", "active session-days", metrics.claude, total(metrics.claude), expectedTotal(expectedDays(sources.claude, carried.claude)), activeDates(metrics.claude).length],
+  ["Claude Code repository evidence", "observed dates", metrics.claudeEvidence, activeDates(metrics.claudeEvidence).length, expectedActive(expectedDays(sources.claudeEvidence, carried.claudeEvidence)).length, activeDates(metrics.claudeEvidence).length],
 ];
 console.log(`Activity audit passed for ${year}; completed dates and the captured current date reconcile to source-native aggregates.`);
 console.log("| Metric | Unit | Source | Coverage | Freshness | Feed total | Recalculated total | Active calendar days |");

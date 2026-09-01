@@ -86,5 +86,5 @@ test("static architecture keeps a validated public live-feed fallback without a 
   assert.match(dashboard, /new Intl\.DateTimeFormat\("en-US", \{\s+timeZone,/);
   assert.doesNotMatch(dashboard, /new Date\([^)]*\)\.toLocaleString\(\)/);
   assert.match(parser, /hasExactKeys/);
-  assert.match(parser, /aggregate-v5/);
+  assert.match(parser, /aggregate-v6/);
 });
