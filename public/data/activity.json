@@ -2,7 +2,7 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-02T20:28:10.777Z",
+  "generatedAt": "2026-09-02T20:32:58.657Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-09-02"
           },
-          "lastSyncedAt": "2026-09-02T20:28:09.599Z",
-          "lastAttemptedAt": "2026-09-02T20:28:09.599Z",
+          "lastSyncedAt": "2026-09-02T20:32:57.834Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.834Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1249,8 +1249,8 @@
             },
             {
               "date": "2026-09-02",
-              "value": 3,
-              "level": 1
+              "value": 4,
+              "level": 2
             }
           ]
         }
@@ -1271,8 +1271,8 @@
             "start": "2026-04-20",
             "end": "2026-09-02"
           },
-          "lastSyncedAt": "2026-09-02T20:27:27.003Z",
-          "lastAttemptedAt": "2026-09-02T20:27:27.003Z",
+          "lastSyncedAt": "2026-09-02T20:32:53.909Z",
+          "lastAttemptedAt": "2026-09-02T20:32:53.909Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -1969,8 +1969,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-02T20:28:08.113Z",
-          "lastAttemptedAt": "2026-09-02T20:28:08.113Z",
+          "lastSyncedAt": "2026-09-02T20:32:57.603Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.603Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -1989,7 +1989,7 @@
     "cursor": {
       "metrics": {
         "activeSessions": {
-          "status": "stale",
+          "status": "available",
           "definition": {
             "label": "active sessions",
             "unit": "active-sessions",
@@ -1999,10 +1999,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-09-01"
+            "end": "2026-09-02"
           },
-          "lastSyncedAt": "2026-09-01T20:02:50.731Z",
-          "lastAttemptedAt": "2026-09-02T20:28:09.590Z",
+          "lastSyncedAt": "2026-09-02T20:32:57.829Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.829Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3128,11 +3128,16 @@
               "date": "2026-09-01",
               "value": 2,
               "level": 1
+            },
+            {
+              "date": "2026-09-02",
+              "value": 4,
+              "level": 2
             }
           ]
         },
         "usagePresence": {
-          "status": "stale",
+          "status": "available",
           "definition": {
             "label": "verified usage days",
             "unit": "observed-usage",
@@ -3142,10 +3147,10 @@
           "source": "Cursor usage-event export (daily presence only)",
           "coverage": {
             "start": "2026-01-02",
-            "end": "2026-09-01"
+            "end": "2026-09-02"
           },
-          "lastSyncedAt": "2026-09-01T20:02:42.667Z",
-          "lastAttemptedAt": "2026-09-02T20:28:09.590Z",
+          "lastSyncedAt": "2026-09-02T20:32:53.911Z",
+          "lastAttemptedAt": "2026-09-02T20:32:53.911Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4361,6 +4366,11 @@
               "date": "2026-09-01",
               "value": 1,
               "level": 1
+            },
+            {
+              "date": "2026-09-02",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -4378,7 +4388,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-02T20:28:09.590Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.829Z",
           "days": []
         }
       }
@@ -4386,7 +4396,7 @@
     "claude-code": {
       "metrics": {
         "activeSessions": {
-          "status": "stale",
+          "status": "available",
           "definition": {
             "label": "active sessions",
             "unit": "active-sessions",
@@ -4396,10 +4406,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-09-01"
+            "end": "2026-09-02"
           },
-          "lastSyncedAt": "2026-09-01T20:02:50.731Z",
-          "lastAttemptedAt": "2026-09-02T20:28:09.598Z",
+          "lastSyncedAt": "2026-09-02T20:32:57.829Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.829Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4603,13 +4613,18 @@
             },
             {
               "date": "2026-09-01",
-              "value": 11,
+              "value": 14,
               "level": 3
+            },
+            {
+              "date": "2026-09-02",
+              "value": 3,
+              "level": 1
             }
           ]
         },
         "repositoryEvidence": {
-          "status": "stale",
+          "status": "available",
           "definition": {
             "label": "GitHub repository evidence",
             "unit": "observed-usage",
@@ -4621,8 +4636,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-01T20:02:50.721Z",
-          "lastAttemptedAt": "2026-09-02T20:28:09.598Z",
+          "lastSyncedAt": "2026-09-02T20:32:57.604Z",
+          "lastAttemptedAt": "2026-09-02T20:32:57.604Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -5966,18 +5981,18 @@
       },
       {
         "date": "2026-09-02",
-        "value": 30,
+        "value": 35,
         "level": 2
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 1129,
+      "contributions": 1130,
       "codexActiveSessionDays": 1355,
-      "cursorActiveSessionDays": 1089,
+      "cursorActiveSessionDays": 1093,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 530,
+      "claudeActiveSessionDays": 536,
       "activeDays": 148,
       "longestStreak": 44
     }
