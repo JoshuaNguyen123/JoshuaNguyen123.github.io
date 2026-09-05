@@ -21,87 +21,87 @@ interface Project {
   image?: string;
 }
 
-// Ordered by technical depth. The first FEATURED_PROJECTS get the full entry
-// with a reflection; the rest render as compact cards underneath.
+// Most impressive first. The first FEATURED_PROJECTS get the full entry with
+// a reflection; the rest render as compact cards underneath.
 const FEATURED_PROJECTS = 3;
 const projects: Project[] = [
   {
     number: "01",
     title: "Obsidian Research Agent",
     description:
-      "An Obsidian-native agent that can research, plan, use real tools, and write back to a vault while showing exactly what it did. I built the less glamorous parts too: sandboxing, approvals, replay, failure recovery, and receipts.",
+      "An agent that lives inside Obsidian. It researches a question, plans the work, calls real tools, and writes the results back into the vault with a record of every step it took. Most of the effort went into the unglamorous parts: sandboxing, approval prompts, replay, and recovery when a step fails.",
     reflection:
-      "Giving an agent more tools is easy. Making every tool real, bounded, and debuggable is the work. Also, autonomous is a very confident word for software that can still lose an argument with malformed JSON.",
+      "Adding tools to an agent is the easy part. The hard part is making each one bounded and debuggable, so that when something goes wrong you can see exactly which call did it and run it again.",
     discipline: "TypeScript · Agent systems",
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
   },
   {
     number: "02",
-    title: "Ladybug",
+    title: "Teach Anything",
     description:
-      "A private photo-and-writing ritual for exactly two people, built first as a deterministic product simulator, then as a Supabase-backed PWA alongside the original SwiftUI and Firebase app. The work spans access control, realtime state, uploads, privacy, and the small interactions that make a shared space feel personal.",
+      "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-5 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a deterministic core, so any schedule can be replayed against the learning history and checked.",
     reflection:
-      "A two-person app sounds small until two phones, two accounts, uploads, notifications, realtime state, and feelings become one distributed system. The simulator saved me from paying cloud bills to discover basic product mistakes.",
-    discipline: "TypeScript · Swift · Supabase",
+      "Getting a model to write a lesson takes an afternoon. Getting Tuesday's lesson to depend on what Monday showed, and being able to prove it, was the real product.",
+    discipline: "TypeScript · Learning systems",
     href: null,
   },
   {
     number: "03",
-    title: "Teach Anything",
+    title: "Vault AI Toolkit",
     description:
-      "An adaptive learning engine that recomputes each session from the learner's actual memory state. It combines FSRS-5 forgetting curves, Beta posteriors by mastery level, sandboxed code exercises, and a deterministic core that can be replayed against learning history instead of merely claiming to adapt.",
+      "Local search, live knowledge graphs, and grounded question answering over Obsidian vaults. It ships as a sidebar plugin and an MCP server, so Cursor and Codex can pull vault context while I code. Everything runs on the machine.",
     reflection:
-      "Asking an LLM for a lesson is easy. Making Tuesday remember what Monday taught, and proving the schedule adapts instead of improvises, is the actual product.",
-    discipline: "TypeScript · Learning systems",
+      "Read-only by default, every write audit-logged, nothing leaving the machine. People notice privacy when it is built in rather than promised.",
+    discipline: "Python · TypeScript · MCP",
     href: null,
   },
   {
     number: "04",
     title: "Personal AI Digest",
     description:
-      "A self-hosted RAG pipeline that emails a grounded technical lesson twice a day. Ingest and delivery are fully decoupled and share only the knowledge store (SQLite, or Postgres with pgvector).",
+      "A self-hosted RAG pipeline that emails me a grounded technical lesson twice a day. Ingestion and delivery are separate services that share only the knowledge store, which can be SQLite or Postgres with pgvector.",
     reflection:
-      "Grounding every generated sentence in a citation is what turns an LLM toy into something I trust enough to study from.",
+      "Requiring a citation for every generated sentence is what turned this from a toy into something I trust enough to study from.",
     discipline: "Python · RAG · Cloudflare Workers",
     href: null,
   },
   {
     number: "05",
-    title: "Vault AI Toolkit",
-    description:
-      "Local search, live graphs, and grounded Q&A over Obsidian vaults, with a sidebar plugin and an MCP server so Cursor and Codex can pull vault context while coding.",
-    reflection:
-      "Read-only by default, audit-logged writes, and nothing leaves the machine. Privacy is a feature people can feel.",
-    discipline: "Python · TypeScript · MCP",
-    href: null,
-  },
-  {
-    number: "06",
     title: "Private Code Review Bot",
     description:
-      "A stateless, comment-only PR reviewer for private repos on a self-hosted GitHub Actions runner. Deterministic scoring rubric, CI signal ingestion, and an optional free-tier LLM narrative.",
+      "A stateless, comment-only pull request reviewer for private repositories, running on a self-hosted GitHub Actions runner. It scores changes against a fixed rubric, reads CI signals, and can add an optional LLM summary.",
     reflection:
-      "Running git as argv lists instead of shell strings is boring, and boring is exactly what you want when refs come from the environment.",
+      "Passing git arguments as lists instead of shell strings is dull, and dull is what you want when the refs come from the environment.",
     discipline: "Python · GitHub Actions",
     href: null,
   },
   {
-    number: "07",
+    number: "06",
     title: "Engineering Activity Portfolio",
     description:
-      "This site: privacy-safe local activity collection, a live aggregate feed, and interactive yearly heatmaps.",
+      "This site. A privacy-safe collector reads local activity from the tools I work in, publishes daily counts to a live feed, and renders them as the yearly heatmaps above. Nothing about the code or the projects leaves the machine.",
     reflection:
-      "Privacy and data provenance should feel like product features, not footnotes.",
+      "Provenance and privacy work better as visible features than as a footnote.",
     discipline: "TypeScript · Data visualization",
     href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
+  },
+  {
+    number: "07",
+    title: "Ladybug",
+    description:
+      "A private photo and writing app for two people. I built it first as a deterministic product simulator, then as a Supabase-backed PWA alongside the original SwiftUI and Firebase app. The work covers access control, realtime state, uploads, and privacy.",
+    reflection:
+      "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
+    discipline: "TypeScript · Swift · Supabase",
+    href: null,
   },
   {
     number: "08",
     title: "Environmental Quality ML Dashboard",
     description:
-      "An air-quality ML pipeline with reproducible training and a Streamlit dashboard.",
+      "An air quality machine learning pipeline with reproducible training and a Streamlit dashboard for comparing models.",
     reflection:
-      "Model comparisons matter most when the results become understandable and usable.",
+      "A model comparison is only useful once someone else can read it and act on it.",
     discipline: "Python · Machine learning",
     href: "https://github.com/JoshuaNguyen123/environmental-quality-ml-dashboard",
   },
@@ -111,7 +111,7 @@ const projects: Project[] = [
     description:
       "A FastAPI service with search, ISBN lookup, web import, and local AI enrichment.",
     reflection:
-      "Predictable contracts and useful errors matter more than an oversized feature list.",
+      "Predictable contracts and useful error messages matter more than a long feature list.",
     discipline: "Python · API design",
     href: "https://github.com/JoshuaNguyen123/book_service_api",
   },
@@ -174,7 +174,7 @@ export default function Home() {
           <div className="hero-copy">
             <h1>Forward-deployed engineer, AI developer, and technical researcher.</h1>
             <p>
-              I like building and testing systems across the stack — from data
+              I like building and testing systems across the stack, from data
               pipelines and evaluation harnesses to small language models, RAG,
               MCP tools, and the product layer that has to make them useful.
             </p>
@@ -222,7 +222,7 @@ export default function Home() {
           <div className="about-aside">
             <span className="eyebrow">Interested in</span>
             {interests.map(([title, description]) => (
-              <p key={title}>{title} — {description}</p>
+              <p key={title}><strong>{title}.</strong> {description}</p>
             ))}
           </div>
         </section>

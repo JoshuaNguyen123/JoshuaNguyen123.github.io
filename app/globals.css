@@ -274,6 +274,7 @@ textarea,
 .about-copy p:first-of-type { margin-top: 0; }
 .about-aside { padding-top: 46px; }
 .about-aside p { color: var(--body); font-size: var(--text-sm); line-height: 1.55; margin-top: 14px; }
+.about-aside strong { color: var(--ink); font-weight: 500; }
 
 /* ---- Work ---- */
 .work-section, .writing-section { padding: clamp(48px, 5.4vw, 76px) var(--gutter-centered) 0; }

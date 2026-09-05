@@ -22,15 +22,19 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /Joshua Nguyen/);
   assert.match(page, /Forward-deployed engineer, AI developer, and technical researcher\./);
   assert.match(page, /building and testing systems across the stack/);
-  assert.match(page, /malformed JSON/);
-  assert.match(page, /one distributed system/);
-  assert.match(page, /Making Tuesday remember what Monday taught/);
+  assert.match(page, /bounded and debuggable/);
+  assert.match(page, /a small distributed system/);
+  assert.match(page, /Tuesday's lesson to depend on what Monday showed/);
+  // Copy is written plainly: no em dashes anywhere in the home page source.
+  assert.doesNotMatch(page, /\u2014/);
   assert.match(page, /Obsidian Research Agent/);
   assert.match(page, /Engineering Activity Portfolio/);
   assert.match(page, /Environmental Quality ML Dashboard/);
   assert.match(page, /Book Service API/);
   const projectOrder = [
     "Obsidian Research Agent",
+    "Teach Anything",
+    "Vault AI Toolkit",
     "Engineering Activity Portfolio",
     "Environmental Quality ML Dashboard",
     "Book Service API",
