@@ -23,7 +23,7 @@ if (contactConfigured) {
   }
 }
 
-const projectPositions = ["Obsidian Research Agent", "Research Agent Platform", "Teach Anything", "Autonomous Repository Template", "Personal AI Digest", "Ladybug"].map((project) => html.indexOf(project));
+const projectPositions = ["Obsidian Research Agent", "Ladybug", "Personal AI Digest", "Teach Anything", "Research Agent Platform", "Great Outdoors Intelligence"].map((project) => html.indexOf(project));
 if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");
 // Every project is on the page: three full entries, the rest as cards, each with a tile.
 if ((html.match(/class="project-entry"/g) ?? []).length !== 3) throw new Error("Static export does not show three featured projects");

@@ -32,12 +32,14 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /Research Agent Platform/);
   const projectOrder = [
     "Obsidian Research Agent",
-    "Research Agent Platform",
-    "Teach Anything",
-    "Autonomous Repository Template",
-    "Great Outdoors Intelligence",
-    "Engineering Activity Portfolio",
     "Ladybug",
+    "Personal AI Digest",
+    "Teach Anything",
+    "Research Agent Platform",
+    "Autonomous Repository Template",
+    "Engineering Activity Portfolio",
+    "Great Outdoors Intelligence",
+    "Local-First Meeting Transcription",
   ].map((project) => page.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));

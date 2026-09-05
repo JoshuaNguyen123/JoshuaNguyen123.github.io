@@ -21,15 +21,16 @@ interface Project {
   image?: string;
 }
 
-// Most impressive first. The first FEATURED_PROJECTS get the full entry with
-// a reflection; the rest render as compact cards underneath.
+// Hardest first, judged by scope and the systems involved. The first
+// FEATURED_PROJECTS get the full entry with a reflection; the rest render as
+// compact cards underneath.
 const FEATURED_PROJECTS = 3;
 const projects: Project[] = [
   {
     number: "01",
     title: "Obsidian Research Agent",
     description:
-      "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, plans, uses approved tools, writes back to notes, and shows a receipt for every step. It also carries a bounded code workspace and gated Linear and GitHub integrations, with sandboxing, approval prompts, replay, and recovery when a step fails.",
+      "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, plans, uses approved tools, writes back to notes, and shows a receipt for every step. It also carries a bounded code workspace, gated Linear and GitHub integrations, and a companion service, with sandboxing, approval prompts, replay, and recovery when a step fails.",
     reflection:
       "Adding tools to an agent is the easy part. The hard part is making each one bounded and debuggable, so that when something goes wrong you can see exactly which call did it and run it again.",
     discipline: "TypeScript · Agent systems",
@@ -37,16 +38,26 @@ const projects: Project[] = [
   },
   {
     number: "02",
-    title: "Research Agent Platform",
+    title: "Ladybug",
     description:
-      "A standalone desktop editor built around the same agent core as the plugin. Electron and CodeMirror 6, fully compatible with Obsidian vaults, with the agent's edits reviewed hunk by hunk before anything touches disk. The core is vendored at a pinned commit behind three typed seams rather than forked. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
+      "A private photo and writing ritual for two people, built three ways: a deterministic product simulator that runs both phones side by side with no credentials, a Supabase-backed PWA with row-level security, private storage, and realtime state, and the original native SwiftUI and Firebase app. Verification covers the migrations, a three-account connected journey, Chromium end-to-end runs, and the iOS build handoff, all on self-hosted CI.",
     reflection:
-      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
-    discipline: "TypeScript · Electron · Desktop app",
+      "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
+    discipline: "TypeScript · Swift · Supabase",
     href: null,
   },
   {
     number: "03",
+    title: "Personal AI Digest",
+    description:
+      "A self-hosted RAG pipeline that emails me a grounded technical lesson twice a day, running since March. Ingestion and delivery are separate services that share only the knowledge store, which can be SQLite or Postgres with pgvector. A Cloudflare Worker fires each send on time, because GitHub's own scheduler drifts by hours.",
+    reflection:
+      "Requiring a citation for every generated sentence is what turned this from a toy into something I trust enough to study from. Keeping ingestion and delivery apart meant either side could fail without taking the other down.",
+    discipline: "Python · RAG · Cloudflare Workers",
+    href: null,
+  },
+  {
+    number: "04",
     title: "Teach Anything",
     description:
       "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-5 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a deterministic core, so any schedule can be replayed against the learning history and checked. Every question cites its source.",
@@ -56,33 +67,23 @@ const projects: Project[] = [
     href: null,
   },
   {
-    number: "04",
+    number: "05",
+    title: "Research Agent Platform",
+    description:
+      "A standalone desktop editor built around the same agent core as the plugin. Electron and CodeMirror 6, fully compatible with Obsidian vaults, with the agent's edits reviewed hunk by hunk before anything touches disk. The core is vendored at a pinned commit behind three typed seams rather than forked. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
+    reflection:
+      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
+    discipline: "TypeScript · Electron · Desktop app",
+    href: null,
+  },
+  {
+    number: "06",
     title: "Autonomous Repository Template",
     description:
       "A repository protocol for coding agents. Project memory lives in tracked files, implementation is blocked behind a planning gate, every task carries a verification lane, and features enter only through a human request. Products are instantiated from it and can migrate to newer protocol versions without losing their own state.",
     reflection:
       "An agent with good memory and a gate it cannot skip does more useful work than a smarter agent with neither.",
     discipline: "Python · Agent workflows",
-    href: null,
-  },
-  {
-    number: "05",
-    title: "Great Outdoors Intelligence",
-    description:
-      "Ranks outdoor destinations in Montana by live conditions instead of showing a wall of gauges. It pulls forecasts, river gauges, avalanche advisories, snowpack, road status, and fire data, scores places per activity, and prepares trip bundles that work fully offline. In progress, built on the repository template above.",
-    reflection:
-      "The product is the ranking. The dashboard exists so you can argue with it.",
-    discipline: "Python · Data pipelines",
-    href: null,
-  },
-  {
-    number: "06",
-    title: "Personal AI Digest",
-    description:
-      "A self-hosted RAG pipeline that emails me a grounded technical lesson twice a day. Ingestion and delivery are separate services that share only the knowledge store, which can be SQLite or Postgres with pgvector.",
-    reflection:
-      "Requiring a citation for every generated sentence is what turned this from a toy into something I trust enough to study from.",
-    discipline: "Python · RAG · Cloudflare Workers",
     href: null,
   },
   {
@@ -97,22 +98,22 @@ const projects: Project[] = [
   },
   {
     number: "08",
+    title: "Great Outdoors Intelligence",
+    description:
+      "Ranks outdoor destinations in Montana by live conditions instead of showing a wall of gauges. It pulls forecasts, river gauges, avalanche advisories, snowpack, road status, and fire data, scores places per activity, and prepares trip bundles that work fully offline. In progress, built on the repository template above.",
+    reflection:
+      "The product is the ranking. The dashboard exists so you can argue with it.",
+    discipline: "Python · Data pipelines",
+    href: null,
+  },
+  {
+    number: "09",
     title: "Local-First Meeting Transcription",
     description:
       "A meeting recorder that never leaves the machine. Live transcription with Vosk, a refined pass with faster-whisper after the meeting, a review queue that reconciles the two, and structured notes from a local model. FastAPI backend, React frontend.",
     reflection:
       "Two transcripts of the same audio disagree constantly. The review queue that reconciles them turned out to be the product, not the models.",
     discipline: "Python · TypeScript · Speech",
-    href: null,
-  },
-  {
-    number: "09",
-    title: "Ladybug",
-    description:
-      "A private photo and writing app for two people. I built it first as a deterministic product simulator, then as a Supabase-backed PWA alongside the original SwiftUI and Firebase app. The work covers access control, realtime state, uploads, and privacy.",
-    reflection:
-      "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
-    discipline: "TypeScript · Swift · Supabase",
     href: null,
   },
 ];
