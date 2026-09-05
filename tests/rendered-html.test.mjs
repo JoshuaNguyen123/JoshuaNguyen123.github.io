@@ -57,6 +57,16 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(site, /export const resumeUrl: string \| null = null;/);
   assert.match(header, /resumeUrl \? <a/);
   assert.match(page, /What it taught me/);
+  // Every project renders: featured entries plus compact cards, one tile each,
+  // with a real link (never a styled <strong>) and an image slot for later.
+  const tile = await readFile(new URL("../components/work/ProjectTile.tsx", import.meta.url), "utf8");
+  assert.match(page, /projects\.slice\(0, FEATURED_PROJECTS\)/);
+  assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
+  assert.doesNotMatch(page, /<strong><span>View project/);
+  assert.match(page, /className="project-link project-link--external"/);
+  assert.match(page, /image\?: string;/);
+  assert.match(tile, /project-tile--image/);
+  assert.match(tile, /aria-hidden="true"/);
   assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
   assert.doesNotMatch(blog, /Coming soon|placeholder|lorem ipsum/i);
   assert.doesNotMatch(`${page}${layout}`, /Josh B\./);

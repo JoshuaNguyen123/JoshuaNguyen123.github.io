@@ -2,6 +2,7 @@ import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { ProjectTile } from "@/components/work/ProjectTile";
 import { githubUrl, linkedInUrl, siteName, siteUrl } from "@/content/site";
 import { getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
@@ -9,9 +10,21 @@ import { loadActivitySnapshot } from "@/lib/activity/load";
 import Image from "next/image";
 import Link from "next/link";
 
-// Ordered by technical depth; only the first SHOWN_PROJECTS render for now.
-const SHOWN_PROJECTS = 3;
-const projects = [
+interface Project {
+  number: string;
+  title: string;
+  description: string;
+  reflection: string;
+  discipline: string;
+  href: string | null;
+  /** Optional screenshot under public/, e.g. "/projects/ladybug.jpg". */
+  image?: string;
+}
+
+// Ordered by technical depth. The first FEATURED_PROJECTS get the full entry
+// with a reflection; the rest render as compact cards underneath.
+const FEATURED_PROJECTS = 3;
+const projects: Project[] = [
   {
     number: "01",
     title: "Obsidian Research Agent",
@@ -102,7 +115,27 @@ const projects = [
     discipline: "Python · API design",
     href: "https://github.com/JoshuaNguyen123/book_service_api",
   },
-] as const;
+];
+
+function ProjectTitle({ project }: { project: Project }) {
+  return project.href
+    ? <a href={project.href} target="_blank" rel="noreferrer">{project.title}</a>
+    : <>{project.title}</>;
+}
+
+function ProjectMeta({ project }: { project: Project }) {
+  return (
+    <div className="project-meta">
+      {/* The typographic tile already carries the discipline; a screenshot does not. */}
+      {project.image ? <span>{project.discipline}</span> : null}
+      {project.href ? (
+        <a className="project-link project-link--external" href={project.href} target="_blank" rel="noreferrer">View project</a>
+      ) : (
+        <span className="project-private">Private repository · <a href="#contact">ask me about it</a></span>
+      )}
+    </div>
+  );
+}
 
 const interests = [
   ["AI engineering", "Agents and retrieval systems that are grounded, observable, and worth trusting."],
@@ -200,31 +233,35 @@ export default function Home() {
             <h2>Things I&apos;ve built.</h2>
           </div>
           <div className="project-ledger">
-            {projects.slice(0, SHOWN_PROJECTS).map((project) => {
-              const body = (
-                <>
-                  <div className="project-story">
-                    <h3>{project.title}</h3>
-                    <p>{project.description}</p>
-                    <p className="project-reflection">
-                      <span>What it taught me</span>
-                      {project.reflection}
-                    </p>
-                  </div>
-                  <div className="project-meta">
-                    <span>{project.discipline}</span>
-                    {project.href
-                      ? <strong><span>View project</span></strong>
-                      : <strong className="is-private">Private repository</strong>}
-                  </div>
-                </>
-              );
-              return project.href ? (
-                <a href={project.href} key={project.title} target="_blank" rel="noreferrer">{body}</a>
-              ) : (
-                <article key={project.title}>{body}</article>
-              );
-            })}
+            {projects.slice(0, FEATURED_PROJECTS).map((project) => (
+              <article className="project-entry" key={project.title}>
+                <div className="project-story">
+                  <h3><ProjectTitle project={project} /></h3>
+                  <p>{project.description}</p>
+                  <p className="project-reflection">
+                    <span>What it taught me</span>
+                    {project.reflection}
+                  </p>
+                </div>
+                <div className="project-aside">
+                  <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                  <ProjectMeta project={project} />
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="project-grid-heading">
+            <span className="eyebrow">More work</span>
+          </div>
+          <div className="project-grid">
+            {projects.slice(FEATURED_PROJECTS).map((project) => (
+              <article className="project-card" key={project.title}>
+                <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                <h3><ProjectTitle project={project} /></h3>
+                <p>{project.description}</p>
+                <ProjectMeta project={project} />
+              </article>
+            ))}
           </div>
           <p className="project-more">
             <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">

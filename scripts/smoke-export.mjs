@@ -23,8 +23,12 @@ if (contactConfigured) {
   }
 }
 
-const projectPositions = ["Obsidian Research Agent", "Ladybug", "Teach Anything"].map((project) => html.indexOf(project));
+const projectPositions = ["Obsidian Research Agent", "Ladybug", "Teach Anything", "Personal AI Digest", "Book Service API"].map((project) => html.indexOf(project));
 if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");
+// Every project is on the page: three full entries, the rest as cards, each with a tile.
+if ((html.match(/class="project-entry"/g) ?? []).length !== 3) throw new Error("Static export does not show three featured projects");
+if ((html.match(/class="project-card"/g) ?? []).length !== 6) throw new Error("Static export does not show the six remaining projects");
+if ((html.match(/class="project-tile(?: project-tile--image)?"/g) ?? []).length !== 9) throw new Error("Static export is missing project tiles");
 if (html.indexOf('class="work-section"') > html.indexOf('class="activity-section"')) throw new Error("Static export shows activity before selected work");
 for (const expected of ["What it taught me", "Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
