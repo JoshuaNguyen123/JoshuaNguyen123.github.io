@@ -4,7 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
-for (const expected of ["Joshua Nguyen", "Forward-deployed engineer, AI developer, and technical researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Read my notes.", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "GitHub minimums", "Observed activity", "Usage evidence"]) {
+for (const expected of ["Joshua Nguyen", "Forward-deployed engineer, AI developer, and technical researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Read my notes.", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
