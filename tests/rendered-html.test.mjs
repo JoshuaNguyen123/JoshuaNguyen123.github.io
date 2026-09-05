@@ -97,8 +97,11 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(afterTokens, /#[0-9a-f]{6}\b/i);
   assert.doesNotMatch(afterTokens, /font-family: var\(--font-geist-sans\)/);
   const mobileStyles = styles.slice(styles.indexOf("@media (max-width: 760px)"), styles.indexOf("@media (prefers-reduced-motion: reduce)"));
-  assert.match(mobileStyles, /\.home-writing \.writing-list > a,[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
-  assert.match(mobileStyles, /\.home-writing \.writing-list > a\s*\{[^}]*gap:\s*18px/);
+  // Notes are full-width rows with inline meta; the old two-column row once
+  // squeezed the summary into a 51px column on phones.
+  assert.match(styles, /\.writing-list > a \{[^}]*display: block/);
+  assert.match(page, /className="writing-meta"/);
+  assert.doesNotMatch(mobileStyles, /\.writing-list/);
 });
 
 test("static architecture keeps a validated public live-feed fallback without a server API", async () => {

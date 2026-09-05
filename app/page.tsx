@@ -286,14 +286,11 @@ export default function Home() {
             <div className="writing-list">
               {posts.slice(0, 3).map((post) => (
                 <Link href={`/blog/${post.slug}/`} key={post.slug}>
-                  <div>
-                    <h3>{post.title}</h3>
-                    <p>{post.summary}</p>
-                  </div>
-                  <div>
-                    <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                    <span>{post.readingMinutes} min read</span>
-                  </div>
+                  <h3>{post.title}</h3>
+                  <p>{post.summary}</p>
+                  <span className="writing-meta">
+                    <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {post.readingMinutes} min read
+                  </span>
                 </Link>
               ))}
             </div>
@@ -301,25 +298,24 @@ export default function Home() {
         </section>
 
         <section className="contact-section" id="contact">
-          <div>
-            <span className="eyebrow">Contact</span>
-            <h2>Let&apos;s talk.</h2>
-            <p>
-              If you&apos;re building something thoughtful, or stuck on a tricky
-              technical problem, I&apos;d be glad to hear about it.
-            </p>
-            {/* The links live outside the form: ContactForm renders nothing when the
-                Web3Forms key is absent, and these should survive that. */}
-            <div className="contact-body">
-              <ContactForm />
+          <div className="contact-body">
+            <div className="contact-copy">
+              <span className="eyebrow">Contact</span>
+              <h2>Let&apos;s talk.</h2>
+              <p>
+                If you&apos;re building something thoughtful, or stuck on a tricky
+                technical problem, I&apos;d be glad to hear about it.
+              </p>
+              {/* The links live outside the form: ContactForm renders nothing when the
+                  Web3Forms key is absent, and these should survive that. */}
               <div className="contact-links">
-                <span className="eyebrow">Elsewhere</span>
                 <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
                 {linkedInUrl ? (
                   <a href={linkedInUrl} target="_blank" rel="noreferrer">LinkedIn</a>
                 ) : null}
               </div>
             </div>
+            <ContactForm />
           </div>
         </section>
       </main>
