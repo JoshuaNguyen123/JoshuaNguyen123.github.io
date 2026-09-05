@@ -84,6 +84,18 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(activitySummary, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /summaryCardExplanations/);
+  // Font stacks must be declared on body: next/font puts --font-newsreader and
+  // --font-geist-sans on the body class, and a token declared on :root cannot
+  // see them, which once dropped the whole site to Times New Roman.
+  assert.match(styles, /body \{[^}]*--font-serif: var\(--font-newsreader\)/);
+  assert.match(styles, /body \{[^}]*--font-sans: var\(--font-geist-sans\)/);
+  assert.doesNotMatch(styles.slice(0, styles.indexOf("body {")), /--font-(serif|sans):/);
+  // Every size and colour comes from the token block; raw literals are the drift this guards against.
+  const normalizedStyles = styles.replace(/\r\n/g, "\n");
+  const afterTokens = normalizedStyles.slice(normalizedStyles.indexOf("\n}\n") + 3);
+  assert.doesNotMatch(afterTokens, /font-size: \d+px/);
+  assert.doesNotMatch(afterTokens, /#[0-9a-f]{6}\b/i);
+  assert.doesNotMatch(afterTokens, /font-family: var\(--font-geist-sans\)/);
   const mobileStyles = styles.slice(styles.indexOf("@media (max-width: 760px)"), styles.indexOf("@media (prefers-reduced-motion: reduce)"));
   assert.match(mobileStyles, /\.home-writing \.writing-list > a,[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.match(mobileStyles, /\.home-writing \.writing-list > a\s*\{[^}]*gap:\s*18px/);
