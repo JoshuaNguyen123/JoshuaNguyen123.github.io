@@ -108,7 +108,7 @@ export function ContactForm() {
       <div className="h-captcha" data-sitekey={siteKey} data-theme="light" />
 
       <div className="contact-submit">
-        <button type="submit" disabled={status === "sending"}>
+        <button className="primary-button" type="submit" disabled={status === "sending"}>
           {status === "sending" ? "Sending" : "Send message"}
         </button>
         <p role="status" aria-live="polite" className={status === "error" ? "is-error" : undefined}>

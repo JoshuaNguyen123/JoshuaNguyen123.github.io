@@ -8,7 +8,9 @@ const forbiddenBasenames = new Set(["agents.md", "claude.md"]);
 const forbiddenPathSegments = new Set([".claude"]);
 const allowedDocumentationPaths = new Set(["readme.md"]);
 const allowedPublicPaths = new Set([
+  "public/apple-touch-icon.png",
   "public/data/activity.json",
+  "public/favicon.ico",
   "public/favicon.svg",
   "public/joshua-nguyen.jpg",
   "public/og-personal.jpg",

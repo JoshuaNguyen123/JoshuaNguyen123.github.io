@@ -1,33 +1,51 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { ogImage, siteDescription, siteName, siteTitle, siteUrl } from "@/content/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"] });
 
-const title = "Joshua Nguyen — FDE, AI Developer, Technical Researcher";
-const description =
-  "Joshua Nguyen is an AI developer and technical researcher who likes turning ideas into useful software and sharing what he learns.";
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://joshuanguyen123.github.io"),
-  title,
-  description,
+  metadataBase: new URL(siteUrl),
+  title: { default: siteTitle, template: `%s — ${siteName}` },
+  description: siteDescription,
+  authors: [{ name: siteName, url: siteUrl }],
+  creator: siteName,
   alternates: { canonical: "/" },
   // Search indexing stays on; "noai" / "noimageai" ask compliant crawlers not
   // to use the content or portrait for model training. robots.txt handles the rest.
   robots: { index: true, follow: true, "max-image-preview": "standard" },
   other: { robots: "noai, noimageai" },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
-    title,
-    description,
+    title: siteTitle,
+    description: siteDescription,
+    siteName,
+    locale: "en_US",
     type: "website",
     url: "/",
-    images: [{ url: "/og-personal.jpg", width: 1536, height: 1024, alt: "Joshua Nguyen — AI developer and technical researcher in Bozeman, Montana" }],
+    images: [ogImage],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/og-personal.jpg"] },
+  // Card type only: title, description, and image then follow each page's Open Graph values.
+  twitter: { card: "summary_large_image" },
+};
+
+// The site is deliberately one light "warm paper" scheme. Declaring it keeps
+// form controls and scrollbars light for viewers whose OS is in dark mode.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  colorScheme: "light",
+  themeColor: "#f5f3ed",
 };
 
 // The contact form posts directly to Web3Forms until the verifying worker is
@@ -66,7 +84,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable}`}>
+        <a className="skip-link" href="#main">Skip to content</a>
+        {children}
+      </body>
     </html>
   );
 }
