@@ -29,15 +29,15 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(page, /\u2014/);
   assert.match(page, /Obsidian Research Agent/);
   assert.match(page, /Engineering Activity Portfolio/);
-  assert.match(page, /Environmental Quality ML Dashboard/);
-  assert.match(page, /Book Service API/);
+  assert.match(page, /Research Agent Platform/);
   const projectOrder = [
     "Obsidian Research Agent",
+    "Research Agent Platform",
     "Teach Anything",
-    "Vault AI Toolkit",
+    "Autonomous Repository Template",
+    "Great Outdoors Intelligence",
     "Engineering Activity Portfolio",
-    "Environmental Quality ML Dashboard",
-    "Book Service API",
+    "Ladybug",
   ].map((project) => page.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
