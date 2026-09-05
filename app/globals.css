@@ -22,6 +22,9 @@
   --gutter-centered: max(var(--gutter), calc((100% - var(--container)) / 2));
   --measure: 660px;
   --rail: 384px;
+  /* One deliberate light scheme: keeps native form controls and scrollbars
+     light for viewers whose OS is in dark mode. */
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -53,6 +56,13 @@ button { color: inherit; }
   text-transform: uppercase;
 }
 
+/* Keyboard users get a way past the header; it is invisible until focused. */
+.skip-link {
+  background: var(--ink); color: var(--paper); font-family: var(--font-geist-sans), sans-serif; font-size: 13px;
+  left: var(--gutter); padding: 10px 14px; position: absolute; top: -100px; z-index: 100;
+}
+.skip-link:focus-visible { outline: 2px solid var(--paper); outline-offset: -5px; top: 12px; }
+
 /* ---- Header ---- */
 .site-header {
   align-items: baseline;
@@ -67,7 +77,9 @@ button { color: inherit; }
 .site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); }
 .site-header > nav a[aria-current="page"] { border-bottom: 1px solid var(--ink); color: var(--ink); padding-bottom: 2px; }
 .mobile-nav { display: none; position: relative; }
-.mobile-nav summary { cursor: pointer; font-size: 13px; font-weight: 550; list-style: none; padding: 6px 0; }
+/* Generous padding so the only navigation control on a phone is a real tap
+   target; the negative margin keeps the header's baseline where it was. */
+.mobile-nav summary { cursor: pointer; font-size: 14px; font-weight: 550; list-style: none; margin: -12px -4px; padding: 12px 4px; }
 .mobile-nav summary::-webkit-details-marker { display: none; }
 .mobile-nav summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .mobile-nav nav {
@@ -149,10 +161,6 @@ button { color: inherit; }
 .writing-list time, .writing-list > a > div:last-child span { color: var(--muted); display: block; font-size: 13px; }
 .writing-list > a > div:last-child { padding-top: 6px; }
 .writing-list > a > div:last-child span + span { color: var(--faint); margin-top: 10px; }
-.writing-preview { display: grid; gap: 44px; grid-template-columns: var(--measure) var(--rail); margin-top: 28px; }
-.writing-preview > p { font-size: 19px; line-height: 1.64; }
-.writing-preview ul { list-style: none; margin: 0; padding: 0; }
-.writing-preview li { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; padding: 6px 0; }
 
 /* ---- Activity ---- */
 .activity-section { padding: clamp(48px, 5.4vw, 76px) var(--gutter-centered) 0; }
@@ -391,18 +399,22 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .contact-links a:first-of-type { margin-top: 16px; }
 .contact-links a:hover { border-bottom-color: var(--ink); }
 
-body > main > footer, .blog-footer {
-  align-items: center; border-top: 1px solid var(--line); color: var(--faint); display: flex;
-  font-family: var(--font-geist-sans), sans-serif; font-size: 12px; justify-content: space-between;
-  margin: clamp(44px, 5vw, 72px) var(--gutter-centered) 0; padding: 22px 0 32px;
+/* ---- Footer, shared by every public page ---- */
+.site-footer {
+  border-top: 1px solid var(--line); display: flex; flex-direction: column; font-family: var(--font-geist-sans), sans-serif;
+  gap: 16px; margin: clamp(44px, 5vw, 72px) var(--gutter-centered) 0; padding: 22px 0 32px;
 }
+.site-footer-links { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 13px; gap: 8px 24px; }
+.site-footer-links a:hover, .site-footer-links a:focus-visible { color: var(--ink); }
+.site-footer-meta { color: var(--faint); display: flex; font-size: 12px; gap: 16px; justify-content: space-between; }
+
+/* ---- Not found ---- */
+.not-found { padding: clamp(64px, 9vw, 120px) var(--gutter-centered) 0; }
+.not-found h1 { font-size: clamp(30px, 3.3vw, 42px); font-weight: 400; letter-spacing: -.022em; line-height: 1.12; margin: 22px 0; max-width: 620px; }
+.not-found > p { color: var(--body); font-size: 19px; line-height: 1.64; max-width: var(--measure); }
 
 /* ---- Blog ---- */
-.blog-shell { margin: 0 auto; max-width: var(--container); min-height: 100vh; padding: 0 var(--gutter); }
-.blog-masthead { align-items: baseline; border-bottom: 1px solid var(--line); display: flex; gap: 24px; justify-content: space-between; padding: 34px 0 22px; }
-.blog-masthead > a:first-child { border-bottom: 1px solid #b5ab95; display: inline-block; font-size: 20px; font-weight: 500; letter-spacing: -.01em; padding-bottom: 2px; }
-.blog-masthead > a:first-child:hover, .blog-masthead > a:first-child:focus-visible { border-color: var(--ink); }
-.blog-masthead > a:nth-child(2), .blog-masthead > span:nth-child(2) { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; }
+.blog-shell { padding: 0 var(--gutter-centered); }
 .blog-intro { padding: clamp(56px, 7vw, 104px) 0 clamp(40px, 5vw, 64px); }
 .blog-intro h1 { font-size: clamp(30px, 3.3vw, 42px); font-weight: 400; letter-spacing: -.022em; line-height: 1.12; margin: 22px 0; max-width: 720px; }
 .blog-intro > p { color: var(--body); font-size: 19px; line-height: 1.64; max-width: var(--measure); }
@@ -416,16 +428,7 @@ body > main > footer, .blog-footer {
 .blog-index-list h2 { font-size: 23px; font-weight: 500; letter-spacing: -.012em; margin: 12px 0 10px; }
 .blog-index-list p { color: var(--body); font-size: 17px; line-height: 1.6; }
 .blog-index-list time { color: var(--muted); font-family: var(--font-geist-sans), sans-serif; font-size: 13px; }
-.blog-empty { padding: clamp(48px, 6vw, 78px) 0 100px; }
-.blog-empty h2 { font-size: 28px; font-weight: 400; letter-spacing: -.015em; margin: 0; max-width: 720px; }
-.blog-empty-note { display: grid; gap: 60px; grid-template-columns: var(--measure) var(--rail); margin: 34px 0 56px; }
-.blog-empty-note p { color: var(--body); font-size: 19px; line-height: 1.64; margin: 0; }
-.blog-empty-note a { border-bottom: 1px solid #b5ab95; font-family: var(--font-geist-sans), sans-serif; font-size: 14px; font-weight: 500; padding-bottom: 2px; }
-.blog-empty ul { border-top: 1px solid var(--ink); display: grid; gap: 0; grid-template-columns: repeat(3, 1fr); list-style: none; margin: 0; padding: 0; }
-.blog-empty li { border-bottom: 1px solid var(--hair); font-size: 19px; padding: 22px 24px 24px 0; }
-.blog-empty li span { color: var(--faint); display: block; font-family: var(--font-geist-sans), sans-serif; font-size: 12px; font-weight: 550; letter-spacing: .09em; margin-bottom: 16px; text-transform: uppercase; }
-.blog-footer { margin-left: 0; margin-right: 0; }
-.blog-footer-links { display: flex; gap: 24px; }
+.blog-empty-line { border-top: 1px solid var(--ink); color: var(--body); font-size: 19px; line-height: 1.64; padding-top: 34px; }
 
 .blog-article > article { padding-top: 56px; }
 .article-header { border-bottom: 1px solid var(--hair); margin: 0 auto 56px; max-width: 760px; padding-bottom: 40px; }
@@ -551,14 +554,16 @@ body > main > footer, .blog-footer {
 .admin-status { color: var(--body); font-family: var(--font-geist-sans), sans-serif; font-size: 14px; margin: 0; }
 
 @media (max-width: 1080px) {
-  :root { --measure: minmax(0, 1fr); --rail: 240px; }
+  /* --measure stays a length: it also caps paragraph widths, and a grid track
+     function there would silently drop every one of those max-widths. */
+  :root { --rail: 240px; }
   .hero, .about-strip, .project-ledger > a, .project-ledger > article,
-  .home-writing .writing-list > a, .writing-preview, .contact-body, .blog-empty-note {
+  .home-writing .writing-list > a, .contact-body {
     gap: 32px; grid-template-columns: minmax(0, 1fr) 240px;
   }
   .heatmap-stack { gap: 28px 32px; }
   .summary-grid, .tool-provenance, .activity-definition-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .methodology-grid, .activity-glossary dl, .blog-index-list, .blog-empty ul { grid-template-columns: repeat(2, 1fr); }
+  .methodology-grid, .activity-glossary dl, .blog-index-list { grid-template-columns: repeat(2, 1fr); }
   .admin-layout { gap: 36px; grid-template-columns: 200px minmax(0, 1fr); }
 }
 
@@ -566,7 +571,7 @@ body > main > footer, .blog-footer {
   .site-header > nav { display: none; }
   .mobile-nav { display: block; }
   .hero, .about-strip, .project-ledger > a, .project-ledger > article,
-  .home-writing .writing-list > a, .writing-preview, .contact-body, .blog-empty-note {
+  .home-writing .writing-list > a, .contact-body {
     gap: 32px; grid-template-columns: minmax(0, 1fr);
   }
   /* 320px of a ~390px screen made the photo a full-screen scroll between the
@@ -579,7 +584,7 @@ body > main > footer, .blog-footer {
   .about-aside, .project-meta, .writing-list > a > div:last-child { padding-top: 0; }
   .hero-now { gap: 20px; grid-template-columns: minmax(0, 1fr); }
   .summary-grid, .activity-definition-summary, .heatmap-stack, .methodology-grid, .activity-glossary dl,
-  .tool-provenance, .blog-index-list, .blog-empty ul, .contact-fields {
+  .tool-provenance, .blog-index-list, .contact-fields {
     grid-template-columns: minmax(0, 1fr);
   }
   .weekday-labels { display: none; }
@@ -591,10 +596,9 @@ body > main > footer, .blog-footer {
   .writing-list > a > div:last-child { display: flex; gap: 16px; }
   .contact-section { margin-top: 72px; }
   .contact-links { border-top: 1px solid var(--hair); padding-top: 24px; }
-  .blog-empty li { border-right: 0; padding-left: 0; }
   .day-detail { width: min(292px, calc(100vw - 32px)); }
-  body > main > footer, .blog-footer { align-items: flex-start; flex-direction: column; gap: 10px; }
-  .home-footer { margin-top: 64px; }
+  .site-footer { margin-top: 64px; }
+  .site-footer-meta { flex-direction: column; gap: 6px; }
   .admin-masthead { align-items: flex-start; flex-direction: column; gap: 12px; }
   .admin-layout { gap: 32px; grid-template-columns: minmax(0, 1fr); }
   .admin-sidebar { position: static; }

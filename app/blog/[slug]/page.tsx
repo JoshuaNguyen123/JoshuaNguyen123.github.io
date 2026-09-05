@@ -1,5 +1,8 @@
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { ogImage, siteName } from "@/content/site";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog";
-import { linkedInProfileUrl } from "@/content/linkedin-posts";
+import { formatDate } from "@/lib/format";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,16 +17,22 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = getPublishedPost(slug);
-  return post ? { title: `${post.title} — Joshua Nguyen`, description: post.summary } : {};
-}
-
-function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${value}T12:00:00Z`));
+  if (!post) return {};
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: `/blog/${post.slug}/` },
+    openGraph: {
+      title: post.title,
+      description: post.summary,
+      type: "article",
+      url: `/blog/${post.slug}/`,
+      publishedTime: `${post.publishedAt}T12:00:00Z`,
+      authors: [siteName],
+      tags: post.tags,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -32,38 +41,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   if (!post) notFound();
 
   return (
-    <main className="blog-shell blog-article">
-      <header className="blog-masthead">
-        <Link href="/">Joshua Nguyen</Link>
-        <Link href="/blog/">Writing</Link>
-      </header>
-
-      <article>
-        <header className="article-header">
-          <Link className="blog-back" href="/blog/">All writing</Link>
-          <span className="eyebrow">{post.tags.join(" · ")}</span>
-          <h1>{post.title}</h1>
-          <p>{post.summary}</p>
-          <div className="article-byline">
-            <span>By Joshua Nguyen</span>
-            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-            <span>{post.readingMinutes} min read</span>
-          </div>
-        </header>
-        <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
-        <footer className="article-footer">
-          <span className="eyebrow">Thanks for reading</span>
-          <Link href="/blog/">All writing</Link>
-        </footer>
-      </article>
-
-      <footer className="blog-footer">
-        <span>Joshua Nguyen · FDE · AI developer · Technical researcher</span>
-        <div className="blog-footer-links">
-          {linkedInProfileUrl ? <Link href={linkedInProfileUrl}>LinkedIn</Link> : null}
-          <Link href="https://github.com/JoshuaNguyen123">GitHub</Link>
-        </div>
-      </footer>
-    </main>
+    <>
+      <SiteHeader current="writing" />
+      <main className="blog-shell blog-article" id="main">
+        <article>
+          <header className="article-header">
+            <Link className="blog-back" href="/blog/">All writing</Link>
+            <span className="eyebrow">{post.tags.join(" · ")}</span>
+            <h1>{post.title}</h1>
+            <p>{post.summary}</p>
+            <div className="article-byline">
+              <span>By {siteName}</span>
+              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+              <span>{post.readingMinutes} min read</span>
+            </div>
+          </header>
+          <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+          <footer className="article-footer">
+            <span className="eyebrow">Thanks for reading</span>
+            <Link href="/blog/">All writing</Link>
+          </footer>
+        </article>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

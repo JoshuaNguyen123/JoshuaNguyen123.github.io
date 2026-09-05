@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("public identity, editorial writing, and public social surfaces are source-safe", async () => {
-  const [page, blog, article, layout, linkedIn, linkedInWidget, activitySummary, styles] = await Promise.all([
+  const [page, blog, article, layout, linkedIn, linkedInWidget, activitySummary, styles, site, header, footer, notFound] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/[slug]/page.tsx", import.meta.url), "utf8"),
@@ -12,11 +12,15 @@ test("public identity, editorial writing, and public social surfaces are source-
     readFile(new URL("../components/social/LinkedInWidget.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/activity/ActivitySummary.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../content/site.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/site/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/site/SiteFooter.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/not-found.tsx", import.meta.url), "utf8"),
   ]);
   const summaryCards = await readFile(new URL("../lib/activity/summary-cards.ts", import.meta.url), "utf8");
   const definitions = await readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8");
   assert.match(page, /Joshua Nguyen/);
-  assert.match(page, /FDE, AI Developer, and Technical Researcher\./);
+  assert.match(page, /Forward-deployed engineer, AI developer, and technical researcher\./);
   assert.match(page, /building and testing systems across the stack/);
   assert.match(page, /malformed JSON/);
   assert.match(page, /one distributed system/);
@@ -38,15 +42,29 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.ok(page.indexOf('className="writing-section home-writing"') < page.indexOf('className="contact-section"'));
   assert.doesNotMatch(page, /className="interests-section"/);
   assert.equal((page.match(/interests\.map/g) ?? []).length, 1);
-  assert.match(page, /className="mobile-nav"/);
+  // One shared header and footer on every public page, with the mobile menu
+  // included, so no route can quietly lose its navigation again.
+  assert.match(header, /className="mobile-nav"/);
+  assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
+  for (const source of [page, blog, article, notFound]) {
+    assert.match(source, /<SiteHeader/);
+    assert.match(source, /<SiteFooter/);
+    assert.match(source, /id="main"/);
+  }
+  assert.match(layout, /className="skip-link" href="#main"/);
+  assert.match(footer, /GitHub/);
+  // No Resume link ships until the PDF exists; the slot is the config value.
+  assert.match(site, /export const resumeUrl: string \| null = null;/);
+  assert.match(header, /resumeUrl \? <a/);
   assert.match(page, /What it taught me/);
-  assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
-  assert.match(blog, /Coming soon/);
-  assert.match(blog, /First piece in progress/);
-  assert.doesNotMatch(blog, /placeholder|lorem ipsum/i);
+  assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
+  assert.doesNotMatch(blog, /Coming soon|placeholder|lorem ipsum/i);
   assert.doesNotMatch(`${page}${layout}`, /Josh B\./);
   assert.match(layout, /Newsreader/);
-  assert.match(layout, /https:\/\/joshuanguyen123\.github\.io/);
+  assert.match(site, /https:\/\/joshuanguyen123\.github\.io/);
+  assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
+  assert.match(layout, /colorScheme: "light"/);
+  assert.match(layout, /apple: "\/apple-touch-icon\.png"/);
   assert.match(linkedIn, /linkedInPosts: ExternalPost\[\] = defineExternalPosts\(\[\]\)/);
   assert.match(linkedIn, /linkedin\.com\/in\/joshua-nguyen-6a812a210/);
   // Card labels and notes live in the shared summary-cards module so the
