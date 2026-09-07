@@ -2,7 +2,7 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-07T00:28:02.765Z",
+  "generatedAt": "2026-09-07T01:06:04.135Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-09-06"
           },
-          "lastSyncedAt": "2026-09-07T00:28:01.797Z",
-          "lastAttemptedAt": "2026-09-07T00:28:01.797Z",
+          "lastSyncedAt": "2026-09-07T01:06:03.084Z",
+          "lastAttemptedAt": "2026-09-07T01:06:03.084Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1269,7 +1269,7 @@
             },
             {
               "date": "2026-09-06",
-              "value": 42,
+              "value": 43,
               "level": 5
             }
           ]
@@ -1291,8 +1291,8 @@
             "start": "2026-04-20",
             "end": "2026-09-06"
           },
-          "lastSyncedAt": "2026-09-07T00:27:52.681Z",
-          "lastAttemptedAt": "2026-09-07T00:27:52.681Z",
+          "lastSyncedAt": "2026-09-07T01:03:31.035Z",
+          "lastAttemptedAt": "2026-09-07T01:03:31.035Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -2009,8 +2009,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-07T00:28:01.747Z",
-          "lastAttemptedAt": "2026-09-07T00:28:01.747Z",
+          "lastSyncedAt": "2026-09-07T01:06:02.924Z",
+          "lastAttemptedAt": "2026-09-07T01:06:02.924Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -2041,8 +2041,8 @@
             "start": "2026-01-20",
             "end": "2026-09-06"
           },
-          "lastSyncedAt": "2026-09-07T00:28:01.788Z",
-          "lastAttemptedAt": "2026-09-07T00:28:01.788Z",
+          "lastSyncedAt": "2026-09-07T01:06:03.070Z",
+          "lastAttemptedAt": "2026-09-07T01:06:03.070Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3209,8 +3209,8 @@
             "start": "2026-01-02",
             "end": "2026-09-04"
           },
-          "lastSyncedAt": "2026-09-07T00:27:52.683Z",
-          "lastAttemptedAt": "2026-09-07T00:27:52.683Z",
+          "lastSyncedAt": "2026-09-07T01:03:31.038Z",
+          "lastAttemptedAt": "2026-09-07T01:03:31.038Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4458,7 +4458,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-07T00:28:01.788Z",
+          "lastAttemptedAt": "2026-09-07T01:06:03.070Z",
           "days": []
         }
       }
@@ -4478,8 +4478,8 @@
             "start": "2026-07-23",
             "end": "2026-09-06"
           },
-          "lastSyncedAt": "2026-09-07T00:28:01.788Z",
-          "lastAttemptedAt": "2026-09-07T00:28:01.788Z",
+          "lastSyncedAt": "2026-09-07T01:06:03.070Z",
+          "lastAttemptedAt": "2026-09-07T01:06:03.070Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4704,12 +4704,12 @@
             {
               "date": "2026-09-05",
               "value": 28,
-              "level": 4
+              "level": 3
             },
             {
               "date": "2026-09-06",
-              "value": 25,
-              "level": 3
+              "value": 30,
+              "level": 4
             }
           ]
         },
@@ -4726,8 +4726,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-07T00:28:01.749Z",
-          "lastAttemptedAt": "2026-09-07T00:28:01.749Z",
+          "lastSyncedAt": "2026-09-07T01:06:02.927Z",
+          "lastAttemptedAt": "2026-09-07T01:06:02.927Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -6086,23 +6086,23 @@
       },
       {
         "date": "2026-09-05",
-        "value": 60,
+        "value": 55,
         "level": 3
       },
       {
         "date": "2026-09-06",
-        "value": 50,
+        "value": 55,
         "level": 3
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 1605,
+      "contributions": 1606,
       "codexActiveSessionDays": 1377,
       "cursorActiveSessionDays": 1113,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 711,
+      "claudeActiveSessionDays": 716,
       "activeDays": 152,
       "longestStreak": 44
     }
