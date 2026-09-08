@@ -2,7 +2,7 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-08T06:31:00.078Z",
+  "generatedAt": "2026-09-08T10:03:02.101Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-09-08"
           },
-          "lastSyncedAt": "2026-09-08T06:30:58.949Z",
-          "lastAttemptedAt": "2026-09-08T06:30:58.949Z",
+          "lastSyncedAt": "2026-09-08T10:02:52.625Z",
+          "lastAttemptedAt": "2026-09-08T10:02:52.625Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -565,7 +565,7 @@
             {
               "date": "2026-04-18",
               "value": 9,
-              "level": 3
+              "level": 2
             },
             {
               "date": "2026-04-19",
@@ -1045,7 +1045,7 @@
             {
               "date": "2026-07-23",
               "value": 9,
-              "level": 3
+              "level": 2
             },
             {
               "date": "2026-07-24",
@@ -1274,13 +1274,13 @@
             },
             {
               "date": "2026-09-07",
-              "value": 139,
+              "value": 140,
               "level": 5
             },
             {
               "date": "2026-09-08",
-              "value": 2,
-              "level": 1
+              "value": 14,
+              "level": 3
             }
           ]
         }
@@ -1301,8 +1301,8 @@
             "start": "2026-04-20",
             "end": "2026-09-07"
           },
-          "lastSyncedAt": "2026-09-08T06:30:29.638Z",
-          "lastAttemptedAt": "2026-09-08T06:30:29.638Z",
+          "lastSyncedAt": "2026-09-08T09:44:43.593Z",
+          "lastAttemptedAt": "2026-09-08T09:44:43.593Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -2024,8 +2024,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-08T06:30:58.810Z",
-          "lastAttemptedAt": "2026-09-08T06:30:58.810Z",
+          "lastSyncedAt": "2026-09-08T10:00:44.751Z",
+          "lastAttemptedAt": "2026-09-08T10:00:44.751Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -2056,8 +2056,8 @@
             "start": "2026-01-20",
             "end": "2026-09-08"
           },
-          "lastSyncedAt": "2026-09-08T06:30:58.939Z",
-          "lastAttemptedAt": "2026-09-08T06:30:58.939Z",
+          "lastSyncedAt": "2026-09-08T10:02:52.495Z",
+          "lastAttemptedAt": "2026-09-08T10:02:52.495Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3234,8 +3234,8 @@
             "start": "2026-01-02",
             "end": "2026-09-04"
           },
-          "lastSyncedAt": "2026-09-08T06:30:29.642Z",
-          "lastAttemptedAt": "2026-09-08T06:30:29.642Z",
+          "lastSyncedAt": "2026-09-08T09:44:43.606Z",
+          "lastAttemptedAt": "2026-09-08T09:44:43.606Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4483,7 +4483,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-08T06:30:58.939Z",
+          "lastAttemptedAt": "2026-09-08T10:02:52.495Z",
           "days": []
         }
       }
@@ -4503,8 +4503,8 @@
             "start": "2026-07-23",
             "end": "2026-09-08"
           },
-          "lastSyncedAt": "2026-09-08T06:30:58.939Z",
-          "lastAttemptedAt": "2026-09-08T06:30:58.939Z",
+          "lastSyncedAt": "2026-09-08T10:02:52.495Z",
+          "lastAttemptedAt": "2026-09-08T10:02:52.495Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4549,12 +4549,12 @@
             {
               "date": "2026-07-31",
               "value": 5,
-              "level": 2
+              "level": 1
             },
             {
               "date": "2026-08-01",
               "value": 5,
-              "level": 2
+              "level": 1
             },
             {
               "date": "2026-08-02",
@@ -4599,7 +4599,7 @@
             {
               "date": "2026-08-10",
               "value": 5,
-              "level": 2
+              "level": 1
             },
             {
               "date": "2026-08-11",
@@ -4624,7 +4624,7 @@
             {
               "date": "2026-08-15",
               "value": 5,
-              "level": 2
+              "level": 1
             },
             {
               "date": "2026-08-16",
@@ -4649,7 +4649,7 @@
             {
               "date": "2026-08-20",
               "value": 10,
-              "level": 3
+              "level": 2
             },
             {
               "date": "2026-08-21",
@@ -4704,7 +4704,7 @@
             {
               "date": "2026-08-31",
               "value": 5,
-              "level": 2
+              "level": 1
             },
             {
               "date": "2026-09-01",
@@ -4743,8 +4743,8 @@
             },
             {
               "date": "2026-09-08",
-              "value": 3,
-              "level": 1
+              "value": 16,
+              "level": 3
             }
           ]
         },
@@ -4761,8 +4761,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-08T06:30:58.812Z",
-          "lastAttemptedAt": "2026-09-08T06:30:58.812Z",
+          "lastSyncedAt": "2026-09-08T10:00:44.775Z",
+          "lastAttemptedAt": "2026-09-08T10:00:44.775Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -5421,7 +5421,7 @@
       },
       {
         "date": "2026-04-18",
-        "value": 27,
+        "value": 20,
         "level": 1
       },
       {
@@ -5901,7 +5901,7 @@
       },
       {
         "date": "2026-07-23",
-        "value": 55,
+        "value": 50,
         "level": 3
       },
       {
@@ -5941,12 +5941,12 @@
       },
       {
         "date": "2026-07-31",
-        "value": 30,
-        "level": 2
+        "value": 25,
+        "level": 1
       },
       {
         "date": "2026-08-01",
-        "value": 35,
+        "value": 30,
         "level": 2
       },
       {
@@ -5991,7 +5991,7 @@
       },
       {
         "date": "2026-08-10",
-        "value": 25,
+        "value": 20,
         "level": 1
       },
       {
@@ -6016,7 +6016,7 @@
       },
       {
         "date": "2026-08-15",
-        "value": 15,
+        "value": 10,
         "level": 1
       },
       {
@@ -6041,7 +6041,7 @@
       },
       {
         "date": "2026-08-20",
-        "value": 40,
+        "value": 35,
         "level": 2
       },
       {
@@ -6096,7 +6096,7 @@
       },
       {
         "date": "2026-08-31",
-        "value": 45,
+        "value": 40,
         "level": 2
       },
       {
@@ -6136,18 +6136,18 @@
       },
       {
         "date": "2026-09-08",
-        "value": 13,
-        "level": 1
+        "value": 40,
+        "level": 2
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 1764,
+      "contributions": 1777,
       "codexActiveSessionDays": 1381,
       "cursorActiveSessionDays": 1113,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 732,
+      "claudeActiveSessionDays": 745,
       "activeDays": 154,
       "longestStreak": 44
     }
