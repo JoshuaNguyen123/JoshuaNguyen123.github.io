@@ -2,11 +2,11 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-10T05:58:11.009Z",
+  "generatedAt": "2026-09-10T06:31:13.575Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
-    "end": "2026-09-09"
+    "end": "2026-09-10"
   },
   "providers": {
     "github": {
@@ -22,10 +22,10 @@
           "source": "GitHub public contribution calendar",
           "coverage": {
             "start": "2026-01-01",
-            "end": "2026-09-09"
+            "end": "2026-09-10"
           },
-          "lastSyncedAt": "2026-09-10T05:58:09.667Z",
-          "lastAttemptedAt": "2026-09-10T05:58:09.667Z",
+          "lastSyncedAt": "2026-09-10T06:31:12.287Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.287Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1284,8 +1284,13 @@
             },
             {
               "date": "2026-09-09",
-              "value": 37,
+              "value": 38,
               "level": 4
+            },
+            {
+              "date": "2026-09-10",
+              "value": 0,
+              "level": 0
             }
           ]
         }
@@ -1304,10 +1309,10 @@
           "source": "Local Codex session event timestamps",
           "coverage": {
             "start": "2026-04-20",
-            "end": "2026-09-09"
+            "end": "2026-09-10"
           },
-          "lastSyncedAt": "2026-09-10T05:57:34.357Z",
-          "lastAttemptedAt": "2026-09-10T05:57:34.357Z",
+          "lastSyncedAt": "2026-09-10T06:30:33.997Z",
+          "lastAttemptedAt": "2026-09-10T06:30:33.997Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -1642,7 +1647,7 @@
             {
               "date": "2026-06-25",
               "value": 22,
-              "level": 3
+              "level": 4
             },
             {
               "date": "2026-06-26",
@@ -1752,7 +1757,7 @@
             {
               "date": "2026-07-17",
               "value": 22,
-              "level": 3
+              "level": 4
             },
             {
               "date": "2026-07-18",
@@ -2023,6 +2028,11 @@
               "date": "2026-09-09",
               "value": 3,
               "level": 2
+            },
+            {
+              "date": "2026-09-10",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -2039,8 +2049,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-10T05:58:09.641Z",
-          "lastAttemptedAt": "2026-09-10T05:58:09.641Z",
+          "lastSyncedAt": "2026-09-10T06:31:12.164Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.164Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -2069,10 +2079,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-09-09"
+            "end": "2026-09-10"
           },
-          "lastSyncedAt": "2026-09-10T05:58:09.660Z",
-          "lastAttemptedAt": "2026-09-10T05:58:09.660Z",
+          "lastSyncedAt": "2026-09-10T06:31:12.258Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.258Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3238,6 +3248,11 @@
               "date": "2026-09-09",
               "value": 25,
               "level": 4
+            },
+            {
+              "date": "2026-09-10",
+              "value": 2,
+              "level": 1
             }
           ]
         },
@@ -3252,10 +3267,10 @@
           "source": "Cursor usage-event export (daily presence only)",
           "coverage": {
             "start": "2026-01-02",
-            "end": "2026-09-09"
+            "end": "2026-09-10"
           },
-          "lastSyncedAt": "2026-09-10T05:57:34.359Z",
-          "lastAttemptedAt": "2026-09-10T05:57:34.359Z",
+          "lastSyncedAt": "2026-09-10T06:30:34.001Z",
+          "lastAttemptedAt": "2026-09-10T06:30:34.001Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4511,6 +4526,11 @@
               "date": "2026-09-09",
               "value": 1,
               "level": 1
+            },
+            {
+              "date": "2026-09-10",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -4528,7 +4548,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-10T05:58:09.660Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.258Z",
           "days": []
         }
       }
@@ -4546,10 +4566,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-09-09"
+            "end": "2026-09-10"
           },
-          "lastSyncedAt": "2026-09-10T05:58:09.660Z",
-          "lastAttemptedAt": "2026-09-10T05:58:09.660Z",
+          "lastSyncedAt": "2026-09-10T06:31:12.258Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.258Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4795,6 +4815,11 @@
               "date": "2026-09-09",
               "value": 0,
               "level": 0
+            },
+            {
+              "date": "2026-09-10",
+              "value": 0,
+              "level": 0
             }
           ]
         },
@@ -4811,8 +4836,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-10T05:58:09.643Z",
-          "lastAttemptedAt": "2026-09-10T05:58:09.643Z",
+          "lastSyncedAt": "2026-09-10T06:31:12.166Z",
+          "lastAttemptedAt": "2026-09-10T06:31:12.166Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -5811,7 +5836,7 @@
       },
       {
         "date": "2026-06-25",
-        "value": 53,
+        "value": 60,
         "level": 3
       },
       {
@@ -5921,8 +5946,8 @@
       },
       {
         "date": "2026-07-17",
-        "value": 47,
-        "level": 2
+        "value": 53,
+        "level": 3
       },
       {
         "date": "2026-07-18",
@@ -6193,17 +6218,22 @@
         "date": "2026-09-09",
         "value": 50,
         "level": 3
+      },
+      {
+        "date": "2026-09-10",
+        "value": 10,
+        "level": 1
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 1994,
-      "codexActiveSessionDays": 1384,
-      "cursorActiveSessionDays": 1142,
+      "contributions": 1995,
+      "codexActiveSessionDays": 1385,
+      "cursorActiveSessionDays": 1144,
       "cursorAppliedAiLineChanges": 0,
       "claudeActiveSessionDays": 757,
-      "activeDays": 155,
+      "activeDays": 156,
       "longestStreak": 44
     }
   }
