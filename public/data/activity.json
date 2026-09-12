@@ -2,7 +2,7 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-12T02:59:33.112Z",
+  "generatedAt": "2026-09-12T06:16:31.284Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
@@ -24,8 +24,8 @@
             "start": "2026-01-01",
             "end": "2026-09-11"
           },
-          "lastSyncedAt": "2026-09-12T02:59:31.720Z",
-          "lastAttemptedAt": "2026-09-12T02:59:31.720Z",
+          "lastSyncedAt": "2026-09-12T06:16:21.698Z",
+          "lastAttemptedAt": "2026-09-12T06:16:21.698Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1294,7 +1294,7 @@
             },
             {
               "date": "2026-09-11",
-              "value": 40,
+              "value": 43,
               "level": 4
             }
           ]
@@ -1316,8 +1316,8 @@
             "start": "2026-04-20",
             "end": "2026-09-11"
           },
-          "lastSyncedAt": "2026-09-12T02:58:51.782Z",
-          "lastAttemptedAt": "2026-09-12T02:58:51.782Z",
+          "lastSyncedAt": "2026-09-12T05:48:30.670Z",
+          "lastAttemptedAt": "2026-09-12T05:48:30.670Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -2059,8 +2059,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-12T02:59:31.681Z",
-          "lastAttemptedAt": "2026-09-12T02:59:31.681Z",
+          "lastSyncedAt": "2026-09-12T06:16:20.562Z",
+          "lastAttemptedAt": "2026-09-12T06:16:20.562Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -2089,10 +2089,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-09-11"
+            "end": "2026-09-12"
           },
-          "lastSyncedAt": "2026-09-12T02:59:31.712Z",
-          "lastAttemptedAt": "2026-09-12T02:59:31.712Z",
+          "lastSyncedAt": "2026-09-12T06:16:21.679Z",
+          "lastAttemptedAt": "2026-09-12T06:16:21.679Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3266,7 +3266,7 @@
             },
             {
               "date": "2026-09-11",
-              "value": 8,
+              "value": 11,
               "level": 3
             }
           ]
@@ -3284,8 +3284,8 @@
             "start": "2026-01-02",
             "end": "2026-09-11"
           },
-          "lastSyncedAt": "2026-09-12T02:58:51.785Z",
-          "lastAttemptedAt": "2026-09-12T02:58:51.785Z",
+          "lastSyncedAt": "2026-09-12T05:48:30.672Z",
+          "lastAttemptedAt": "2026-09-12T05:48:30.672Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4568,7 +4568,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-12T02:59:31.712Z",
+          "lastAttemptedAt": "2026-09-12T06:16:21.679Z",
           "days": []
         }
       }
@@ -4586,10 +4586,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-09-11"
+            "end": "2026-09-12"
           },
-          "lastSyncedAt": "2026-09-12T02:59:31.712Z",
-          "lastAttemptedAt": "2026-09-12T02:59:31.712Z",
+          "lastSyncedAt": "2026-09-12T06:16:21.679Z",
+          "lastAttemptedAt": "2026-09-12T06:16:21.679Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4861,8 +4861,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-12T02:59:31.684Z",
-          "lastAttemptedAt": "2026-09-12T02:59:31.684Z",
+          "lastSyncedAt": "2026-09-12T06:16:20.564Z",
+          "lastAttemptedAt": "2026-09-12T06:16:20.564Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -6258,9 +6258,9 @@
   },
   "summaries": {
     "2026": {
-      "contributions": 2116,
+      "contributions": 2119,
       "codexActiveSessionDays": 1387,
-      "cursorActiveSessionDays": 1162,
+      "cursorActiveSessionDays": 1165,
       "cursorAppliedAiLineChanges": 0,
       "claudeActiveSessionDays": 757,
       "activeDays": 157,
