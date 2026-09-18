@@ -1,33 +1,83 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
   <title id="title">Teach Anything architecture</title>
-  <desc id="desc">Learning history updates memory. A scheduler serves cited questions and sandboxed exercises. A replay check makes Tuesday depend on Monday.</desc>
+  <desc id="desc">A memory-first adaptive loop: learning history feeds FSRS-5 forgetting curves and Bayesian mastery; a scheduler picks the next session of cited questions and sandboxed exercises; a replay harness proves the same history yields the same plan.</desc>
   <rect width="1200" height="900" fill="#f5f3ed"/>
-  <text x="72" y="86" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="3">04  MEMORY FIRST</text>
-  <rect x="72" y="118" width="1056" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="172" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="30">Adaptive session</text>
-  <path d="M600 206 v64" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <rect x="72" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Learning history</text>
-  <text x="232" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">what was practiced</text>
-  <rect x="440" y="286" width="320" height="150" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="600" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Memory</text>
-  <text x="600" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">FSRS-5, Bayesian mastery</text>
-  <rect x="808" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Scheduler</text>
-  <text x="968" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">what comes next</text>
-  <rect x="72" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Cited questions</text>
-  <text x="232" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">grounded prompts</text>
-  <rect x="440" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Sandboxed exercises</text>
-  <text x="600" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">safe practice</text>
-  <rect x="808" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Replay check</text>
-  <text x="968" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">Tuesday from Monday</text>
-  <path d="M392 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M760 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M232 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M600 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M968 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="72" y="778" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20">Tuesday has to depend on Monday.</text>
+
+  <text x="72" y="64" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">04  MEMORY FIRST</text>
+  <text x="72" y="98" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Adaptive learning loop — Tuesday depends on Monday</text>
+
+  <!-- Cycle ring (visual only) -->
+  <ellipse cx="600" cy="430" rx="340" ry="250" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.55"/>
+
+  <!-- CENTER: Memory core -->
+  <rect x="430" y="310" width="340" height="240" fill="#fffdf8" stroke="#8a5a20" stroke-width="3"/>
+  <text x="600" y="348" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">MEMORY CORE</text>
+  <text x="600" y="382" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Deterministic learner state</text>
+  <line x1="470" y1="400" x2="730" y2="400" stroke="#16130e" stroke-width="1" opacity="0.25"/>
+  <text x="450" y="430" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· FSRS-5 forgetting curves</text>
+  <text x="450" y="456" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· Bayesian mastery estimates</text>
+  <text x="450" y="482" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· Interval + retention per item</text>
+  <text x="450" y="516" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Same history → identical schedule</text>
+
+  <!-- TOP: Scheduler -->
+  <rect x="400" y="110" width="400" height="130" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="420" y="140" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">01  SCHEDULER</text>
+  <text x="420" y="172" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">Picks the next session</text>
+  <text x="420" y="200" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">due by FSRS interval · mastery gaps · topic priority</text>
+  <text x="420" y="222" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">plans from memory state, not a fresh syllabus</text>
+
+  <!-- LEFT: Learning history -->
+  <rect x="48" y="280" width="280" height="260" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="68" y="312" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">00  LEARNING HISTORY</text>
+  <text x="68" y="348" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">What Monday taught</text>
+  <text x="68" y="384" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· practiced items + outcomes</text>
+  <text x="68" y="410" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· grades / pass-fail signals</text>
+  <text x="68" y="436" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· session timestamps</text>
+  <text x="68" y="462" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· source citations kept</text>
+  <text x="68" y="500" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">Updates memory after each run</text>
+
+  <!-- RIGHT: Session delivery -->
+  <rect x="872" y="250" width="280" height="320" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="892" y="282" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">02  SESSION DELIVERY</text>
+  <text x="892" y="318" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Cited questions</text>
+  <text x="892" y="344" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">every prompt names its source</text>
+  <text x="892" y="370" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">grounded, not improvised</text>
+  <line x1="892" y1="390" x2="1132" y2="390" stroke="#16130e" stroke-width="1" opacity="0.2"/>
+  <text x="892" y="422" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Sandboxed code exercises</text>
+  <text x="892" y="448" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">safe practice environment</text>
+  <text x="892" y="474" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">outcomes feed history</text>
+  <text x="892" y="520" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">Learner answers → history</text>
+  <text x="892" y="544" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">closes the adaptive loop</text>
+
+  <!-- BOTTOM: Replay harness -->
+  <rect x="280" y="640" width="640" height="120" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
+  <text x="300" y="672" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">03  REPLAY HARNESS</text>
+  <text x="300" y="704" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Feed the same history → expect the identical plan</text>
+  <text x="300" y="734" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Asserts the schedule adapted instead of improvising a new syllabus each open</text>
+
+  <!-- Flow arrows around the cycle -->
+  <!-- history → memory -->
+  <path d="M328 410 H430" fill="none" stroke="#6b6455" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="350" y="400" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">update</text>
+  <!-- memory → scheduler -->
+  <path d="M600 310 V240" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <text x="612" y="280" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">drives</text>
+  <!-- scheduler → session -->
+  <path d="M800 175 H1012 V250" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <text x="860" y="165" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">next session</text>
+  <!-- session → history (feedback) -->
+  <path d="M872 520 H328 V540" fill="none" stroke="#8a5a20" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="520" y="580" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">outcomes → history (loop)</text>
+  <!-- memory ↔ replay -->
+  <path d="M600 550 V640" fill="none" stroke="#8a5a20" stroke-width="2"/>
+  <text x="612" y="610" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">prove</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <text x="72" y="820" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18">Tuesday has to depend on Monday — and the replay harness has to prove it.</text>
+  <text x="72" y="852" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">Memory math sits at the center; the model only writes grounded content around it.</text>
 </svg>

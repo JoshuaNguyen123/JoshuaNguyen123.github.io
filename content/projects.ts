@@ -49,18 +49,18 @@ export const projects: Project[] = [
     number: "02",
     title: "Ladybug",
     description:
-      "A private photo and writing ritual for two people, built three ways: a deterministic product simulator that runs both phones side by side with no credentials, a Supabase-backed PWA with row-level security, private storage, and realtime state, and the original native SwiftUI and Firebase app. Verification covers the migrations, a three-account connected journey, Chromium end-to-end runs, and the iOS build handoff, all on self-hosted CI.",
+      "A private photo and writing space for two people, built three ways: a deterministic product simulator that runs both phones side by side with no credentials, a Supabase-backed PWA with row-level security, private storage, and realtime state, and the original native SwiftUI and Firebase app. Verification covers the migrations, a three-account connected journey, Chromium end-to-end runs, and the iOS build handoff, all on self-hosted CI.",
     reflection:
       "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
     discipline: "TypeScript · Swift · Supabase",
     href: null,
     image: diagram("ladybug"),
     problem:
-      "A two-person photo and writing ritual that has to feel private, personal, and reliable on two phones at once.",
+      "A two-person photo and writing space that has to feel private, personal, and reliable on two phones at once.",
     whatItDoes:
-      "Ladybug is a shared space for exactly two people: photos, short writing, and the small interactions that make a private ritual feel like a place. It was built three ways so the product could be proven before the cloud bill started: a deterministic simulator, a Supabase-backed PWA, and the original SwiftUI and Firebase app.",
+      "Ladybug is a shared space for exactly two people: photos, short writing, and the small interactions that make that space feel like a place. It was built three ways so the product could be proven before the cloud bill started: a deterministic simulator, a Supabase-backed PWA, and the original SwiftUI and Firebase app.",
     howItConnects:
-      "The simulator runs both phones side by side with no credentials and is where product mistakes get found. The PWA keeps access control, private storage, and realtime state behind row-level security. The native app is the earlier host of the same ritual. Self-hosted CI checks migrations, a three-account journey, Chromium runs, and the iOS handoff.",
+      "The simulator runs both phones side by side with no credentials and is where product mistakes get found. The PWA keeps access control, private storage, and realtime state behind row-level security. The native app is the earlier host of the same shared space. Self-hosted CI checks migrations, a three-account journey, Chromium runs, and the iOS handoff.",
     whatWasHard:
       "A two-person app still has two accounts, two devices, uploads, notifications, and realtime state. The hard part was treating that as a small distributed system and using the simulator so I was not paying cloud time to discover basic product mistakes.",
   },

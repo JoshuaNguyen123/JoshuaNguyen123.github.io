@@ -1,33 +1,129 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Ladybug architecture</title>
-  <desc id="desc">A two-phone simulator proves the private ritual without credentials. A PWA with access control keeps photos and writing private. A native app was the earlier host. Self-hosted CI ships the app.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="lb-title lb-desc">
+  <title id="lb-title">Ladybug architecture</title>
+  <desc id="lb-desc">Same two-person shared space hosted three ways: a deterministic dual-phone simulator with no credentials, a Supabase PWA with RLS private storage and realtime, and the earlier native SwiftUI Firebase app. Self-hosted CI verifies migrations, a three-account journey, Chromium E2E, and iOS handoff.</desc>
+
   <rect width="1200" height="900" fill="#f5f3ed"/>
-  <text x="72" y="86" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="3">02  TWO PHONES</text>
-  <rect x="72" y="118" width="1056" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="172" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="30">Private ritual</text>
-  <path d="M600 206 v64" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <rect x="72" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Simulator</text>
-  <text x="232" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">both phones, no credentials</text>
-  <rect x="440" y="286" width="320" height="150" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="600" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">PWA</text>
-  <text x="600" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">RLS, storage, realtime</text>
-  <rect x="808" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Native app</text>
-  <text x="968" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">SwiftUI, earlier host</text>
-  <rect x="72" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Access control</text>
-  <text x="232" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">who may enter</text>
-  <rect x="440" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Photos + writing</text>
-  <text x="600" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">the private record</text>
-  <rect x="808" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Self-hosted CI</text>
-  <text x="968" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">build and ship</text>
-  <path d="M392 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M760 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M232 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M600 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M968 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="72" y="778" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20">Prove the ritual locally. Then keep it private.</text>
+
+  <text x="48" y="48" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">02  THREE HOSTS</text>
+  <text x="48" y="78" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">One shared space · three implementations</text>
+
+  <!-- Product spine across top -->
+  <rect x="48" y="98" width="1104" height="56" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="68" y="122" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Shared product contract</text>
+  <text x="68" y="142" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Exactly two people · photos · short writing · small interactions that make the space feel like a place</text>
+
+  <!-- Fork lines down to three columns -->
+  <path d="M600 154 v22" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M220 176 h760" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M220 176 v20" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M600 176 v20" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M980 176 v20" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+
+  <!-- ========== COLUMN A: Simulator (narrower) ========== -->
+  <rect x="48" y="200" width="344" height="430" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <rect x="48" y="200" width="344" height="40" fill="#16130e"/>
+  <text x="64" y="226" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="15" letter-spacing="1">A · SIMULATOR</text>
+
+  <text x="64" y="268" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Deterministic dual-phone</text>
+  <text x="64" y="292" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Both phones side by side</text>
+  <text x="64" y="312" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">No credentials · no cloud bill</text>
+
+  <line x1="64" y1="330" x2="368" y2="330" stroke="#e0d9cc" stroke-width="1"/>
+
+  <text x="64" y="356" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">What it proves</text>
+  <text x="64" y="380" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Two-device product flow</text>
+  <text x="64" y="402" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Upload / write timing bugs</text>
+  <text x="64" y="424" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Notification mismatches</text>
+  <text x="64" y="446" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Realtime state races</text>
+
+  <line x1="64" y1="466" x2="368" y2="466" stroke="#e0d9cc" stroke-width="1"/>
+
+  <text x="64" y="492" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Why first</text>
+  <text x="64" y="516" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Find product mistakes before</text>
+  <text x="64" y="538" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">paying for cloud time.</text>
+
+  <rect x="64" y="568" width="296" height="40" fill="#f5f3ed" stroke="#8a5a20" stroke-width="1.5"/>
+  <text x="212" y="593" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">prove locally · ship later</text>
+
+  <!-- ========== COLUMN B: PWA (widest, accent) ========== -->
+  <rect x="416" y="200" width="416" height="430" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
+  <rect x="416" y="200" width="416" height="40" fill="#8a5a20"/>
+  <text x="432" y="226" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="15" letter-spacing="1">B · SUPABASE PWA  ·  primary host</text>
+
+  <text x="432" y="268" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Private web host</text>
+  <text x="432" y="292" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Access control · storage · realtime</text>
+  <text x="432" y="312" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">behind row-level security</text>
+
+  <line x1="432" y1="330" x2="808" y2="330" stroke="#e0d9cc" stroke-width="1"/>
+
+  <!-- Three subsystem boxes inside PWA -->
+  <rect x="432" y="348" width="184" height="100" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
+  <text x="448" y="376" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Row-level security</text>
+  <text x="448" y="400" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Who may enter</text>
+  <text x="448" y="420" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Pair-scoped rows</text>
+
+  <rect x="632" y="348" width="176" height="100" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
+  <text x="648" y="376" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Private storage</text>
+  <text x="648" y="400" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Photos stay gated</text>
+  <text x="648" y="420" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Not public buckets</text>
+
+  <rect x="432" y="464" width="376" height="72" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
+  <text x="448" y="492" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Realtime state</text>
+  <text x="448" y="516" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Two phones stay in sync · writing + presence without polling</text>
+
+  <rect x="432" y="556" width="376" height="52" fill="#f5f3ed" stroke="#8a5a20" stroke-width="1.5"/>
+  <text x="448" y="578" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Constraint</text>
+  <text x="448" y="598" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Privacy is enforced in the database, not only in the UI.</text>
+
+  <!-- ========== COLUMN C: Native (narrower) ========== -->
+  <rect x="856" y="200" width="296" height="430" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <rect x="856" y="200" width="296" height="40" fill="#16130e"/>
+  <text x="872" y="226" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="15" letter-spacing="1">C · NATIVE</text>
+
+  <text x="872" y="268" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">SwiftUI + Firebase</text>
+  <text x="872" y="292" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Earlier host of the</text>
+  <text x="872" y="312" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">same shared space</text>
+
+  <line x1="872" y1="330" x2="1128" y2="330" stroke="#e0d9cc" stroke-width="1"/>
+
+  <text x="872" y="356" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Stack</text>
+  <text x="872" y="380" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· SwiftUI client</text>
+  <text x="872" y="402" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Firebase backend</text>
+  <text x="872" y="424" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">· iOS build handoff</text>
+
+  <line x1="872" y1="444" x2="1128" y2="444" stroke="#e0d9cc" stroke-width="1"/>
+
+  <text x="872" y="470" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Role now</text>
+  <text x="872" y="494" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Reference host · proves</text>
+  <text x="872" y="516" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">the product was real</text>
+  <text x="872" y="538" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">before the PWA path.</text>
+
+  <rect x="872" y="568" width="264" height="40" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
+  <text x="1004" y="593" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">same space · earlier host</text>
+
+  <!-- ========== CI BAND ========== -->
+  <path d="M220 630 v28" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M600 630 v28" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M980 630 v28" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M220 658 h760" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M600 658 v16" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+
+  <rect x="48" y="676" width="1104" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="68" y="704" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Self-hosted CI · verification belt</text>
+
+  <rect x="68" y="720" width="240" height="28" fill="#f5f3ed" stroke="#16130e" stroke-width="1"/>
+  <text x="188" y="739" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="13">migrations check</text>
+
+  <rect x="324" y="720" width="240" height="28" fill="#f5f3ed" stroke="#16130e" stroke-width="1"/>
+  <text x="444" y="739" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="13">3-account journey</text>
+
+  <rect x="580" y="720" width="240" height="28" fill="#f5f3ed" stroke="#16130e" stroke-width="1"/>
+  <text x="700" y="739" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="13">Chromium E2E</text>
+
+  <rect x="836" y="720" width="296" height="28" fill="#f5f3ed" stroke="#16130e" stroke-width="1"/>
+  <text x="984" y="739" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="13">iOS build handoff</text>
+
+  <!-- Footer -->
+  <text x="48" y="808" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="17">Two phones, two accounts, uploads, notifications, and realtime make</text>
+  <text x="48" y="836" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="17">even a two-person app a small distributed system — prove it locally first.</text>
 </svg>

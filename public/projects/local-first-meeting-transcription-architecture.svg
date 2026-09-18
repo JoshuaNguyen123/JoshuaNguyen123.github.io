@@ -1,26 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Local-First Meeting Transcription architecture</title>
-  <desc id="desc">Local audio produces a live transcript and a refined transcript. A review queue reconciles the two into agreed text, then a local model writes notes.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="lfmt-title lfmt-desc">
+  <title id="lfmt-title">Local-First Meeting Transcription architecture</title>
+  <desc id="lfmt-desc">Local audio splits into a live Vosk transcript and a later faster-whisper refined pass. Both merge in a review queue that reconciles disagreements into agreed text. A local model writes structured notes. FastAPI and React stay on the machine; nothing leaves.</desc>
   <rect width="1200" height="900" fill="#f5f3ed"/>
-  <text x="72" y="86" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="3">09  STAY LOCAL</text>
-  <rect x="72" y="118" width="1056" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="172" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Local audio</text>
-  <rect x="72" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Live transcript</text>
-  <text x="232" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">Vosk</text>
-  <rect x="440" y="286" width="320" height="150" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="600" y="369" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Review queue</text>
-  <rect x="808" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Refined transcript</text>
-  <text x="968" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">faster-whisper</text>
-  <rect x="440" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="619" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Agreed text</text>
-  <rect x="808" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="619" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Local notes model</text>
-  <path d="M600 206 v64" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M392 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M760 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M600 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M760 611 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="72" y="778" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20">Two transcripts disagree. The queue is the product.</text>
+
+  <text x="56" y="48" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">09  STAY LOCAL</text>
+  <text x="56" y="82" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Dual-track transcription → human review → local notes</text>
+  <text x="56" y="108" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">Nothing leaves the machine. The product is the queue that reconciles two disagreeing transcripts.</text>
+
+  <!-- Boundary banner -->
+  <rect x="48" y="128" width="1104" height="36" fill="#16130e"/>
+  <text x="600" y="152" text-anchor="middle" fill="#f5f3ed" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">ALL STEPS BELOW RUN ON-DISK · NO CLOUD · NO UPLOAD</text>
+
+  <!-- Local audio source -->
+  <rect x="400" y="184" width="400" height="70" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="600" y="214" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">LOCAL AUDIO</text>
+  <text x="600" y="238" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Meeting recorder · stays on disk</text>
+
+  <!-- Split paths -->
+  <path d="M500 254 L220 310" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M700 254 L980 310" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <text x="340" y="290" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">during meeting</text>
+  <text x="860" y="290" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">after meeting</text>
+
+  <!-- LEFT TRACK: Vosk live -->
+  <rect x="48" y="310" width="344" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="68" y="342" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">TRACK A · LIVE</text>
+  <text x="68" y="376" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">Vosk transcript</text>
+  <text x="68" y="408" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• streaming recognition</text>
+  <text x="68" y="432" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• low latency, on-device</text>
+  <text x="68" y="456" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• first draft while talking</text>
+  <text x="68" y="488" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Fast · imperfect · immediate</text>
+
+  <!-- RIGHT TRACK: faster-whisper refined -->
+  <rect x="808" y="310" width="344" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="828" y="342" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">TRACK B · REFINED</text>
+  <text x="828" y="376" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">faster-whisper pass</text>
+  <text x="828" y="408" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• batch after the meeting</text>
+  <text x="828" y="432" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• higher accuracy pass</text>
+  <text x="828" y="456" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• second draft from same audio</text>
+  <text x="828" y="488" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Slower · better · still local</text>
+
+  <!-- Merge into diamond centerpiece -->
+  <path d="M392 410 H460" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <path d="M808 410 H740" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+
+  <!-- Diamond: Review queue (THE PRODUCT) -->
+  <path d="M600 340 L740 470 L600 600 L460 470 Z" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
+  <text x="600" y="420" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11" letter-spacing="2">THE PRODUCT</text>
+  <text x="600" y="450" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">Review queue</text>
+  <text x="600" y="478" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">reconcile disagreements</text>
+  <text x="600" y="500" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">A vs B side-by-side</text>
+  <text x="600" y="522" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">human resolves conflict</text>
+  <text x="600" y="550" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">not another model</text>
+
+  <!-- Stack annotation beside diamond -->
+  <text x="760" y="540" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">React review UI</text>
+  <text x="440" y="540" text-anchor="end" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">FastAPI backend</text>
+
+  <!-- Agreed text -->
+  <path d="M600 600 v28" fill="none" stroke="#8a5a20" stroke-width="2"/>
+  <rect x="380" y="628" width="440" height="64" fill="#fffdf8" stroke="#8a5a20" stroke-width="2"/>
+  <text x="600" y="656" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Agreed text</text>
+  <text x="600" y="678" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Only this output continues — not either raw track alone</text>
+
+  <!-- Local notes model -->
+  <path d="M600 692 v24" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <rect x="340" y="716" width="520" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="600" y="746" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Local notes model → structured notes</text>
+  <text x="600" y="772" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Summaries, action items, decisions — still on-machine</text>
+
+  <!-- Side constraint boxes -->
+  <rect x="48" y="628" width="280" height="160" fill="#fffdf8" stroke="#16130e" stroke-width="1"/>
+  <text x="68" y="660" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">WHY TWO MODELS</text>
+  <text x="68" y="690" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">They disagree constantly.</text>
+  <text x="68" y="714" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Pretending conflict is gone</text>
+  <text x="68" y="738" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">is worse than surfacing it.</text>
+  <text x="68" y="768" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Queue = the real product</text>
+
+  <rect x="872" y="628" width="280" height="160" fill="#fffdf8" stroke="#16130e" stroke-width="1"/>
+  <text x="892" y="660" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">STACK</text>
+  <text x="892" y="690" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">FastAPI · backend</text>
+  <text x="892" y="718" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">React · review UI</text>
+  <text x="892" y="746" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Vosk + faster-whisper</text>
+  <text x="892" y="770" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">local notes model</text>
+
+  <text x="56" y="840" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">The models were the obvious part. Two transcripts of the same audio disagree;</text>
+  <text x="56" y="868" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">the review queue that makes a person resolve that became the product.</text>
 </svg>

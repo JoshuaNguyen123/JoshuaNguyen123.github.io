@@ -1,23 +1,105 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Great Outdoors Intelligence architecture</title>
-  <desc id="desc">Live condition feeds are scored per activity and turned into a ranked list of destinations. A dashboard exists so a person can argue with the ranking. Offline trip bundles are a separate output from the same scores.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="goi-title goi-desc">
+  <title id="goi-title">Great Outdoors Intelligence architecture</title>
+  <desc id="goi-desc">Six live condition feeds fan into a scoring funnel that ranks Montana destinations per activity. The ranked list is the product. A dashboard lets a person argue with the ranking. Offline trip bundles fork from the same scores. Built on the autonomous repository template.</desc>
   <rect width="1200" height="900" fill="#f5f3ed"/>
-  <text x="72" y="86" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="3">08  RANK THE DAY</text>
-  <rect x="72" y="118" width="1056" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="156" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Live feeds</text>
-  <text x="600" y="186" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">forecast, rivers, avalanche, snow, roads, fire</text>
-  <rect x="72" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="232" y="369" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Score per activity</text>
-  <rect x="440" y="286" width="320" height="150" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="600" y="369" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Ranked destinations</text>
-  <rect x="808" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="968" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Dashboard</text>
-  <text x="968" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">to argue with</text>
-  <rect x="440" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="600" y="619" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Offline trip bundles</text>
-  <path d="M600 206 v64" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M392 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M760 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <path d="M600 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="72" y="778" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20">The product is the ranking.</text>
+
+  <text x="56" y="48" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">08  RANK THE DAY</text>
+  <text x="56" y="82" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Montana destinations, ranked by live conditions</text>
+  <text x="56" y="108" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">Not a wall of gauges — one recommendation you can inspect and take offline.</text>
+  <text x="1144" y="48" text-anchor="end" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="1">on autonomous repo template</text>
+
+  <!-- LIVE FEEDS — top fan-in row of six narrow columns -->
+  <text x="56" y="148" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">LIVE CONDITION FEEDS</text>
+
+  <rect x="48" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="133" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Forecast</text>
+  <text x="133" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">weather / wind</text>
+
+  <rect x="232" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="317" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">River gauges</text>
+  <text x="317" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">flow · stage</text>
+
+  <rect x="416" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="501" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Avalanche</text>
+  <text x="501" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">advisories</text>
+
+  <rect x="600" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="685" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Snowpack</text>
+  <text x="685" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">depth · trend</text>
+
+  <rect x="784" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="869" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Road status</text>
+  <text x="869" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">closures · access</text>
+
+  <rect x="968" y="162" width="184" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="1060" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Fire data</text>
+  <text x="1060" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">risk · smoke</text>
+
+  <!-- Fan-in lines into ingest -->
+  <path d="M133 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <path d="M317 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <path d="M501 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <path d="M685 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <path d="M869 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <path d="M1060 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+
+  <!-- INGEST / SCORING FUNNEL — trapezoid-like stacked narrowing panels -->
+  <rect x="280" y="320" width="640" height="56" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="600" y="342" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">INGEST</text>
+  <text x="600" y="362" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Normalize feeds → place × condition features</text>
+
+  <path d="M320 376 L880 376 L820 430 L380 430 Z" fill="#fffdf8" stroke="#8a5a20" stroke-width="2"/>
+  <text x="600" y="398" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">SCORE PER ACTIVITY</text>
+  <text x="600" y="420" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">hike · ski · fish · climb … weighted by live signals</text>
+
+  <path d="M400 430 L800 430 L740 490 L460 490 Z" fill="#16130e" stroke="#16130e" stroke-width="1"/>
+  <text x="600" y="458" text-anchor="middle" fill="#f5f3ed" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">FUNNEL</text>
+  <text x="600" y="478" text-anchor="middle" fill="#c4b8a4" font-family="Georgia, 'Times New Roman', serif" font-size="14">many gauges → one comparable score</text>
+
+  <!-- THE PRODUCT: ranked destinations -->
+  <rect x="420" y="510" width="360" height="200" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
+  <rect x="420" y="510" width="360" height="36" fill="#8a5a20"/>
+  <text x="600" y="534" text-anchor="middle" fill="#f5f3ed" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">THE PRODUCT — RANKED LIST</text>
+  <text x="448" y="574" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">1.  Destination A</text>
+  <text x="700" y="574" text-anchor="end" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">92</text>
+  <text x="448" y="602" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">2.  Destination B</text>
+  <text x="700" y="602" text-anchor="end" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">87</text>
+  <text x="448" y="630" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">3.  Destination C</text>
+  <text x="700" y="630" text-anchor="end" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">81</text>
+  <text x="448" y="658" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">…</text>
+  <text x="448" y="688" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13">Where to go outside in Montana today</text>
+
+  <path d="M600 490 v20" fill="none" stroke="#8a5a20" stroke-width="2"/>
+
+  <!-- LEFT fork: Dashboard -->
+  <rect x="48" y="510" width="300" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="68" y="544" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">DASHBOARD</text>
+  <text x="68" y="576" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Argue with the ranking</text>
+  <text x="68" y="608" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• inspect contributing feeds</text>
+  <text x="68" y="632" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• see why a place scored high</text>
+  <text x="68" y="656" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• override / re-weight activity</text>
+  <text x="68" y="686" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Exists so a person can disagree</text>
+
+  <path d="M420 580 H348" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <text x="384" y="568" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11">inspect</text>
+
+  <!-- RIGHT fork: Offline bundles -->
+  <rect x="852" y="510" width="300" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+  <text x="872" y="544" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">OFFLINE FORK</text>
+  <text x="872" y="576" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Trip bundles</text>
+  <text x="872" y="608" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• same scores, packaged</text>
+  <text x="872" y="632" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• works with no signal</text>
+  <text x="872" y="656" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• trailhead-ready snapshot</text>
+  <text x="872" y="686" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Separate output from scores</text>
+
+  <path d="M780 580 H852" fill="none" stroke="#6b6455" stroke-width="1.5"/>
+  <text x="816" y="568" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11">bundle</text>
+
+  <!-- Constraint callout -->
+  <rect x="48" y="730" width="1104" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="1"/>
+  <text x="68" y="760" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Constraint: more data is easy to display and hard to use on a trailhead — ranking first, gauges second.</text>
+
+  <text x="56" y="820" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">The product is the ranking. The dashboard exists so you can argue with it;</text>
+  <text x="56" y="848" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">offline bundles mean the recommendation still works after you leave the house.</text>
+  <text x="56" y="880" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Python · Data pipelines · in progress</text>
 </svg>
