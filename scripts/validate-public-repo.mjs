@@ -39,6 +39,10 @@ function isBinary(contents) {
   return contents.subarray(0, 8_192).includes(0);
 }
 
+function isAllowedArchitectureDiagram(normalizedPath) {
+  return /^public\/projects\/[a-z0-9-]+-architecture\.svg$/.test(normalizedPath);
+}
+
 export function validatePublicFiles(files) {
   const violations = [];
   for (const file of files) {
@@ -53,7 +57,7 @@ export function validatePublicFiles(files) {
     else if ([".md", ".mdx"].includes(extension) && !allowedDocumentationPaths.has(normalizedPath) && !isPublishedBlogPost) violations.push({ path: repositoryPath, reason: "non-published documentation is tracked" });
     if (pathSegments.some((segment) => forbiddenPathSegments.has(segment))) violations.push({ path: repositoryPath, reason: "local agent configuration is tracked" });
     if (normalizedPath === "activity.json") violations.push({ path: repositoryPath, reason: "duplicate root activity snapshot is tracked" });
-    if (normalizedPath.startsWith("public/") && !allowedPublicPaths.has(normalizedPath)) violations.push({ path: repositoryPath, reason: "unapproved public asset is tracked" });
+    if (normalizedPath.startsWith("public/") && !allowedPublicPaths.has(normalizedPath) && !isAllowedArchitectureDiagram(repositoryPath)) violations.push({ path: repositoryPath, reason: "unapproved public asset is tracked" });
     if (basename.startsWith(".env") && !allowedEnvironmentExamples.has(basename)) violations.push({ path: repositoryPath, reason: "non-example environment file is tracked" });
     if (extension === ".pem" || forbiddenCredentialExtensions.has(extension)) violations.push({ path: repositoryPath, reason: "credential or private-key container is tracked" });
     if (!file.contents || isBinary(file.contents)) continue;

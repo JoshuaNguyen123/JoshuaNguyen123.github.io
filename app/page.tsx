@@ -3,6 +3,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { ProjectTile } from "@/components/work/ProjectTile";
+import { FEATURED_PROJECTS, projects, type Project } from "@/content/projects";
 import { githubUrl, linkedInUrl, siteName, siteUrl } from "@/content/site";
 import { getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
@@ -10,124 +11,14 @@ import { loadActivitySnapshot } from "@/lib/activity/load";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Project {
-  number: string;
-  title: string;
-  description: string;
-  reflection: string;
-  discipline: string;
-  href: string | null;
-  /** Optional screenshot under public/, e.g. "/projects/ladybug.jpg". */
-  image?: string;
-}
-
-// Hardest first, judged by scope and the systems involved. The first
-// FEATURED_PROJECTS get the full entry with a reflection; the rest render as
-// compact cards underneath.
-const FEATURED_PROJECTS = 3;
-const projects: Project[] = [
-  {
-    number: "01",
-    title: "Obsidian Research Agent",
-    description:
-      "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, plans, uses approved tools, writes back to notes, and shows a receipt for every step. It also carries a bounded code workspace, gated Linear and GitHub integrations, and a companion service, with sandboxing, approval prompts, replay, and recovery when a step fails.",
-    reflection:
-      "Adding tools to an agent is the easy part. The hard part is making each one bounded and debuggable, so that when something goes wrong you can see exactly which call did it and run it again.",
-    discipline: "TypeScript · Agent systems",
-    href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
-  },
-  {
-    number: "02",
-    title: "Ladybug",
-    description:
-      "A private photo and writing ritual for two people, built three ways: a deterministic product simulator that runs both phones side by side with no credentials, a Supabase-backed PWA with row-level security, private storage, and realtime state, and the original native SwiftUI and Firebase app. Verification covers the migrations, a three-account connected journey, Chromium end-to-end runs, and the iOS build handoff, all on self-hosted CI.",
-    reflection:
-      "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
-    discipline: "TypeScript · Swift · Supabase",
-    href: null,
-  },
-  {
-    number: "03",
-    title: "Personal AI Digest",
-    description:
-      "A self-hosted RAG pipeline that emails me a grounded technical lesson twice a day, running since March. Ingestion and delivery are separate services that share only the knowledge store, which can be SQLite or Postgres with pgvector. A Cloudflare Worker fires each send on time, because GitHub's own scheduler drifts by hours.",
-    reflection:
-      "Requiring a citation for every generated sentence is what turned this from a toy into something I trust enough to study from. Keeping ingestion and delivery apart meant either side could fail without taking the other down.",
-    discipline: "Python · RAG · Cloudflare Workers",
-    href: null,
-  },
-  {
-    number: "04",
-    title: "Teach Anything",
-    description:
-      "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-5 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a deterministic core, so any schedule can be replayed against the learning history and checked. Every question cites its source.",
-    reflection:
-      "Getting a model to write a lesson takes an afternoon. Getting Tuesday's lesson to depend on what Monday showed, and being able to prove it, was the real product.",
-    discipline: "TypeScript · Learning systems",
-    href: null,
-  },
-  {
-    number: "05",
-    title: "Research Agent Platform",
-    description:
-      "A standalone desktop editor built around the same agent core as the plugin. Electron and CodeMirror 6, fully compatible with Obsidian vaults, with the agent's edits reviewed hunk by hunk before anything touches disk. The core is vendored at a pinned commit behind three typed seams rather than forked. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
-    reflection:
-      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
-    discipline: "TypeScript · Electron · Desktop app",
-    href: null,
-  },
-  {
-    number: "06",
-    title: "Autonomous Repository Template",
-    description:
-      "A repository protocol for coding agents. Project memory lives in tracked files, implementation is blocked behind a planning gate, every task carries a verification lane, and features enter only through a human request. Products are instantiated from it and can migrate to newer protocol versions without losing their own state.",
-    reflection:
-      "An agent with good memory and a gate it cannot skip does more useful work than a smarter agent with neither.",
-    discipline: "Python · Agent workflows",
-    href: null,
-  },
-  {
-    number: "07",
-    title: "Engineering Activity Portfolio",
-    description:
-      "This site. A privacy-safe collector reads local activity from the tools I work in, publishes daily counts to a live feed, and renders them as the yearly heatmaps above. Nothing about the code or the projects leaves the machine.",
-    reflection:
-      "Provenance and privacy work better as visible features than as a footnote.",
-    discipline: "TypeScript · Data visualization",
-    href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
-  },
-  {
-    number: "08",
-    title: "Great Outdoors Intelligence",
-    description:
-      "Ranks outdoor destinations in Montana by live conditions instead of showing a wall of gauges. It pulls forecasts, river gauges, avalanche advisories, snowpack, road status, and fire data, scores places per activity, and prepares trip bundles that work fully offline. In progress, built on the repository template above.",
-    reflection:
-      "The product is the ranking. The dashboard exists so you can argue with it.",
-    discipline: "Python · Data pipelines",
-    href: null,
-  },
-  {
-    number: "09",
-    title: "Local-First Meeting Transcription",
-    description:
-      "A meeting recorder that never leaves the machine. Live transcription with Vosk, a refined pass with faster-whisper after the meeting, a review queue that reconciles the two, and structured notes from a local model. FastAPI backend, React frontend.",
-    reflection:
-      "Two transcripts of the same audio disagree constantly. The review queue that reconciles them turned out to be the product, not the models.",
-    discipline: "Python · TypeScript · Speech",
-    href: null,
-  },
-];
-
 function ProjectTitle({ project }: { project: Project }) {
-  return project.href
-    ? <a href={project.href} target="_blank" rel="noreferrer">{project.title}</a>
-    : <>{project.title}</>;
+  return <Link href={`/work/${project.slug}/`}>{project.title}</Link>;
 }
 
 function ProjectMeta({ project }: { project: Project }) {
   return (
     <div className="project-meta">
-      {/* The typographic tile already carries the discipline; a screenshot does not. */}
+      {/* The typographic tile already carries the discipline; a diagram does not. */}
       {project.image ? <span>{project.discipline}</span> : null}
       {project.href ? (
         <a className="project-link project-link--external" href={project.href} target="_blank" rel="noreferrer">View project</a>
@@ -245,7 +136,9 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="project-aside">
-                  <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                  <Link href={`/work/${project.slug}/`} className="project-tile-link" aria-label={`Open the ${project.title} case study`}>
+                    <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                  </Link>
                   <ProjectMeta project={project} />
                 </div>
               </article>
@@ -257,7 +150,9 @@ export default function Home() {
           <div className="project-grid">
             {projects.slice(FEATURED_PROJECTS).map((project) => (
               <article className="project-card" key={project.title}>
-                <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                <Link href={`/work/${project.slug}/`} className="project-tile-link" aria-label={`Open the ${project.title} case study`}>
+                  <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
+                </Link>
                 <h3><ProjectTitle project={project} /></h3>
                 <p>{project.description}</p>
                 <ProjectMeta project={project} />

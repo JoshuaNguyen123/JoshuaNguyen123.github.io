@@ -3,16 +3,18 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("public identity, editorial writing, and public social surfaces are source-safe", async () => {
-  const [page, blog, article, layout, linkedIn, linkedInWidget, activitySummary, styles, site, header, footer, notFound] = await Promise.all([
+  const [page, blog, article, work, layout, linkedIn, linkedInWidget, activitySummary, styles, site, projects, header, footer, notFound] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/blog/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../content/linkedin-posts.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/social/LinkedInWidget.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/activity/ActivitySummary.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../content/site.ts", import.meta.url), "utf8"),
+    readFile(new URL("../content/projects.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/site/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/site/SiteFooter.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/not-found.tsx", import.meta.url), "utf8"),
@@ -22,14 +24,15 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /Joshua Nguyen/);
   assert.match(page, /Forward-deployed engineer, AI developer, and technical researcher\./);
   assert.match(page, /building and testing systems across the stack/);
-  assert.match(page, /bounded and debuggable/);
-  assert.match(page, /a small distributed system/);
-  assert.match(page, /Tuesday's lesson to depend on what Monday showed/);
+  assert.match(projects, /bounded and debuggable/);
+  assert.match(projects, /a small distributed system/);
+  assert.match(projects, /Tuesday's lesson to depend on what Monday showed/);
   // Copy is written plainly: no em dashes anywhere in the home page source.
   assert.doesNotMatch(page, /\u2014/);
-  assert.match(page, /Obsidian Research Agent/);
-  assert.match(page, /Engineering Activity Portfolio/);
-  assert.match(page, /Research Agent Platform/);
+  assert.doesNotMatch(projects, /\u2014/);
+  assert.match(projects, /Obsidian Research Agent/);
+  assert.match(projects, /Engineering Activity Portfolio/);
+  assert.match(projects, /Research Agent Platform/);
   const projectOrder = [
     "Obsidian Research Agent",
     "Ladybug",
@@ -40,7 +43,7 @@ test("public identity, editorial writing, and public social surfaces are source-
     "Engineering Activity Portfolio",
     "Great Outdoors Intelligence",
     "Local-First Meeting Transcription",
-  ].map((project) => page.indexOf(project));
+  ].map((project) => projects.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
   assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="activity-section"'));
@@ -52,7 +55,7 @@ test("public identity, editorial writing, and public social surfaces are source-
   // included, so no route can quietly lose its navigation again.
   assert.match(header, /className="mobile-nav"/);
   assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
-  for (const source of [page, blog, article, notFound]) {
+  for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
     assert.match(source, /<SiteFooter/);
     assert.match(source, /id="main"/);
@@ -70,10 +73,13 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
   assert.doesNotMatch(page, /<strong><span>View project/);
   assert.match(page, /className="project-link project-link--external"/);
-  assert.match(page, /image\?: string;/);
+  assert.match(page, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
+  assert.match(projects, /image: string;/);
+  assert.match(work, /Architecture diagram of/);
   assert.match(tile, /project-tile--image/);
+  assert.match(tile, /Architecture diagram of/);
   assert.match(tile, /aria-hidden="true"/);
-  assert.doesNotMatch(`${page}${blog}${article}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
+  assert.doesNotMatch(`${page}${blog}${article}${work}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
   assert.doesNotMatch(blog, /Coming soon|placeholder|lorem ipsum/i);
   assert.doesNotMatch(`${page}${layout}`, /Josh B\./);
   assert.match(layout, /Newsreader/);

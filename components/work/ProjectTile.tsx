@@ -8,16 +8,16 @@ interface ProjectTileProps {
   number: string;
   title: string;
   discipline: string;
-  /** Path under public/. When set, the screenshot replaces the typographic tile. */
+  /** Path under public/. When set, the architecture diagram replaces the typographic tile. */
   image?: string;
 }
 
-/** A 4:3 tile for a project: a screenshot when one exists, a typographic card otherwise. */
+/** A 4:3 tile for a project: an architecture diagram when one exists, a typographic card otherwise. */
 export function ProjectTile({ number, title, discipline, image }: ProjectTileProps) {
   if (image) {
     return (
       <div className="project-tile project-tile--image">
-        <Image src={image} alt={`Screenshot of ${title}`} width={1200} height={900} sizes="(max-width: 760px) calc(100vw - 40px), 384px" />
+        <Image src={image} alt={`Architecture diagram of ${title}`} width={1200} height={900} sizes="(max-width: 760px) calc(100vw - 40px), 384px" />
       </div>
     );
   }

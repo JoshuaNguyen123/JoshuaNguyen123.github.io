@@ -2,7 +2,7 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/sitemap.xml"]) await access(path.join(root, file));
+for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/obsidian-research-agent-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
 for (const expected of ["Joshua Nguyen", "Forward-deployed engineer, AI developer, and technical researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Read my notes.", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
@@ -29,13 +29,15 @@ if (!projectPositions.every((position, index) => position >= 0 && (index === 0 |
 if ((html.match(/class="project-entry"/g) ?? []).length !== 3) throw new Error("Static export does not show three featured projects");
 if ((html.match(/class="project-card"/g) ?? []).length !== 6) throw new Error("Static export does not show the six remaining projects");
 if ((html.match(/class="project-tile(?: project-tile--image)?"/g) ?? []).length !== 9) throw new Error("Static export is missing project tiles");
+if ((html.match(/class="project-tile project-tile--image"/g) ?? []).length !== 9) throw new Error("Static export is missing architecture tiles");
+if (!html.includes("/work/obsidian-research-agent/") || !html.includes("Architecture diagram of")) throw new Error("Static export is missing work case-study links");
 if (html.indexOf('class="work-section"') > html.indexOf('class="activity-section"')) throw new Error("Static export shows activity before selected work");
 for (const expected of ["What it taught me", "Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 // Every public page shares one header and footer; a page that loses them is a
 // dead end for a visitor who arrived from search.
-for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/404.html"]) {
+for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/404.html"]) {
   const pageHtml = await readFile(path.join(root, page), "utf8");
   for (const expected of ['aria-label="Primary navigation"', 'aria-label="Mobile navigation"', 'class="site-footer"', 'href="/blog/"', 'href="/#contact"']) {
     if (!pageHtml.includes(expected)) throw new Error(`${page} is missing shared chrome (${expected})`);
@@ -47,6 +49,14 @@ const blogHtml = await readFile(path.join(root, "out", "blog", "index.html"), "u
 for (const expected of ["Notes from the build.", "quick fix", "Why this site exists", "building in public", "August 21, 2026"]) {
   if (!blogHtml.includes(expected)) throw new Error(`Static blog export is missing ${expected}`);
 }
+const sitemapXml = await readFile(path.join(root, "out", "sitemap.xml"), "utf8");
+if (!sitemapXml.includes("/work/obsidian-research-agent/") || !sitemapXml.includes("/work/ladybug/")) throw new Error("Sitemap is missing work case-study routes");
+const workHtml = await readFile(path.join(root, "out", "work", "obsidian-research-agent", "index.html"), "utf8");
+for (const expected of ["What it does", "How the pieces connect", "What was hard", "Architecture diagram of Obsidian Research Agent", "View repository"]) {
+  if (!workHtml.includes(expected)) throw new Error(`Work case study is missing ${expected}`);
+}
+const privateWorkHtml = await readFile(path.join(root, "out", "work", "ladybug", "index.html"), "utf8");
+if (!privateWorkHtml.includes("Private repository") || privateWorkHtml.includes("View repository")) throw new Error("Private case study has the wrong repository CTA");
 const articleHtml = await readFile(path.join(root, "out", "blog", "why-this-site-exists", "index.html"), "utf8");
 for (const expected of ["Keep some of the sawdust", "Nobody needs a leaderboard for opening Cursor", "Why write any of this", 'property="og:type" content="article"', 'property="article:published_time"']) {
   if (!articleHtml.includes(expected)) throw new Error(`Static article export is missing ${expected}`);

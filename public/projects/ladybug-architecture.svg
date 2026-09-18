@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Ladybug architecture</title>
+  <desc id="desc">A two-phone simulator proves the private ritual without credentials. A PWA with access control keeps photos and writing private. A native app was the earlier host. Self-hosted CI ships the app.</desc>
+  <rect width="1200" height="900" fill="#f5f3ed"/>
+  <text x="72" y="86" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="3">02  TWO PHONES</text>
+  <rect x="72" y="118" width="1056" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="600" y="172" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="30">Private ritual</text>
+  <path d="M600 206 v64" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <rect x="72" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="232" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Simulator</text>
+  <text x="232" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">both phones, no credentials</text>
+  <rect x="440" y="286" width="320" height="150" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
+  <text x="600" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">PWA</text>
+  <text x="600" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">RLS, storage, realtime</text>
+  <rect x="808" y="286" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="968" y="354" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Native app</text>
+  <text x="968" y="392" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">SwiftUI, earlier host</text>
+  <rect x="72" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="232" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Access control</text>
+  <text x="232" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">who may enter</text>
+  <rect x="440" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="600" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Photos + writing</text>
+  <text x="600" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">the private record</text>
+  <rect x="808" y="536" width="320" height="150" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+  <text x="968" y="604" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Self-hosted CI</text>
+  <text x="968" y="642" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">build and ship</text>
+  <path d="M392 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <path d="M760 361 h48" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <path d="M232 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <path d="M600 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <path d="M968 436 v100" fill="none" stroke="#6b6455" stroke-width="2"/>
+  <text x="72" y="778" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="20">Prove the ritual locally. Then keep it private.</text>
+</svg>

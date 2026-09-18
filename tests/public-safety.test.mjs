@@ -38,12 +38,17 @@ test("internal docs, duplicate snapshots, and unapproved public assets are rejec
     file("content/blog/_README.md", "authoring instructions"),
     file("activity.json", "{}"),
     file("public/unused.png"),
+    file("public/projects/ladybug-architecture.svg", "<svg></svg>"),
+    file("public/projects/Bad-architecture.svg", "<svg></svg>"),
+    file("public/projects/ladybug.jpg"),
   ]);
   assert.deepEqual(violations.map(({ path }) => path), [
     "design-qa.md",
     "content/blog/_README.md",
     "activity.json",
     "public/unused.png",
+    "public/projects/Bad-architecture.svg",
+    "public/projects/ladybug.jpg",
   ]);
 });
 
