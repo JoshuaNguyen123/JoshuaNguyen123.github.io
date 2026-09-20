@@ -5,6 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import {
+  adoptCurrentDefinitions,
   assembleSnapshot,
   createMetricSeries,
   dateInTimeZone,
@@ -94,7 +95,7 @@ async function readRemoteSnapshot(config) {
   if (typeof result.body.content !== "string" || typeof result.body.sha !== "string") fail("activity feed branch contains a malformed feed file");
   try {
     const parsed = JSON.parse(Buffer.from(result.body.content.replace(/\n/g, ""), "base64").toString("utf8"));
-    return { snapshot: upgradeSnapshot(parsed), sha: result.body.sha };
+    return { snapshot: upgradeSnapshot(adoptCurrentDefinitions(parsed)), sha: result.body.sha };
   } catch {
     fail("activity feed branch failed validation");
   }
@@ -159,7 +160,7 @@ async function fetchGitHubProvider(config, start, end, now) {
 async function fallbackSnapshot() {
   const file = path.join(ROOT, "public", "data", "activity.json");
   if (!existsSync(file)) return null;
-  try { return upgradeSnapshot(JSON.parse(await readFile(file, "utf8"))); } catch { return null; }
+  try { return upgradeSnapshot(adoptCurrentDefinitions(JSON.parse(await readFile(file, "utf8")))); } catch { return null; }
 }
 
 export async function collect({ publish = true, preflight = false } = {}) {

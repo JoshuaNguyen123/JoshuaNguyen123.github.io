@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  adoptCurrentDefinitions,
   assembleSnapshot,
   createMetricSeries,
   dateInTimeZone,
@@ -133,6 +134,20 @@ test("privacy validation rejects fixtures, unexpected fields, and altered defini
     leaked.providers.cursor.metrics.appliedLineChanges[forbidden] = "private";
     assert.throws(() => validateSnapshot(leaked), /forbidden/, `public ${forbidden} must be rejected`);
   }
+});
+
+test("trusted published snapshots can adopt current display definitions without changing activity", () => {
+  const base = assembleSnapshot({
+    github: provider("github", "contributions", [{ date: "2026-01-01", value: 3 }]),
+    codex: unavailableProvider("codex"), cursor: unavailableProvider("cursor"), "claude-code": unavailableProvider("claude-code"),
+  }, { start: "2026-01-01", end: "2026-01-01", generatedAt: "2026-01-02T00:00:00Z" });
+  const published = structuredClone(base);
+  published.providers.github.metrics.contributions.definition.methodology = "Earlier approved wording.";
+
+  const adopted = adoptCurrentDefinitions(published);
+  assert.deepEqual(adopted.providers.github.metrics.contributions.days, base.providers.github.metrics.contributions.days);
+  assert.equal(adopted.providers.github.metrics.contributions.definition.methodology, base.providers.github.metrics.contributions.definition.methodology);
+  assert.doesNotThrow(() => upgradeSnapshot(adopted));
 });
 
 test("aggregate-v4 snapshots upgrade compatibly with unavailable usage presence", () => {
