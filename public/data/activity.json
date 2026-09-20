@@ -2,11 +2,11 @@
   "schemaVersion": 6,
   "privacyVersion": "aggregate-v6",
   "mode": "observed",
-  "generatedAt": "2026-09-17T22:57:51.863Z",
+  "generatedAt": "2026-09-20T04:39:55.785Z",
   "timeZone": "America/Denver",
   "range": {
     "start": "2026-01-01",
-    "end": "2026-09-17"
+    "end": "2026-09-19"
   },
   "providers": {
     "github": {
@@ -22,10 +22,10 @@
           "source": "GitHub public contribution calendar",
           "coverage": {
             "start": "2026-01-01",
-            "end": "2026-09-17"
+            "end": "2026-09-19"
           },
-          "lastSyncedAt": "2026-09-17T22:57:50.427Z",
-          "lastAttemptedAt": "2026-09-17T22:57:50.427Z",
+          "lastSyncedAt": "2026-09-20T04:39:54.574Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.574Z",
           "days": [
             {
               "date": "2026-01-01",
@@ -1324,8 +1324,18 @@
             },
             {
               "date": "2026-09-17",
-              "value": 31,
-              "level": 3
+              "value": 34,
+              "level": 4
+            },
+            {
+              "date": "2026-09-18",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-09-19",
+              "value": 3,
+              "level": 1
             }
           ]
         }
@@ -1344,10 +1354,10 @@
           "source": "Local Codex session event timestamps",
           "coverage": {
             "start": "2026-04-20",
-            "end": "2026-09-15"
+            "end": "2026-09-19"
           },
-          "lastSyncedAt": "2026-09-17T22:57:35.115Z",
-          "lastAttemptedAt": "2026-09-17T22:57:35.115Z",
+          "lastSyncedAt": "2026-09-20T04:38:40.784Z",
+          "lastAttemptedAt": "2026-09-20T04:38:40.784Z",
           "days": [
             {
               "date": "2026-04-20",
@@ -2093,6 +2103,26 @@
               "date": "2026-09-15",
               "value": 3,
               "level": 2
+            },
+            {
+              "date": "2026-09-16",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-09-17",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-09-18",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-09-19",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -2101,7 +2131,7 @@
           "definition": {
             "label": "GitHub repository evidence",
             "unit": "observed-usage",
-            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from provider-attributed GitHub commits and pull requests. On a date without retained session data, it contributes one conservative minimum unit to the displayed Codex count and never implies multiple sessions.",
+            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from provider-attributed GitHub commits and pull requests. It verifies Codex activity without inventing a session count.",
             "accuracy": "observed"
           },
           "source": "GitHub provider-attributed PR and commit dates",
@@ -2109,8 +2139,8 @@
             "start": "2026-04-07",
             "end": "2026-04-08"
           },
-          "lastSyncedAt": "2026-09-17T22:57:50.416Z",
-          "lastAttemptedAt": "2026-09-17T22:57:50.416Z",
+          "lastSyncedAt": "2026-09-20T04:39:54.386Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.386Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -2139,10 +2169,10 @@
           "source": "Local Cursor hooks and retained conversation timestamps",
           "coverage": {
             "start": "2026-01-20",
-            "end": "2026-09-17"
+            "end": "2026-09-19"
           },
-          "lastSyncedAt": "2026-09-17T22:57:50.424Z",
-          "lastAttemptedAt": "2026-09-17T22:57:50.424Z",
+          "lastSyncedAt": "2026-09-20T04:39:54.560Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.560Z",
           "days": [
             {
               "date": "2026-01-20",
@@ -3317,7 +3347,7 @@
             {
               "date": "2026-09-11",
               "value": 11,
-              "level": 3
+              "level": 4
             },
             {
               "date": "2026-09-12",
@@ -3346,8 +3376,18 @@
             },
             {
               "date": "2026-09-17",
-              "value": 1,
-              "level": 1
+              "value": 4,
+              "level": 2
+            },
+            {
+              "date": "2026-09-18",
+              "value": 7,
+              "level": 3
+            },
+            {
+              "date": "2026-09-19",
+              "value": 3,
+              "level": 2
             }
           ]
         },
@@ -3362,10 +3402,10 @@
           "source": "Cursor usage-event export (daily presence only)",
           "coverage": {
             "start": "2026-01-02",
-            "end": "2026-09-17"
+            "end": "2026-09-19"
           },
-          "lastSyncedAt": "2026-09-17T22:57:35.116Z",
-          "lastAttemptedAt": "2026-09-17T22:57:35.116Z",
+          "lastSyncedAt": "2026-09-20T04:38:40.786Z",
+          "lastAttemptedAt": "2026-09-20T04:38:40.786Z",
           "days": [
             {
               "date": "2026-01-02",
@@ -4661,6 +4701,16 @@
               "date": "2026-09-17",
               "value": 1,
               "level": 1
+            },
+            {
+              "date": "2026-09-18",
+              "value": 1,
+              "level": 1
+            },
+            {
+              "date": "2026-09-19",
+              "value": 1,
+              "level": 1
             }
           ]
         },
@@ -4678,7 +4728,7 @@
             "end": null
           },
           "lastSyncedAt": null,
-          "lastAttemptedAt": "2026-09-17T22:57:50.424Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.560Z",
           "days": []
         }
       }
@@ -4696,10 +4746,10 @@
           "source": "Local Claude Code hooks and retained session timestamps",
           "coverage": {
             "start": "2026-07-23",
-            "end": "2026-09-17"
+            "end": "2026-09-19"
           },
-          "lastSyncedAt": "2026-09-17T22:57:50.424Z",
-          "lastAttemptedAt": "2026-09-17T22:57:50.424Z",
+          "lastSyncedAt": "2026-09-20T04:39:54.560Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.560Z",
           "days": [
             {
               "date": "2026-07-23",
@@ -4809,7 +4859,7 @@
             {
               "date": "2026-08-13",
               "value": 13,
-              "level": 2
+              "level": 3
             },
             {
               "date": "2026-08-14",
@@ -4909,7 +4959,7 @@
             {
               "date": "2026-09-02",
               "value": 13,
-              "level": 2
+              "level": 3
             },
             {
               "date": "2026-09-03",
@@ -4929,12 +4979,12 @@
             {
               "date": "2026-09-06",
               "value": 30,
-              "level": 3
+              "level": 4
             },
             {
               "date": "2026-09-07",
               "value": 13,
-              "level": 2
+              "level": 3
             },
             {
               "date": "2026-09-08",
@@ -4969,7 +5019,7 @@
             {
               "date": "2026-09-14",
               "value": 60,
-              "level": 4
+              "level": 5
             },
             {
               "date": "2026-09-15",
@@ -4985,6 +5035,16 @@
               "date": "2026-09-17",
               "value": 0,
               "level": 0
+            },
+            {
+              "date": "2026-09-18",
+              "value": 0,
+              "level": 0
+            },
+            {
+              "date": "2026-09-19",
+              "value": 2,
+              "level": 1
             }
           ]
         },
@@ -4993,7 +5053,7 @@
           "definition": {
             "label": "GitHub repository evidence",
             "unit": "observed-usage",
-            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Claude-authored GitHub commits, Claude Code session links, and provider-attributed pull requests. On a date without retained session data, it contributes one conservative minimum unit to the displayed Claude Code count and never implies multiple sessions.",
+            "methodology": "Binary presence on the calendar day the work happened (home base America/Denver; living-local when travelling) from Claude-authored GitHub commits, Claude Code session links, and provider-attributed pull requests. It verifies activity without inventing a session count.",
             "accuracy": "observed"
           },
           "source": "GitHub provider-attributed PR and commit dates",
@@ -5001,8 +5061,8 @@
             "start": "2026-04-07",
             "end": "2026-04-28"
           },
-          "lastSyncedAt": "2026-09-17T22:57:50.417Z",
-          "lastAttemptedAt": "2026-09-17T22:57:50.417Z",
+          "lastSyncedAt": "2026-09-20T04:39:54.419Z",
+          "lastAttemptedAt": "2026-09-20T04:39:54.419Z",
           "days": [
             {
               "date": "2026-04-07",
@@ -5122,7 +5182,7 @@
   "buildIndex": {
     "label": "Build Index",
     "formula": "Equal-weight mean of GitHub contributions and each AI tool's observed activity when that provider has coverage.",
-    "disclaimer": "Codex and Claude Code observed activity use retained session intensity when available and a light-activity floor for dates verified only by provider-attributed GitHub evidence. Each GitHub-only date contributes one conservative minimum unit to the displayed count; it never implies multiple sessions or gives a provider extra index weight. Cursor uses the same light floor for first-party usage evidence without adding session units. The index describes observed activity, not productivity.",
+    "disclaimer": "Codex and Claude Code observed activity use session intensity when available and a light-activity floor for dates verified only by provider-attributed GitHub evidence. Cursor uses the same floor for first-party usage evidence. Presence evidence never invents session counts or gives a provider extra weight. The index describes observed activity, not productivity.",
     "days": [
       {
         "date": "2026-01-01",
@@ -6246,7 +6306,7 @@
       },
       {
         "date": "2026-08-13",
-        "value": 30,
+        "value": 35,
         "level": 2
       },
       {
@@ -6346,7 +6406,7 @@
       },
       {
         "date": "2026-09-02",
-        "value": 55,
+        "value": 60,
         "level": 3
       },
       {
@@ -6366,13 +6426,13 @@
       },
       {
         "date": "2026-09-06",
-        "value": 50,
+        "value": 55,
         "level": 3
       },
       {
         "date": "2026-09-07",
-        "value": 45,
-        "level": 2
+        "value": 50,
+        "level": 3
       },
       {
         "date": "2026-09-08",
@@ -6391,7 +6451,7 @@
       },
       {
         "date": "2026-09-11",
-        "value": 40,
+        "value": 45,
         "level": 2
       },
       {
@@ -6406,8 +6466,8 @@
       },
       {
         "date": "2026-09-14",
-        "value": 65,
-        "level": 3
+        "value": 70,
+        "level": 4
       },
       {
         "date": "2026-09-15",
@@ -6416,24 +6476,34 @@
       },
       {
         "date": "2026-09-16",
-        "value": 53,
-        "level": 3
+        "value": 40,
+        "level": 2
       },
       {
         "date": "2026-09-17",
-        "value": 27,
+        "value": 30,
+        "level": 2
+      },
+      {
+        "date": "2026-09-18",
+        "value": 15,
+        "level": 1
+      },
+      {
+        "date": "2026-09-19",
+        "value": 25,
         "level": 1
       }
     ]
   },
   "summaries": {
     "2026": {
-      "contributions": 3322,
-      "codexActiveSessionDays": 1425,
-      "cursorActiveSessionDays": 1172,
+      "contributions": 3328,
+      "codexActiveSessionDays": 1426,
+      "cursorActiveSessionDays": 1185,
       "cursorAppliedAiLineChanges": 0,
-      "claudeActiveSessionDays": 904,
-      "activeDays": 163,
+      "claudeActiveSessionDays": 906,
+      "activeDays": 165,
       "longestStreak": 44
     }
   }
