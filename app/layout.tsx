@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { ogImage, siteDescription, siteName, siteTitle, siteUrl } from "@/content/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -45,7 +44,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "light",
-  themeColor: "#f5f3ed",
+  themeColor: "#f8f7f3",
 };
 
 // The contact form posts directly to Web3Forms until the verifying worker is
@@ -84,7 +83,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <a className="skip-link" href="#main">Skip to content</a>
         {children}
       </body>

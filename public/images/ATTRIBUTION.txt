@@ -1,0 +1,7 @@
+Topography by Steve Schoger, Hero Patterns.
+Source: https://heropatterns.com/ and https://heropatterns.com/js/app.js
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+SVG extracted unchanged from the official pattern source. Any future display recoloring, scaling, cropping or opacity adjustments should be identified as adaptations. Preserve attribution in implementation.
+
+Display adaptation: rendered as a cropped corner background at reduced opacity (2.5 to 3.5 percent). SVG paths remain unchanged.

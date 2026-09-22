@@ -2,7 +2,7 @@ import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { ProjectTile } from "@/components/work/ProjectTile";
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr/ArrowRight";
 import { FEATURED_PROJECTS, projects, type Project } from "@/content/projects";
 import { githubUrl, linkedInUrl, siteName, siteUrl } from "@/content/site";
 import { getPublishedPosts } from "@/lib/blog";
@@ -18,14 +18,28 @@ function ProjectTitle({ project }: { project: Project }) {
 function ProjectMeta({ project }: { project: Project }) {
   return (
     <div className="project-meta">
-      {/* The typographic tile already carries the discipline; a diagram does not. */}
-      {project.image ? <span>{project.discipline}</span> : null}
+      <span>{project.discipline}</span>
       {project.href ? (
         <a className="project-link project-link--external" href={project.href} target="_blank" rel="noreferrer">View project</a>
       ) : (
         <span className="project-private">Private repository · <a href="#contact">ask me about it</a></span>
       )}
     </div>
+  );
+}
+
+function ProjectEntry({ project }: { project: Project }) {
+  return (
+    <article className="project-entry">
+      <h3><ProjectTitle project={project} /></h3>
+      <div className="project-story">
+        <p>{project.problem}</p>
+        <ProjectMeta project={project} />
+      </div>
+      <Link className="project-case-link" href={`/work/${project.slug}/`} aria-label={`Read about ${project.title}`}>
+        <ArrowRightIcon size={20} aria-hidden="true" />
+      </Link>
+    </article>
   );
 }
 
@@ -63,120 +77,41 @@ export default function Home() {
         />
 
         <section className="hero" id="top">
-          <div className="hero-copy">
-            <h1>Forward-deployed engineer, AI developer, and technical researcher.</h1>
-            <p>
-              I like building and testing systems across the stack, from data
-              pipelines and evaluation harnesses to small language models, RAG,
-              MCP tools, and the product layer that has to make them useful.
-            </p>
-            <div className="hero-actions">
-              <a className="primary-link" href="#work">See what I&apos;m building</a>
-              <Link className="text-link" href="/blog/">Read my notes</Link>
-            </div>
-            <dl className="hero-now" aria-label="About Joshua right now">
-              <div><dt>Now</dt><dd>Building with AI</dd></div>
-              <div><dt>Interested in</dt><dd>AI engineering, software development, systems engineering</dd></div>
-              <div><dt>Based in</dt><dd>Bozeman, Montana</dd></div>
-            </dl>
-          </div>
           <div className="hero-portrait">
-            <Image
-              src="/joshua-nguyen.jpg"
-              alt="Joshua Nguyen smiling outdoors by a lake"
-              width={800}
-              height={1000}
-              sizes="(max-width: 760px) calc(100vw - 40px), 384px"
-              priority
-            />
+            <Image src="/joshua-nguyen.jpg" alt="Joshua Nguyen smiling outdoors by a lake" width={800} height={1000}
+              sizes="(max-width: 640px) 140px, (max-width: 1000px) 30vw, 300px" preload />
           </div>
-        </section>
-
-        <section className="about-strip" id="about">
-          <div className="about-copy">
-            <span className="eyebrow">About</span>
-            <h2>I like working on ambiguous problems.</h2>
-            <p>
-              The part I enjoy most is when nobody is quite sure what the right
-              answer is yet. I read what exists, build a rough first version, and
-              keep reshaping it until the system is something a person can
-              understand and trust. Lately that has meant retrieval pipelines,
-              agents with real guardrails, and local-first tools that respect
-              people&apos;s data.
-            </p>
-            <p>
-              I live in Bozeman, Montana. When I&apos;m not at a keyboard I&apos;m
-              usually reading, fly fishing, hiking, or lifting. I also keep a long
-              Duolingo streak alive, which probably says something about how I
-              approach most things.
-            </p>
-          </div>
-          <div className="about-aside">
-            <span className="eyebrow">Interested in</span>
-            {interests.map(([title, description]) => (
-              <p key={title}><strong>{title}.</strong> {description}</p>
-            ))}
+          <div className="hero-copy">
+            <div className="hero-location">Bozeman, Montana</div>
+            <h1>Engineering AI<br />systems.</h1>
+            <p>I&apos;m Joshua, a forward-deployed engineer, AI developer, and technical researcher based in Bozeman, Montana.</p>
+            <p>I work across the stack, from data pipelines and evaluation to the tools people use.</p>
+            <div className="hero-actions">
+              <a className="primary-link" href="#work">Explore my work<ArrowRightIcon size={20} aria-hidden="true" /></a>
+            </div>
           </div>
         </section>
 
         <section className="work-section" id="work">
-          <div className="section-heading">
-            <span className="eyebrow">Work</span>
-            <h2>Things I&apos;ve built.</h2>
-          </div>
+          <div className="section-heading"><h2>Selected work</h2></div>
           <div className="project-ledger">
-            {projects.slice(0, FEATURED_PROJECTS).map((project) => (
-              <article className="project-entry" key={project.title}>
-                <div className="project-story">
-                  <h3><ProjectTitle project={project} /></h3>
-                  <p>{project.description}</p>
-                  <p className="project-reflection">
-                    <span>What it taught me</span>
-                    {project.reflection}
-                  </p>
-                </div>
-                <div className="project-aside">
-                  <Link href={`/work/${project.slug}/`} className="project-tile-link" aria-label={`Open the ${project.title} case study`}>
-                    <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
-                  </Link>
-                  <ProjectMeta project={project} />
-                </div>
-              </article>
-            ))}
+            {projects.slice(0, FEATURED_PROJECTS).map((project) => <ProjectEntry key={project.slug} project={project} />)}
           </div>
-          <div className="project-grid-heading">
-            <span className="eyebrow">More work</span>
-          </div>
-          <div className="project-grid">
-            {projects.slice(FEATURED_PROJECTS).map((project) => (
-              <article className="project-card" key={project.title}>
-                <Link href={`/work/${project.slug}/`} className="project-tile-link" aria-label={`Open the ${project.title} case study`}>
-                  <ProjectTile number={project.number} title={project.title} discipline={project.discipline} image={project.image} />
-                </Link>
-                <h3><ProjectTitle project={project} /></h3>
-                <p>{project.description}</p>
-                <ProjectMeta project={project} />
-              </article>
-            ))}
-          </div>
-          <p className="project-more">
-            <a href="https://github.com/JoshuaNguyen123" target="_blank" rel="noreferrer">
-              See the rest on GitHub
-            </a>
-          </p>
+          <details className="more-projects">
+            <summary>More projects ({projects.length - FEATURED_PROJECTS})</summary>
+            <div className="project-grid">
+              {projects.slice(FEATURED_PROJECTS).map((project) => <ProjectEntry key={project.slug} project={project} />)}
+            </div>
+            <p className="project-more"><a href={githubUrl} target="_blank" rel="noreferrer">See the rest on GitHub</a></p>
+          </details>
         </section>
 
-        <section className="activity-section" id="activity">
-          <ActivityDashboard initialData={activity} />
-        </section>
-
-        <section className="writing-section home-writing" aria-labelledby="home-writing-title">
+        <section className="writing-section home-writing" id="writing" aria-labelledby="home-writing-title">
           <header>
             <div>
-              <span className="eyebrow">Writing</span>
-              <h2 id="home-writing-title">Read my notes.</h2>
+              <h2 id="home-writing-title">Writing</h2>
             </div>
-            <Link href="/blog/">Open the notebook</Link>
+            <Link href="/blog/">All writing</Link>
           </header>
           {posts.length > 0 ? (
             <div className="writing-list">
@@ -193,10 +128,32 @@ export default function Home() {
           ) : null}
         </section>
 
+        <section className="about-strip" id="about">
+          <div className="about-copy">
+            <h2>A little beyond the work.</h2>
+            <p>I live in Bozeman, Montana. Away from the keyboard, I&apos;m usually reading, fly fishing, hiking, or lifting.</p>
+            <details className="about-interests">
+              <summary>How I approach my work</summary>
+              <p>I like working on ambiguous problems. I read what exists, build a rough first version, and keep reshaping it until the system is something a person can understand and trust.</p>
+              {interests.map(([title, description]) => <p key={title}><strong>{title}.</strong> {description}</p>)}
+            </details>
+          </div>
+          <figure className="hike-goats">
+            <Image src="/images/hiking-goats.jpg" alt="Two mountain goats on a rocky slope above the valley in golden evening light" width={1280} height={960} sizes="(max-width: 640px) calc(100vw - 40px), 460px" />
+          </figure>
+          <figure className="hike-valley">
+            <Image src="/images/hiking-valley.jpg" alt="A mountain valley between a shadowed rocky slope and a sunlit ridge, with open country in the distance" width={1280} height={960} sizes="(max-width: 1000px) calc(100vw - 48px), 940px" />
+            <figcaption>From a recent hike.</figcaption>
+          </figure>
+        </section>
+
+        <section className="activity-section" id="activity">
+          <ActivityDashboard initialData={activity} />
+        </section>
+
         <section className="contact-section" id="contact">
           <div className="contact-body">
             <div className="contact-copy">
-              <span className="eyebrow">Contact</span>
               <h2>Let&apos;s talk.</h2>
               <p>
                 If you&apos;re building something thoughtful, or stuck on a tricky

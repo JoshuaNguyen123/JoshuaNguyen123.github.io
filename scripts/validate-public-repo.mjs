@@ -13,6 +13,11 @@ const allowedPublicPaths = new Set([
   "public/favicon.ico",
   "public/favicon.svg",
   "public/joshua-nguyen.jpg",
+  "public/images/mountain-panorama.webp",
+  "public/images/hiking-valley.jpg",
+  "public/images/hiking-goats.jpg",
+  "public/images/topography.svg",
+  "public/images/attribution.txt",
   "public/og-personal.jpg",
   "public/robots.txt",
 ]);

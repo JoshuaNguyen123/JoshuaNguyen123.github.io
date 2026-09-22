@@ -1,105 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="goi-title goi-desc">
-  <title id="goi-title">Great Outdoors Intelligence architecture</title>
-  <desc id="goi-desc">Six live condition feeds fan into a scoring funnel that ranks Montana destinations per activity. The ranked list is the product. A dashboard lets a person argue with the ranking. Offline trip bundles fork from the same scores. Built on the autonomous repository template.</desc>
+  <title id="goi-title">Great Outdoors Intelligence — Montana places ranked for today</title>
+  <desc id="goi-desc">A Montana mountain and river landscape with three ranked destinations for today. Live condition marks sit on the land. A list overlay scores North Fork, Ridge Lake, and West Bench. A folded offline bundle sits at the trailhead.</desc>
+  <defs>
+    <linearGradient id="goi-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffdf8"/>
+      <stop offset="70%" stop-color="#f5f3ed"/>
+      <stop offset="100%" stop-color="#e1ded5"/>
+    </linearGradient>
+  </defs>
+
   <rect width="1200" height="900" fill="#f5f3ed"/>
+  <rect width="1200" height="420" fill="url(#goi-sky)"/>
 
-  <text x="56" y="48" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">08  RANK THE DAY</text>
-  <text x="56" y="82" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Montana destinations, ranked by live conditions</text>
-  <text x="56" y="108" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">Not a wall of gauges — one recommendation you can inspect and take offline.</text>
-  <text x="1144" y="48" text-anchor="end" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="1">on autonomous repo template</text>
+  <!-- Big-sky type -->
+  <text x="48" y="92" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="64">Montana</text>
+  <text x="52" y="136" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="28">today  ·  hike</text>
 
-  <!-- LIVE FEEDS — top fan-in row of six narrow columns -->
-  <text x="56" y="148" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">LIVE CONDITION FEEDS</text>
+  <!-- Sun -->
+  <circle cx="560" cy="128" r="54" fill="#8a5a20" opacity="0.18"/>
+  <circle cx="560" cy="128" r="32" fill="#8a5a20"/>
 
-  <rect x="48" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="133" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Forecast</text>
-  <text x="133" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">weather / wind</text>
+  <!-- Far range -->
+  <path d="M0 410 L90 300 L150 348 L240 220 L310 286 L400 168 L470 248 L560 140 L640 220 L730 128 L820 210 L910 160 L1000 240 L1100 190 L1200 250 V440 H0 Z" fill="#c2bfb5"/>
+  <!-- Mid range -->
+  <path d="M0 480 L70 400 L160 448 L250 330 L360 410 L470 300 L580 368 L690 280 L800 350 L920 300 L1040 360 L1200 320 V540 H0 Z" fill="#9d9c94"/>
+  <!-- Snow caps -->
+  <path d="M240 220 L276 262 L210 268 Z" fill="#fffdf8"/>
+  <path d="M400 168 L442 214 L364 220 Z" fill="#fffdf8"/>
+  <path d="M560 140 L602 186 L524 192 Z" fill="#fffdf8"/>
+  <path d="M730 128 L768 172 L698 176 Z" fill="#fffdf8"/>
 
-  <rect x="232" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="317" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">River gauges</text>
-  <text x="317" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">flow · stage</text>
+  <!-- Near foothills -->
+  <path d="M0 560 C160 508 300 548 460 512 C620 476 760 530 920 500 C1040 478 1130 508 1200 492 V900 H0 Z" fill="#72767a"/>
+  <!-- West Bench — flat-topped left landform -->
+  <path d="M0 620 L0 700 L70 628 L210 616 L320 640 L280 700 L0 760 Z" fill="#3a352c"/>
+  <!-- Dark foreground ridge -->
+  <path d="M0 720 C200 660 380 720 540 670 C700 620 860 710 1200 660 V900 H0 Z" fill="#3f464d"/>
+  <!-- Sage valley -->
+  <path d="M0 800 C240 744 470 786 680 756 C900 724 1040 788 1200 768 V900 H0 Z" fill="#3f6135"/>
 
-  <rect x="416" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="501" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Avalanche</text>
-  <text x="501" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">advisories</text>
+  <!-- River and north fork joining -->
+  <path d="M-30 840 C150 800 260 820 400 778 C540 738 610 710 700 690" fill="none" stroke="#0072b2" stroke-width="20" stroke-linecap="round"/>
+  <path d="M-30 840 C150 800 260 820 400 778 C540 738 610 710 700 690" fill="none" stroke="#56b4e9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M180 700 C250 720 320 750 400 778" fill="none" stroke="#0072b2" stroke-width="12" stroke-linecap="round"/>
+  <path d="M180 700 C250 720 320 750 400 778" fill="none" stroke="#56b4e9" stroke-width="5" stroke-linecap="round"/>
 
-  <rect x="600" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="685" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Snowpack</text>
-  <text x="685" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">depth · trend</text>
+  <!-- Ridge Lake -->
+  <ellipse cx="470" cy="318" rx="52" ry="20" fill="#0072b2"/>
+  <ellipse cx="464" cy="314" rx="24" ry="7" fill="#fffdf8" opacity="0.35"/>
 
-  <rect x="784" y="162" width="170" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="869" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Road status</text>
-  <text x="869" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">closures · access</text>
+  <!-- Pines -->
+  <g fill="#16130e" opacity="0.55">
+    <polygon points="86,700 104,648 122,700"/>
+    <rect x="101" y="700" width="6" height="14" fill="#101419"/>
+    <polygon points="150,720 172,654 194,720"/>
+    <rect x="168" y="720" width="7" height="16" fill="#101419"/>
+    <polygon points="210,708 226,668 242,708"/>
+    <rect x="223" y="708" width="5" height="12" fill="#101419"/>
+  </g>
 
-  <rect x="968" y="162" width="184" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="1060" y="198" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Fire data</text>
-  <text x="1060" y="222" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">risk · smoke</text>
+  <!-- Condition marks on the land — icons, not a gauge row -->
+  <text x="604" y="122" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="16">clear</text>
+  <g id="goi-wx-snow" stroke="#16130e" stroke-width="2.5">
+    <line x1="728" y1="148" x2="728" y2="176"/>
+    <line x1="714" y1="162" x2="742" y2="162"/>
+    <line x1="718" y1="152" x2="738" y2="172"/>
+    <line x1="738" y1="152" x2="718" y2="172"/>
+  </g>
+  <g id="goi-wx-road">
+    <path d="M250 428 L292 462" fill="none" stroke="#16130e" stroke-width="6"/>
+    <path d="M254 432 L288 458" fill="none" stroke="#fffdf8" stroke-width="2" stroke-dasharray="5 4"/>
+  </g>
+  <path id="goi-wx-fire" d="M640 248 C640 234 654 230 654 216 C668 230 676 240 670 258 C660 272 642 266 640 248 Z" fill="#d55e00"/>
+  <path id="goi-wx-river" d="M430 790 C448 782 458 798 476 790" fill="none" stroke="#fffdf8" stroke-width="3"/>
 
-  <!-- Fan-in lines into ingest -->
-  <path d="M133 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
-  <path d="M317 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
-  <path d="M501 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
-  <path d="M685 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
-  <path d="M869 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
-  <path d="M1060 250 L600 320" fill="none" stroke="#6b6455" stroke-width="1.25" opacity="0.7"/>
+  <!-- Destination pins -->
+  <g id="goi-pin-1">
+    <circle cx="400" cy="760" r="22" fill="#16130e"/>
+    <text x="400" y="768" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">1</text>
+  </g>
+  <g id="goi-pin-2">
+    <circle cx="470" cy="318" r="22" fill="#16130e"/>
+    <text x="470" y="326" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">2</text>
+  </g>
+  <g id="goi-pin-3">
+    <circle cx="210" cy="616" r="22" fill="#16130e"/>
+    <text x="210" y="624" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">3</text>
+  </g>
 
-  <!-- INGEST / SCORING FUNNEL — trapezoid-like stacked narrowing panels -->
-  <rect x="280" y="320" width="640" height="56" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="600" y="342" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">INGEST</text>
-  <text x="600" y="362" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Normalize feeds → place × condition features</text>
+  <!-- Condition chips feeding the rank -->
+  <g id="goi-chips">
+    <rect x="760" y="148" width="44" height="36" rx="4" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <circle cx="782" cy="166" r="8" fill="#8a5a20"/>
+    <rect x="812" y="148" width="44" height="36" rx="4" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <g stroke="#16130e" stroke-width="1.8" transform="translate(822 154)">
+      <line x1="12" y1="2" x2="12" y2="20"/>
+      <line x1="3" y1="11" x2="21" y2="11"/>
+      <line x1="5" y1="5" x2="19" y2="17"/>
+      <line x1="19" y1="5" x2="5" y2="17"/>
+    </g>
+    <rect x="864" y="148" width="44" height="36" rx="4" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <path d="M872 168 C880 160 888 176 896 168" fill="none" stroke="#0072b2" stroke-width="2.5"/>
+    <rect x="916" y="148" width="44" height="36" rx="4" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <path d="M926 158 L950 174" fill="none" stroke="#16130e" stroke-width="3"/>
+    <path d="M928 160 L948 172" fill="none" stroke="#fffdf8" stroke-width="1" stroke-dasharray="3 2"/>
+    <rect x="968" y="148" width="44" height="36" rx="4" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <path d="M982 176 C982 166 992 164 992 154 C1002 164 1008 170 1004 180 C996 188 984 184 982 176 Z" fill="#d55e00"/>
+    <path d="M782 184 v4 M834 184 v4 M886 184 v4 M938 184 v4 M990 184 v4" stroke="#16130e" stroke-width="2"/>
+  </g>
 
-  <path d="M320 376 L880 376 L820 430 L380 430 Z" fill="#fffdf8" stroke="#8a5a20" stroke-width="2"/>
-  <text x="600" y="398" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">SCORE PER ACTIVITY</text>
-  <text x="600" y="420" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">hike · ski · fish · climb … weighted by live signals</text>
+  <!-- Ranked list overlay -->
+  <rect x="748" y="188" width="416" height="524" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+  <rect x="748" y="188" width="416" height="64" fill="#16130e"/>
+  <text x="772" y="230" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">Ranked for today</text>
 
-  <path d="M400 430 L800 430 L740 490 L460 490 Z" fill="#16130e" stroke="#16130e" stroke-width="1"/>
-  <text x="600" y="458" text-anchor="middle" fill="#f5f3ed" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">FUNNEL</text>
-  <text x="600" y="478" text-anchor="middle" fill="#c4b8a4" font-family="Georgia, 'Times New Roman', serif" font-size="14">many gauges → one comparable score</text>
+  <rect x="772" y="272" width="368" height="120" fill="#f5f3ed"/>
+  <text x="792" y="318" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="40">1</text>
+  <text x="844" y="312" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">North Fork</text>
+  <text x="844" y="344" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">river  ·  clear</text>
+  <text x="1108" y="318" text-anchor="end" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="32">91</text>
+  <rect x="1040" y="348" width="76" height="32" fill="#3f6135"/>
+  <text x="1078" y="370" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="16">GO</text>
 
-  <!-- THE PRODUCT: ranked destinations -->
-  <rect x="420" y="510" width="360" height="200" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <rect x="420" y="510" width="360" height="36" fill="#8a5a20"/>
-  <text x="600" y="534" text-anchor="middle" fill="#f5f3ed" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">THE PRODUCT — RANKED LIST</text>
-  <text x="448" y="574" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">1.  Destination A</text>
-  <text x="700" y="574" text-anchor="end" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">92</text>
-  <text x="448" y="602" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">2.  Destination B</text>
-  <text x="700" y="602" text-anchor="end" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">87</text>
-  <text x="448" y="630" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">3.  Destination C</text>
-  <text x="700" y="630" text-anchor="end" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">81</text>
-  <text x="448" y="658" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">…</text>
-  <text x="448" y="688" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13">Where to go outside in Montana today</text>
+  <rect x="772" y="404" width="368" height="120" fill="#f5f3ed"/>
+  <text x="792" y="450" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="40">2</text>
+  <text x="844" y="444" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Ridge Lake</text>
+  <text x="844" y="476" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">snow  ·  stable</text>
+  <text x="1108" y="450" text-anchor="end" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="32">84</text>
+  <rect x="1040" y="480" width="76" height="32" fill="#3f6135"/>
+  <text x="1078" y="502" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="16">GO</text>
 
-  <path d="M600 490 v20" fill="none" stroke="#8a5a20" stroke-width="2"/>
+  <rect x="772" y="536" width="368" height="120" fill="#f5f3ed"/>
+  <text x="792" y="582" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="40">3</text>
+  <text x="844" y="576" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">West Bench</text>
+  <text x="844" y="608" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">wind  ·  road</text>
+  <text x="1108" y="582" text-anchor="end" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="32">67</text>
+  <rect x="1024" y="612" width="100" height="32" fill="#8a5a20"/>
+  <text x="1074" y="634" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="14">CAUTION</text>
 
-  <!-- LEFT fork: Dashboard -->
-  <rect x="48" y="510" width="300" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="68" y="544" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">DASHBOARD</text>
-  <text x="68" y="576" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Argue with the ranking</text>
-  <text x="68" y="608" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• inspect contributing feeds</text>
-  <text x="68" y="632" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• see why a place scored high</text>
-  <text x="68" y="656" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• override / re-weight activity</text>
-  <text x="68" y="686" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Exists so a person can disagree</text>
-
-  <path d="M420 580 H348" fill="none" stroke="#6b6455" stroke-width="1.5"/>
-  <text x="384" y="568" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11">inspect</text>
-
-  <!-- RIGHT fork: Offline bundles -->
-  <rect x="852" y="510" width="300" height="200" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-  <text x="872" y="544" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">OFFLINE FORK</text>
-  <text x="872" y="576" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Trip bundles</text>
-  <text x="872" y="608" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• same scores, packaged</text>
-  <text x="872" y="632" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• works with no signal</text>
-  <text x="872" y="656" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">• trailhead-ready snapshot</text>
-  <text x="872" y="686" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Separate output from scores</text>
-
-  <path d="M780 580 H852" fill="none" stroke="#6b6455" stroke-width="1.5"/>
-  <text x="816" y="568" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11">bundle</text>
-
-  <!-- Constraint callout -->
-  <rect x="48" y="730" width="1104" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="1"/>
-  <text x="68" y="760" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Constraint: more data is easy to display and hard to use on a trailhead — ranking first, gauges second.</text>
-
-  <text x="56" y="820" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">The product is the ranking. The dashboard exists so you can argue with it;</text>
-  <text x="56" y="848" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">offline bundles mean the recommendation still works after you leave the house.</text>
-  <text x="56" y="880" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Python · Data pipelines · in progress</text>
+  <!-- Offline bundle -->
+  <g id="goi-offline">
+    <path d="M40 742 L132 720 L132 818 L40 840 Z" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <path d="M132 720 L216 742 L216 840 L132 818 Z" fill="#e1ded5" stroke="#16130e" stroke-width="2"/>
+    <line x1="132" y1="720" x2="132" y2="818" stroke="#16130e" stroke-width="2"/>
+    <path d="M72 768 C80 756 100 756 108 768" fill="none" stroke="#8a2f1f" stroke-width="2.5"/>
+    <path d="M64 760 C78 742 102 742 116 760" fill="none" stroke="#8a2f1f" stroke-width="2"/>
+    <line x1="68" y1="750" x2="112" y2="778" stroke="#8a2f1f" stroke-width="2.5"/>
+    <text x="128" y="872" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="16">offline bundle</text>
+  </g>
 </svg>

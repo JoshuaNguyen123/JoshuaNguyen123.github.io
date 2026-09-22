@@ -1,85 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Autonomous Repository Template architecture</title>
-  <desc id="desc">A strict protocol pipeline: human request opens a plan, a planning gate blocks implementation until approved, work clears a verification lane, and memory lives in tracked files so products can migrate protocol versions without losing state.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="art-title art-desc">
+  <title id="art-title">Autonomous Repository Template architecture</title>
+  <desc id="art-desc">A repository drawn as a manila folder: a human-request ticket enters at the top, PLAN.md and tracked memory files sit above a heavy planning gate, and the src folder is locked until the plan is approved. A verification lane of pass marks sits under implementation. Protocol versions can migrate without losing state.</desc>
+
+  <defs>
+    <pattern id="art-hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="16" stroke="#8a5a20" stroke-width="5"/>
+    </pattern>
+  </defs>
+
   <rect width="1200" height="900" fill="#f5f3ed"/>
 
-  <text x="72" y="52" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">06  GATE THE AGENT</text>
-  <text x="72" y="84" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Protocol pipeline — plan first, then implement</text>
+  <!-- Human request ticket -->
+  <g id="art-request" transform="rotate(-3 250 100)">
+    <rect x="80" y="40" width="340" height="120" rx="8" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+    <rect x="80" y="40" width="24" height="120" rx="4" fill="#8a5a20"/>
+    <text x="124" y="88" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="22">HUMAN REQUEST</text>
+    <text x="124" y="132" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="30">Add the verify lane</text>
+  </g>
 
-  <!-- LEFT SIDE RAIL: Memory -->
-  <rect x="48" y="120" width="260" height="560" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="68" y="156" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">TRACKED MEMORY</text>
-  <text x="68" y="192" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Ordinary files</text>
-  <text x="68" y="220" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">in the repository</text>
-  <line x1="68" y1="240" x2="288" y2="240" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="68" y="276" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Persists across:</text>
-  <text x="68" y="306" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· later agent sessions</text>
-  <text x="68" y="332" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· human handoffs</text>
-  <text x="68" y="358" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· protocol upgrades</text>
-  <line x1="68" y1="384" x2="288" y2="384" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="68" y="420" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Holds:</text>
-  <text x="68" y="450" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· requests + plans</text>
-  <text x="68" y="476" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· gate decisions</text>
-  <text x="68" y="502" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· verification results</text>
-  <text x="68" y="528" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· product state</text>
-  <text x="68" y="580" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">Agent cannot drop it</text>
-  <text x="68" y="620" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Readable by any later run</text>
-  <text x="68" y="644" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">or newer protocol version</text>
+  <!-- Manila repo folder with a file tree inside -->
+  <g id="art-repo">
+    <path d="M 56 188 H 300 L 340 232 H 800 V 872 H 56 Z" fill="#fffdf8" stroke="#16130e" stroke-width="4"/>
+    <text x="84" y="222" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="24">repo</text>
 
-  <!-- MAIN PIPELINE (vertical center-right) -->
-  <!-- Step 1: Human request -->
-  <rect x="380" y="120" width="520" height="78" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="400" y="148" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">01  HUMAN REQUEST</text>
-  <text x="400" y="176" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Named change enters only through a human request</text>
+    <!-- Tree spine -->
+    <path d="M 108 280 V 500" fill="none" stroke="#16130e" stroke-width="4"/>
+    <path d="M 108 310 H 148" fill="none" stroke="#16130e" stroke-width="4"/>
+    <path d="M 108 430 H 148" fill="none" stroke="#16130e" stroke-width="4"/>
 
-  <path d="M640 198 V218" fill="none" stroke="#6b6455" stroke-width="2"/>
+    <!-- PLAN.md sheet -->
+    <rect x="148" y="256" width="280" height="140" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+    <rect x="148" y="256" width="280" height="40" fill="#16130e"/>
+    <text x="164" y="284" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">PLAN.md</text>
+    <rect x="164" y="316" width="200" height="8" fill="#e0d9cc"/>
+    <rect x="164" y="336" width="168" height="8" fill="#e0d9cc"/>
+    <rect x="164" y="356" width="220" height="8" fill="#e0d9cc"/>
 
-  <!-- Step 2: Plan -->
-  <rect x="380" y="218" width="520" height="78" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="400" y="246" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">02  PLAN</text>
-  <text x="400" y="274" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Agent drafts a plan — implementation files stay closed</text>
+    <!-- Memory folder + files -->
+    <path d="M 148 412 H 220 L 242 436 H 420 V 500 H 148 Z" fill="#f5f3ed" stroke="#16130e" stroke-width="3"/>
+    <text x="164" y="476" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">memory/</text>
+    <rect x="448" y="412" width="200" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <text x="464" y="444" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">STATE.md</text>
+    <rect x="448" y="468" width="200" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <text x="464" y="500" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">DECISIONS.md</text>
 
-  <path d="M640 296 V316" fill="none" stroke="#6b6455" stroke-width="2"/>
+    <!-- Locked src folder, behind the gate -->
+    <path d="M 148 620 H 236 L 260 648 H 560 V 760 H 148 Z" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+    <path d="M 148 620 H 236 L 260 648 H 560 V 760 H 148 Z" fill="url(#art-hatch)" opacity="0.55"/>
+    <text x="280" y="714" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="40">src/</text>
 
-  <!-- Step 3: PLANNING GATE — oversized hard stop -->
-  <rect x="360" y="316" width="560" height="140" fill="#fffdf8" stroke="#8a5a20" stroke-width="3.5"/>
-  <text x="640" y="352" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="3">03  PLANNING GATE</text>
-  <text x="640" y="388" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">HARD STOP — blocks implementation</text>
-  <text x="640" y="420" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Human-approved plan must exist in the repo before code changes</text>
-  <text x="640" y="442" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">Gate the agent cannot skip</text>
+    <!-- Verification lane -->
+    <rect x="80" y="788" width="696" height="64" rx="8" fill="#f5f3ed" stroke="#3f6135" stroke-width="3"/>
+    <text x="108" y="830" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="26">verify</text>
+    <circle cx="268" cy="820" r="18" fill="#3f6135"/>
+    <path d="M 258 820 L 266 828 L 280 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="336" cy="820" r="18" fill="#3f6135"/>
+    <path d="M 326 820 L 334 828 L 348 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="404" cy="820" r="18" fill="#3f6135"/>
+    <path d="M 394 820 L 402 828 L 416 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 
-  <!-- Reject / blocked annotation -->
-  <path d="M920 386 H1040" fill="none" stroke="#6b6455" stroke-width="1.5"/>
-  <rect x="1040" y="360" width="120" height="52" fill="#fffdf8" stroke="#6b6455" stroke-width="1.5"/>
-  <text x="1100" y="382" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">no approval</text>
-  <text x="1100" y="400" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">→ stop here</text>
+  <!-- Barrier across plan → implement, lock on the door -->
+  <g id="art-gate">
+    <rect x="64" y="528" width="752" height="80" rx="6" fill="#8a5a20" transform="rotate(-1.5 440 568)"/>
+    <text x="120" y="584" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="48" transform="rotate(-1.5 440 568)">GATE</text>
+    <path d="M 792 478 V 400 A 82 82 0 0 1 956 400 V 478" fill="none" stroke="#16130e" stroke-width="28" stroke-linecap="round"/>
+    <rect x="740" y="466" width="268" height="280" rx="28" fill="#8a5a20" stroke="#16130e" stroke-width="6"/>
+    <circle cx="874" cy="572" r="30" fill="#16130e"/>
+    <rect x="856" y="572" width="36" height="78" rx="6" fill="#16130e"/>
+    <text x="874" y="704" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="30">LOCKED</text>
+  </g>
 
-  <path d="M640 456 V476" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="656" y="470" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="11">approved</text>
-
-  <!-- Step 4: Implementation -->
-  <rect x="380" y="476" width="520" height="78" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="400" y="504" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">04  IMPLEMENTATION</text>
-  <text x="400" y="532" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Code changes only after the gate clears</text>
-
-  <path d="M640 554 V574" fill="none" stroke="#6b6455" stroke-width="2"/>
-
-  <!-- Step 5: Verification lane -->
-  <rect x="380" y="574" width="520" height="106" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="400" y="602" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12" letter-spacing="2">05  VERIFICATION LANE</text>
-  <text x="400" y="630" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Every task carries a check it must clear</text>
-  <text x="400" y="656" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">results written back to tracked memory · proves the work</text>
-
-  <!-- Memory cross-links -->
-  <path d="M308 200 H380" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="4 4"/>
-  <path d="M308 555 H380" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="4 4"/>
-  <path d="M308 620 H380" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="4 4"/>
-
-  <!-- BOTTOM: Version migrate -->
-  <rect x="48" y="710" width="1104" height="78" fill="#fffdf8" stroke="#8a5a20" stroke-width="2"/>
-  <text x="72" y="742" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">VERSION MIGRATE</text>
-  <text x="72" y="770" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Products instantiated from the template upgrade protocol versions without losing their own state</text>
-
-  <text x="72" y="830" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18">Memory the agent cannot drop. A gate it cannot skip.</text>
-  <text x="72" y="860" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">Work starts only when request, plan, and check are all in the repository.</text>
+  <rect x="816" y="788" width="308" height="64" rx="8" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+  <text x="970" y="830" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">v3 → v4  ·  state kept</text>
 </svg>

@@ -22,8 +22,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   const summaryCards = await readFile(new URL("../lib/activity/summary-cards.ts", import.meta.url), "utf8");
   const definitions = await readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8");
   assert.match(page, /Joshua Nguyen/);
-  assert.match(page, /Forward-deployed engineer, AI developer, and technical researcher\./);
-  assert.match(page, /building and testing systems across the stack/);
+  assert.match(page, /Engineering AI<br \/>systems\./);
+  assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
   assert.match(projects, /a small distributed system/);
   assert.match(projects, /Tuesday's lesson to depend on what Monday showed/);
@@ -47,13 +47,16 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
   assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="activity-section"'));
-  assert.ok(page.indexOf('className="activity-section"') < page.indexOf('className="writing-section home-writing"'));
+  assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="writing-section home-writing"'));
+  assert.ok(page.indexOf('className="writing-section home-writing"') < page.indexOf('className="activity-section"'));
   assert.ok(page.indexOf('className="writing-section home-writing"') < page.indexOf('className="contact-section"'));
   assert.doesNotMatch(page, /className="interests-section"/);
   assert.equal((page.match(/interests\.map/g) ?? []).length, 1);
   // One shared header and footer on every public page, with the mobile menu
   // included, so no route can quietly lose its navigation again.
-  assert.match(header, /className="mobile-nav"/);
+  assert.match(header, /<MobileNav>/);
+  const mobileNav = await readFile(new URL("../components/site/MobileNav.tsx", import.meta.url), "utf8");
+  assert.match(mobileNav, /className="mobile-nav"/);
   assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
   for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
@@ -65,7 +68,7 @@ test("public identity, editorial writing, and public social surfaces are source-
   // No Resume link ships until the PDF exists; the slot is the config value.
   assert.match(site, /export const resumeUrl: string \| null = null;/);
   assert.match(header, /resumeUrl \? <a/);
-  assert.match(page, /What it taught me/);
+  assert.match(work, /What it taught me/);
   // Every project renders: featured entries plus compact cards, one tile each,
   // with a real link (never a styled <strong>) and an image slot for later.
   const tile = await readFile(new URL("../components/work/ProjectTile.tsx", import.meta.url), "utf8");
@@ -82,7 +85,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(`${page}${blog}${article}${work}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
   assert.doesNotMatch(blog, /Coming soon|placeholder|lorem ipsum/i);
   assert.doesNotMatch(`${page}${layout}`, /Josh B\./);
-  assert.match(layout, /Newsreader/);
+  assert.match(layout, /Geist/);
+  assert.doesNotMatch(layout, /Newsreader/);
   assert.match(site, /https:\/\/joshuanguyen123\.github\.io/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
   assert.match(layout, /colorScheme: "light"/);
@@ -96,10 +100,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(activitySummary, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /summaryCardExplanations/);
-  // Font stacks must be declared on body: next/font puts --font-newsreader and
-  // --font-geist-sans on the body class, and a token declared on :root cannot
+  // Font stacks must be declared on body: next/font puts --font-geist-sans
+  // on the body class, and a token declared on :root cannot
   // see them, which once dropped the whole site to Times New Roman.
-  assert.match(styles, /body \{[^}]*--font-serif: var\(--font-newsreader\)/);
   assert.match(styles, /body \{[^}]*--font-sans: var\(--font-geist-sans\)/);
   assert.doesNotMatch(styles.slice(0, styles.indexOf("body {")), /--font-(serif|sans):/);
   // Every size and colour comes from the token block; raw literals are the drift this guards against.

@@ -1,131 +1,99 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="pad-title pad-desc">
-  <title id="pad-title">Personal AI Digest architecture</title>
-  <desc id="pad-desc">Two separated pipelines share only a knowledge store. Ingest writes trusted sources into SQLite or Postgres with pgvector and stops. Delivery retrieves, generates a lesson with a citation on every sentence, and emails it. A Cloudflare Worker triggers each send because GitHub scheduler drifts by hours.</desc>
+  <title id="pad-title">Personal AI Digest</title>
+  <desc id="pad-desc">A knowledge cabinet of tabbed source cards with SQLite and pgvector drawers. Ingest writes into the store and stops. Delivery reads from the same store into an opened letter: a twice-daily lesson where every sentence carries a citation mark. A Cloudflare Worker clock on the letter fires each send, not GitHub cron.</desc>
 
   <rect width="1200" height="900" fill="#f5f3ed"/>
 
-  <text x="48" y="48" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">03  SEPARATED PIPELINES</text>
-  <text x="48" y="78" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Ingest writes · delivery reads · only the store is shared</text>
+  <!-- Envelope pocket the letter is pulled from -->
+  <g id="pad-envelope">
+    <rect x="492" y="708" width="628" height="156" fill="#8a5a20"/>
+    <polygon points="492,708 806,792 1120,708" fill="#16130e"/>
+    <rect x="508" y="708" width="596" height="28" fill="#fffdf8"/>
+    <text x="806" y="848" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="18">since March</text>
+  </g>
 
-  <!-- ========== LEFT: INGEST PIPELINE ========== -->
-  <rect x="48" y="100" width="380" height="620" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="68" y="128" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">INGEST  ·  write path</text>
+  <!-- Letter pulled out of the pocket -->
+  <g id="pad-letter">
+    <rect x="508" y="56" width="596" height="680" fill="#fffdf8" stroke="#16130e" stroke-width="2.5"/>
+    <line x1="508" y1="148" x2="1104" y2="148" stroke="#e0d9cc" stroke-width="2"/>
 
-  <!-- Sources -->
-  <rect x="68" y="148" width="340" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="88" y="180" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Trusted sources</text>
-  <text x="88" y="206" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Personal corpus already trusted</text>
-  <text x="88" y="228" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Technical material · not the open web</text>
+    <text x="532" y="108" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="32">Morning lesson</text>
+    <text x="532" y="184" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">every sentence cited</text>
 
-  <path d="M238 248 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="238,276 232,266 244,266" fill="#6b6455"/>
+    <text x="532" y="248" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">B-trees win on range scans.</text>
+    <rect x="1024" y="222" width="44" height="34" fill="#8a5a20"/>
+    <text x="1046" y="246" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">1</text>
 
-  <!-- Parse / chunk -->
-  <rect x="68" y="280" width="340" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="88" y="312" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Parse · chunk · embed</text>
-  <text x="88" y="340" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Prepare records for retrieval later</text>
+    <text x="532" y="320" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">WAL is the durable write.</text>
+    <rect x="1024" y="294" width="44" height="34" fill="#8a5a20"/>
+    <text x="1046" y="318" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">2</text>
 
-  <path d="M238 368 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="238,396 232,386 244,386" fill="#6b6455"/>
+    <text x="532" y="392" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Retrieve, then generate.</text>
+    <rect x="1024" y="366" width="44" height="34" fill="#8a5a20"/>
+    <text x="1046" y="390" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">3</text>
 
-  <!-- Write -->
-  <rect x="68" y="400" width="340" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="88" y="432" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Write into store</text>
-  <text x="88" y="458" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Index updates only</text>
-  <text x="88" y="480" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">No email · no generation</text>
+    <text x="532" y="464" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Cite every sentence.</text>
+    <rect x="1024" y="438" width="44" height="34" fill="#8a5a20"/>
+    <text x="1046" y="462" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">4</text>
 
-  <path d="M238 500 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="238,528 232,518 244,518" fill="#6b6455"/>
+    <line x1="532" y1="508" x2="1076" y2="508" stroke="#e0d9cc" stroke-width="1.5"/>
+    <text x="532" y="548" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[1] SQLite query planner</text>
+    <text x="532" y="578" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[2] Postgres WAL notes</text>
+    <text x="532" y="608" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[3] pgvector retrieval</text>
+    <text x="532" y="638" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[4] house citation rule</text>
+    <text x="532" y="690" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">twice a day · Worker, not GH cron</text>
+  </g>
 
-  <!-- STOP -->
-  <rect x="68" y="532" width="340" height="72" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="238" y="562" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="20">STOP</text>
-  <text x="238" y="588" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Ingest ends at the store</text>
+  <!-- Clock stamp — Worker trigger, not GitHub cron -->
+  <g id="pad-worker" transform="translate(1048 104)">
+    <circle r="34" fill="#16130e"/>
+    <circle r="25" fill="#fffdf8"/>
+    <line x1="0" y1="0" x2="0" y2="-14" stroke="#16130e" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="11" y2="7" stroke="#16130e" stroke-width="2.5" stroke-linecap="round"/>
+    <circle r="3" fill="#16130e"/>
+  </g>
 
-  <text x="68" y="640" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">If ingest stalls, mail still goes out</text>
-  <text x="68" y="660" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">from what is already indexed.</text>
-  <text x="68" y="690" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Failure domain: write only</text>
+  <!-- Tabbed index cards — a pile, not a note graph -->
+  <g id="pad-sources">
+    <rect x="118" y="44" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <rect x="86" y="62" width="220" height="72" fill="#e0d9cc"/>
+    <rect x="80" y="56" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
 
-  <!-- Arrow into store from left -->
-  <path d="M428 450 h52" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="488,450 478,444 478,456" fill="#6b6455"/>
-  <text x="440" y="440" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">write</text>
+    <rect x="168" y="72" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <rect x="106" y="90" width="220" height="72" fill="#e0d9cc"/>
+    <rect x="100" y="84" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
 
-  <!-- ========== CENTER: KNOWLEDGE STORE ========== -->
-  <rect x="492" y="280" width="216" height="340" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <rect x="492" y="280" width="216" height="48" fill="#8a5a20"/>
-  <text x="600" y="310" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="15">KNOWLEDGE STORE</text>
+    <rect x="218" y="100" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
+    <rect x="126" y="118" width="220" height="72" fill="#e0d9cc"/>
+    <rect x="120" y="112" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <rect x="140" y="136" width="160" height="8" fill="#e0d9cc"/>
+    <rect x="140" y="154" width="120" height="8" fill="#e0d9cc"/>
+  </g>
 
-  <text x="512" y="360" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Shared only here</text>
+  <!-- Ingest into the cabinet, then a hard stop -->
+  <path d="M230 184 V250" fill="none" stroke="#16130e" stroke-width="4"/>
+  <polygon points="230,266 218,248 242,248" fill="#16130e"/>
+  <text x="250" y="230" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">ingest</text>
 
-  <line x1="512" y1="376" x2="688" y2="376" stroke="#e0d9cc" stroke-width="1"/>
+  <!-- Card-catalog cabinet -->
+  <g id="pad-cabinet">
+    <rect x="60" y="280" width="320" height="26" fill="#16130e"/>
+    <rect x="60" y="306" width="320" height="272" fill="#3a352c" stroke="#16130e" stroke-width="3"/>
 
-  <rect x="512" y="396" width="176" height="56" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
-  <text x="600" y="420" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">SQLite</text>
-  <text x="600" y="440" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">local / simple</text>
+    <rect x="80" y="326" width="280" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <text x="100" y="386" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">SQLite</text>
+    <rect x="308" y="364" width="28" height="14" rx="7" fill="#16130e"/>
 
-  <text x="600" y="478" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13">or</text>
+    <rect x="80" y="444" width="280" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+    <text x="100" y="504" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">pgvector</text>
+    <rect x="308" y="482" width="28" height="14" rx="7" fill="#16130e"/>
+  </g>
 
-  <rect x="512" y="494" width="176" height="56" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
-  <text x="600" y="518" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">Postgres + pgvector</text>
-  <text x="600" y="538" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">vector retrieval</text>
+  <rect x="60" y="586" width="320" height="54" fill="#8a5a20"/>
+  <text x="220" y="622" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">STOP</text>
+  <text x="220" y="668" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">write ends here</text>
 
-  <text x="512" y="580" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">No process coupling.</text>
-  <text x="512" y="598" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="12">Either side can fail alone.</text>
-
-  <!-- Arrow out of store to right -->
-  <path d="M708 450 h52" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="768,450 758,444 758,456" fill="#6b6455"/>
-  <text x="720" y="440" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">read</text>
-
-  <!-- ========== RIGHT: DELIVERY PIPELINE ========== -->
-  <rect x="772" y="100" width="380" height="620" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="792" y="128" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">DELIVERY  ·  read path</text>
-
-  <!-- Worker trigger (top of delivery) -->
-  <rect x="792" y="148" width="340" height="88" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="812" y="178" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="17">Cloudflare Worker trigger</text>
-  <text x="812" y="204" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Fires each send on time</text>
-  <text x="812" y="224" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">GitHub scheduler drifts by hours</text>
-
-  <path d="M962 236 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="962,264 956,254 968,254" fill="#6b6455"/>
-
-  <!-- Retrieve -->
-  <rect x="792" y="268" width="340" height="80" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="812" y="300" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Retrieve</text>
-  <text x="812" y="326" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Grounded context from the store</text>
-
-  <!-- connector from store level into retrieve - already have read arrow -->
-  <path d="M962 348 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="962,376 956,366 968,366" fill="#6b6455"/>
-
-  <!-- Generate with citation gate -->
-  <rect x="792" y="380" width="340" height="120" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="812" y="412" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Generate lesson</text>
-  <text x="812" y="438" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Technical lesson · study-ready</text>
-
-  <rect x="812" y="454" width="300" height="32" fill="#f5f3ed" stroke="#8a5a20" stroke-width="1.5"/>
-  <text x="962" y="475" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">citation required per sentence</text>
-
-  <path d="M962 500 v20" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <polygon points="962,528 956,518 968,518" fill="#6b6455"/>
-
-  <!-- Email -->
-  <rect x="792" y="532" width="340" height="88" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="812" y="564" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Email delivery</text>
-  <text x="812" y="590" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Outbound only · twice a day</text>
-  <text x="812" y="610" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Running since March</text>
-
-  <text x="792" y="660" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">If delivery fails, ingest keeps</text>
-  <text x="792" y="680" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">collecting into the store.</text>
-  <text x="792" y="700" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13">Failure domain: send only</text>
-
-  <!-- Isolation callout between pipelines -->
-  <text x="600" y="250" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">no shared process</text>
-
-  <!-- Footer -->
-  <line x1="48" y1="748" x2="1152" y2="748" stroke="#e0d9cc" stroke-width="1"/>
-  <text x="48" y="786" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="17">A fluent lesson without citations is a toy. Forcing a citation on every</text>
-  <text x="48" y="816" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="17">sentence — and splitting ingest from delivery — made it something to study from.</text>
+  <!-- Delivery: store into the letter -->
+  <path d="M380 430 H500" fill="none" stroke="#16130e" stroke-width="4"/>
+  <polygon points="514,430 496,420 496,440" fill="#16130e"/>
 </svg>

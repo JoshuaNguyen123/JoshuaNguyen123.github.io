@@ -12,6 +12,7 @@ const contentTypes = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".webp": "image/webp",
   ".woff2": "font/woff2",
 };
 

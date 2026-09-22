@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileNav } from "./MobileNav";
 import { navLinks, resumeUrl, siteName, type NavKey } from "@/content/site";
 
 function NavLinks({ current }: { current?: NavKey }) {
@@ -24,12 +25,7 @@ export function SiteHeader({ current }: { current?: NavKey }) {
       <nav aria-label="Primary navigation">
         <NavLinks current={current} />
       </nav>
-      <details className="mobile-nav">
-        <summary>Menu</summary>
-        <nav aria-label="Mobile navigation">
-          <NavLinks current={current} />
-        </nav>
-      </details>
+      <MobileNav><NavLinks current={current} /></MobileNav>
     </header>
   );
 }

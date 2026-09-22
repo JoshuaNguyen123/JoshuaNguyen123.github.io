@@ -1,83 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Teach Anything architecture</title>
-  <desc id="desc">A memory-first adaptive loop: learning history feeds FSRS-5 forgetting curves and Bayesian mastery; a scheduler picks the next session of cited questions and sandboxed exercises; a replay harness proves the same history yields the same plan.</desc>
-  <rect width="1200" height="900" fill="#f5f3ed"/>
-
-  <text x="72" y="64" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">04  MEMORY FIRST</text>
-  <text x="72" y="98" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Adaptive learning loop — Tuesday depends on Monday</text>
-
-  <!-- Cycle ring (visual only) -->
-  <ellipse cx="600" cy="430" rx="340" ry="250" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.55"/>
-
-  <!-- CENTER: Memory core -->
-  <rect x="430" y="310" width="340" height="240" fill="#fffdf8" stroke="#8a5a20" stroke-width="3"/>
-  <text x="600" y="348" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">MEMORY CORE</text>
-  <text x="600" y="382" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Deterministic learner state</text>
-  <line x1="470" y1="400" x2="730" y2="400" stroke="#16130e" stroke-width="1" opacity="0.25"/>
-  <text x="450" y="430" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· FSRS-5 forgetting curves</text>
-  <text x="450" y="456" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· Bayesian mastery estimates</text>
-  <text x="450" y="482" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">· Interval + retention per item</text>
-  <text x="450" y="516" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Same history → identical schedule</text>
-
-  <!-- TOP: Scheduler -->
-  <rect x="400" y="110" width="400" height="130" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="420" y="140" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">01  SCHEDULER</text>
-  <text x="420" y="172" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">Picks the next session</text>
-  <text x="420" y="200" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">due by FSRS interval · mastery gaps · topic priority</text>
-  <text x="420" y="222" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">plans from memory state, not a fresh syllabus</text>
-
-  <!-- LEFT: Learning history -->
-  <rect x="48" y="280" width="280" height="260" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="68" y="312" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">00  LEARNING HISTORY</text>
-  <text x="68" y="348" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">What Monday taught</text>
-  <text x="68" y="384" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· practiced items + outcomes</text>
-  <text x="68" y="410" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· grades / pass-fail signals</text>
-  <text x="68" y="436" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· session timestamps</text>
-  <text x="68" y="462" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">· source citations kept</text>
-  <text x="68" y="500" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">Updates memory after each run</text>
-
-  <!-- RIGHT: Session delivery -->
-  <rect x="872" y="250" width="280" height="320" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="892" y="282" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">02  SESSION DELIVERY</text>
-  <text x="892" y="318" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Cited questions</text>
-  <text x="892" y="344" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">every prompt names its source</text>
-  <text x="892" y="370" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">grounded, not improvised</text>
-  <line x1="892" y1="390" x2="1132" y2="390" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="892" y="422" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Sandboxed code exercises</text>
-  <text x="892" y="448" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">safe practice environment</text>
-  <text x="892" y="474" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">outcomes feed history</text>
-  <text x="892" y="520" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="14">Learner answers → history</text>
-  <text x="892" y="544" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">closes the adaptive loop</text>
-
-  <!-- BOTTOM: Replay harness -->
-  <rect x="280" y="640" width="640" height="120" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-  <text x="300" y="672" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">03  REPLAY HARNESS</text>
-  <text x="300" y="704" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Feed the same history → expect the identical plan</text>
-  <text x="300" y="734" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Asserts the schedule adapted instead of improvising a new syllabus each open</text>
-
-  <!-- Flow arrows around the cycle -->
-  <!-- history → memory -->
-  <path d="M328 410 H430" fill="none" stroke="#6b6455" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="350" y="400" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">update</text>
-  <!-- memory → scheduler -->
-  <path d="M600 310 V240" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="612" y="280" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">drives</text>
-  <!-- scheduler → session -->
-  <path d="M800 175 H1012 V250" fill="none" stroke="#6b6455" stroke-width="2"/>
-  <text x="860" y="165" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="12">next session</text>
-  <!-- session → history (feedback) -->
-  <path d="M872 520 H328 V540" fill="none" stroke="#8a5a20" stroke-width="2" stroke-dasharray="5 4"/>
-  <text x="520" y="580" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">outcomes → history (loop)</text>
-  <!-- memory ↔ replay -->
-  <path d="M600 550 V640" fill="none" stroke="#8a5a20" stroke-width="2"/>
-  <text x="612" y="610" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="12">prove</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="ta-title ta-desc">
+  <title id="ta-title">Teach Anything architecture</title>
+  <desc id="ta-desc">A study session that remembers: a stack of source-cited question cards, an FSRS-5 forgetting curve with review marks, a Monday-to-Tuesday calendar scheduled from memory, and a sandboxed code exercise chip. Tuesday is planned from what Monday taught.</desc>
 
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#6b6455" stroke-width="1.5"/>
-    </marker>
+    <filter id="ta-shadow" x="-8%" y="-6%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#16130e" flood-opacity="0.12"/>
+    </filter>
   </defs>
 
-  <text x="72" y="820" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18">Tuesday has to depend on Monday — and the replay harness has to prove it.</text>
-  <text x="72" y="852" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">Memory math sits at the center; the model only writes grounded content around it.</text>
+  <rect width="1200" height="900" fill="#f5f3ed"/>
+
+  <!-- FSRS-5 forgetting curve (right): decay with two review recoveries -->
+  <g id="ta-curve" fill="none">
+    <path d="M 668 86 V 548 H 1154" stroke="#e0d9cc" stroke-width="3"/>
+    <path d="M 700 156
+             C 780 190, 840 250, 880 300
+             C 940 370, 1000 430, 1144 500"
+          stroke="#8a5a20" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <circle cx="700" cy="156" r="13" fill="#8a5a20"/>
+  <circle cx="880" cy="300" r="14" fill="#fffdf8" stroke="#8a5a20" stroke-width="5"/>
+  <circle cx="1006" cy="420" r="14" fill="#fffdf8" stroke="#8a5a20" stroke-width="5"/>
+  <circle cx="1144" cy="500" r="13" fill="#8a5a20"/>
+  <text x="784" y="108" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="42">FSRS-5</text>
+
+  <!-- Stair-step card stack: left/top edges must read at tile size -->
+  <g id="ta-cards">
+    <rect x="40" y="72" width="500" height="620" rx="18" fill="#e0d9cc" stroke="#6b6455" stroke-width="3"/>
+    <rect x="88" y="110" width="510" height="624" rx="18" fill="#fffdf8" stroke="#6b6455" stroke-width="3"/>
+    <g filter="url(#ta-shadow)">
+      <rect x="136" y="148" width="520" height="628" rx="18" fill="#fffdf8" stroke="#16130e" stroke-width="4"/>
+      <text x="168" y="214" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="28">Q</text>
+      <text x="168" y="320" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="48">What did Monday</text>
+      <text x="168" y="384" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="48">actually teach?</text>
+      <rect x="168" y="430" width="440" height="4" fill="#e0d9cc"/>
+      <rect x="152" y="640" width="472" height="88" rx="10" fill="#f5f3ed" stroke="#8a5a20" stroke-width="2"/>
+      <text x="176" y="678" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="20">src</text>
+      <text x="176" y="712" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Karpicke 2008</text>
+    </g>
+  </g>
+
+  <!-- Sandboxed terminal chip — not a column -->
+  <g id="ta-sandbox">
+    <rect x="168" y="468" width="248" height="88" rx="10" fill="#16130e"/>
+    <text x="188" y="506" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">&gt; sandbox</text>
+    <text x="188" y="538" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="22">ok · cited</text>
+  </g>
+
+  <!-- Monday → Tuesday scheduled from memory -->
+  <g id="ta-calendar">
+    <rect x="668" y="600" width="486" height="220" rx="16" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
+    <text x="692" y="648" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="22">from memory</text>
+    <rect x="692" y="672" width="132" height="112" rx="10" fill="#f5f3ed" stroke="#e0d9cc" stroke-width="2"/>
+    <text x="758" y="718" text-anchor="middle" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="28">Mon</text>
+    <text x="758" y="758" text-anchor="middle" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="24">done</text>
+    <path d="M 836 728 H 872" stroke="#8a5a20" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 860 716 L 878 728 L 860 740" fill="none" stroke="#8a5a20" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="890" y="672" width="132" height="112" rx="10" fill="#8a5a20"/>
+    <text x="956" y="718" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="28">Tue</text>
+    <text x="956" y="758" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">due</text>
+    <rect x="1034" y="672" width="92" height="112" rx="10" fill="#f5f3ed" stroke="#e0d9cc" stroke-width="2"/>
+    <text x="1080" y="738" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="24">Wed</text>
+  </g>
 </svg>

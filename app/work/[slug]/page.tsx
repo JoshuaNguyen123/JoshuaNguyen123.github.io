@@ -56,7 +56,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
               height={900}
               sizes="(max-width: 760px) calc(100vw - 40px), 760px"
             />
-            <figcaption>How the pieces connect, at a glance.</figcaption>
+            <figcaption>How the pieces connect, at a glance. <a href={project.image} target="_blank" rel="noreferrer">Open full-size diagram (new tab)</a></figcaption>
           </figure>
           <div className="article-body">
             <h2>What it does</h2>

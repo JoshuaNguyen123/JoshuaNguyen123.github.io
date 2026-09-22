@@ -2,9 +2,12 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
+const projectSource = await readFile(path.join(root, "content", "projects.ts"), "utf8");
+const projectSlugs = [...projectSource.matchAll(/slug: "([a-z0-9-]+)"/g)].map((match) => match[1]);
+if (projectSlugs.length !== 9) throw new Error("Expected nine project case studies");
 for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/obsidian-research-agent-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
-for (const expected of ["Joshua Nguyen", "Forward-deployed engineer, AI developer, and technical researcher.", "building and testing systems across the stack", "I like working on ambiguous problems.", "Build Index", "Things I&#x27;ve built", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Read my notes.", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
+for (const expected of ["Joshua Nguyen", "Engineering AI", "systems.", "I work across the stack", "I like working on ambiguous problems.", "Build Index", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Writing", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
@@ -25,14 +28,20 @@ if (contactConfigured) {
 
 const projectPositions = ["Obsidian Research Agent", "Ladybug", "Personal AI Digest", "Teach Anything", "Research Agent Platform", "Great Outdoors Intelligence"].map((project) => html.indexOf(project));
 if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");
-// Every project is on the page: three full entries, the rest as cards, each with a tile.
-if ((html.match(/class="project-entry"/g) ?? []).length !== 3) throw new Error("Static export does not show three featured projects");
-if ((html.match(/class="project-card"/g) ?? []).length !== 6) throw new Error("Static export does not show the six remaining projects");
-if ((html.match(/class="project-tile(?: project-tile--image)?"/g) ?? []).length !== 9) throw new Error("Static export is missing project tiles");
-if ((html.match(/class="project-tile project-tile--image"/g) ?? []).length !== 9) throw new Error("Static export is missing architecture tiles");
-if (!html.includes("/work/obsidian-research-agent/") || !html.includes("Architecture diagram of")) throw new Error("Static export is missing work case-study links");
+// Every project remains reachable from the minimal ledger; diagrams live in case studies.
+if ((html.match(/class="project-entry"/g) ?? []).length !== projectSlugs.length) throw new Error("Static export is missing project entries");
+for (const slug of projectSlugs) {
+  if (!html.includes(`/work/${slug}/`)) throw new Error(`Missing case-study link: ${slug}`);
+  const detail = await readFile(path.join(root, "out", "work", slug, "index.html"), "utf8");
+  if (!detail.includes(`/projects/${slug}-architecture.svg`) || !detail.includes("Architecture diagram of")) throw new Error(`Missing case-study diagram: ${slug}`);
+}
+for (const photo of ["hiking-valley.jpg", "hiking-goats.jpg"]) {
+  await access(path.join(root, "out", "images", photo));
+  if (!html.includes(`/images/${photo}`)) throw new Error(`Static export is missing ${photo}`);
+}
+if (!html.includes('class="more-projects"') || !html.includes('class="monthly-disclosure"')) throw new Error("Missing progressive disclosure for projects or monthly charts");
 if (html.indexOf('class="work-section"') > html.indexOf('class="activity-section"')) throw new Error("Static export shows activity before selected work");
-for (const expected of ["What it taught me", "Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
+for (const expected of ["Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 // Every public page shares one header and footer; a page that loses them is a

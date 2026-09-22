@@ -27,6 +27,7 @@ interface ActivityHeatmapProps {
   /** Dates verified only by provider-attributed GitHub repository evidence. */
   repositoryEvidenceOnlyDates?: string[];
   featured?: boolean;
+  showDates?: boolean;
 }
 
 function formatValue(value: number, metric: ProviderMetricDefinition, provider: ActivityChannel): string {
@@ -52,6 +53,7 @@ export function ActivityHeatmap({
   onDayOpen,
   repositoryEvidenceOnlyDates = [],
   featured = false,
+  showDates = false,
 }: ActivityHeatmapProps) {
   const weeks = buildCalendarWeeks(startDate, endDate);
   const byDate = new Map(data.map((point) => [point.date, point]));
@@ -89,7 +91,7 @@ export function ActivityHeatmap({
           </div>
           <div className="heatmap-body">
             <div className="weekday-labels" aria-hidden="true">
-              <span /><span>Mon</span><span /><span>Wed</span><span /><span>Fri</span><span />
+              {showDates ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => <span key={day}>{day}</span>) : <><span /><span>Mon</span><span /><span>Wed</span><span /><span>Fri</span><span /></>}
             </div>
             <div className="week-grid">
               {weeks.map((week, weekIndex) => (
@@ -113,7 +115,7 @@ export function ActivityHeatmap({
                           title={`${readableDate} · no source coverage`}
                           aria-label={`${readableDate}: no ${title} source coverage`}
                           role="img"
-                        />
+                        >{showDates ? <span className="heatmap-day-number">{Number(cell.date.slice(8))}</span> : null}</span>
                       );
                     }
                     const value = formatValue(point.value, metric, provider);
@@ -131,7 +133,7 @@ export function ActivityHeatmap({
                         onClick={(event) => { onDaySelect(cell.date!); onDayOpen?.(cell.date!, event); }}
                         onFocus={() => onDaySelect(cell.date!)}
                         onMouseEnter={() => onDaySelect(cell.date!)}
-                      />
+                      >{showDates ? <span className="heatmap-day-number">{Number(cell.date.slice(8))}</span> : null}</button>
                     );
                   })}
                 </div>

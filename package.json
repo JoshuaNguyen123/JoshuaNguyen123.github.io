@@ -33,6 +33,7 @@
     "verify": "npm run lint && npm run public-safety:check && npm test && npm run build && npm run activity:audit && npm run privacy:check && npm run smoke"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "gray-matter": "4.0.3",
     "marked": "18.0.9",
     "next": "16.3.0",

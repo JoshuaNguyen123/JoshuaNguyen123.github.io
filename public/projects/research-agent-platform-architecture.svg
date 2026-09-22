@@ -1,85 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">Research Agent Platform architecture</title>
-  <desc id="desc">Two hosts share one vendored agent core behind three typed seams: an Obsidian plugin wing and an Electron plus CodeMirror 6 desktop wing. Hunk-by-hunk review gates vault writes; ordinary notes stay Obsidian-compatible. Windows installer and Playwright cover the desktop host.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="rap-title rap-desc">
+  <title id="rap-title">Research Agent Platform architecture</title>
+  <desc id="rap-desc">A standalone Electron desktop editor over an ordinary vault folder. A file tree and CodeMirror note sit beside a hunk-review gate that must accept or reject edits before anything touches disk. Three pin connectors join the window to a vendored agent core at a pinned commit.</desc>
+
+  <defs>
+    <clipPath id="rap-window-clip">
+      <rect x="48" y="36" width="1104" height="708" rx="14"/>
+    </clipPath>
+  </defs>
+
   <rect width="1200" height="900" fill="#f5f3ed"/>
 
-  <text x="72" y="56" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18" letter-spacing="3">05  TWO HOSTS, ONE CORE</text>
-  <text x="72" y="88" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Vendored core · typed seams · review before disk</text>
+  <!-- Desktop window chrome -->
+  <g id="rap-window">
+    <rect x="48" y="36" width="1104" height="708" rx="14" fill="#fffdf8" stroke="#16130e" stroke-width="4"/>
+    <rect x="48" y="36" width="1104" height="56" rx="14" fill="#16130e"/>
+    <rect x="48" y="78" width="1104" height="14" fill="#16130e"/>
+    <circle cx="80" cy="64" r="9" fill="#8a2f1f"/>
+    <circle cx="106" cy="64" r="9" fill="#8a5a20"/>
+    <circle cx="132" cy="64" r="9" fill="#3f6135"/>
+    <text x="600" y="70" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">vault / notes</text>
 
-  <!-- LEFT WING: Obsidian plugin host -->
-  <rect x="48" y="120" width="300" height="480" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <rect x="48" y="120" width="300" height="44" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="198" y="148" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">HOST A · OBSIDIAN PLUGIN</text>
-  <text x="68" y="198" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Plugin shell</text>
-  <text x="68" y="226" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· lives inside Obsidian</text>
-  <text x="68" y="250" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· vault UI already present</text>
-  <text x="68" y="274" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· mission / research entry</text>
-  <line x1="68" y1="296" x2="328" y2="296" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="68" y="328" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Talks to core via seams</text>
-  <text x="68" y="356" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">same contracts as desktop</text>
-  <text x="68" y="400" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Writes ordinary notes</text>
-  <text x="68" y="428" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">no private vault format</text>
-  <text x="68" y="470" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">First host of the pair</text>
-  <text x="68" y="520" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Compatible vault in, out</text>
-  <text x="68" y="548" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Obsidian remains the editor</text>
+    <g clip-path="url(#rap-window-clip)">
+      <!-- File tree -->
+      <rect x="48" y="92" width="248" height="652" fill="#f5f3ed"/>
+      <line x1="296" y1="92" x2="296" y2="744" stroke="#e0d9cc" stroke-width="2"/>
+      <text x="72" y="136" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">▾ vault</text>
+      <rect x="68" y="156" width="204" height="44" rx="6" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
+      <text x="84" y="186" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">mission.md</text>
+      <text x="84" y="236" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">sources.md</text>
+      <text x="84" y="280" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">plan.md</text>
+      <text x="84" y="324" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">inbox.md</text>
+      <text x="72" y="380" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">▾ notes</text>
+      <text x="84" y="424" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">q3.md</text>
+      <text x="84" y="468" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">daily.md</text>
+      <rect x="68" y="660" width="204" height="52" rx="8" fill="#16130e"/>
+      <text x="170" y="694" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="18">.exe · Playwright</text>
 
-  <!-- CENTER: Agent core -->
-  <rect x="400" y="140" width="400" height="440" fill="#fffdf8" stroke="#8a5a20" stroke-width="3"/>
-  <text x="600" y="178" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14" letter-spacing="2">AGENT CORE</text>
-  <text x="600" y="210" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">Vendored at pinned commit</text>
-  <text x="600" y="238" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">not forked — one agent, two hosts</text>
-  <line x1="430" y1="258" x2="770" y2="258" stroke="#16130e" stroke-width="1" opacity="0.25"/>
+      <!-- CodeMirror-like editor -->
+      <rect x="296" y="92" width="456" height="652" fill="#fffdf8"/>
+      <rect x="296" y="92" width="56" height="652" fill="#f5f3ed"/>
+      <text x="324" y="150" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">1</text>
+      <text x="324" y="198" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">2</text>
+      <text x="324" y="246" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">3</text>
+      <text x="324" y="294" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">4</text>
+      <text x="324" y="342" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">5</text>
+      <text x="372" y="150" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26"># Mission</text>
+      <text x="372" y="198" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">Read the vault.</text>
+      <rect x="352" y="214" width="384" height="44" fill="#e0d9cc"/>
+      <text x="372" y="246" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">Cite every claim.</text>
+      <text x="372" y="294" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">- [[sources]]</text>
+      <text x="372" y="342" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">- [[plan]]</text>
+      <rect x="548" y="220" width="3" height="32" fill="#8a5a20"/>
 
-  <text x="420" y="292" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">THREE TYPED SEAMS</text>
+      <!-- Hunk review gate -->
+      <rect x="752" y="92" width="400" height="652" fill="#fffdf8"/>
+      <line x1="752" y1="92" x2="752" y2="744" stroke="#8a5a20" stroke-width="6"/>
+      <rect x="752" y="92" width="400" height="64" fill="#8a5a20"/>
+      <text x="952" y="134" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">REVIEW  ·  before disk</text>
+      <text x="776" y="192" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">mission.md</text>
+      <rect x="776" y="214" width="352" height="56" rx="6" fill="#f5f3ed"/>
+      <text x="792" y="252" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="24">− no source</text>
+      <rect x="776" y="282" width="352" height="56" rx="6" fill="#f5f3ed"/>
+      <text x="792" y="320" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="24">+ cited [[q3]]</text>
+      <rect x="776" y="354" width="352" height="48" rx="6" fill="#f5f3ed"/>
+      <text x="792" y="386" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="22">− inbox dump</text>
+      <rect x="776" y="414" width="352" height="48" rx="6" fill="#f5f3ed"/>
+      <text x="792" y="446" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="22">+ filed under plan</text>
+      <rect x="776" y="640" width="160" height="56" rx="8" fill="#fffdf8" stroke="#8a2f1f" stroke-width="3"/>
+      <text x="856" y="676" text-anchor="middle" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="22">Reject</text>
+      <rect x="952" y="640" width="176" height="56" rx="8" fill="#3f6135"/>
+      <text x="1040" y="676" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">Accept</text>
+    </g>
+  </g>
 
-  <!-- Seam 1 -->
-  <rect x="430" y="310" width="340" height="58" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
-  <text x="448" y="334" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Seam 1 · Tool / action surface</text>
-  <text x="448" y="356" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">host supplies capabilities the core may call</text>
-
-  <!-- Seam 2 -->
-  <rect x="430" y="380" width="340" height="58" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
-  <text x="448" y="404" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Seam 2 · Context / vault read</text>
-  <text x="448" y="426" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">host exposes notes the agent may read</text>
-
-  <!-- Seam 3 -->
-  <rect x="430" y="450" width="340" height="58" fill="#f5f3ed" stroke="#16130e" stroke-width="1.5"/>
-  <text x="448" y="474" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="15">Seam 3 · Edit proposal out</text>
-  <text x="448" y="496" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">core emits hunks; host owns apply path</text>
-
-  <text x="600" y="548" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="13">Vendor bump that breaks a seam fails at compile time</text>
-
-  <!-- RIGHT WING: Desktop editor -->
-  <rect x="852" y="120" width="300" height="480" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <rect x="852" y="120" width="300" height="44" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="1002" y="148" text-anchor="middle" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">HOST B · DESKTOP EDITOR</text>
-  <text x="872" y="198" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Electron + CodeMirror 6</text>
-  <text x="872" y="226" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· opens ordinary vault folders</text>
-  <text x="872" y="250" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· owns file tree + editor UI</text>
-  <text x="872" y="274" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· owns review + installer</text>
-  <line x1="872" y1="296" x2="1132" y2="296" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="872" y="328" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Hunk-by-hunk review</text>
-  <text x="872" y="356" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">accept / reject before disk</text>
-  <text x="872" y="380" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">agent never writes silently</text>
-  <line x1="872" y1="400" x2="1132" y2="400" stroke="#16130e" stroke-width="1" opacity="0.2"/>
-  <text x="872" y="432" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="16">Ship + prove</text>
-  <text x="872" y="460" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Windows installer</text>
-  <text x="872" y="484" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">· Playwright journeys</text>
-  <text x="872" y="508" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">  cover the whole loop</text>
-  <text x="872" y="548" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="14">Second host of the pair</text>
-
-  <!-- Connector labels between wings and core -->
-  <path d="M348 360 H400" fill="none" stroke="#8a5a20" stroke-width="2"/>
-  <path d="M800 360 H852" fill="none" stroke="#8a5a20" stroke-width="2"/>
-  <text x="374" y="348" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="11">seams</text>
-  <text x="826" y="348" text-anchor="middle" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="11">seams</text>
-
-  <!-- BOTTOM BAR: Vault constraint -->
-  <rect x="48" y="640" width="1104" height="110" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-  <text x="72" y="676" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="2">VAULT CONSTRAINT</text>
-  <text x="72" y="710" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="18">Vault stays ordinary notes — Obsidian-compatible on both hosts</text>
-  <text x="72" y="740" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="14">Desktop review UI gates every hunk before a file changes · plugin host reuses the same core contracts · no private format</text>
-
-  <text x="72" y="810" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="18">One agent. Two hosts. Typed seams are the whole contract.</text>
-  <text x="72" y="842" fill="#736b5a" font-family="Georgia, 'Times New Roman', serif" font-size="16">A vendor bump that breaks a seam fails at compile time, not in someone's vault.</text>
+  <!-- Three typed seams as pins into the vendored core -->
+  <g id="rap-seams">
+    <line x1="248" y1="744" x2="248" y2="792" stroke="#16130e" stroke-width="4"/>
+    <line x1="524" y1="744" x2="524" y2="792" stroke="#16130e" stroke-width="4"/>
+    <line x1="952" y1="744" x2="952" y2="792" stroke="#16130e" stroke-width="4"/>
+    <circle cx="248" cy="792" r="11" fill="#16130e"/>
+    <circle cx="524" cy="792" r="11" fill="#16130e"/>
+    <circle cx="952" cy="792" r="11" fill="#16130e"/>
+    <rect x="48" y="802" width="1104" height="70" rx="10" fill="#16130e"/>
+    <text x="80" y="848" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">vendored core  @  pinned commit</text>
+    <text x="1132" y="848" text-anchor="end" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">tools · vault · edits</text>
+  </g>
 </svg>

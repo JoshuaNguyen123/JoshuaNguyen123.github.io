@@ -15,7 +15,7 @@ export function SiteFooter() {
       </nav>
       <div className="site-footer-meta">
         <span>© {new Date().getFullYear()} {siteName}</span>
-        <span>Built with Next.js, published on GitHub Pages</span>
+        <span>Contours: <a href="https://heropatterns.com/">Steve Schoger / Hero Patterns</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
       </div>
     </footer>
   );

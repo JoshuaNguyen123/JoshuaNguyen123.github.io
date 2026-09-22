@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import Link from "next/link";
 import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
 import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
@@ -8,6 +8,7 @@ import { combineCursorActivity, combineRepositoryActivity } from "@/lib/activity
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
 import type {
+  ActivityChannel,
   ActivityProvider,
   ActivitySnapshot,
   DailyActivityPoint,
@@ -17,6 +18,9 @@ import type {
 import { activityProviders, providerLabels } from "@/lib/activity/types";
 import { ActivityHeatmap } from "./ActivityHeatmap";
 import { ActivitySummary } from "./ActivitySummary";
+import { MonthlyActivity } from "./MonthlyActivity";
+import { SourceCoverage } from "./SourceCoverage";
+import { providerPalettes } from "@/lib/activity/palette";
 
 const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
   ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/main/public/data/activity.json";
@@ -87,6 +91,8 @@ type FeedState = "checking" | "live" | "fallback" | "bundled";
 export function ActivityDashboard({ initialData }: { initialData: ActivitySnapshot }) {
   const [data, setData] = useState(initialData);
   const [feedState, setFeedState] = useState<FeedState>("checking");
+  const [selectedChannel, setSelectedChannel] = useState<ActivityChannel>("build-index");
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [cursorMetricId, setCursorMetricId] = useState<"observedActivity" | "activeSessions" | "usagePresence">("observedActivity");
   const availableYears = yearsInSnapshot(data);
   const [selectedYear, setSelectedYear] = useState(() => defaultYear(initialData));
@@ -165,6 +171,8 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
 
   function changeYear(year: number) {
     setSelectedYear(year);
+    setSelectedMonth(null);
+    setDayCard(null);
     setSelectedDate(latestActiveDate(data, year));
   }
 
@@ -183,11 +191,18 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
   // The day card is anchored to the square that was pressed, in coordinates
   // relative to the dashboard, so it travels with the page rather than the viewport.
   const dashRef = useRef<HTMLDivElement>(null);
+  const dayTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [dayCard, setDayCard] = useState<{ date: string; x: number; y: number } | null>(null);
+
+  const closeDayCard = useCallback(() => {
+    setDayCard(null);
+    dayTriggerRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const openDayCard = useCallback((date: string, event: MouseEvent<HTMLButtonElement>) => {
     const host = dashRef.current?.getBoundingClientRect();
     if (!host) return;
+    dayTriggerRef.current = event.currentTarget;
     const cell = event.currentTarget.getBoundingClientRect();
     const x = Math.min(Math.max(cell.left - host.left + cell.width / 2, 150), Math.max(host.width - 150, 150));
     setDayCard({ date, x, y: cell.bottom - host.top + 10 });
@@ -195,7 +210,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
 
   useEffect(() => {
     if (!dayCard) return;
-    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setDayCard(null); };
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") closeDayCard(); };
     const onDown = (event: Event) => {
       const target = event.target as HTMLElement | null;
       if (target?.closest(".day-detail") || target?.closest(".heatmap-cell")) return;
@@ -204,7 +219,25 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onDown);
     return () => { document.removeEventListener("keydown", onKey); document.removeEventListener("mousedown", onDown); };
-  }, [dayCard]);
+  }, [dayCard, closeDayCard]);
+
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const monthEnd = selectedMonth ? new Date(Date.UTC(Number(selectedMonth.slice(0, 4)), Number(selectedMonth.slice(5, 7)), 0)).toISOString().slice(0, 10) : selectedRange.end;
+  const calendarRange = selectedMonth ? { start: `${selectedMonth}-01`, end: monthEnd < selectedRange.end ? monthEnd : selectedRange.end } : selectedRange;
+  const dailyMetric = selectedChannel === "build-index" ? {
+    days: filteredBuildIndex, definition: buildIndexMetric,
+    coverage: { start: filteredBuildIndex[0]?.date ?? null, end: filteredBuildIndex.at(-1)?.date ?? null },
+    status: "available" as const,
+  } : providerMetrics[selectedChannel];
+
+  function changeMonth(month: string | null) {
+    setSelectedMonth(month);
+    setDayCard(null);
+    if (month) {
+      const last = filteredBuildIndex.filter(day => day.date.startsWith(month)).at(-1)?.date;
+      setSelectedDate(last ?? `${month}-01`);
+    }
+  }
 
   const cardIndex = dayCard ? filteredBuildIndex.find((day) => day.date === dayCard.date) : undefined;
   const cardDate = dayCard
@@ -215,9 +248,8 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
     <div className="activity-dashboard" ref={dashRef}>
       <div className="activity-toolbar">
         <div>
-          <span className="eyebrow">Activity</span>
-          <h2>A record of when I was building.</h2>
-          <p>Every square is one day, drawn from the tools I actually work in. It is a record, not a score, and it publishes daily counts only.</p>
+          <h2>Activity</h2>
+          <p>Observed activity, not a productivity score.</p>
         </div>
         <div className="year-selector" aria-label="Activity year">
           {availableYears.map((year) => (
@@ -235,68 +267,62 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
             : `Verified bundled snapshot · checking local hook feed · updated ${formatActivityTimestamp(data.generatedAt, data.timeZone)}`}
       </div>
 
-      <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{
-        github: filteredMetrics.github,
-        codex: filteredMetrics.codexSessions,
-        cursorObserved,
-        cursorSessions: filteredMetrics.cursorSessions,
-        claude: filteredMetrics.claudeSessions,
-      }} />
+      <section className="activity-year-summary" aria-labelledby="year-summary-title">
+        <h3 id="year-summary-title">{selectedYear} at a glance</h3>
+        <p>Year totals across all months. Session-days count sessions on each day, not hours worked.</p>
+        <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{
+          github: filteredMetrics.github,
+          codex: filteredMetrics.codexSessions,
+          cursorObserved,
+          cursorSessions: filteredMetrics.cursorSessions,
+          claude: filteredMetrics.claudeSessions,
+        }} />
+      </section>
 
       <div className="activity-workspace">
-        <div className="heatmap-stack">
-          <ActivityHeatmap title="Build Index" provider="build-index" data={filteredBuildIndex} metric={buildIndexMetric} coverage={{ start: filteredBuildIndex[0]?.date ?? null, end: filteredBuildIndex.at(-1)?.date ?? null }} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} featured />
-
-          <div className="activity-legend" aria-label="Activity intensity legend">
-            <div>
-              <span>Quieter day</span>
-              {[0, 1, 2, 3, 4, 5].map((level) => <i className={`level-${level}`} key={level} role="img" aria-label={`Intensity level ${level} of 5`} title={`Intensity level ${level} of 5`} />)}
-              <span>Busier day</span>
-            </div>
-            <div>
-              <i className="is-unobserved" role="img" aria-label="No source coverage" title="No source coverage" />
-              <span>Hatched: no surviving source coverage.</span>
-            </div>
-            <div>
-              <i className="is-repository-evidence" role="img" aria-label="GitHub repository evidence" title="GitHub repository evidence" />
-              <span>Light outlined: GitHub repository evidence without a retained session count.</span>
-            </div>
+        <div className="activity-view-selector" aria-label="Daily activity source">
+          {(["build-index", ...activityProviders] as ActivityChannel[]).map(channel => (
+            <button type="button" key={channel} aria-pressed={selectedChannel === channel} onClick={() => { setSelectedChannel(channel); setDayCard(null); }}>
+              {channel === "build-index" ? "Build Index" : providerLabels[channel]}
+            </button>
+          ))}
+        </div>
+        <div className="metric-selector" aria-label="Cursor metric" hidden={selectedChannel !== "cursor"}>
+          <button type="button" aria-pressed={cursorMetricId === "observedActivity"} className={cursorMetricId === "observedActivity" ? "is-active" : ""} onClick={() => setCursorMetricId("observedActivity")}>Observed activity</button>
+          <button type="button" aria-pressed={cursorMetricId === "activeSessions"} className={cursorMetricId === "activeSessions" ? "is-active" : ""} onClick={() => setCursorMetricId("activeSessions")}>Active sessions</button>
+          <button type="button" aria-pressed={cursorMetricId === "usagePresence"} className={cursorMetricId === "usagePresence" ? "is-active" : ""} onClick={() => setCursorMetricId("usagePresence")}>Usage evidence</button>
+        </div>
+        <div className={`daily-calendar${selectedMonth ? " daily-calendar--month" : ""}`} ref={calendarRef}>
+          <div className="calendar-range">
+            <label>Calendar window<select value={selectedMonth ?? "all"} onChange={event => changeMonth(event.target.value === "all" ? null : event.target.value)}>
+              <option value="all">All of {selectedYear}</option>
+              {Array.from({ length: Number(selectedRange.end.slice(5, 7)) }, (_, index) => {
+                const month = `${selectedYear}-${String(index + 1).padStart(2, "0")}`;
+                return <option value={month} key={month}>{new Date(`${month}-01T00:00:00Z`).toLocaleDateString("en-US", { month: "long", timeZone: "UTC" })}</option>;
+              })}
+            </select></label>
+            <span>{calendarRange.start} to {calendarRange.end}</span>
           </div>
+          <ActivityHeatmap key={selectedChannel} title={selectedChannel === "build-index" ? "Build Index" : providerLabels[selectedChannel]} provider={selectedChannel} data={dailyMetric.days} metric={dailyMetric.definition} coverage={dailyMetric.coverage} status={dailyMetric.status} startDate={calendarRange.start} endDate={calendarRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} repositoryEvidenceOnlyDates={selectedChannel === "build-index" ? undefined : repositoryEvidenceOnlyDates[selectedChannel]} featured={selectedChannel === "build-index"} showDates={Boolean(selectedMonth)} />
+          <div className="activity-legend" aria-label="Activity intensity legend" style={Object.fromEntries(providerPalettes[selectedChannel].map((color, level) => [`--cell-level-${level}`, color])) as CSSProperties}>
+            <div><span>Quieter day</span>{[0, 1, 2, 3, 4, 5].map(level => <i className={`level-${level}`} key={level} role="img" aria-label={`Intensity level ${level} of 5`} />)}<span>Busier day</span></div>
+            <div><i className="is-unobserved" role="img" aria-label="No source coverage" /><span>Hatched: no source coverage</span></div>
+            <div><i className="is-repository-evidence" role="img" aria-label="GitHub repository evidence" /><span>Outlined: repository evidence only</span></div>
+          </div>
+          <p className="calendar-help">Choose a month for larger day squares, or scroll the year horizontally on a small screen. Shading is relative within each tool.</p>
 
-          <p className="heatmap-group-label">By tool</p>
-
-          {activityProviders.map((provider) => {
-            const metric = providerMetrics[provider];
-            return (
-              <div key={provider}>
-                {provider === "cursor" ? (
-                  <div className="metric-selector" aria-label="Cursor metric">
-                    <button type="button" aria-pressed={cursorMetricId === "observedActivity"} className={cursorMetricId === "observedActivity" ? "is-active" : ""} onClick={() => setCursorMetricId("observedActivity")}>Observed activity</button>
-                    <button type="button" aria-pressed={cursorMetricId === "activeSessions"} className={cursorMetricId === "activeSessions" ? "is-active" : ""} onClick={() => setCursorMetricId("activeSessions")}>Active sessions</button>
-                    <button type="button" aria-pressed={cursorMetricId === "usagePresence"} className={cursorMetricId === "usagePresence" ? "is-active" : ""} onClick={() => setCursorMetricId("usagePresence")}>Usage evidence</button>
-                  </div>
-                ) : null}
-                <ActivityHeatmap title={providerLabels[provider]} provider={provider} data={metric.days} metric={metric.definition} coverage={metric.coverage} status={metric.status} startDate={selectedRange.start} endDate={selectedRange.end} selectedDate={dayCard?.date ?? selectedDate} onDaySelect={setSelectedDate} onDayOpen={openDayCard} repositoryEvidenceOnlyDates={repositoryEvidenceOnlyDates[provider]} />
-                {provider === "claude-code" ? (
-                  <p className="coverage-note">GitHub repository evidence begins April 7, 2026. Retained local Claude Code sessions begin July 23; evidence-only days use the light outlined shade and never invent a session count.</p>
-                ) : provider === "codex" ? (
-                  <p className="coverage-note">GitHub repository evidence begins April 7, 2026. Retained local Codex sessions begin April 20; evidence-only days use the light outlined shade.</p>
-                ) : null}
-              </div>
-            );
-          })}
         </div>
 
         {dayCard ? (
-          <aside className="day-detail" aria-live="polite" style={{ left: dayCard.x, top: dayCard.y, transform: "translateX(-50%)" }}>
-            <button type="button" className="day-detail-close" aria-label="Close day details" onClick={() => setDayCard(null)}>
+          <aside className="day-detail" aria-live="polite" style={{ "--day-card-x": `${dayCard.x}px`, top: dayCard.y } as CSSProperties}>
+            <button type="button" className="day-detail-close" aria-label="Close day details" onClick={closeDayCard}>
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                 <path d="M2 2l9 9M11 2l-9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
             <span className="detail-kicker">Selected day</span>
             <h3>{cardDate}</h3>
-            <div className={`activity-level activity-level--${cardIndex?.level ?? 0}`}><span />{activityLabel(cardIndex?.level ?? 0)}</div>
+            <div className={`activity-level activity-level--${cardIndex?.level ?? 0}`}><span />{cardIndex ? activityLabel(cardIndex.level) : "No source coverage"}</div>
             <dl>
               {activityProviders.map((provider) => {
                 // The breakdown stays on comparable session/contribution counts even when
@@ -344,6 +370,23 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
           </aside>
         ) : null}
       </div>
+
+      <details className="monthly-disclosure">
+        <summary>Monthly patterns<span className="activity-disclosure-note">Active days each month, by tool</span></summary>
+      <MonthlyActivity metrics={{ github: filteredMetrics.github, codex: codexObserved, cursor: cursorObserved, "claude-code": claudeObserved }} startDate={selectedRange.start} endDate={selectedRange.end} selectedMonth={selectedMonth} onMonthSelect={month => { changeMonth(month); calendarRef.current?.scrollIntoView({ block: "start", behavior: "instant" }); }} />
+      </details>
+      <details className="activity-coverage">
+        <summary>Source coverage<span className="activity-disclosure-note">Which days have records, and where data is missing</span></summary>
+        <SourceCoverage startDate={selectedRange.start} endDate={selectedRange.end} sources={[
+          { label: "GitHub contributions", metric: filteredMetrics.github },
+          { label: "Codex sessions", metric: filteredMetrics.codexSessions },
+          { label: "Codex repository evidence", metric: filteredMetrics.codexEvidence },
+          { label: "Cursor sessions", metric: filteredMetrics.cursorSessions },
+          { label: "Cursor usage evidence", metric: filteredMetrics.cursorUsage },
+          { label: "Claude Code sessions", metric: filteredMetrics.claudeSessions },
+          { label: "Claude Code repository evidence", metric: filteredMetrics.claudeEvidence },
+        ]} />
+      </details>
 
       <div className="activity-more">
         <p>Aggregate counts only — never prompts, code, filenames, or project names. Press any square to read that day.</p>
