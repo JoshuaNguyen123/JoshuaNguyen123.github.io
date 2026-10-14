@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { MobileNav } from "./MobileNav";
 import { navLinks, resumeUrl, siteName, type NavKey } from "@/content/site";
 
@@ -6,9 +5,9 @@ function NavLinks({ current }: { current?: NavKey }) {
   return (
     <>
       {navLinks.map((link) => (
-        <Link key={link.key} href={link.href} aria-current={link.key === current ? "page" : undefined}>
+        <a key={link.key} href={link.href} aria-current={link.key === current ? "page" : undefined}>
           {link.label}
-        </Link>
+        </a>
       ))}
       {resumeUrl ? <a href={resumeUrl} target="_blank" rel="noreferrer">Resume</a> : null}
     </>
@@ -19,9 +18,12 @@ function NavLinks({ current }: { current?: NavKey }) {
 export function SiteHeader({ current }: { current?: NavKey }) {
   return (
     <header className="site-header">
-      <Link className="wordmark" href="/" aria-label={`${siteName} home`}>
-        {siteName}
-      </Link>
+      <div className="site-identity">
+        <a className="wordmark" href="/" aria-label={`${siteName} home`}>
+          {siteName}
+        </a>
+        <span className="site-location">Bozeman, Montana</span>
+      </div>
       <nav aria-label="Primary navigation">
         <NavLinks current={current} />
       </nav>

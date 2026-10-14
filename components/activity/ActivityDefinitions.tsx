@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { combineCursorActivity, countActiveDays } from "@/lib/activity/cursor";
-import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
-import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
 import {
@@ -14,11 +12,9 @@ import {
   summaryCardNotes,
   summaryCardOrder,
 } from "@/lib/activity/summary-cards";
-import type { ActivityProvider, ActivitySnapshot, MetricActivitySnapshot } from "@/lib/activity/types";
+import type { ActivityProvider, MetricActivitySnapshot } from "@/lib/activity/types";
 import { activityProviders, providerLabels } from "@/lib/activity/types";
-
-const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
-  ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/main/public/data/activity.json";
+import { useActivityFeed } from "./ActivityFeedProvider";
 
 const timestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US", {
   timeZone,
@@ -53,33 +49,8 @@ function yearMetric(metric: MetricActivitySnapshot, year: string): MetricActivit
   return { ...metric, days: metric.days.filter((day) => day.date.startsWith(year)) };
 }
 
-export function ActivityDefinitions({ initialData }: { initialData: ActivitySnapshot }) {
-  const [data, setData] = useState(initialData);
-  const [feedState, setFeedState] = useState<"checking" | "live" | "fallback" | "bundled">("checking");
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const response = await fetch(`${liveFeedUrl}?v=${Date.now()}`, { cache: "no-store" });
-        if (!response.ok) throw new Error("Activity feed unavailable");
-        const snapshot = parseActivitySnapshot(await response.json());
-        if (!snapshot || snapshot.mode !== "observed") throw new Error("Activity feed invalid");
-        if (!cancelled) {
-          setData((current) => {
-            const useLive = shouldUseActivitySnapshot(current, snapshot);
-            setFeedState(useLive ? "live" : "bundled");
-            return useLive ? snapshot : current;
-          });
-        }
-      } catch {
-        if (!cancelled) setFeedState("fallback");
-      }
-    };
-    void load();
-    const interval = window.setInterval(load, 300_000);
-    return () => { cancelled = true; window.clearInterval(interval); };
-  }, []);
+export function ActivityDefinitions() {
+  const { data, feedState } = useActivityFeed();
 
   const year = data.range.end.slice(0, 4);
   const summary = data.summaries[year];

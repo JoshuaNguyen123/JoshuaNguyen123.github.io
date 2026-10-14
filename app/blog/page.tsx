@@ -4,7 +4,6 @@ import { ogImage } from "@/content/site";
 import { getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 const title = "Writing";
 const description = "Joshua Nguyen writes about AI systems, research, and software.";
@@ -32,7 +31,7 @@ export default function BlogIndex() {
 
         {leadPost ? (
           <section className="blog-issue" aria-label="Published writing">
-            <Link className="lead-story" href={`/blog/${leadPost.slug}/`}>
+            <a className="lead-story" href={`/blog/${leadPost.slug}/`}>
               <div className="story-label"><span>Latest</span><span>{leadPost.tags.join(" · ")}</span></div>
               <h2>{leadPost.title}</h2>
               <p>{leadPost.summary}</p>
@@ -40,16 +39,16 @@ export default function BlogIndex() {
                 <time dateTime={leadPost.publishedAt}>{formatDate(leadPost.publishedAt)}</time>
                 <span>{leadPost.readingMinutes} min read</span>
               </div>
-            </Link>
+            </a>
             {morePosts.length > 0 ? (
               <div className="blog-index-list">
                 {morePosts.map((post) => (
-                  <Link href={`/blog/${post.slug}/`} key={post.slug}>
+                  <a href={`/blog/${post.slug}/`} key={post.slug}>
                     <div className="story-label"><span>{post.tags.join(" · ")}</span><span>{post.readingMinutes} min read</span></div>
                     <h2>{post.title}</h2>
                     <p>{post.summary}</p>
                     <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                  </Link>
+                  </a>
                 ))}
               </div>
             ) : null}

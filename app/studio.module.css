@@ -1,0 +1,82 @@
+/* Five type roles and an eight-point spacing rhythm. Shared tokens are in globals.css. */
+.main { margin: 0 var(--gutter-centered); font-size: var(--studio-body); }
+.hero { padding-top: var(--space-5); }
+.valley { display: none; margin: 0; }
+.valley img, .goats img { width: 100%; height: auto; aspect-ratio: 3; object-fit: cover; display: block; border-radius: var(--radius); }
+.valley img { object-position: center 48%; }
+.hero h1 { font-family: var(--font-serif); font-size: var(--studio-display); line-height: 1.15; font-weight: 600; letter-spacing: -.025em; margin: 0 0 var(--space-4); max-width: 20ch; }
+.lede { color: var(--body); font-size: var(--studio-body); line-height: 1.6; max-width: 60ch; }
+.introduction { display: grid; grid-template-columns: var(--space-7) minmax(0, 1fr); gap: var(--space-3); align-items: center; margin-top: var(--space-4); max-width: 60ch; }
+.portrait { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: var(--radius); }
+.biography { font-size: var(--studio-meta); color: var(--body); line-height: 1.6; }
+.workButton { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-4); margin-top: var(--space-5); padding: var(--space-3) var(--space-4); min-height: var(--space-6); width: fit-content; background: var(--warm); color: var(--paper-bright); border-radius: var(--radius); font-size: var(--studio-meta); font-weight: 600; }
+.workButton:hover { background: var(--rust-hover); }
+.workButton:focus-visible { outline-offset: var(--space-1); }
+.work { margin-top: var(--space-7); scroll-margin-top: var(--space-5); }
+.sectionTitle, .about h2, .contact h2 { font-family: var(--font-serif); font-size: var(--studio-section); line-height: 1.2; font-weight: 600; letter-spacing: -.025em; margin: 0 0 var(--space-5); }
+.project { padding: var(--space-5) 0; border-bottom: 1px solid var(--line); }
+.work > .project:first-of-type { padding-top: 0; }
+.projectHeading { display: grid; grid-template-columns: var(--space-5) minmax(0, 1fr) var(--space-4); gap: var(--space-3); align-items: start; }
+.number { font-family: var(--font-sans); font-size: var(--studio-meta); line-height: 1.6; font-weight: 500; color: var(--muted); padding-top: var(--space-1); }
+.projectCopy h3 { font-family: var(--font-serif); font-size: var(--studio-title); font-weight: 600; line-height: 1.2; letter-spacing: -.015em; margin: 0 0 var(--space-3); }
+.projectCopy p { font-size: var(--studio-body); line-height: 1.6; color: var(--body); max-width: 64ch; }
+.projectHeading:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: var(--space-1); }
+.projectArrow { color: var(--muted); justify-self: end; margin-top: var(--space-1); transition: color var(--ease), transform var(--ease); }
+.projectHeading:hover .projectArrow { color: var(--warm); transform: translateX(var(--space-1)); }
+.projectMetadata { margin-top: var(--space-3); padding-left: var(--space-6); }
+.projectMetadata :global(.project-meta) { gap: var(--space-2) var(--space-3); }
+.projectMetadata :global(.project-meta > span), .projectMetadata :global(.project-meta .project-link) { font-size: var(--studio-meta); }
+.moreProjects { padding-top: var(--space-3); }
+.moreProjects summary, .interests summary { font-size: var(--studio-meta); color: var(--muted); padding: var(--space-3) 0; width: fit-content; min-height: var(--space-6); cursor: pointer; }
+.moreProjects summary:hover, .interests summary:hover { color: var(--ink); text-decoration: underline; text-underline-offset: var(--space-1); }
+.moreProjects[open] summary { margin-bottom: var(--space-3); }
+.textLink { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--space-6); font-size: var(--studio-meta); font-weight: 600; width: fit-content; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: var(--space-2); text-decoration-thickness: 1px; }
+.textLink:hover { color: var(--warm); text-decoration-color: var(--warm); }
+.journal { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); padding-top: var(--space-7); }
+.journal > section { border-top: 1px solid var(--line); padding-top: var(--space-5); }
+.eyebrow { color: var(--muted); font-family: var(--font-sans); font-size: var(--studio-meta); font-weight: 500; margin: 0 0 var(--space-3); }
+.journal h3 { font-family: var(--font-serif); font-size: var(--studio-title); line-height: 1.2; font-weight: 600; letter-spacing: -.015em; margin: 0 0 var(--space-3); }
+.journal h3 a:hover { text-decoration: underline; text-underline-offset: var(--space-1); text-decoration-thickness: 1px; }
+.journal p { color: var(--body); font-size: var(--studio-body); line-height: 1.6; max-width: 64ch; }
+.journal :global(.writing-meta) { display: block; margin-top: var(--space-3); font-size: var(--studio-meta); line-height: 1.6; color: var(--muted); }
+.journal .textLink { margin-top: var(--space-3); }
+.about { padding-top: var(--space-7); scroll-margin-top: var(--space-5); }
+.goats { margin: 0; }
+.goats img { object-position: center 75%; }
+.aboutCopy { margin-top: var(--space-5); }
+.about h2, .contact h2 { margin-bottom: var(--space-4); }
+.aboutCopy > p, .contactCopy > p, .interests p { font-size: var(--studio-body); line-height: 1.6; color: var(--body); max-width: 64ch; }
+.interests { margin-top: var(--space-2); max-width: 64ch; }
+.interests p { margin-bottom: var(--space-3); }
+.contact { padding-top: var(--space-7); }
+.contact:has(:global(.contact-form)) { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+.contact :global(.contact-links) { margin-top: var(--space-4); }
+.contact :global(.contact-links a) { display: inline-flex; align-items: center; gap: var(--space-3); font-size: var(--studio-meta); min-height: var(--space-6); padding: var(--space-2) 0; border: 0; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: var(--space-2); }
+
+@media (min-width: 768px) {
+  .hero { padding-top: var(--space-6); }
+  .work { margin-top: var(--space-8); }
+  .project { padding: var(--space-6) 0; }
+  .projectHeading { grid-template-columns: var(--space-6) minmax(0, 1fr) var(--space-4); gap: var(--space-4); }
+  .projectMetadata { padding-left: calc(var(--space-6) + var(--space-4)); }
+  .journal { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-7); padding-top: var(--space-8); }
+  .about, .contact { padding-top: var(--space-8); }
+  .aboutCopy { margin-top: var(--space-6); }
+  .contact:has(:global(.contact-form)) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-7); }
+}
+
+@media (min-width: 960px) {
+  .hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); column-gap: var(--space-7); align-items: start; }
+  .valley { display: block; position: relative; grid-column: 2; grid-row: 1 / span 4; height: 100%; }
+  .valley img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
+  .hero h1, .lede, .workButton { grid-column: 1; }
+  .hero h1 { grid-row: 1; }
+  .lede { grid-row: 2; }
+  .introduction { grid-column: 1; grid-row: 3; max-width: 48ch; }
+  .workButton { grid-row: 4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projectArrow { transition: none; }
+  .projectHeading:hover .projectArrow { transform: none; }
+}

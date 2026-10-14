@@ -36,10 +36,12 @@ try {
   const address = server.address();
   if (!address || typeof address === "string") throw new Error("Smoke server failed to bind");
   const origin = `http://127.0.0.1:${address.port}`;
-  const [rootResponse, dataResponse] = await Promise.all([fetch(`${origin}/`), fetch(`${origin}/data/activity.json`)]);
-  if (!rootResponse.ok || !dataResponse.ok) throw new Error("Static export did not serve successfully");
-  const [html, activity] = await Promise.all([rootResponse.text(), dataResponse.json()]);
-  if (!html.includes("Codex session-days") || !html.includes("Observed activity") || html.includes("Cursor applied AI line changes")) {
+  const [rootResponse, dashboardResponse, dataResponse] = await Promise.all([fetch(`${origin}/`), fetch(`${origin}/activity/index.html`), fetch(`${origin}/data/activity.json`)]);
+  if (!rootResponse.ok || !dashboardResponse.ok || !dataResponse.ok) throw new Error("Static export did not serve successfully");
+  const [html, dashboardHtml, activity] = await Promise.all([rootResponse.text(), dashboardResponse.text(), dataResponse.json()]);
+  const homeActivitySection = html.match(/<section\b[^>]*\bid="activity"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  if (!homeActivitySection || !/<a\b[^>]*\bhref="\/activity\/"/.test(homeActivitySection)) throw new Error("Served homepage activity summary is missing its dashboard link");
+  if (!dashboardHtml.includes("Codex session-days") || !dashboardHtml.includes("Observed activity") || dashboardHtml.includes("Cursor applied AI line changes") || html.includes("Cursor applied AI line changes")) {
     throw new Error("Served dashboard is missing reconciled activity labels");
   }
   if (activity.schemaVersion !== 6 || activity.privacyVersion !== "aggregate-v6" || !activity.providers?.codex?.metrics?.repositoryEvidence || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.usagePresence || !activity.providers?.cursor?.metrics?.appliedLineChanges || !activity.providers?.["claude-code"]?.metrics?.repositoryEvidence) {

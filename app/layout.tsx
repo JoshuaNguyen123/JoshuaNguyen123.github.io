@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { ogImage, siteDescription, siteName, siteTitle, siteUrl } from "@/content/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const studioSerif = Playfair_Display({ variable: "--font-studio-serif", subsets: ["latin"], weight: ["600", "700"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -55,7 +56,7 @@ const web3formsOrigin = contactUsesWorker ? "" : " https://api.web3forms.com";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         {/* GitHub Pages serves no headers, so policy ships in the markup. Next's
             static export emits inline bootstrap scripts and has no nonce, so
@@ -83,7 +84,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${studioSerif.variable}`}>
         <a className="skip-link" href="#main">Skip to content</a>
         {children}
       </body>

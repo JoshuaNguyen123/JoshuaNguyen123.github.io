@@ -1,5 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
+import { getPublishedPosts } from "../lib/blog.ts";
 
 const root = process.cwd();
 const projectSource = await readFile(path.join(root, "content", "projects.ts"), "utf8");
@@ -7,14 +8,17 @@ const projectSlugs = [...projectSource.matchAll(/slug: "([a-z0-9-]+)"/g)].map((m
 if (projectSlugs.length !== 9) throw new Error("Expected nine project case studies");
 for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/obsidian-research-agent-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
-for (const expected of ["Joshua Nguyen", "Engineering AI", "systems.", "I work across the stack", "I like working on ambiguous problems.", "Build Index", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository", "Writing", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence"]) {
+const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
+if (homeHeadline !== "AI tools for research and learning.") throw new Error("Static export is missing the selected homepage headline");
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
 const activityHtml = await readFile(path.join(root, "out", "activity", "index.html"), "utf8");
-for (const expected of ["Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
-  if (!activityHtml.includes(expected)) throw new Error(`Activity definitions page is missing ${expected}`);
+for (const expected of ["Build Index", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence", "Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
+  if (!activityHtml.includes(expected)) throw new Error(`Activity page is missing ${expected}`);
 }
+if (activityHtml.includes("Cursor applied AI line changes")) throw new Error("Activity page still publishes the retired Cursor line-change claim");
 // A contact backend is configured, so the form must actually be in the export.
 // Switching backends once silently dropped it from the live site: the component
 // renders nothing when it has nowhere to post, and that read as a normal build.
@@ -26,12 +30,13 @@ if (contactConfigured) {
   }
 }
 
-const projectPositions = ["Obsidian Research Agent", "Ladybug", "Personal AI Digest", "Teach Anything", "Research Agent Platform", "Great Outdoors Intelligence"].map((project) => html.indexOf(project));
-if (!projectPositions.every((position, index) => position >= 0 && (index === 0 || position > projectPositions[index - 1]))) throw new Error("Static export has the wrong selected-project order");
-// Every project remains reachable from the minimal ledger; diagrams live in case studies.
-if ((html.match(/class="project-entry"/g) ?? []).length !== projectSlugs.length) throw new Error("Static export is missing project entries");
+// Every project remains reachable through a real link, independent of visual
+// card classes. Architecture diagrams remain in their case studies.
+const homeLinks = [...html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
+const projectLinks = new Set(homeLinks.filter((href) => /^\/work\/[a-z0-9-]+\/$/.test(href)));
+if (projectLinks.size !== projectSlugs.length) throw new Error("Static export is missing project destinations");
 for (const slug of projectSlugs) {
-  if (!html.includes(`/work/${slug}/`)) throw new Error(`Missing case-study link: ${slug}`);
+  if (!projectLinks.has(`/work/${slug}/`)) throw new Error(`Missing case-study link: ${slug}`);
   const detail = await readFile(path.join(root, "out", "work", slug, "index.html"), "utf8");
   if (!detail.includes(`/projects/${slug}-architecture.svg`) || !detail.includes("Architecture diagram of")) throw new Error(`Missing case-study diagram: ${slug}`);
 }
@@ -39,8 +44,20 @@ for (const photo of ["hiking-valley.jpg", "hiking-goats.jpg"]) {
   await access(path.join(root, "out", "images", photo));
   if (!html.includes(`/images/${photo}`)) throw new Error(`Static export is missing ${photo}`);
 }
-if (!html.includes('class="more-projects"') || !html.includes('class="monthly-disclosure"')) throw new Error("Missing progressive disclosure for projects or monthly charts");
-if (html.indexOf('class="work-section"') > html.indexOf('class="activity-section"')) throw new Error("Static export shows activity before selected work");
+if (!/<details\b[^>]*>[\s\S]*?<summary\b[^>]*>More projects/.test(html)) throw new Error("Missing progressive disclosure for projects");
+if (!activityHtml.includes('class="monthly-disclosure"')) throw new Error("Missing progressive disclosure for monthly charts");
+const sectionPositions = Object.fromEntries(["work", "activity", "writing", "contact"].map((id) => [id, html.indexOf(`id="${id}"`)]));
+for (const [id, position] of Object.entries(sectionPositions)) {
+  if (position < 0) throw new Error(`Static export is missing the ${id} section`);
+}
+if (sectionPositions.work > sectionPositions.activity || sectionPositions.work > sectionPositions.writing) throw new Error("Static export shows supporting sections before selected work");
+if (sectionPositions.contact < sectionPositions.activity || sectionPositions.contact < sectionPositions.writing) throw new Error("Static export shows contact before the supporting sections");
+const homeActivitySection = html.match(/<section\b[^>]*\bid="activity"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+if (!homeActivitySection || !/<a\b[^>]*\bhref="\/activity\/"/.test(homeActivitySection)) throw new Error("Homepage activity summary is missing its dashboard link");
+const latestPost = getPublishedPosts()[0];
+const homeWritingSection = html.match(/<section\b[^>]*\bid="writing"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+const writingLinks = [...(homeWritingSection ?? "").matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
+if (!homeWritingSection || !writingLinks.includes(latestPost ? `/blog/${latestPost.slug}/` : "/blog/")) throw new Error("Homepage writing is missing its latest published article or blog link");
 for (const expected of ["Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }

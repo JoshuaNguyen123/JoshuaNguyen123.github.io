@@ -22,7 +22,7 @@ test("public identity, editorial writing, and public social surfaces are source-
   const summaryCards = await readFile(new URL("../lib/activity/summary-cards.ts", import.meta.url), "utf8");
   const definitions = await readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8");
   assert.match(page, /Joshua Nguyen/);
-  assert.match(page, /Engineering AI<br \/>systems\./);
+  assert.match(page, /AI tools for<br className=\{styles\.titleBreak\} \/> research and learning\./);
   assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
   assert.match(projects, /a small distributed system/);
@@ -46,10 +46,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   ].map((project) => projects.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
-  assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="activity-section"'));
-  assert.ok(page.indexOf('className="work-section"') < page.indexOf('className="writing-section home-writing"'));
-  assert.ok(page.indexOf('className="writing-section home-writing"') < page.indexOf('className="activity-section"'));
-  assert.ok(page.indexOf('className="writing-section home-writing"') < page.indexOf('className="contact-section"'));
+  const sectionOrder = ["work", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`));
+  assert.ok(sectionOrder.every((position) => position >= 0));
+  assert.deepEqual(sectionOrder, [...sectionOrder].sort((a, b) => a - b));
   assert.doesNotMatch(page, /className="interests-section"/);
   assert.equal((page.match(/interests\.map/g) ?? []).length, 1);
   // One shared header and footer on every public page, with the mobile menu
@@ -120,17 +119,29 @@ test("public identity, editorial writing, and public social surfaces are source-
 });
 
 test("static architecture keeps a validated public live-feed fallback without a server API", async () => {
-  const [config, packageJson, dashboard, parser] = await Promise.all([
+  const [config, packageJson, dashboard, parser, feed, definitions, activityPage] = await Promise.all([
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../components/activity/ActivityDashboard.tsx", import.meta.url), "utf8"),
     readFile(new URL("../lib/activity/live-snapshot.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/activity/ActivityFeedProvider.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/activity/page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(config, /output: "export"/);
   assert.doesNotMatch(packageJson, /vinext|cloudflare|drizzle|wakatime/i);
-  assert.match(dashboard, /parseActivitySnapshot/);
-  assert.match(dashboard, /shouldUseActivitySnapshot/);
-  assert.match(dashboard, /cache: "no-store"/);
+  assert.match(feed, /parseActivitySnapshot/);
+  assert.match(feed, /shouldUseActivitySnapshot/);
+  assert.match(feed, /cache: "no-store"/);
+  assert.match(feed, /snapshot\.mode !== "observed"/);
+  // Both activity surfaces must share one validated snapshot and freshness
+  // status. A second polling owner can quietly show different live records.
+  assert.equal((activityPage.match(/<ActivityFeedProvider /g) ?? []).length, 1);
+  assert.match(activityPage, /<ActivityFeedProvider initialData=\{data\}>[\s\S]*<ActivityDashboard \/>[\s\S]*<ActivityDefinitions \/>[\s\S]*<\/ActivityFeedProvider>/);
+  for (const consumer of [dashboard, definitions]) {
+    assert.match(consumer, /const \{ data, feedState \} = useActivityFeed\(\)/);
+    assert.doesNotMatch(consumer, /fetch\(|setInterval\(|parseActivitySnapshot|shouldUseActivitySnapshot/);
+  }
   assert.match(dashboard, /Verified bundled snapshot/);
   assert.match(dashboard, /Observed activity/);
   assert.match(dashboard, /Usage evidence/);

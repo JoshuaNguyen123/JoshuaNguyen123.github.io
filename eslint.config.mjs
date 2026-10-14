@@ -23,6 +23,13 @@ const eslintConfig = defineConfig([
   jsxA11y.flatConfigs.recommended,
   next.configs["core-web-vitals"],
   {
+    // These static entry points intentionally navigate to the exported HTML.
+    // This avoids missing segment-prefetch files and mid-page route landings
+    // after homepage hash navigation or project disclosure interactions.
+    files: ["app/page.tsx", "app/blog/**/*.tsx", "components/site/SiteHeader.tsx", "components/site/SiteFooter.tsx"],
+    rules: { "@next/next/no-html-link-for-pages": "off" },
+  },
+  {
     languageOptions: {
       globals: {
         ...globals.browser,

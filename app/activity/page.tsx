@@ -1,4 +1,6 @@
+import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
 import { ActivityDefinitions } from "@/components/activity/ActivityDefinitions";
+import { ActivityFeedProvider } from "@/components/activity/ActivityFeedProvider";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { ogImage } from "@/content/site";
@@ -24,15 +26,25 @@ export default function ActivityDetail() {
     <>
       <SiteHeader current="activity" />
       <main id="main">
-        <section className="activity-page">
-          <span className="eyebrow">Activity</span>
-          <h1>A clearer record of when I was building.</h1>
-          <p>
-            This page explains exactly what each number counts, what it leaves
-            out, how far the source reaches, and when it was last verified.
-            Everything is reduced to privacy-safe daily aggregates before it is published.
-          </p>
-          <ActivityDefinitions initialData={data} />
+        <section className="activity-page studio-activity-page">
+          <header className="studio-activity-intro">
+            <span className="eyebrow">Activity</span>
+            <h1>A record of the work behind the projects.</h1>
+            <p>
+              Explore the daily record, then the sources and definitions behind
+              each number. These are counts of observed tool activity, not a
+              productivity score. Everything is reduced to privacy-safe daily
+              aggregates before it is published.
+            </p>
+          </header>
+          <ActivityFeedProvider initialData={data}>
+            <div className="studio-activity-dashboard">
+              <ActivityDashboard />
+            </div>
+            <div className="studio-activity-definitions" id="activity-definitions">
+              <ActivityDefinitions />
+            </div>
+          </ActivityFeedProvider>
 
           <div className="activity-more">
             <p>
@@ -40,7 +52,7 @@ export default function ActivityDetail() {
               projects, repositories, titles, models, emails, and raw IDs never
               leave my machine.
             </p>
-            <Link href="/#activity">Back to the year grids</Link>
+            <Link href="/#activity">Back to the homepage</Link>
           </div>
         </section>
       </main>

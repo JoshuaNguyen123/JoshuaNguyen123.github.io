@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import Link from "next/link";
-import { parseActivitySnapshot } from "@/lib/activity/live-snapshot";
-import { shouldUseActivitySnapshot } from "@/lib/activity/freshness.mjs";
 import { combineCursorActivity, combineRepositoryActivity } from "@/lib/activity/cursor";
 import { addDays } from "@/lib/activity/calendar";
 import { getCurrentStreak } from "@/lib/activity/streaks";
@@ -21,11 +19,8 @@ import { ActivitySummary } from "./ActivitySummary";
 import { MonthlyActivity } from "./MonthlyActivity";
 import { SourceCoverage } from "./SourceCoverage";
 import { providerPalettes } from "@/lib/activity/palette";
+import { useActivityFeed } from "./ActivityFeedProvider";
 
-const liveFeedUrl = process.env.NEXT_PUBLIC_ACTIVITY_FEED_URL
-  ?? "https://raw.githubusercontent.com/JoshuaNguyen123/JoshuaNguyen123.github.io/main/public/data/activity.json";
-const pollDelayMs = 300_000;
-const maxRetryDelayMs = 1_800_000;
 const activityTimestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US", {
   timeZone,
   year: "numeric",
@@ -86,46 +81,15 @@ function filterMetric(metric: MetricActivitySnapshot, start: string, end: string
   return { ...metric, days: metric.days.filter((day) => day.date >= start && day.date <= end) };
 }
 
-type FeedState = "checking" | "live" | "fallback" | "bundled";
-
-export function ActivityDashboard({ initialData }: { initialData: ActivitySnapshot }) {
-  const [data, setData] = useState(initialData);
-  const [feedState, setFeedState] = useState<FeedState>("checking");
+export function ActivityDashboard() {
+  const { data, feedState } = useActivityFeed();
   const [selectedChannel, setSelectedChannel] = useState<ActivityChannel>("build-index");
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [cursorMetricId, setCursorMetricId] = useState<"observedActivity" | "activeSessions" | "usagePresence">("observedActivity");
   const availableYears = yearsInSnapshot(data);
-  const [selectedYear, setSelectedYear] = useState(() => defaultYear(initialData));
+  const [selectedYear, setSelectedYear] = useState(() => defaultYear(data));
   const selectedRange = yearRange(selectedYear, data);
-  const [selectedDate, setSelectedDate] = useState(() => latestActiveDate(initialData, defaultYear(initialData)));
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-    let failures = 0;
-    const poll = async () => {
-      try {
-        const response = await fetch(`${liveFeedUrl}?v=${Date.now()}`, { cache: "no-store" });
-        if (!response.ok) throw new Error("Live activity feed was unavailable");
-        const snapshot = parseActivitySnapshot(await response.json());
-        if (!snapshot || snapshot.mode !== "observed") throw new Error("Live activity feed failed validation");
-        if (cancelled) return;
-        failures = 0;
-        setData((current) => {
-          const useLive = shouldUseActivitySnapshot(current, snapshot);
-          setFeedState(useLive ? "live" : "bundled");
-          return useLive ? snapshot : current;
-        });
-      } catch {
-        if (cancelled) return;
-        failures += 1;
-        setFeedState("fallback");
-      }
-      if (!cancelled) timeout = setTimeout(poll, failures ? Math.min(pollDelayMs * 2 ** failures, maxRetryDelayMs) : pollDelayMs);
-    };
-    void poll();
-    return () => { cancelled = true; if (timeout) clearTimeout(timeout); };
-  }, []);
+  const [selectedDate, setSelectedDate] = useState(() => latestActiveDate(data, defaultYear(data)));
 
   const filteredMetrics = useMemo(() => ({
     github: filterMetric(data.providers.github.metrics.contributions, selectedRange.start, selectedRange.end),
@@ -390,7 +354,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
 
       <div className="activity-more">
         <p>Aggregate counts only — never prompts, code, filenames, or project names. Press any square to read that day.</p>
-        <Link href="/activity/">Every metric, in depth</Link>
+        <Link href="/activity/#activity-definitions">Every metric, in depth</Link>
       </div>
 
       {/* High-level only: the exact definitions, sources, coverage windows,
@@ -400,7 +364,7 @@ export function ActivityDashboard({ initialData }: { initialData: ActivitySnapsh
         <p className="index-disclaimer">Every square is one calendar day: home base America/Denver, living-local when I travel. If a tool or a provider-attributed GitHub record saw me working that day, the day counts — and credit goes to the tool, not the model, so Cursor using a Claude model is still Cursor.</p>
         <p className="index-disclaimer">Shading is relative. Each tool grades its days against its own year — darker means busier than my usual, not busy by some absolute bar — and the Build Index averages those grades into one picture. It describes observed activity, not productivity.</p>
         <p className="index-disclaimer">Only daily counts are published. Prompts, code, filenames, and project names never leave my machine.</p>
-        <p className="index-disclaimer">The exact definitions, sources, coverage windows, and the shading math live at <Link href="/activity/">Every metric, in depth</Link>.</p>
+        <p className="index-disclaimer">The exact definitions, sources, coverage windows, and the shading math live at <Link href="/activity/#activity-definitions">Every metric, in depth</Link>.</p>
       </details>
     </div>
   );

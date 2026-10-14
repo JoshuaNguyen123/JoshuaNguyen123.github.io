@@ -40,14 +40,37 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
   return (
     <>
       <SiteHeader current="work" />
-      <main className="blog-shell blog-article work-article" id="main">
+      <main className="blog-shell blog-article work-article studio-case-study" id="main">
         <article>
           <header className="article-header">
             <Link className="blog-back" href="/#work">All work</Link>
-            <span className="eyebrow">{project.discipline}</span>
+            <span className="eyebrow">Project {project.number}</span>
             <h1>{project.title}</h1>
             <p>{project.problem}</p>
+            <dl className="work-case-meta">
+              <div>
+                <dt>Discipline</dt>
+                <dd>{project.discipline}</dd>
+              </div>
+              <div>
+                <dt>Repository</dt>
+                <dd>{project.href ? "Public" : "Private"}</dd>
+              </div>
+            </dl>
+            <div className="work-case-actions">
+              {project.href ? (
+                <a className="primary-link project-link--external" href={project.href} target="_blank" rel="noreferrer">
+                  View repository
+                </a>
+              ) : (
+                <Link className="primary-link" href="/#contact">Ask me about this project</Link>
+              )}
+            </div>
           </header>
+          <div className="article-body work-purpose">
+            <h2>What it does</h2>
+            <p>{project.whatItDoes}</p>
+          </div>
           <figure className="work-diagram">
             <Image
               src={project.image}
@@ -59,8 +82,6 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
             <figcaption>How the pieces connect, at a glance. <a href={project.image} target="_blank" rel="noreferrer">Open full-size diagram (new tab)</a></figcaption>
           </figure>
           <div className="article-body">
-            <h2>What it does</h2>
-            <p>{project.whatItDoes}</p>
             <h2>How the pieces connect</h2>
             <p>{project.howItConnects}</p>
             <h2>What was hard</h2>

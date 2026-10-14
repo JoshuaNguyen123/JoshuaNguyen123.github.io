@@ -4,7 +4,6 @@ import { ogImage, siteName } from "@/content/site";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
@@ -46,7 +45,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <main className="blog-shell blog-article" id="main">
         <article>
           <header className="article-header">
-            <Link className="blog-back" href="/blog/">All writing</Link>
+            <a className="blog-back" href="/blog/">All writing</a>
             <span className="eyebrow">{post.tags.join(" · ")}</span>
             <h1>{post.title}</h1>
             <p>{post.summary}</p>
@@ -59,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
           <footer className="article-footer">
             <span className="eyebrow">Thanks for reading</span>
-            <Link href="/blog/">All writing</Link>
+            <a href="/blog/">All writing</a>
           </footer>
         </article>
       </main>
