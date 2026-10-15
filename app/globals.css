@@ -1,24 +1,23 @@
-/* Personal studio: slate mountain shadows, warm stone, and editorial headings.
+/* Minimal: white ground, near-black type, one cobalt accent shared with Josh UI.
+   The accent marks links, the active work entry and activity intensity only.
    Activity identity and intensity remain independently encoded. */
 :root {
-  --ink: #213e3e;
-  --body: #47535a;
-  --muted: #5a666b;
-  --faint: #626c70;
-  --paper: #f8f7f3;
-  --panel: #eeede7;
-  --line: #d5d6d0;
-  --hair: #ddddd6;
-  --warm: #965d39;
-  --showcase-muted: #c6d4cf;
-  --showcase-line: #58736b;
-  --showcase-accent: #e5b58f;
-  --level-0: #e1ded5;
-  --level-1: #c2bfb5;
-  --level-2: #9d9c94;
-  --level-3: #72767a;
-  --level-4: #3f464d;
-  --level-5: #101419;
+  --ink: #141414;
+  --body: #3d3d3d;
+  --muted: #5c5c5c;
+  --faint: #6b6b6b;
+  --paper: #ffffff;
+  --panel: #f5f5f5;
+  --line: #e5e5e5;
+  --hair: #ebebeb;
+  --accent: #2f4bd6;
+  --accent-hover: #2440b8;
+  --level-0: #f0f0f0;
+  --level-1: #c4ccf2;
+  --level-2: #94a5eb;
+  --level-3: #5f75e0;
+  --level-4: #2f4bd6;
+  --level-5: #1a2c8c;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 16px;
@@ -27,14 +26,16 @@
   --space-6: 48px;
   --space-7: 64px;
   --space-8: 96px;
-  --radius: 8px;
-  --studio-meta: 14px;
-  --studio-body: 18px;
-  --studio-title: 24px;
-  --studio-section: 32px;
-  --studio-display: 40px;
-  --gutter: 24px;
-  --container: 1152px;
+  --space-9: 128px;
+  --radius: 2px;
+  --studio-meta: 15px;
+  --studio-body: 17px;
+  --studio-title: 22px;
+  --studio-section: 28px;
+  --studio-display: 34px;
+  --gutter: 20px;
+  --container: 1200px;
+  --label-column: 260px;
   --gutter-centered: max(var(--gutter), calc((100% - var(--container)) / 2));
   --measure: 660px;
   --rail: 384px;
@@ -42,13 +43,13 @@
 
   /* Secondary colours. The five --level-* values above are the neutral
      intensity ramp and must stay literal hex: tests/palette.test.mjs reads them. */
-  --rule: #a5afb0;          /* quiet underline under secondary links */
-  --paper-bright: #fffefa;  /* writing sheet, text on ink */
-  --input-line: #cfc7b4;
-  --placeholder: #b3aa97;
-  --ink-16: rgba(22, 19, 14, .16);
-  --ink-26: rgba(22, 19, 14, .26);
-  --shadow: rgba(20, 16, 10, .18);
+  --rule: #c4c4c4;          /* quiet underline under secondary links */
+  --paper-bright: #ffffff;  /* writing sheet, text on ink */
+  --input-line: #d4d4d4;
+  --placeholder: #767676;
+  --ink-16: rgba(20, 20, 20, .16);
+  --ink-26: rgba(20, 20, 20, .26);
+  --shadow: rgba(20, 20, 20, .14);
   --error: #8a2f1f;
   --success: #3f6135;
   --warn: #8a6520;
@@ -92,7 +93,6 @@
 
   --text-hero: clamp(40px, 4.85vw, 68px);
   --text-section: clamp(30px, 3.2vw, 44px);
-  --rust-hover: #7a482c;
   --text-prose: clamp(18px, 1.8vw, 21px);
   --chart-github: #315e50;
   --chart-codex: #3f7294;
@@ -109,9 +109,11 @@
 * { box-sizing: border-box; }
 html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; }
 body {
-  /* next/font defines its variables on body. Keep UI and prose in Geist. */
-  --font-sans: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
-  --font-serif: var(--font-studio-serif), Georgia, serif;
+  /* next/font defines its variables on body. One grotesk for UI and prose;
+     the old serif role now resolves to it so every page shares one voice. */
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, Consolas, monospace;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -196,13 +198,12 @@ textarea,
   font-family: var(--font-sans);
 }
 
+/* Labels stay in sentence case: tracked all-caps eyebrows read as template UI. */
 .eyebrow {
-  color: var(--faint);
+  color: var(--muted);
   display: block;
-  font-size: var(--text-xs);
-  font-weight: 550;
-  letter-spacing: .09em;
-  text-transform: uppercase;
+  font-size: var(--text-sm);
+  font-weight: 500;
 }
 
 /* Headings share one voice per level; the rules below only add margins and measure. */
@@ -247,18 +248,6 @@ textarea,
 .site-header > nav { color: var(--muted); display: flex; font-size: var(--text-sm); gap: 30px; }
 .site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); }
 .site-header > nav a[aria-current="page"] { border-bottom: 1px solid var(--ink); color: var(--ink); padding-bottom: 2px; }
-.mobile-nav { display: none; position: relative; }
-/* Generous padding so the only navigation control on a phone is a real tap
-   target; the negative margin keeps the header's baseline where it was. */
-.mobile-nav summary { cursor: pointer; font-size: var(--text-md); font-weight: 550; list-style: none; margin: -12px -4px; padding: 12px 4px; }
-.mobile-nav summary::-webkit-details-marker { display: none; }
-.mobile-nav summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
-.mobile-nav nav {
-  background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column;
-  min-width: 180px; padding: 8px 0; position: absolute; right: 0; top: 100%; z-index: 30;
-}
-.mobile-nav nav a { font-size: var(--text-md); padding: 10px 18px; }
-.mobile-nav nav a:hover, .mobile-nav nav a:focus-visible { background: var(--hair); outline-offset: -2px; }
 
 /* ---- Shared two-column rhythm: text measure plus a margin column ---- */
 .hero, .about-strip, .project-entry {
@@ -397,7 +386,7 @@ textarea,
  font-size: var(--text-sm); gap: 10px; margin: 22px 0 0;
 }
 .data-dot { background: var(--level-2); border-radius: 50%; height: 7px; width: 7px; }
-.data-dot--fixture { background: var(--warm); }
+.data-dot--fixture { background: var(--accent); }
 .data-dot--live { background: var(--live); }
 
 .summary-grid { display: grid; gap: 28px var(--column-gap); grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 28px 0 32px; }
@@ -543,7 +532,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .activity-page { padding: clamp(40px, 4.5vw, 60px) var(--gutter-centered) 0; }
 .activity-page h1 { font-size: var(--text-display-sm); font-weight: 400; letter-spacing: -.017em; line-height: 1.2; margin: 22px 0; max-width: 760px; }
 .activity-page > p { color: var(--body); font-size: var(--text-lede); line-height: 1.64; max-width: var(--measure); }
-.studio-activity-intro h1 { font-family: var(--font-serif); font-weight: 600; font-size: var(--text-display-lg); letter-spacing: -.025em; }
+.studio-activity-intro h1 { font-family: var(--font-serif); font-weight: 500; font-size: var(--text-display-lg); letter-spacing: -.025em; }
 .studio-activity-intro > p { color: var(--body); font-size: var(--text-lede); line-height: 1.6; max-width: 70ch; }
 .studio-activity-dashboard { border-top: 1px solid var(--line); margin-top: 30px; padding-top: 24px; }
 .studio-activity-definitions { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 28px; scroll-margin-top: 24px; }
@@ -649,8 +638,8 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .article-body h3 { font-size: var(--text-h3-sm); font-weight: 500; margin: 1.6em 0 .4em; }
 .article-body a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .article-body blockquote { border-left: 2px solid var(--hair); font-size: var(--text-h3-sm); font-style: italic; line-height: 1.55; margin: 1.8em 0; padding-left: 24px; }
-.article-body pre { background: var(--code-paper); color: var(--code-ink); font-family: var(--font-geist-mono); font-size: var(--text-sm); line-height: 1.6; overflow-x: auto; padding: 22px; }
-.article-body :not(pre) > code { background: var(--hair); font-family: var(--font-geist-mono); font-size: .75em; padding: 2px 4px; }
+.article-body pre { background: var(--code-paper); color: var(--code-ink); font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.6; overflow-x: auto; padding: 22px; }
+.article-body :not(pre) > code { background: var(--hair); font-family: var(--font-mono); font-size: .75em; padding: 2px 4px; }
 .article-body img { height: auto; max-width: 100%; }
 .article-body hr { border: 0; border-top: 1px solid var(--hair); margin: 2.6em 0; }
 .article-body h4 { font-size: var(--text-lede); font-weight: 500; margin: 1.4em 0 .3em; }
@@ -678,7 +667,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 .admin-auth { margin: clamp(64px, 10vw, 140px) auto; max-width: 640px; }
 .admin-auth h1 { font-size: var(--text-display-lg); font-weight: 400; letter-spacing: -.025em; margin: 18px 0; }
 .admin-auth > p { color: var(--body); font-size: var(--text-lede); line-height: 1.65; margin-bottom: 30px; }
-.admin-auth code { background: var(--hair); font-family: var(--font-geist-mono); font-size: .8em; padding: 2px 4px; }
+.admin-auth code { background: var(--hair); font-family: var(--font-mono); font-size: .8em; padding: 2px 4px; }
 .admin-editor { padding-top: 34px; }
 .admin-layout { display: grid; gap: 56px; grid-template-columns: 236px minmax(0, 1fr); }
 
@@ -713,7 +702,7 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 }
 .admin-badge.is-draft { border-color: var(--warn-line); color: var(--warn); }
 .admin-badge.is-live { background: var(--ink); border-color: var(--ink); color: var(--paper-bright); }
-.admin-dirty { color: var(--warm); font-size: var(--text-xs); }
+.admin-dirty { color: var(--accent); font-size: var(--text-xs); }
 
 /* The writing surface deliberately reuses the published article's typography so
    that editing reads as typing onto the page rather than filling in a form. */
@@ -778,7 +767,7 @@ body { position: relative; isolation: isolate; }
 .hero-copy > p + p { margin-top: 14px; }
 .hero-actions { margin-top: 22px; }
 .primary-link { display: inline-flex; align-items: center; gap: 12px; padding: 0 0 3px; border-bottom: 1px solid var(--rule); font-size: var(--text-base); font-weight: 500; }
-.primary-link:hover { color: var(--warm); border-color: var(--warm); }
+.primary-link:hover { color: var(--accent); border-color: var(--accent); }
 .hero-portrait img { aspect-ratio: 5 / 7; object-fit: cover; object-position: center; }
 .work-section { padding-top: 44px; }
 .work-section > .section-heading { border-top: 1px solid var(--hair); padding-top: 26px; }
@@ -825,9 +814,9 @@ body { position: relative; isolation: isolate; }
 .contact-links { margin-top: 16px; }
 .site-footer { margin-top: 40px; }
 .site-footer-meta a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
-.blog-intro h1, .article-header h1, .activity-page > h1, .not-found h1 { font-family: var(--font-serif); font-size: var(--text-display-lg); font-weight: 600; letter-spacing: -.025em; }
+.blog-intro h1, .article-header h1, .activity-page > h1, .not-found h1 { font-family: var(--font-serif); font-size: var(--text-display-lg); font-weight: 500; letter-spacing: -.025em; }
 .work-case-meta { display: flex; flex-wrap: wrap; gap: 18px 40px; margin: 22px 0 0; }
-.work-case-meta dt { color: var(--muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .06em; }
+.work-case-meta dt { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); }
 .work-case-meta dd { font-size: var(--text-md); line-height: 1.5; margin: 5px 0 0; }
 .work-case-actions { margin-top: 20px; }
 .work-purpose { margin-bottom: 28px; }
@@ -912,8 +901,6 @@ section[id] { scroll-margin-top: 28px; }
 }
 
 @media (max-width: 760px) {
-  .site-header > nav { display: none; }
-  .mobile-nav { display: block; }
   .hero, .about-strip, .project-entry, .contact-body {
     gap: 32px; grid-template-columns: minmax(0, 1fr);
   }
@@ -921,7 +908,6 @@ section[id] { scroll-margin-top: 28px; }
   .site-header { padding-top: 24px; padding-bottom: 18px; gap: 16px; }
   .hero { padding-top: 28px; gap: 36px; }
   .hero-copy h1 { max-width: 640px; font-size: clamp(32px, 8.6vw, 40px); }
-  .mobile-nav summary { font-family: var(--font-sans); }
   .hero-location { margin-top: 0; margin-bottom: 20px; }
   .hero-actions { gap: 22px; }
   .hero-actions a { font-size: var(--text-md); }
@@ -1089,14 +1075,34 @@ section[id] { scroll-margin-top: 28px; }
   .hero { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 48px; }
 }
 
-/* The shared chrome follows the same quiet rhythm as the studio homepage. */
-.site-identity { gap: var(--space-2); }
-.skip-link, .site-location, .site-footer-links, .site-footer-meta, .mobile-nav summary, .mobile-nav nav a { font-size: var(--studio-meta); line-height: 1.6; }
-.mobile-nav summary { padding: var(--space-3) var(--space-2); margin: calc(-1 * var(--space-3)) calc(-1 * var(--space-2)); }
-.mobile-nav nav { border-radius: var(--radius); }
-.mobile-nav nav a { padding: var(--space-3) var(--space-4); }
-.site-footer { margin-top: var(--space-7); padding-top: var(--space-5); padding-bottom: var(--space-6); }
-.site-footer-links { gap: var(--space-3) var(--space-4); }
-.site-footer-links a { min-height: var(--space-5); display: inline-flex; align-items: center; }
 @media (min-width: 768px) { :root { --gutter: 48px; } }
-@media (min-width: 960px) { :root { --studio-display: 64px; } }
+@media (min-width: 960px) { :root { --studio-display: 56px; } }
+@media (min-width: 1200px) { :root { --gutter: 64px; } }
+
+/* ---- Minimal chrome: last in the file so it settles the earlier layers ----
+   Name left, a short row of text links right. Links wrap on a phone rather
+   than collapsing into a menu, so navigation is never hidden. */
+.site-header {
+  align-items: center; border: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-5);
+  justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
+}
+.wordmark { border: 0; font-family: var(--font-sans); font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; padding: 0; }
+.site-header > nav { color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta); gap: 0 var(--space-4); }
+.site-header > nav a { align-items: center; display: inline-flex; min-height: 44px; }
+.site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); text-decoration: none; }
+.site-header > nav a[aria-current="page"] { border: 0; color: var(--ink); padding: 0; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 6px; }
+.site-header > nav .site-header-resume { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 6px; }
+.skip-link { font-size: var(--studio-meta); }
+.site-footer {
+  align-items: center; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap;
+  font-size: var(--text-sm); gap: 0 var(--space-4); justify-content: space-between;
+  margin: var(--space-8) var(--gutter-centered) 0; padding: var(--space-3) 0 var(--space-6);
+}
+.site-footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
+.site-footer-links a { align-items: center; display: inline-flex; min-height: 44px; }
+.site-footer-links a:hover, .site-footer-links a:focus-visible { color: var(--ink); }
+@media (max-width: 640px) {
+  .site-header { gap: 0; padding-top: var(--space-3); padding-bottom: var(--space-3); }
+  .site-header > nav { gap: 0 var(--space-4); }
+  .site-footer { margin-top: var(--space-7); }
+}

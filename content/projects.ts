@@ -5,6 +5,10 @@ export interface Project {
   description: string;
   reflection: string;
   discipline: string;
+  /** One line for the homepage index. */
+  tagline: string;
+  /** Featured projects only: the homepage summary and three checkable facts. */
+  feature?: { summary: string; highlights: [string, string, string] };
   href: string | null;
   /** Architecture diagram under public/, e.g. "/projects/ladybug-architecture.svg". */
   image: string;
@@ -33,6 +37,16 @@ export const projects: Project[] = [
     reflection:
       "Adding tools to an agent is the easy part. The hard part is making each one bounded and debuggable, so that when something goes wrong you can see exactly which call did it and run it again.",
     discipline: "TypeScript · Agent systems",
+    tagline: "Research missions inside an Obsidian vault, with a receipt for every step",
+    feature: {
+      summary:
+        "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, commits to a plan, calls only approved tools, and writes sourced notes back with a receipt for every step.",
+      highlights: [
+        "Sandboxed tools behind exact approval prompts",
+        "A failed step can be replayed without starting over",
+        "Linear, GitHub, and code work stay behind capability gates",
+      ],
+    },
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
     image: diagram("obsidian-research-agent"),
     problem:
@@ -53,6 +67,16 @@ export const projects: Project[] = [
     reflection:
       "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
     discipline: "TypeScript · Swift · Supabase",
+    tagline: "A private photo and writing space for two people",
+    feature: {
+      summary:
+        "A private photo and writing space for exactly two people. I built it three ways so the product could be proven before the cloud bill started: a deterministic simulator, a Supabase PWA, and the original SwiftUI app.",
+      highlights: [
+        "A simulator runs both phones side by side with no credentials",
+        "Row-level security, checked by a three-account test",
+        "Migrations, journeys, and the iOS handoff run on self-hosted CI",
+      ],
+    },
     href: null,
     image: diagram("ladybug"),
     problem:
@@ -73,6 +97,16 @@ export const projects: Project[] = [
     reflection:
       "Requiring a citation for every generated sentence is what turned this from a toy into something I trust enough to study from. Keeping ingestion and delivery apart meant either side could fail without taking the other down.",
     discipline: "Python · RAG · Cloudflare Workers",
+    tagline: "A cited technical lesson in my inbox twice a day",
+    feature: {
+      summary:
+        "A self-hosted retrieval pipeline that emails me a grounded technical lesson twice a day. It has been running since March, and every generated sentence has to cite its source.",
+      highlights: [
+        "Ingest and delivery share only the knowledge store",
+        "Either side can fail without taking the other down",
+        "A Cloudflare Worker sends on time where GitHub's scheduler drifted by hours",
+      ],
+    },
     href: null,
     image: diagram("personal-ai-digest"),
     problem:
@@ -93,6 +127,7 @@ export const projects: Project[] = [
     reflection:
       "Getting a model to write a lesson takes an afternoon. Getting Tuesday's lesson to depend on what Monday showed, and being able to prove it, was the real product.",
     discipline: "TypeScript · Learning systems",
+    tagline: "A lesson planner that remembers what Monday taught",
     href: null,
     image: diagram("teach-anything"),
     problem:
@@ -113,6 +148,7 @@ export const projects: Project[] = [
     reflection:
       "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
     discipline: "TypeScript · Electron · Desktop app",
+    tagline: "The research agent in a desktop editor that reviews every edit",
     href: null,
     image: diagram("research-agent-platform"),
     problem:
@@ -133,6 +169,7 @@ export const projects: Project[] = [
     reflection:
       "An agent with good memory and a gate it cannot skip does more useful work than a smarter agent with neither.",
     discipline: "Python · Agent workflows",
+    tagline: "A repository protocol that keeps coding agents behind a plan",
     href: null,
     image: diagram("autonomous-repository-template"),
     problem:
@@ -153,6 +190,7 @@ export const projects: Project[] = [
     reflection:
       "Provenance and privacy work better as visible features than as a footnote.",
     discipline: "TypeScript · Data visualization",
+    tagline: "This site's privacy-safe record of when I'm building",
     href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
     image: diagram("engineering-activity-portfolio"),
     problem:
@@ -173,6 +211,7 @@ export const projects: Project[] = [
     reflection:
       "The product is the ranking. The dashboard exists so you can argue with it.",
     discipline: "Python · Data pipelines",
+    tagline: "Montana destinations ranked by live conditions, in progress",
     href: null,
     image: diagram("great-outdoors-intelligence"),
     problem:
@@ -193,6 +232,7 @@ export const projects: Project[] = [
     reflection:
       "Two transcripts of the same audio disagree constantly. The review queue that reconciles them turned out to be the product, not the models.",
     discipline: "Python · TypeScript · Speech",
+    tagline: "Meeting notes that never leave the machine",
     href: null,
     image: diagram("local-first-meeting-transcription"),
     problem:

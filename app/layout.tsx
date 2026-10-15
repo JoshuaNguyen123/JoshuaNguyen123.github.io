@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { ogImage, siteDescription, siteName, siteTitle, siteUrl } from "@/content/site";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const studioSerif = Playfair_Display({ variable: "--font-studio-serif", subsets: ["latin"], weight: ["600", "700"] });
+// Archivo is shared with the Josh UI library; Plex Mono carries small metadata.
+const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
+const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
-// The site is deliberately one light "warm paper" scheme. Declaring it keeps
-// form controls and scrollbars light for viewers whose OS is in dark mode.
+// The site is deliberately one light scheme. Declaring it keeps form controls
+// and scrollbars light for viewers whose OS is in dark mode.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "light",
-  themeColor: "#f8f7f3",
+  themeColor: "#ffffff",
 };
 
 // The contact form posts directly to Web3Forms until the verifying worker is
@@ -84,7 +84,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${studioSerif.variable}`}>
+      <body className={`${archivo.variable} ${plexMono.variable}`}>
         <a className="skip-link" href="#main">Skip to content</a>
         {children}
       </body>

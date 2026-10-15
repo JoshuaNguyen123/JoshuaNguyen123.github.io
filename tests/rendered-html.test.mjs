@@ -21,8 +21,11 @@ test("public identity, editorial writing, and public social surfaces are source-
   ]);
   const summaryCards = await readFile(new URL("../lib/activity/summary-cards.ts", import.meta.url), "utf8");
   const definitions = await readFile(new URL("../components/activity/ActivityDefinitions.tsx", import.meta.url), "utf8");
-  assert.match(page, /Joshua Nguyen/);
-  assert.match(page, /AI tools for<br className=\{styles\.titleBreak\} \/> research and learning\./);
+  // The name renders in the shared header; the page carries it as structured data.
+  assert.match(site, /siteName = "Joshua Nguyen"/);
+  assert.match(page, /name: siteName/);
+  assert.match(page, /I build research agents and retrieval systems that show their work\./);
+  const workIndex = await readFile(new URL("../components/work/WorkIndex.tsx", import.meta.url), "utf8");
   assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
   assert.match(projects, /a small distributed system/);
@@ -46,16 +49,23 @@ test("public identity, editorial writing, and public social surfaces are source-
   ].map((project) => projects.indexOf(project));
   assert.ok(projectOrder.every((position) => position >= 0));
   assert.deepEqual(projectOrder, [...projectOrder].sort((a, b) => a - b));
-  const sectionOrder = ["work", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`));
+  // Selected work (the WorkIndex section) leads; contact closes the page.
+  assert.match(workIndex, /id="work"/);
+  const sectionOrder = [page.indexOf("<WorkIndex"), ...["more", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`))];
   assert.ok(sectionOrder.every((position) => position >= 0));
   assert.deepEqual(sectionOrder, [...sectionOrder].sort((a, b) => a - b));
+  // The scroll-linked index never takes over scrolling: one passive,
+  // frame-throttled listener, with in-page links as the no-JS fallback.
+  assert.match(workIndex, /\{ passive: true \}/);
+  assert.match(workIndex, /requestAnimationFrame/);
+  assert.match(workIndex, /href=\{`#project-\$\{project\.slug\}`\}/);
+  assert.doesNotMatch(workIndex, /preventDefault|scrollTo\(|wheel/);
   assert.doesNotMatch(page, /className="interests-section"/);
   assert.equal((page.match(/interests\.map/g) ?? []).length, 1);
-  // One shared header and footer on every public page, with the mobile menu
-  // included, so no route can quietly lose its navigation again.
-  assert.match(header, /<MobileNav>/);
-  const mobileNav = await readFile(new URL("../components/site/MobileNav.tsx", import.meta.url), "utf8");
-  assert.match(mobileNav, /className="mobile-nav"/);
+  // One shared header and footer on every public page. The primary links wrap
+  // on a phone instead of hiding behind a menu, so no stylesheet may hide them.
+  assert.doesNotMatch(header, /MobileNav/);
+  assert.doesNotMatch(styles, /\.site-header > nav \{[^}]*display: none/);
   assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
   for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
@@ -74,17 +84,19 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /projects\.slice\(0, FEATURED_PROJECTS\)/);
   assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
   assert.doesNotMatch(page, /<strong><span>View project/);
-  assert.match(page, /className="project-link project-link--external"/);
+  assert.match(workIndex, /className="project-link project-link--external"/);
   assert.match(page, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
   assert.match(projects, /image: string;/);
   assert.match(work, /Architecture diagram of/);
   assert.match(tile, /project-tile--image/);
   assert.match(tile, /Architecture diagram of/);
   assert.match(tile, /aria-hidden="true"/);
-  assert.doesNotMatch(`${page}${blog}${article}${work}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
+  assert.doesNotMatch(`${page}${workIndex}${blog}${article}${work}${linkedInWidget}${header}${footer}${notFound}`, /[↗↘←→]|[\u{1F300}-\u{1FAFF}]/u);
+  assert.doesNotMatch(workIndex, /—/);
   assert.doesNotMatch(blog, /Coming soon|placeholder|lorem ipsum/i);
   assert.doesNotMatch(`${page}${layout}`, /Josh B\./);
-  assert.match(layout, /Geist/);
+  assert.match(layout, /Archivo/);
+  assert.doesNotMatch(layout, /Geist|Playfair|Inter\b/);
   assert.doesNotMatch(layout, /Newsreader/);
   assert.match(site, /https:\/\/joshuanguyen123\.github\.io/);
   assert.match(layout, /metadataBase: new URL\(siteUrl\)/);
@@ -99,17 +111,17 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(activitySummary, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /from "@\/lib\/activity\/summary-cards"/);
   assert.match(definitions, /summaryCardExplanations/);
-  // Font stacks must be declared on body: next/font puts --font-geist-sans
+  // Font stacks must be declared on body: next/font puts --font-archivo
   // on the body class, and a token declared on :root cannot
   // see them, which once dropped the whole site to Times New Roman.
-  assert.match(styles, /body \{[^}]*--font-sans: var\(--font-geist-sans\)/);
+  assert.match(styles, /body \{[^}]*--font-sans: var\(--font-archivo\)/);
   assert.doesNotMatch(styles.slice(0, styles.indexOf("body {")), /--font-(serif|sans):/);
   // Every size and colour comes from the token block; raw literals are the drift this guards against.
   const normalizedStyles = styles.replace(/\r\n/g, "\n");
   const afterTokens = normalizedStyles.slice(normalizedStyles.indexOf("\n}\n") + 3);
   assert.doesNotMatch(afterTokens, /font-size: \d+px/);
   assert.doesNotMatch(afterTokens, /#[0-9a-f]{6}\b/i);
-  assert.doesNotMatch(afterTokens, /font-family: var\(--font-geist-sans\)/);
+  assert.doesNotMatch(afterTokens, /font-family: var\(--font-archivo\)/);
   const mobileStyles = styles.slice(styles.indexOf("@media (max-width: 760px)"), styles.indexOf("@media (prefers-reduced-motion: reduce)"));
   // Notes are full-width rows with inline meta; the old two-column row once
   // squeezed the summary into a 51px column on phones.

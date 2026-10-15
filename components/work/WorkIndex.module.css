@@ -1,0 +1,69 @@
+/* Selected work: a sticky label column holding the index, and a track of entries.
+   --work-progress (0 to 1) is written by WorkIndex as the reader scrolls. */
+.section {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: var(--label-column) minmax(0, 1fr);
+  padding: var(--space-9) 0;
+}
+.aside { min-width: 0; }
+.sticky { display: flex; flex-direction: column; gap: var(--space-4); position: sticky; top: var(--space-6); }
+.heading { color: var(--muted); font-size: var(--studio-meta); font-weight: 500; margin: 0; }
+
+.index { display: flex; gap: var(--space-4); }
+.rail { background: var(--line); flex-shrink: 0; position: relative; width: 2px; }
+.rail::after {
+  background: var(--accent); content: ""; inset: 0; position: absolute;
+  transform: scaleY(var(--work-progress, 0)); transform-origin: top;
+}
+.list { display: flex; flex-direction: column; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+.link { color: var(--faint); display: flex; flex-direction: column; gap: 2px; min-height: 44px; padding: var(--space-2) 0; }
+.link:hover, .link:focus-visible, .link[aria-current="true"] { color: var(--ink); }
+.number { font-family: var(--font-mono); font-size: var(--text-sm); }
+.linkTitle { font-size: var(--text-body); font-weight: 500; letter-spacing: -.01em; }
+.more {
+  align-items: center; display: inline-flex; font-size: var(--studio-meta); min-height: 44px; width: fit-content;
+  text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px;
+}
+.more:hover { text-decoration-color: var(--ink); }
+
+.track { display: flex; flex-direction: column; gap: calc(var(--space-9) + var(--space-5)); min-width: 0; }
+.bar { display: none; }
+
+.entry { display: flex; flex-direction: column; gap: var(--space-4); scroll-margin-top: var(--space-5); }
+.figure { border: 1px solid var(--line); margin: 0; }
+.figure img { display: block; height: auto; width: 100%; }
+.meta { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); }
+.title { font-size: var(--studio-title); font-weight: 500; letter-spacing: -.015em; line-height: 1.2; margin: 0; }
+.summary { color: var(--body); font-size: var(--studio-body); line-height: 1.65; max-width: 62ch; }
+.highlights { font-size: var(--studio-meta); line-height: 1.5; list-style: none; margin: 0; max-width: 62ch; padding: 0; }
+.highlights li { border-top: 1px solid var(--line); padding: 10px 0; }
+.highlights li:last-child { border-bottom: 1px solid var(--line); }
+.actions { align-items: center; display: flex; flex-wrap: wrap; font-size: var(--studio-meta); gap: 0 var(--space-4); }
+.actions a { align-items: center; display: inline-flex; min-height: 44px; }
+.caseStudy { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.caseStudy:hover { color: var(--accent-hover); }
+.actions :global(.project-link) { margin-top: 0; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.private { color: var(--muted); }
+.private a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+
+@media (max-width: 760px) {
+  .section { gap: var(--space-4); grid-template-columns: minmax(0, 1fr); padding: var(--space-7) 0; }
+  .sticky { position: static; }
+  .index, .more { display: none; }
+  .track { gap: var(--space-8); }
+  /* The index collapses into a slim bar that stays pinned while the entries scroll. */
+  .bar {
+    background: var(--paper); display: flex; flex-direction: column; gap: var(--space-2);
+    margin-bottom: calc(-1 * var(--space-6)); padding-top: var(--space-3); position: sticky; top: 0; z-index: 2;
+  }
+  .bar p { align-items: baseline; display: flex; gap: var(--space-3); font-size: var(--studio-meta); }
+  .bar .number { color: var(--muted); }
+  .barTitle { font-weight: 500; }
+  .barTrack { background: var(--line); display: block; height: 2px; position: relative; }
+  .barTrack::after {
+    background: var(--accent); content: ""; inset: 0; position: absolute;
+    transform: scaleX(var(--work-progress, 0)); transform-origin: left;
+  }
+}

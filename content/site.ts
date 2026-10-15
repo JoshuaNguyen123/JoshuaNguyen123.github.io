@@ -13,6 +13,17 @@ export const linkedInUrl = linkedInProfileUrl;
 // renders anywhere, so nothing dead ships.
 export const resumeUrl: string | null = null;
 
+// Same pattern for the intro's "Open to" line: set it to something like
+// "Applied AI roles and scoped contract builds" and it renders; null hides it,
+// so the site never publishes a guess about availability.
+export const availability: string | null = null;
+
+/** The intro's "Now" line: what is being built at the moment. */
+export const currentFocus = {
+  label: "Building Great Outdoors Intelligence, a conditions ranker for Montana",
+  href: "/work/great-outdoors-intelligence/",
+} as const;
+
 export const ogImage = {
   url: "/og-personal.jpg",
   width: 1200,

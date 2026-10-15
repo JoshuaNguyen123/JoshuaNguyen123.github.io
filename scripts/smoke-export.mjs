@@ -12,7 +12,7 @@ const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^
 for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
-if (homeHeadline !== "AI tools for research and learning.") throw new Error("Static export is missing the selected homepage headline");
+if (homeHeadline !== "I build research agents and retrieval systems that show their work.") throw new Error("Static export is missing the selected homepage headline");
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
 const activityHtml = await readFile(path.join(root, "out", "activity", "index.html"), "utf8");
 for (const expected of ["Build Index", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence", "Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
@@ -40,11 +40,17 @@ for (const slug of projectSlugs) {
   const detail = await readFile(path.join(root, "out", "work", slug, "index.html"), "utf8");
   if (!detail.includes(`/projects/${slug}-architecture.svg`) || !detail.includes("Architecture diagram of")) throw new Error(`Missing case-study diagram: ${slug}`);
 }
-for (const photo of ["hiking-valley.jpg", "hiking-goats.jpg"]) {
+for (const photo of ["hiking-valley.jpg"]) {
   await access(path.join(root, "out", "images", photo));
   if (!html.includes(`/images/${photo}`)) throw new Error(`Static export is missing ${photo}`);
 }
-if (!/<details\b[^>]*>[\s\S]*?<summary\b[^>]*>More projects/.test(html)) throw new Error("Missing progressive disclosure for projects");
+// Selected work ships its scroll-linked index as plain in-page links, so it
+// still works as a table of contents before (or without) JavaScript.
+const workIndex = html.match(/<nav\b[^>]*aria-label="Selected projects"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+for (const slug of projectSlugs.slice(0, 3)) {
+  if (!workIndex.includes(`href="#project-${slug}"`) || !html.includes(`id="project-${slug}"`)) throw new Error(`Selected work index is missing ${slug}`);
+}
+if (!/<section\b[^>]*\bid="more"/.test(html)) throw new Error("Missing the more-projects index");
 if (!activityHtml.includes('class="monthly-disclosure"')) throw new Error("Missing progressive disclosure for monthly charts");
 const sectionPositions = Object.fromEntries(["work", "activity", "writing", "contact"].map((id) => [id, html.indexOf(`id="${id}"`)]));
 for (const [id, position] of Object.entries(sectionPositions)) {
@@ -58,14 +64,14 @@ const latestPost = getPublishedPosts()[0];
 const homeWritingSection = html.match(/<section\b[^>]*\bid="writing"[^>]*>([\s\S]*?)<\/section>/)?.[1];
 const writingLinks = [...(homeWritingSection ?? "").matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
 if (!homeWritingSection || !writingLinks.includes(latestPost ? `/blog/${latestPost.slug}/` : "/blog/")) throw new Error("Homepage writing is missing its latest published article or blog link");
-for (const expected of ["Bozeman, Montana", "Mobile navigation", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
+for (const expected of ["Bozeman, Montana", "LinkedIn", 'rel="apple-touch-icon"', 'name="theme-color"', "application/ld+json", 'class="skip-link"']) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 // Every public page shares one header and footer; a page that loses them is a
 // dead end for a visitor who arrived from search.
 for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/404.html"]) {
   const pageHtml = await readFile(path.join(root, page), "utf8");
-  for (const expected of ['aria-label="Primary navigation"', 'aria-label="Mobile navigation"', 'class="site-footer"', 'href="/blog/"', 'href="/#contact"']) {
+  for (const expected of ['aria-label="Primary navigation"', 'class="site-footer"', 'href="/blog/"', 'href="/#contact"']) {
     if (!pageHtml.includes(expected)) throw new Error(`${page} is missing shared chrome (${expected})`);
   }
 }

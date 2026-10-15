@@ -1,0 +1,76 @@
+/* Minimal homepage. Every section is a narrow label column beside its content,
+   separated by a hairline and whitespace; no cards, shadows, or badges.
+   Tokens live in globals.css. */
+.main { margin: 0 var(--gutter-centered); }
+
+.intro { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-8) 0 var(--space-9); }
+.kicker { color: var(--muted); font-size: var(--studio-meta); }
+.intro h1 { font-size: var(--studio-display); font-weight: 500; letter-spacing: -.025em; line-height: 1.08; margin: 0; max-width: 21ch; }
+.lede { color: var(--muted); font-size: var(--text-lede); line-height: 1.6; max-width: 60ch; }
+.facts, .channels {
+  display: grid; font-size: var(--studio-meta); gap: var(--space-2) var(--space-4);
+  grid-template-columns: max-content minmax(0, 1fr); line-height: 1.5; margin: var(--space-2) 0 0;
+}
+.facts dt, .channels dt { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); padding-top: 1px; }
+.facts dd, .channels dd { margin: 0; }
+.facts a, .channels a, .textLink, .approach summary {
+  text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px;
+}
+.facts a:hover, .channels a:hover, .textLink:hover { text-decoration-color: var(--ink); }
+
+.section {
+  border-top: 1px solid var(--line); display: grid; gap: var(--space-4) var(--space-6);
+  grid-template-columns: var(--label-column) minmax(0, 1fr); padding: var(--space-9) 0;
+}
+.label { color: var(--muted); font-size: var(--studio-meta); font-weight: 500; margin: 0; }
+.content { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.statement { font-size: var(--text-xl); letter-spacing: -.01em; line-height: 1.45; max-width: 40ch; }
+.textLink { align-items: center; align-self: flex-start; display: inline-flex; font-size: var(--studio-meta); min-height: 44px; }
+
+/* Index rows: title and one line, wrapping beneath each other on a phone. */
+.rows { list-style: none; margin: 0; min-width: 0; padding: 0; }
+.rows li { border-top: 1px solid var(--line); }
+.rows li:last-child { border-bottom: 1px solid var(--line); }
+.rows a, .post { align-items: baseline; display: flex; flex-wrap: wrap; gap: 2px var(--space-4); min-height: 44px; padding: var(--space-3) 0; }
+.rowTitle { flex: 1 1 240px; font-size: var(--text-body); font-weight: 500; }
+.rowNote { color: var(--muted); flex: 2 1 280px; font-size: var(--studio-meta); line-height: 1.5; }
+.rows a:hover .rowTitle, .post:hover .rowTitle { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.post { border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); }
+.post :global(.writing-meta) { color: var(--muted); flex-basis: 100%; font-family: var(--font-mono); font-size: var(--text-sm); }
+
+/* A year of the Build Index as a strip of week columns, levels from the shared ramp. */
+.calendar { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; }
+.cells {
+  display: grid; gap: 3px; grid-auto-flow: column;
+  grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); grid-template-rows: repeat(7, auto);
+}
+.cell { aspect-ratio: 1; border-radius: 1px; }
+.cell[data-level="0"] { background: var(--level-0); }
+.cell[data-level="1"] { background: var(--level-1); }
+.cell[data-level="2"] { background: var(--level-2); }
+.cell[data-level="3"] { background: var(--level-3); }
+.cell[data-level="4"] { background: var(--level-4); }
+.cell[data-level="5"] { background: var(--level-5); }
+.calendar figcaption {
+  color: var(--muted); display: flex; flex-wrap: wrap; font-family: var(--font-mono);
+  font-size: var(--text-sm); gap: var(--space-1) var(--space-4); justify-content: space-between;
+}
+
+.about { display: flex; flex-wrap: wrap; gap: var(--space-5); min-width: 0; }
+.aboutCopy { display: flex; flex: 999 1 320px; flex-direction: column; gap: var(--space-4); font-size: var(--studio-body); line-height: 1.65; min-width: 0; }
+.aboutCopy > p:not(.statement) { color: var(--body); max-width: 62ch; }
+.approach { max-width: 62ch; }
+.approach summary { cursor: pointer; font-size: var(--studio-meta); min-height: 44px; padding: var(--space-2) 0; width: fit-content; }
+.approach p { color: var(--body); font-size: var(--studio-meta); line-height: 1.6; margin-top: var(--space-3); }
+.approach strong { font-weight: 600; }
+.photo { flex: 1 1 240px; margin: 0; min-width: 0; }
+.photo img { aspect-ratio: 4 / 5; display: block; height: auto; object-fit: cover; width: 100%; }
+
+.content :global(.contact-form) { border-top: 1px solid var(--line); margin-top: var(--space-4); padding-top: var(--space-5); }
+
+@media (max-width: 760px) {
+  .intro { padding: var(--space-7) 0 var(--space-8); }
+  .section { grid-template-columns: minmax(0, 1fr); padding: var(--space-7) 0; }
+  .statement { font-size: var(--text-lg); }
+  .cells { gap: 2px; }
+}
