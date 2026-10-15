@@ -1,11 +1,11 @@
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ArchitectureDiagram } from "@/components/work/ArchitectureDiagram";
 import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import styles from "@/components/site/subpage.module.css";
 import { getProject, getProjects } from "@/content/projects";
 import { ogImage, siteName } from "@/content/site";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -80,13 +80,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
             <section className={styles.section} data-section="Architecture">
               <h2 className={styles.label} data-section-label>Architecture</h2>
               <figure className={styles.figure}>
-                <Image
-                  src={project.image}
-                  alt={`Architecture diagram of ${project.title}`}
-                  width={1200}
-                  height={900}
-                  sizes="(max-width: 760px) calc(100vw - 48px), 880px"
-                />
+                <ArchitectureDiagram slug={project.slug} label={`Architecture diagram of ${project.title}`} />
                 <figcaption>How the pieces connect, at a glance. <a href={project.image} target="_blank" rel="noreferrer">Open the full-size diagram (new tab)</a></figcaption>
               </figure>
             </section>

@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { READING_LINE } from "@/components/work/WorkIndex";
+import { drawProgress, READING_LINE } from "@/lib/scroll";
 import styles from "./subpage.module.css";
 
 /**
  * Scroll-linked sections for subpages, on the same reading line as the
  * homepage work index. Every [data-section] inside gets --section-progress
  * (0 to 1), and data-active while it crosses the line; the stylesheet pins its
- * [data-section-label] and fills a rail beneath it. On a phone, where labels
+ * [data-section-label] and fills a rail beneath it. Every [data-scroll-draw]
+ * gets --draw-progress, from entering the bottom of the viewport to sitting
+ * fully in view, so a diagram can trace itself. On a phone, where labels
  * sit above their content, a slim sticky bar names the current section
  * instead. Native scrolling is never intercepted, and without JavaScript the
  * page is the same static layout.
@@ -36,6 +38,9 @@ export function ScrollSections({ children }: { children: ReactNode }) {
         if (rect.top <= line && rect.bottom > line) active = section;
       }
       sections.forEach((section) => section.toggleAttribute("data-active", section === active));
+      root.querySelectorAll<HTMLElement>("[data-scroll-draw]").forEach((element) => {
+        element.style.setProperty("--draw-progress", drawProgress(element.getBoundingClientRect(), window.innerHeight).toFixed(4));
+      });
       const bounds = root.getBoundingClientRect();
       root.style.setProperty("--page-progress", Math.min(1, Math.max(0, (line - bounds.top) / bounds.height)).toFixed(4));
       // The phone bar only appears once the tracked region reaches the top.

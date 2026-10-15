@@ -1,88 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="rap-title rap-desc">
-  <title id="rap-title">Research Agent Platform architecture</title>
-  <desc id="rap-desc">A standalone Electron desktop editor over an ordinary vault folder. A file tree and CodeMirror note sit beside a hunk-review gate that must accept or reject edits before anything touches disk. Three pin connectors join the window to a vendored agent core at a pinned commit.</desc>
-
-  <defs>
-    <clipPath id="rap-window-clip">
-      <rect x="48" y="36" width="1104" height="708" rx="14"/>
-    </clipPath>
-  </defs>
-
-  <rect width="1200" height="900" fill="#f5f3ed"/>
-
-  <!-- Desktop window chrome -->
-  <g id="rap-window">
-    <rect x="48" y="36" width="1104" height="708" rx="14" fill="#fffdf8" stroke="#16130e" stroke-width="4"/>
-    <rect x="48" y="36" width="1104" height="56" rx="14" fill="#16130e"/>
-    <rect x="48" y="78" width="1104" height="14" fill="#16130e"/>
-    <circle cx="80" cy="64" r="9" fill="#8a2f1f"/>
-    <circle cx="106" cy="64" r="9" fill="#8a5a20"/>
-    <circle cx="132" cy="64" r="9" fill="#3f6135"/>
-    <text x="600" y="70" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">vault / notes</text>
-
-    <g clip-path="url(#rap-window-clip)">
-      <!-- File tree -->
-      <rect x="48" y="92" width="248" height="652" fill="#f5f3ed"/>
-      <line x1="296" y1="92" x2="296" y2="744" stroke="#e0d9cc" stroke-width="2"/>
-      <text x="72" y="136" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">▾ vault</text>
-      <rect x="68" y="156" width="204" height="44" rx="6" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-      <text x="84" y="186" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">mission.md</text>
-      <text x="84" y="236" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">sources.md</text>
-      <text x="84" y="280" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">plan.md</text>
-      <text x="84" y="324" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">inbox.md</text>
-      <text x="72" y="380" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">▾ notes</text>
-      <text x="84" y="424" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">q3.md</text>
-      <text x="84" y="468" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">daily.md</text>
-      <rect x="68" y="660" width="204" height="52" rx="8" fill="#16130e"/>
-      <text x="170" y="694" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="18">.exe · Playwright</text>
-
-      <!-- CodeMirror-like editor -->
-      <rect x="296" y="92" width="456" height="652" fill="#fffdf8"/>
-      <rect x="296" y="92" width="56" height="652" fill="#f5f3ed"/>
-      <text x="324" y="150" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">1</text>
-      <text x="324" y="198" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">2</text>
-      <text x="324" y="246" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">3</text>
-      <text x="324" y="294" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">4</text>
-      <text x="324" y="342" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">5</text>
-      <text x="372" y="150" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26"># Mission</text>
-      <text x="372" y="198" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">Read the vault.</text>
-      <rect x="352" y="214" width="384" height="44" fill="#e0d9cc"/>
-      <text x="372" y="246" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">Cite every claim.</text>
-      <text x="372" y="294" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">- [[sources]]</text>
-      <text x="372" y="342" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="22">- [[plan]]</text>
-      <rect x="548" y="220" width="3" height="32" fill="#8a5a20"/>
-
-      <!-- Hunk review gate -->
-      <rect x="752" y="92" width="400" height="652" fill="#fffdf8"/>
-      <line x1="752" y1="92" x2="752" y2="744" stroke="#8a5a20" stroke-width="6"/>
-      <rect x="752" y="92" width="400" height="64" fill="#8a5a20"/>
-      <text x="952" y="134" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">REVIEW  ·  before disk</text>
-      <text x="776" y="192" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="20">mission.md</text>
-      <rect x="776" y="214" width="352" height="56" rx="6" fill="#f5f3ed"/>
-      <text x="792" y="252" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="24">− no source</text>
-      <rect x="776" y="282" width="352" height="56" rx="6" fill="#f5f3ed"/>
-      <text x="792" y="320" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="24">+ cited [[q3]]</text>
-      <rect x="776" y="354" width="352" height="48" rx="6" fill="#f5f3ed"/>
-      <text x="792" y="386" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="22">− inbox dump</text>
-      <rect x="776" y="414" width="352" height="48" rx="6" fill="#f5f3ed"/>
-      <text x="792" y="446" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="22">+ filed under plan</text>
-      <rect x="776" y="640" width="160" height="56" rx="8" fill="#fffdf8" stroke="#8a2f1f" stroke-width="3"/>
-      <text x="856" y="676" text-anchor="middle" fill="#8a2f1f" font-family="Georgia, 'Times New Roman', serif" font-size="22">Reject</text>
-      <rect x="952" y="640" width="176" height="56" rx="8" fill="#3f6135"/>
-      <text x="1040" y="676" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="22">Accept</text>
-    </g>
-  </g>
-
-  <!-- Three typed seams as pins into the vendored core -->
-  <g id="rap-seams">
-    <line x1="248" y1="744" x2="248" y2="792" stroke="#16130e" stroke-width="4"/>
-    <line x1="524" y1="744" x2="524" y2="792" stroke="#16130e" stroke-width="4"/>
-    <line x1="952" y1="744" x2="952" y2="792" stroke="#16130e" stroke-width="4"/>
-    <circle cx="248" cy="792" r="11" fill="#16130e"/>
-    <circle cx="524" cy="792" r="11" fill="#16130e"/>
-    <circle cx="952" cy="792" r="11" fill="#16130e"/>
-    <rect x="48" y="802" width="1104" height="70" rx="10" fill="#16130e"/>
-    <text x="80" y="848" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">vendored core  @  pinned commit</text>
-    <text x="1132" y="848" text-anchor="end" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">tools · vault · edits</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="research-agent-platform-title research-agent-platform-desc">
+  <title id="research-agent-platform-title">Research Agent Platform architecture</title>
+  <desc id="research-agent-platform-desc">A standalone desktop editor around the same agent core as the Obsidian plugin. The core is vendored at a pinned commit and reached through three typed seams. The Electron and CodeMirror 6 host owns the file tree, hunk-by-hunk review, and the Windows installer. Approved edits are written as ordinary notes, so Obsidian can open the same vault. Playwright journeys cover the whole loop.</desc>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <rect x="400" y="90" width="400" height="620" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="422" y="126" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Electron · CodeMirror 6</text>
+  <rect x="40" y="760" width="1120" height="100" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="796" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Playwright journeys cover the whole loop</text>
+  <path d="M 320 220 L 435 220" fill="none" stroke="#141414" stroke-width="2"/>
+  <path d="M 435 220 L 421 227 L 421 213 Z" fill="#141414"/>
+  <rect x="344.3" y="203" width="66.4" height="34" fill="#ffffff"/>
+  <text x="377.5" y="226" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">seam</text>
+  <path d="M 320 420 L 435 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 435 420 L 421 427 L 421 413 Z" fill="#2f4bd6"/>
+  <rect x="344.3" y="403" width="66.4" height="34" fill="#ffffff"/>
+  <text x="377.5" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">seam</text>
+  <path d="M 320 620 L 435 620" fill="none" stroke="#141414" stroke-width="2"/>
+  <path d="M 435 620 L 421 627 L 421 613 Z" fill="#141414"/>
+  <rect x="344.3" y="603" width="66.4" height="34" fill="#ffffff"/>
+  <text x="377.5" y="626" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">seam</text>
+  <path d="M 765 420 L 880 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 880 420 L 866 427 L 866 413 Z" fill="#2f4bd6"/>
+  <rect x="777.7" y="403" width="89.6" height="34" fill="#ffffff"/>
+  <text x="822.5" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">writes</text>
+  <path d="M 1010 563 L 1010 477" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 1010 477 L 1017 491 L 1003 491 Z" fill="#5c5c5c"/>
+  <rect x="60" y="190" width="260" height="460" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="88" y="240" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Agent core</text>
+  <text x="88" y="274" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">pinned commit</text>
+  <rect x="435" y="178" width="330" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="463" y="228" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">File tree</text>
+  <rect x="435" y="363" width="330" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
+  <text x="463" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Hunk review</text>
+  <text x="463" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">before disk</text>
+  <rect x="435" y="563" width="330" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="463" y="613" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Installer</text>
+  <text x="463" y="647" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Windows</text>
+  <rect x="880" y="363" width="260" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="908" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Vault</text>
+  <text x="908" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">ordinary notes</text>
+  <rect x="880" y="563" width="260" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="908" y="613" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Obsidian</text>
+  <text x="908" y="647" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">same files</text>
 </svg>

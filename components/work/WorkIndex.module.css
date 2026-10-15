@@ -32,8 +32,8 @@
 .bar { display: none; }
 
 .entry { display: flex; flex-direction: column; gap: var(--space-4); scroll-margin-top: var(--space-5); }
-.figure { border: 1px solid var(--line); margin: 0; }
-.figure img { display: block; height: auto; width: 100%; }
+/* The diagram draws its own hairline frame. */
+.figure { margin: 0; }
 .meta { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); }
 .title { font-size: var(--studio-title); font-weight: 500; letter-spacing: -.015em; line-height: 1.2; margin: 0; }
 .summary { color: var(--body); font-size: var(--studio-body); line-height: 1.65; max-width: 62ch; }

@@ -1,180 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="ora-title ora-desc">
-  <title id="ora-title">Obsidian Research Agent</title>
-  <desc id="ora-desc">An Obsidian-like workspace: a vault of linked paper notes on the left, and a dark plugin Mission console on the right. Vault context is read into a durable plan, a preview-then-grant chip approves a sandboxed tool, and sourced notes plus a receipt write back. Companion, Linear, and GitHub sit as small locked chips, off the default path.</desc>
-
-  <rect width="1200" height="900" fill="#f5f3ed"/>
-
-  <!-- Obsidian ribbon -->
-  <rect x="28" y="36" width="56" height="828" fill="#16130e"/>
-  <rect x="42" y="68" width="28" height="20" fill="#fffdf8"/>
-  <circle cx="56" cy="132" r="11" fill="none" stroke="#fffdf8" stroke-width="2"/>
-  <path d="M48 132 h16 M56 124 v16" stroke="#fffdf8" stroke-width="1.6"/>
-  <rect x="44" y="176" width="24" height="16" fill="#8a5a20"/>
-  <rect x="44" y="820" width="24" height="16" fill="none" stroke="#6b6455" stroke-width="1.5"/>
-
-  <!-- Vault graph — curves only, no node dots on the cards -->
-  <g fill="none" stroke="#6b6455" stroke-width="2.4">
-    <path d="M215 152 Q 350 70 490 114"/>
-    <path d="M215 152 Q 180 250 250 338"/>
-    <path d="M490 114 Q 530 200 520 292"/>
-    <path d="M490 114 Q 620 90 720 154"/>
-    <path d="M250 338 Q 280 430 355 510"/>
-    <path d="M520 292 Q 560 390 620 494"/>
-    <path d="M250 338 Q 400 280 520 292"/>
-    <path d="M355 510 Q 490 470 620 494"/>
-    <path d="M355 510 Q 260 600 220 679"/>
-    <path d="M220 679 Q 360 720 515 710"/>
-  </g>
-
-  <!-- Read: context into the console -->
-  <path d="M800 154 H820" fill="none" stroke="#8a5a20" stroke-width="3.5"/>
-  <polygon points="834,154 818,145 818,163" fill="#8a5a20"/>
-
-  <!-- Paper note: Source -->
-  <g>
-    <rect x="114" y="96" width="206" height="122" fill="#e0d9cc"/>
-    <rect x="110" y="90" width="206" height="122" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="298,90 316,90 316,108" fill="#e0d9cc"/>
-    <path d="M298 90 L298 108 L316 108" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="126" y="132" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Source</text>
-    <rect x="126" y="150" width="148" height="7" fill="#e0d9cc"/>
-    <rect x="126" y="168" width="116" height="7" fill="#e0d9cc"/>
-    <rect x="126" y="186" width="132" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Claim -->
-  <g transform="rotate(2.4 490 114)">
-    <rect x="394" y="62" width="196" height="114" fill="#e0d9cc"/>
-    <rect x="390" y="56" width="196" height="114" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="568,56 586,56 586,74" fill="#e0d9cc"/>
-    <path d="M568 56 L568 74 L586 74" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="406" y="98" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Claim</text>
-    <rect x="406" y="116" width="136" height="7" fill="#e0d9cc"/>
-    <rect x="406" y="134" width="104" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Context — the note being read -->
-  <g>
-    <rect x="644" y="106" width="158" height="106" fill="#e0d9cc"/>
-    <rect x="640" y="100" width="158" height="106" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-    <text x="656" y="142" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">Context</text>
-    <rect x="656" y="160" width="108" height="7" fill="#e0d9cc"/>
-    <rect x="656" y="178" width="84" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Open question -->
-  <g transform="rotate(-2 250 338)">
-    <rect x="134" y="276" width="236" height="132" fill="#e0d9cc"/>
-    <rect x="130" y="270" width="236" height="132" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="348,270 366,270 366,288" fill="#e0d9cc"/>
-    <path d="M348 270 L348 288 L366 288" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="146" y="314" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Open question</text>
-    <rect x="146" y="336" width="176" height="7" fill="#e0d9cc"/>
-    <rect x="146" y="354" width="144" height="7" fill="#e0d9cc"/>
-    <rect x="146" y="372" width="160" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Excerpt -->
-  <g>
-    <rect x="424" y="236" width="196" height="120" fill="#e0d9cc"/>
-    <rect x="420" y="230" width="196" height="120" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="598,230 616,230 616,248" fill="#e0d9cc"/>
-    <path d="M598 230 L598 248 L616 248" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="436" y="272" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Excerpt</text>
-    <rect x="436" y="292" width="140" height="7" fill="#e0d9cc"/>
-    <rect x="436" y="310" width="108" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Method -->
-  <g>
-    <rect x="254" y="456" width="206" height="118" fill="#e0d9cc"/>
-    <rect x="250" y="450" width="206" height="118" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="438,450 456,450 456,468" fill="#e0d9cc"/>
-    <path d="M438 450 L438 468 L456 468" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="266" y="492" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Method</text>
-    <rect x="266" y="512" width="148" height="7" fill="#e0d9cc"/>
-    <rect x="266" y="530" width="116" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Finding -->
-  <g transform="rotate(1.5 620 494)">
-    <rect x="524" y="436" width="196" height="124" fill="#e0d9cc"/>
-    <rect x="520" y="430" width="196" height="124" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="698,430 716,430 716,448" fill="#e0d9cc"/>
-    <path d="M698 430 L698 448 L716 448" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="536" y="472" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Finding</text>
-    <rect x="536" y="492" width="136" height="7" fill="#e0d9cc"/>
-    <rect x="536" y="510" width="112" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Ledger -->
-  <g>
-    <rect x="124" y="626" width="196" height="116" fill="#e0d9cc"/>
-    <rect x="120" y="620" width="196" height="116" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <polygon points="298,620 316,620 316,638" fill="#e0d9cc"/>
-    <path d="M298 620 L298 638 L316 638" fill="none" stroke="#16130e" stroke-width="1.5"/>
-    <text x="136" y="662" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="28">Ledger</text>
-    <rect x="136" y="682" width="136" height="7" fill="#e0d9cc"/>
-    <rect x="136" y="700" width="104" height="7" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Receipt written back into the vault -->
-  <g transform="rotate(-1.8 515 710)">
-    <rect x="404" y="646" width="226" height="136" fill="#e0d9cc"/>
-    <rect x="400" y="640" width="226" height="136" fill="#fffdf8" stroke="#8a5a20" stroke-width="2.5"/>
-    <circle cx="400" cy="668" r="5" fill="#f5f3ed"/>
-    <circle cx="400" cy="698" r="5" fill="#f5f3ed"/>
-    <circle cx="400" cy="728" r="5" fill="#f5f3ed"/>
-    <text x="424" y="684" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="26">Receipt</text>
-    <text x="424" y="716" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">step 3 · sourced</text>
-    <text x="424" y="744" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">replay ready</text>
-  </g>
-
-  <!-- Write-back, routed under Finding into the vault receipt -->
-  <path d="M824 575 C 720 575 680 650 630 700" fill="none" stroke="#8a5a20" stroke-width="3.5"/>
-  <polygon points="622,708 638,690 646,704" fill="#8a5a20"/>
-
-  <!-- Plugin Mission console -->
-  <rect x="824" y="36" width="348" height="828" fill="#16130e"/>
-  <text x="852" y="98" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="40">Mission</text>
-  <text x="852" y="130" fill="#e0d9cc" font-family="Georgia, 'Times New Roman', serif" font-size="18">durable plan · vault run</text>
-
-  <rect x="848" y="152" width="300" height="196" fill="#fffdf8"/>
-  <text x="868" y="186" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="16">Plan</text>
-  <text x="868" y="226" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">1  Read vault</text>
-  <text x="868" y="262" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">2  Preview tool</text>
-  <text x="868" y="298" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">3  Write notes</text>
-
-  <rect x="848" y="368" width="128" height="52" fill="#fffdf8"/>
-  <text x="912" y="401" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="20">preview</text>
-  <path d="M986 394 H1006" fill="none" stroke="#fffdf8" stroke-width="2.5"/>
-  <polygon points="1016,394 1004,387 1004,401" fill="#fffdf8"/>
-  <rect x="1020" y="368" width="128" height="52" fill="#8a5a20"/>
-  <text x="1084" y="401" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">grant</text>
-
-  <rect x="848" y="436" width="300" height="36" fill="none" stroke="#6b6455" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="998" y="460" text-anchor="middle" fill="#e0d9cc" font-family="Georgia, 'Times New Roman', serif" font-size="16">sandbox · approved only</text>
-
-  <rect x="848" y="492" width="300" height="100" fill="#fffdf8"/>
-  <circle cx="848" cy="516" r="5" fill="#16130e"/>
-  <circle cx="848" cy="542" r="5" fill="#16130e"/>
-  <circle cx="848" cy="568" r="5" fill="#16130e"/>
-  <text x="872" y="532" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">Receipt</text>
-  <text x="872" y="564" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="16">notes written · sourced</text>
-
-  <text x="852" y="640" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="15">gated · off the path</text>
-  <rect x="848" y="656" width="300" height="44" fill="#3a352c"/>
-  <rect x="848" y="708" width="300" height="44" fill="#3a352c"/>
-  <rect x="848" y="760" width="300" height="44" fill="#3a352c"/>
-  <g fill="none" stroke="#e0d9cc" stroke-width="1.6">
-    <rect x="864" y="668" width="12" height="10" rx="1"/>
-    <path d="M866 668 v-4 a4 4 0 0 1 8 0 v4"/>
-    <rect x="864" y="720" width="12" height="10" rx="1"/>
-    <path d="M866 720 v-4 a4 4 0 0 1 8 0 v4"/>
-    <rect x="864" y="772" width="12" height="10" rx="1"/>
-    <path d="M866 772 v-4 a4 4 0 0 1 8 0 v4"/>
-  </g>
-  <text x="888" y="684" fill="#e0d9cc" font-family="Georgia, 'Times New Roman', serif" font-size="18">Companion</text>
-  <text x="888" y="736" fill="#e0d9cc" font-family="Georgia, 'Times New Roman', serif" font-size="18">Linear</text>
-  <text x="888" y="788" fill="#e0d9cc" font-family="Georgia, 'Times New Roman', serif" font-size="18">GitHub</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="obsidian-research-agent-title obsidian-research-agent-desc">
+  <title id="obsidian-research-agent-title">Obsidian Research Agent architecture</title>
+  <desc id="obsidian-research-agent-desc">A mission starts in the console, reads the vault, and becomes a durable plan. Tools run in a sandbox only after an approval gate, and results are written back as sourced notes with a receipt per step. The companion service, Linear, and GitHub sit behind capability gates, off the default path.</desc>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <rect x="40" y="600" width="1120" height="240" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="636" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Capability gates · off by default</text>
+  <path d="M 350 170 L 480 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 480 170 L 466 177 L 466 163 Z" fill="#2f4bd6"/>
+  <path d="M 720 170 L 845 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 845 170 L 831 177 L 831 163 Z" fill="#2f4bd6"/>
+  <path d="M 990 227 L 990 363" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 990 363 L 983 349 L 997 349 Z" fill="#2f4bd6"/>
+  <path d="M 845 420 L 720 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 720 420 L 734 413 L 734 427 Z" fill="#2f4bd6"/>
+  <rect x="726.1" y="403" width="112.8" height="34" fill="#ffffff"/>
+  <text x="782.5" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">approved</text>
+  <path d="M 480 420 L 350 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 350 420 L 364 413 L 364 427 Z" fill="#2f4bd6"/>
+  <rect x="370.2" y="403" width="89.6" height="34" fill="#ffffff"/>
+  <text x="415" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">writes</text>
+  <path d="M 970 477 L 970 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 970 673 L 963 659 L 977 659 Z" fill="#5c5c5c"/>
+  <rect x="925.2" y="558" width="89.6" height="34" fill="#ffffff"/>
+  <text x="970" y="581" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">opt-in</text>
+  <path d="M 600 477 L 600 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 600 673 L 593 659 L 607 659 Z" fill="#5c5c5c"/>
+  <path d="M 540 477 L 540 575 L 230 575 L 230 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 230 673 L 223 659 L 237 659 Z" fill="#5c5c5c"/>
+  <rect x="70" y="113" width="280" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="98" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Console</text>
+  <text x="98" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">starts a mission</text>
+  <rect x="480" y="113" width="240" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="508" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Vault</text>
+  <text x="508" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reads context</text>
+  <rect x="845" y="113" width="290" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="873" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Plan</text>
+  <text x="873" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">durable, followed</text>
+  <rect x="845" y="363" width="290" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
+  <text x="873" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Approval gate</text>
+  <text x="873" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">before every tool</text>
+  <rect x="480" y="363" width="240" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="508" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Sandbox</text>
+  <text x="508" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">tools execute</text>
+  <rect x="70" y="348" width="280" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="98" y="398" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Notes</text>
+  <text x="98" y="432" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">sourced</text>
+  <text x="98" y="462" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">receipt per step</text>
+  <rect x="110" y="673" width="240" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="138" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Companion</text>
+  <text x="138" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">local service</text>
+  <rect x="515" y="673" width="170" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="543" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Linear</text>
+  <text x="543" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">issues</text>
+  <rect x="875" y="673" width="190" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="903" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">GitHub</text>
+  <text x="903" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">code work</text>
 </svg>

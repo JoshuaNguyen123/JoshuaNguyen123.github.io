@@ -1,99 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="pad-title pad-desc">
-  <title id="pad-title">Personal AI Digest</title>
-  <desc id="pad-desc">A knowledge cabinet of tabbed source cards with SQLite and pgvector drawers. Ingest writes into the store and stops. Delivery reads from the same store into an opened letter: a twice-daily lesson where every sentence carries a citation mark. A Cloudflare Worker clock on the letter fires each send, not GitHub cron.</desc>
-
-  <rect width="1200" height="900" fill="#f5f3ed"/>
-
-  <!-- Envelope pocket the letter is pulled from -->
-  <g id="pad-envelope">
-    <rect x="492" y="708" width="628" height="156" fill="#8a5a20"/>
-    <polygon points="492,708 806,792 1120,708" fill="#16130e"/>
-    <rect x="508" y="708" width="596" height="28" fill="#fffdf8"/>
-    <text x="806" y="848" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="18">since March</text>
-  </g>
-
-  <!-- Letter pulled out of the pocket -->
-  <g id="pad-letter">
-    <rect x="508" y="56" width="596" height="680" fill="#fffdf8" stroke="#16130e" stroke-width="2.5"/>
-    <line x1="508" y1="148" x2="1104" y2="148" stroke="#e0d9cc" stroke-width="2"/>
-
-    <text x="532" y="108" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="32">Morning lesson</text>
-    <text x="532" y="184" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="18">every sentence cited</text>
-
-    <text x="532" y="248" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">B-trees win on range scans.</text>
-    <rect x="1024" y="222" width="44" height="34" fill="#8a5a20"/>
-    <text x="1046" y="246" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">1</text>
-
-    <text x="532" y="320" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">WAL is the durable write.</text>
-    <rect x="1024" y="294" width="44" height="34" fill="#8a5a20"/>
-    <text x="1046" y="318" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">2</text>
-
-    <text x="532" y="392" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Retrieve, then generate.</text>
-    <rect x="1024" y="366" width="44" height="34" fill="#8a5a20"/>
-    <text x="1046" y="390" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">3</text>
-
-    <text x="532" y="464" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="26">Cite every sentence.</text>
-    <rect x="1024" y="438" width="44" height="34" fill="#8a5a20"/>
-    <text x="1046" y="462" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="20">4</text>
-
-    <line x1="532" y1="508" x2="1076" y2="508" stroke="#e0d9cc" stroke-width="1.5"/>
-    <text x="532" y="548" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[1] SQLite query planner</text>
-    <text x="532" y="578" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[2] Postgres WAL notes</text>
-    <text x="532" y="608" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[3] pgvector retrieval</text>
-    <text x="532" y="638" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">[4] house citation rule</text>
-    <text x="532" y="690" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">twice a day · Worker, not GH cron</text>
-  </g>
-
-  <!-- Clock stamp — Worker trigger, not GitHub cron -->
-  <g id="pad-worker" transform="translate(1048 104)">
-    <circle r="34" fill="#16130e"/>
-    <circle r="25" fill="#fffdf8"/>
-    <line x1="0" y1="0" x2="0" y2="-14" stroke="#16130e" stroke-width="3" stroke-linecap="round"/>
-    <line x1="0" y1="0" x2="11" y2="7" stroke="#16130e" stroke-width="2.5" stroke-linecap="round"/>
-    <circle r="3" fill="#16130e"/>
-  </g>
-
-  <!-- Tabbed index cards — a pile, not a note graph -->
-  <g id="pad-sources">
-    <rect x="118" y="44" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-    <rect x="86" y="62" width="220" height="72" fill="#e0d9cc"/>
-    <rect x="80" y="56" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-
-    <rect x="168" y="72" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-    <rect x="106" y="90" width="220" height="72" fill="#e0d9cc"/>
-    <rect x="100" y="84" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-
-    <rect x="218" y="100" width="70" height="20" fill="#fffdf8" stroke="#16130e" stroke-width="1.5"/>
-    <rect x="126" y="118" width="220" height="72" fill="#e0d9cc"/>
-    <rect x="120" y="112" width="220" height="72" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <rect x="140" y="136" width="160" height="8" fill="#e0d9cc"/>
-    <rect x="140" y="154" width="120" height="8" fill="#e0d9cc"/>
-  </g>
-
-  <!-- Ingest into the cabinet, then a hard stop -->
-  <path d="M230 184 V250" fill="none" stroke="#16130e" stroke-width="4"/>
-  <polygon points="230,266 218,248 242,248" fill="#16130e"/>
-  <text x="250" y="230" fill="#3a352c" font-family="Georgia, 'Times New Roman', serif" font-size="18">ingest</text>
-
-  <!-- Card-catalog cabinet -->
-  <g id="pad-cabinet">
-    <rect x="60" y="280" width="320" height="26" fill="#16130e"/>
-    <rect x="60" y="306" width="320" height="272" fill="#3a352c" stroke="#16130e" stroke-width="3"/>
-
-    <rect x="80" y="326" width="280" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <text x="100" y="386" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">SQLite</text>
-    <rect x="308" y="364" width="28" height="14" rx="7" fill="#16130e"/>
-
-    <rect x="80" y="444" width="280" height="100" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <text x="100" y="504" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">pgvector</text>
-    <rect x="308" y="482" width="28" height="14" rx="7" fill="#16130e"/>
-  </g>
-
-  <rect x="60" y="586" width="320" height="54" fill="#8a5a20"/>
-  <text x="220" y="622" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="26">STOP</text>
-  <text x="220" y="668" text-anchor="middle" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="16">write ends here</text>
-
-  <!-- Delivery: store into the letter -->
-  <path d="M380 430 H500" fill="none" stroke="#16130e" stroke-width="4"/>
-  <polygon points="514,430 496,420 496,440" fill="#16130e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="personal-ai-digest-title personal-ai-digest-desc">
+  <title id="personal-ai-digest-title">Personal AI Digest architecture</title>
+  <desc id="personal-ai-digest-desc">Two services that share only a knowledge store. Ingest collects sources and writes to SQLite or Postgres with pgvector. Delivery, fired by a Cloudflare Worker, retrieves from the store, generates a lesson with a citation for every sentence, and emails it twice a day. Either service can fail without stopping the other.</desc>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <rect x="40" y="60" width="360" height="470" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="96" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Ingest service</text>
+  <rect x="800" y="60" width="360" height="780" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="822" y="96" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Delivery service</text>
+  <path d="M 220 247 L 220 363" fill="none" stroke="#141414" stroke-width="2"/>
+  <path d="M 220 363 L 213 349 L 227 349 Z" fill="#141414"/>
+  <path d="M 370 420 L 480 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 480 420 L 466 427 L 466 413 Z" fill="#2f4bd6"/>
+  <rect x="380.2" y="403" width="89.6" height="34" fill="#ffffff"/>
+  <text x="425" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">writes</text>
+  <path d="M 720 420 L 830 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 830 420 L 816 427 L 816 413 Z" fill="#2f4bd6"/>
+  <rect x="736" y="403" width="78" height="34" fill="#ffffff"/>
+  <text x="775" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">reads</text>
+  <path d="M 980 247 L 980 363" fill="none" stroke="#141414" stroke-width="2"/>
+  <path d="M 980 363 L 973 349 L 987 349 Z" fill="#141414"/>
+  <rect x="941" y="288" width="78" height="34" fill="#ffffff"/>
+  <text x="980" y="311" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">fires</text>
+  <path d="M 980 477 L 980 543" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 980 543 L 973 529 L 987 529 Z" fill="#2f4bd6"/>
+  <path d="M 980 657 L 980 728" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 980 728 L 973 714 L 987 714 Z" fill="#2f4bd6"/>
+  <rect x="70" y="133" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="98" y="183" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Sources</text>
+  <text x="98" y="217" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reading, notes</text>
+  <rect x="70" y="363" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="98" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Ingest</text>
+  <text x="98" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">chunk, embed</text>
+  <rect x="480" y="348" width="240" height="144" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
+  <text x="508" y="398" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Knowledge</text>
+  <text x="508" y="432" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">SQLite or</text>
+  <text x="508" y="462" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">pgvector</text>
+  <rect x="830" y="133" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="858" y="183" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Worker cron</text>
+  <text x="858" y="217" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Cloudflare</text>
+  <rect x="830" y="363" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="858" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Retrieve</text>
+  <text x="858" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">from the store</text>
+  <rect x="830" y="543" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="858" y="593" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Generate</text>
+  <text x="858" y="627" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">cite every line</text>
+  <rect x="830" y="728" width="300" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="858" y="778" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Email, 2x daily</text>
+  <text x="60" y="640" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">The services share only the store.</text>
+  <text x="60" y="670" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">If ingest stalls, mail still goes</text>
+  <text x="60" y="700" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">out from what is indexed.</text>
 </svg>

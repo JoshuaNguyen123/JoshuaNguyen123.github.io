@@ -1,22 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/content/projects";
+import { drawProgress, READING_LINE } from "@/lib/scroll";
+import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import styles from "./WorkIndex.module.css";
 
 export type FeaturedProject = Pick<Project, "slug" | "number" | "title" | "discipline" | "href" | "image"> &
   NonNullable<Project["feature"]>;
 
-/** Fraction of the viewport height where an entry counts as being read. Shared with ScrollSections. */
-export const READING_LINE = 0.4;
-
 /**
  * Selected work with a scroll-linked index. The index column is sticky (CSS
  * only) and marks the project crossing the reading line; a rail fills as the
  * reader moves through the three entries. On a phone the index becomes a slim
- * sticky bar. Native scrolling is never intercepted, and without JavaScript the
- * index is still a plain list of in-page links.
+ * sticky bar. Each entry's diagram traces its connections as it comes into
+ * view. Native scrolling is never intercepted, and without JavaScript the
+ * index is still a plain list of in-page links and every diagram is drawn.
  */
 export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -29,6 +28,7 @@ export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
     if (!section || !track) return;
 
     const entries = Array.from(track.querySelectorAll<HTMLElement>("[data-project-index]"));
+    const diagrams = Array.from(track.querySelectorAll<SVGElement>("[data-scroll-draw]"));
 
     // One measurement per frame drives both signals, so they always agree:
     // the active entry is the last one whose top has passed the reading line
@@ -47,6 +47,9 @@ export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
         if (entry.getBoundingClientRect().top <= line) next = index;
       });
       setActive(next);
+      diagrams.forEach((diagram) => {
+        diagram.style.setProperty("--draw-progress", drawProgress(diagram.getBoundingClientRect(), window.innerHeight).toFixed(4));
+      });
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -103,13 +106,7 @@ export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
             aria-labelledby={`project-${project.slug}-title`}
           >
             <figure className={styles.figure}>
-              <Image
-                src={project.image}
-                alt={`Architecture diagram of ${project.title}`}
-                width={1200}
-                height={900}
-                sizes="(max-width: 760px) calc(100vw - 40px), 860px"
-              />
+              <ArchitectureDiagram slug={project.slug} label={`Architecture diagram of ${project.title}`} />
             </figure>
             <p className={styles.meta}>{project.number} · {project.discipline}</p>
             <h3 className={styles.title} id={`project-${project.slug}-title`}>{project.title}</h3>

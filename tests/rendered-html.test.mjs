@@ -62,7 +62,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(workIndex, /preventDefault|scrollTo\(|wheel/);
   // Subpage sections follow the same reading line, under the same rules.
   const scrollSections = await readFile(new URL("../components/site/ScrollSections.tsx", import.meta.url), "utf8");
-  assert.match(scrollSections, /import \{ READING_LINE \} from "@\/components\/work\/WorkIndex"/);
+  assert.match(scrollSections, /READING_LINE \} from "@\/lib\/scroll"/);
+  assert.match(workIndex, /READING_LINE \} from "@\/lib\/scroll"/);
   assert.match(scrollSections, /\{ passive: true \}/);
   assert.match(scrollSections, /requestAnimationFrame/);
   assert.doesNotMatch(scrollSections, /preventDefault|scrollTo\(|wheel/);

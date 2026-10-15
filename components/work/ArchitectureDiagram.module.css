@@ -1,0 +1,17 @@
+/* Inline architecture diagram. Page fonts replace the system stacks the
+   static files carry. */
+.diagram { border: 1px solid var(--line); display: block; height: auto; width: 100%; }
+.sans { font-family: var(--font-sans); }
+.mono { font-family: var(--font-mono); }
+
+/* --draw-progress (0 to 1) is written by ScrollSections as the diagram enters
+   view. Connection i of --n draws during its own slice of that range, so the
+   flow traces itself in order. Boxes and their text never hide. */
+.edge { --draw: clamp(0, calc(var(--draw-progress, 1) * (var(--n) + 1) - var(--i)), 1); }
+.line { stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - var(--draw)); }
+.dashed { opacity: var(--draw); }
+.head { opacity: clamp(0, calc(var(--draw) * 8 - 7), 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .edge { --draw: 1; }
+}

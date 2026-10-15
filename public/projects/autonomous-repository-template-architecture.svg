@@ -1,76 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="art-title art-desc">
-  <title id="art-title">Autonomous Repository Template architecture</title>
-  <desc id="art-desc">A repository drawn as a manila folder: a human-request ticket enters at the top, PLAN.md and tracked memory files sit above a heavy planning gate, and the src folder is locked until the plan is approved. A verification lane of pass marks sits under implementation. Protocol versions can migrate without losing state.</desc>
-
-  <defs>
-    <pattern id="art-hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <line x1="0" y1="0" x2="0" y2="16" stroke="#8a5a20" stroke-width="5"/>
-    </pattern>
-  </defs>
-
-  <rect width="1200" height="900" fill="#f5f3ed"/>
-
-  <!-- Human request ticket -->
-  <g id="art-request" transform="rotate(-3 250 100)">
-    <rect x="80" y="40" width="340" height="120" rx="8" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
-    <rect x="80" y="40" width="24" height="120" rx="4" fill="#8a5a20"/>
-    <text x="124" y="88" fill="#8a5a20" font-family="Georgia, 'Times New Roman', serif" font-size="22">HUMAN REQUEST</text>
-    <text x="124" y="132" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="30">Add the verify lane</text>
-  </g>
-
-  <!-- Manila repo folder with a file tree inside -->
-  <g id="art-repo">
-    <path d="M 56 188 H 300 L 340 232 H 800 V 872 H 56 Z" fill="#fffdf8" stroke="#16130e" stroke-width="4"/>
-    <text x="84" y="222" fill="#6b6455" font-family="Georgia, 'Times New Roman', serif" font-size="24">repo</text>
-
-    <!-- Tree spine -->
-    <path d="M 108 280 V 500" fill="none" stroke="#16130e" stroke-width="4"/>
-    <path d="M 108 310 H 148" fill="none" stroke="#16130e" stroke-width="4"/>
-    <path d="M 108 430 H 148" fill="none" stroke="#16130e" stroke-width="4"/>
-
-    <!-- PLAN.md sheet -->
-    <rect x="148" y="256" width="280" height="140" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
-    <rect x="148" y="256" width="280" height="40" fill="#16130e"/>
-    <text x="164" y="284" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="24">PLAN.md</text>
-    <rect x="164" y="316" width="200" height="8" fill="#e0d9cc"/>
-    <rect x="164" y="336" width="168" height="8" fill="#e0d9cc"/>
-    <rect x="164" y="356" width="220" height="8" fill="#e0d9cc"/>
-
-    <!-- Memory folder + files -->
-    <path d="M 148 412 H 220 L 242 436 H 420 V 500 H 148 Z" fill="#f5f3ed" stroke="#16130e" stroke-width="3"/>
-    <text x="164" y="476" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="24">memory/</text>
-    <rect x="448" y="412" width="200" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <text x="464" y="444" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">STATE.md</text>
-    <rect x="448" y="468" width="200" height="48" fill="#fffdf8" stroke="#16130e" stroke-width="2"/>
-    <text x="464" y="500" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">DECISIONS.md</text>
-
-    <!-- Locked src folder, behind the gate -->
-    <path d="M 148 620 H 236 L 260 648 H 560 V 760 H 148 Z" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
-    <path d="M 148 620 H 236 L 260 648 H 560 V 760 H 148 Z" fill="url(#art-hatch)" opacity="0.55"/>
-    <text x="280" y="714" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="40">src/</text>
-
-    <!-- Verification lane -->
-    <rect x="80" y="788" width="696" height="64" rx="8" fill="#f5f3ed" stroke="#3f6135" stroke-width="3"/>
-    <text x="108" y="830" fill="#3f6135" font-family="Georgia, 'Times New Roman', serif" font-size="26">verify</text>
-    <circle cx="268" cy="820" r="18" fill="#3f6135"/>
-    <path d="M 258 820 L 266 828 L 280 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="336" cy="820" r="18" fill="#3f6135"/>
-    <path d="M 326 820 L 334 828 L 348 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="404" cy="820" r="18" fill="#3f6135"/>
-    <path d="M 394 820 L 402 828 L 416 810" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-
-  <!-- Barrier across plan → implement, lock on the door -->
-  <g id="art-gate">
-    <rect x="64" y="528" width="752" height="80" rx="6" fill="#8a5a20" transform="rotate(-1.5 440 568)"/>
-    <text x="120" y="584" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="48" transform="rotate(-1.5 440 568)">GATE</text>
-    <path d="M 792 478 V 400 A 82 82 0 0 1 956 400 V 478" fill="none" stroke="#16130e" stroke-width="28" stroke-linecap="round"/>
-    <rect x="740" y="466" width="268" height="280" rx="28" fill="#8a5a20" stroke="#16130e" stroke-width="6"/>
-    <circle cx="874" cy="572" r="30" fill="#16130e"/>
-    <rect x="856" y="572" width="36" height="78" rx="6" fill="#16130e"/>
-    <text x="874" y="704" text-anchor="middle" fill="#fffdf8" font-family="Georgia, 'Times New Roman', serif" font-size="30">LOCKED</text>
-  </g>
-
-  <rect x="816" y="788" width="308" height="64" rx="8" fill="#fffdf8" stroke="#16130e" stroke-width="3"/>
-  <text x="970" y="830" text-anchor="middle" fill="#16130e" font-family="Georgia, 'Times New Roman', serif" font-size="22">v3 → v4  ·  state kept</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="autonomous-repository-template-title autonomous-repository-template-desc">
+  <title id="autonomous-repository-template-title">Autonomous Repository Template architecture</title>
+  <desc id="autonomous-repository-template-desc">A repository protocol for coding agents. A human request opens a plan, the plan must pass a planning gate before implementation files change, and the work must clear its verification lane. Project memory is ordinary tracked files, so later agents and later protocol versions read the same state.</desc>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <path d="M 320 170 L 530 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 530 170 L 516 177 L 516 163 Z" fill="#2f4bd6"/>
+  <path d="M 670 170 L 845 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 845 170 L 831 177 L 831 163 Z" fill="#2f4bd6"/>
+  <path d="M 990 212 L 990 373" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 990 373 L 983 359 L 997 359 Z" fill="#2f4bd6"/>
+  <rect x="945.2" y="275.5" width="89.6" height="34" fill="#ffffff"/>
+  <text x="990" y="298.5" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">passes</text>
+  <path d="M 880 430 L 730 430" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 730 430 L 744 423 L 744 437 Z" fill="#2f4bd6"/>
+  <path d="M 470 430 L 280 430" fill="none" stroke="#2f4bd6" stroke-width="3"/>
+  <path d="M 280 430 L 294 423 L 294 437 Z" fill="#2f4bd6"/>
+  <rect x="330.2" y="413" width="89.6" height="34" fill="#ffffff"/>
+  <text x="375" y="436" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">clears</text>
+  <path d="M 600 212 L 600 663" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 600 663 L 593 649 L 607 649 Z" fill="#5c5c5c"/>
+  <path d="M 660 487 L 660 663" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 660 663 L 653 649 L 667 649 Z" fill="#5c5c5c"/>
+  <path d="M 210 472 L 210 663" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 210 663 L 203 649 L 217 649 Z" fill="#5c5c5c"/>
+  <rect x="159.4" y="550.5" width="101.2" height="34" fill="#ffffff"/>
+  <text x="210" y="573.5" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">records</text>
+  <rect x="100" y="113" width="220" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="128" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Request</text>
+  <text x="128" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">from a human</text>
+  <rect x="530" y="128" width="140" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="558" y="178" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Plan</text>
+  <rect x="845" y="128" width="290" height="84" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
+  <text x="873" y="178" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Planning gate</text>
+  <rect x="880" y="373" width="220" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="908" y="423" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Implement</text>
+  <text x="908" y="457" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">files change</text>
+  <rect x="470" y="373" width="260" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="498" y="423" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Verify</text>
+  <text x="498" y="457" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">task's own lane</text>
+  <rect x="140" y="388" width="140" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="168" y="438" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Done</text>
+  <rect x="60" y="663" width="1080" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
+  <text x="88" y="713" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Project memory</text>
+  <text x="88" y="747" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">tracked files · read by later agents and protocol versions</text>
 </svg>
