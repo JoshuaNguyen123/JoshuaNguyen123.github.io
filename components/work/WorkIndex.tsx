@@ -8,8 +8,8 @@ import styles from "./WorkIndex.module.css";
 export type FeaturedProject = Pick<Project, "slug" | "number" | "title" | "discipline" | "href" | "image"> &
   NonNullable<Project["feature"]>;
 
-/** Fraction of the viewport height where an entry counts as being read. */
-const READING_LINE = 0.4;
+/** Fraction of the viewport height where an entry counts as being read. Shared with ScrollSections. */
+export const READING_LINE = 0.4;
 
 /**
  * Selected work with a scroll-linked index. The index column is sticky (CSS

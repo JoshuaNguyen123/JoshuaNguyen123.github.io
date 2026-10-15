@@ -62,8 +62,41 @@
 .rowNote { color: var(--muted); flex: 2 1 280px; font-size: var(--studio-meta); line-height: 1.5; }
 .rows a:hover .rowTitle { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
 
+/* Scroll-linked sections (ScrollSections). Each label stays pinned while its
+   section is read, darkens while it crosses the reading line, and a rail
+   beneath it fills with --section-progress. */
+.tracked [data-section-label] {
+  align-self: start; padding-bottom: var(--space-3); position: sticky; top: var(--space-5);
+  transition: color var(--ease);
+}
+.tracked [data-section-label]::before, .tracked [data-section-label]::after {
+  bottom: 0; content: ""; height: 2px; left: 0; position: absolute; width: min(100%, 200px);
+}
+.tracked [data-section-label]::before { background: var(--line); }
+.tracked [data-section-label]::after {
+  background: var(--accent); transform: scaleX(var(--section-progress, 0)); transform-origin: left;
+}
+.tracked [data-active] [data-section-label] { color: var(--ink); }
+.bar { display: none; }
+
 @media (max-width: 760px) {
   .intro { padding: var(--space-6) 0 var(--space-7); }
   .section { grid-template-columns: minmax(0, 1fr); padding: var(--space-6) 0; }
   .statement { font-size: var(--text-lg); }
+  /* Labels sit above their content here, so a slim bar pinned to the top
+     names the current section and fills as the page is read. */
+  .tracked [data-section-label] { padding-bottom: 0; position: static; }
+  .tracked [data-section-label]::before, .tracked [data-section-label]::after { display: none; }
+  .bar {
+    background: var(--paper); display: flex; flex-direction: column; gap: var(--space-2);
+    height: var(--space-6); justify-content: flex-end; margin-bottom: calc(-1 * var(--space-6));
+    opacity: 0; pointer-events: none; position: sticky; top: 0; transition: opacity var(--ease); z-index: 2;
+  }
+  .bar[data-visible] { opacity: 1; }
+  .bar p { font-size: var(--studio-meta); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .barTrack { background: var(--line); display: block; height: 2px; position: relative; }
+  .barTrack::after {
+    background: var(--accent); content: ""; inset: 0; position: absolute;
+    transform: scaleX(var(--page-progress, 0)); transform-origin: left;
+  }
 }

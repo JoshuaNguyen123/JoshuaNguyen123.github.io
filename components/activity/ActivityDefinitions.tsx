@@ -82,8 +82,8 @@ export function ActivityDefinitions() {
   // rest of the site: the label column names it, the content explains it.
   return (
     <>
-      <section className={styles.section} aria-labelledby="current-numbers">
-        <h2 className={styles.label} id="current-numbers">Current record</h2>
+      <section className={styles.section} aria-labelledby="current-numbers" data-section="Current record">
+        <h2 className={styles.label} id="current-numbers" data-section-label>Current record</h2>
         <div className={styles.content}>
           <p className={styles.statement}>What the {year} numbers actually say.</p>
           <p className={styles.prose}>These are counts of observed tool activity, not a productivity score. They update from the same validated feed as the dashboard.</p>
@@ -104,8 +104,8 @@ export function ActivityDefinitions() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="number-definitions">
-        <h2 className={styles.label} id="number-definitions">Number by number</h2>
+      <section className={styles.section} aria-labelledby="number-definitions" data-section="Number by number">
+        <h2 className={styles.label} id="number-definitions" data-section-label>Number by number</h2>
         <div className={styles.content}>
           <p className={styles.statement}>What each number counts, exactly.</p>
           <dl className="activity-glossary">
@@ -116,8 +116,8 @@ export function ActivityDefinitions() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="shading-definitions">
-        <h2 className={styles.label} id="shading-definitions">Intensity</h2>
+      <section className={styles.section} aria-labelledby="shading-definitions" data-section="Intensity">
+        <h2 className={styles.label} id="shading-definitions" data-section-label>Intensity</h2>
         <div className={styles.content}>
           <p className={styles.statement}>How a day earns its shade.</p>
           <dl className="activity-glossary">
@@ -129,8 +129,8 @@ export function ActivityDefinitions() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="plain-english-definitions">
-        <h2 className={styles.label} id="plain-english-definitions">Plain-English definitions</h2>
+      <section className={styles.section} aria-labelledby="plain-english-definitions" data-section="Plain-English definitions">
+        <h2 className={styles.label} id="plain-english-definitions" data-section-label>Plain-English definitions</h2>
         <div className={styles.content}>
           <p className={styles.statement}>Four distinctions that keep the record honest.</p>
           <dl className="activity-glossary">
@@ -143,8 +143,8 @@ export function ActivityDefinitions() {
       </section>
 
       {activityProviders.map((provider) => (
-        <section className={styles.section} key={provider} aria-labelledby={`tool-${provider}`}>
-          <h2 className={`${styles.label} ${styles.markedLabel}`} id={`tool-${provider}`}>
+        <section className={styles.section} key={provider} aria-labelledby={`tool-${provider}`} data-section={providerLabels[provider]}>
+          <h2 className={`${styles.label} ${styles.markedLabel}`} id={`tool-${provider}`} data-section-label>
             <span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />
             {providerLabels[provider]}
           </h2>

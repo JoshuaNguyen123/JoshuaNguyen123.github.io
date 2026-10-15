@@ -2,6 +2,7 @@ import { ActivityDashboard } from "@/components/activity/ActivityDashboard";
 import { ActivityDefinitions } from "@/components/activity/ActivityDefinitions";
 import { ActivityFeedProvider } from "@/components/activity/ActivityFeedProvider";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import styles from "@/components/site/subpage.module.css";
 import { ogImage } from "@/content/site";
@@ -37,29 +38,31 @@ export default function ActivityDetail() {
             aggregates before it is published.
           </p>
         </header>
-        <ActivityFeedProvider initialData={data}>
-          <section className={styles.section} aria-labelledby="daily-record">
-            <h2 className={styles.label} id="daily-record">Daily record</h2>
+        <ScrollSections>
+          <ActivityFeedProvider initialData={data}>
+            <section className={styles.section} aria-labelledby="daily-record" data-section="Daily record">
+              <h2 className={styles.label} id="daily-record" data-section-label>Daily record</h2>
+              <div className={styles.content}>
+                <ActivityDashboard />
+              </div>
+            </section>
+            <div id="activity-definitions">
+              <ActivityDefinitions />
+            </div>
+          </ActivityFeedProvider>
+
+          <section className={styles.section} aria-labelledby="activity-privacy" data-section="Privacy">
+            <h2 className={styles.label} id="activity-privacy" data-section-label>Privacy</h2>
             <div className={styles.content}>
-              <ActivityDashboard />
+              <p className={styles.prose}>
+                Only dates and counts are published. Prompts, code, filenames, paths,
+                projects, repositories, titles, models, emails, and raw IDs never
+                leave my machine.
+              </p>
+              <Link className={styles.textLink} href="/#activity">Back to the homepage</Link>
             </div>
           </section>
-          <div id="activity-definitions">
-            <ActivityDefinitions />
-          </div>
-        </ActivityFeedProvider>
-
-        <section className={styles.section} aria-labelledby="activity-privacy">
-          <h2 className={styles.label} id="activity-privacy">Privacy</h2>
-          <div className={styles.content}>
-            <p className={styles.prose}>
-              Only dates and counts are published. Prompts, code, filenames, paths,
-              projects, repositories, titles, models, emails, and raw IDs never
-              leave my machine.
-            </p>
-            <Link className={styles.textLink} href="/#activity">Back to the homepage</Link>
-          </div>
-        </section>
+        </ScrollSections>
       </main>
       <SiteFooter />
     </>

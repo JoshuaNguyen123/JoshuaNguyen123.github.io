@@ -1,4 +1,5 @@
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import styles from "@/components/site/subpage.module.css";
 import { getProject, getProjects } from "@/content/projects";
@@ -70,31 +71,33 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
             </dl>
           </header>
 
-          <section className={styles.section}>
-            <h2 className={styles.label}>What it does</h2>
-            <p className={styles.prose}>{project.whatItDoes}</p>
-          </section>
-
-          <section className={styles.section}>
-            <h2 className={styles.label}>Architecture</h2>
-            <figure className={styles.figure}>
-              <Image
-                src={project.image}
-                alt={`Architecture diagram of ${project.title}`}
-                width={1200}
-                height={900}
-                sizes="(max-width: 760px) calc(100vw - 48px), 880px"
-              />
-              <figcaption>How the pieces connect, at a glance. <a href={project.image} target="_blank" rel="noreferrer">Open the full-size diagram (new tab)</a></figcaption>
-            </figure>
-          </section>
-
-          {story.map(([heading, text]) => (
-            <section className={styles.section} key={heading}>
-              <h2 className={styles.label}>{heading}</h2>
-              <p className={styles.prose}>{text}</p>
+          <ScrollSections>
+            <section className={styles.section} data-section="What it does">
+              <h2 className={styles.label} data-section-label>What it does</h2>
+              <p className={styles.prose}>{project.whatItDoes}</p>
             </section>
-          ))}
+
+            <section className={styles.section} data-section="Architecture">
+              <h2 className={styles.label} data-section-label>Architecture</h2>
+              <figure className={styles.figure}>
+                <Image
+                  src={project.image}
+                  alt={`Architecture diagram of ${project.title}`}
+                  width={1200}
+                  height={900}
+                  sizes="(max-width: 760px) calc(100vw - 48px), 880px"
+                />
+                <figcaption>How the pieces connect, at a glance. <a href={project.image} target="_blank" rel="noreferrer">Open the full-size diagram (new tab)</a></figcaption>
+              </figure>
+            </section>
+
+            {story.map(([heading, text]) => (
+              <section className={styles.section} key={heading} data-section={heading}>
+                <h2 className={styles.label} data-section-label>{heading}</h2>
+                <p className={styles.prose}>{text}</p>
+              </section>
+            ))}
+          </ScrollSections>
 
           <footer className={styles.section}>
             <h2 className={styles.label}>Next project</h2>
