@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import styles from "@/components/site/subpage.module.css";
 import { ogImage, siteName } from "@/content/site";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
@@ -42,23 +43,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <SiteHeader current="writing" />
-      <main className="blog-shell blog-article" id="main">
+      <main className={styles.main} id="main">
         <article>
-          <header className="article-header">
-            <a className="blog-back" href="/blog/">All writing</a>
-            <span className="eyebrow">{post.tags.join(" · ")}</span>
+          <header className={styles.intro}>
+            <a className={styles.back} href="/blog/">All writing</a>
             <h1>{post.title}</h1>
-            <p>{post.summary}</p>
-            <div className="article-byline">
-              <span>By {siteName}</span>
-              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-              <span>{post.readingMinutes} min read</span>
-            </div>
+            <p className={styles.lede}>{post.summary}</p>
           </header>
-          <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
-          <footer className="article-footer">
-            <span className="eyebrow">Thanks for reading</span>
-            <a href="/blog/">All writing</a>
+          <div className={styles.section}>
+            <dl className={styles.meta}>
+              <dt>Published</dt>
+              <dd><time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time></dd>
+              <dt>Length</dt>
+              <dd>{post.readingMinutes} min read</dd>
+              <dt>Topics</dt>
+              <dd>{post.tags.join(", ")}</dd>
+              <dt>By</dt>
+              <dd>{siteName}</dd>
+            </dl>
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+          </div>
+          <footer className={styles.section}>
+            <p className={styles.label}>Thanks for reading</p>
+            <a className={styles.textLink} href="/blog/">All writing</a>
           </footer>
         </article>
       </main>

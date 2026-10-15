@@ -3,6 +3,7 @@ import { ActivityDefinitions } from "@/components/activity/ActivityDefinitions";
 import { ActivityFeedProvider } from "@/components/activity/ActivityFeedProvider";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import styles from "@/components/site/subpage.module.css";
 import { ogImage } from "@/content/site";
 import { loadActivitySnapshot } from "@/lib/activity/load";
 import type { Metadata } from "next";
@@ -25,34 +26,38 @@ export default function ActivityDetail() {
   return (
     <>
       <SiteHeader current="activity" />
-      <main id="main">
-        <section className="activity-page studio-activity-page">
-          <header className="studio-activity-intro">
-            <span className="eyebrow">Activity</span>
-            <h1>A record of the work behind the projects.</h1>
-            <p>
-              Explore the daily record, then the sources and definitions behind
-              each number. These are counts of observed tool activity, not a
-              productivity score. Everything is reduced to privacy-safe daily
-              aggregates before it is published.
-            </p>
-          </header>
-          <ActivityFeedProvider initialData={data}>
-            <div className="studio-activity-dashboard">
+      <main className={styles.main} id="main">
+        <header className={styles.intro}>
+          <p className={styles.kicker}>Activity</p>
+          <h1>A record of the work behind the projects.</h1>
+          <p className={styles.lede}>
+            Explore the daily record, then the sources and definitions behind
+            each number. These are counts of observed tool activity, not a
+            productivity score. Everything is reduced to privacy-safe daily
+            aggregates before it is published.
+          </p>
+        </header>
+        <ActivityFeedProvider initialData={data}>
+          <section className={styles.section} aria-labelledby="daily-record">
+            <h2 className={styles.label} id="daily-record">Daily record</h2>
+            <div className={styles.content}>
               <ActivityDashboard />
             </div>
-            <div className="studio-activity-definitions" id="activity-definitions">
-              <ActivityDefinitions />
-            </div>
-          </ActivityFeedProvider>
+          </section>
+          <div id="activity-definitions">
+            <ActivityDefinitions />
+          </div>
+        </ActivityFeedProvider>
 
-          <div className="activity-more">
-            <p>
+        <section className={styles.section} aria-labelledby="activity-privacy">
+          <h2 className={styles.label} id="activity-privacy">Privacy</h2>
+          <div className={styles.content}>
+            <p className={styles.prose}>
               Only dates and counts are published. Prompts, code, filenames, paths,
               projects, repositories, titles, models, emails, and raw IDs never
               leave my machine.
             </p>
-            <Link href="/#activity">Back to the homepage</Link>
+            <Link className={styles.textLink} href="/#activity">Back to the homepage</Link>
           </div>
         </section>
       </main>

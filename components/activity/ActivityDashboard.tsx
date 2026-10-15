@@ -210,11 +210,8 @@ export function ActivityDashboard() {
 
   return (
     <div className="activity-dashboard" ref={dashRef}>
+      {/* The page supplies the heading; the toolbar keeps only the year choice. */}
       <div className="activity-toolbar">
-        <div>
-          <h2>Activity</h2>
-          <p>Observed activity, not a productivity score.</p>
-        </div>
         <div className="year-selector" aria-label="Activity year">
           {availableYears.map((year) => (
             <button type="button" key={year} className={year === selectedYear ? "is-active" : ""} aria-pressed={year === selectedYear} onClick={() => changeYear(year)}>{year}</button>

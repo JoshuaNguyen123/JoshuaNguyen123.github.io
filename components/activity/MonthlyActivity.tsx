@@ -10,11 +10,9 @@ export function MonthlyActivity({ metrics, startDate, endDate, selectedMonth, on
   const rows = activityProviders.map(provider => ({ provider, months: monthlyActivity(metrics[provider], startDate, endDate) }));
   const months = rows[0].months;
   return (
-    <section className="monthly-patterns" aria-labelledby="monthly-title">
-      <header>
-        <div><h3 id="monthly-title">Monthly patterns</h3><p>Observed days per month, by tool.</p></div>
-        <p>One day counts once, even when several sessions were recorded. Select a month to explore its daily calendar.</p>
-      </header>
+    // The surrounding disclosure's summary already names this section.
+    <section className="monthly-patterns" aria-label="Monthly patterns">
+      <p>Observed days per month, by tool. One day counts once, even when several sessions were recorded. Select a month to explore its daily calendar.</p>
       <div className="monthly-scroll" role="region" aria-label="Monthly activity charts, scroll horizontally on small screens">
         <div className="monthly-charts" style={{ "--month-count": months.length } as CSSProperties}>
           <div className="monthly-axis" aria-hidden="true"><span />{months.map(month => <span key={month.key}>{month.label}{month.partialMonth ? "*" : ""}</span>)}</div>

@@ -14,6 +14,7 @@ import {
 } from "@/lib/activity/summary-cards";
 import type { ActivityProvider, MetricActivitySnapshot } from "@/lib/activity/types";
 import { activityProviders, providerLabels } from "@/lib/activity/types";
+import styles from "@/components/site/subpage.module.css";
 import { useActivityFeed } from "./ActivityFeedProvider";
 
 const timestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US", {
@@ -77,81 +78,80 @@ export function ActivityDefinitions() {
     { value: summary.longestStreak, label: summaryCardLabels.longestStreak, context: summaryCardNotes.longestStreak },
   ];
 
+  // Each part of the record is one labelled row, in the same frame as the
+  // rest of the site: the label column names it, the content explains it.
   return (
     <>
-      <div className="data-provenance" role="status">
-        <span className={`data-dot data-dot--${feedState === "live" ? "live" : data.mode}`} />
-        {feedState === "live" ? "Live activity feed" : feedState === "bundled" ? "Verified bundled snapshot · newer than live feed" : feedState === "fallback" ? "Verified bundled snapshot · live feed unavailable" : "Verified bundled snapshot · checking live feed"}
-        {` · through ${formatDay(data.range.end)} · updated ${timestampFormatter(data.timeZone).format(new Date(data.generatedAt))}`}
-      </div>
-
-      <section className="activity-current" aria-labelledby="current-numbers">
-        <div className="section-heading">
-          <span className="eyebrow">Current record</span>
-          <h2 id="current-numbers">What the {year} numbers actually say.</h2>
-          <p>These are counts of observed tool activity, not a productivity score. They update from the same validated feed as the dashboard.</p>
-        </div>
-        <div className="activity-definition-summary">
-          {overview.map((item) => (
-            <article key={item.label}>
-              <strong>{item.value.toLocaleString("en-US")}{item.label.includes("streak") ? "d" : ""}</strong>
-              <span>{item.label}</span>
-              <small>{item.context}</small>
-            </article>
-          ))}
+      <section className={styles.section} aria-labelledby="current-numbers">
+        <h2 className={styles.label} id="current-numbers">Current record</h2>
+        <div className={styles.content}>
+          <p className={styles.statement}>What the {year} numbers actually say.</p>
+          <p className={styles.prose}>These are counts of observed tool activity, not a productivity score. They update from the same validated feed as the dashboard.</p>
+          <div className="data-provenance" role="status">
+            <span className={`data-dot data-dot--${feedState === "live" ? "live" : data.mode}`} />
+            {feedState === "live" ? "Live activity feed" : feedState === "bundled" ? "Verified bundled snapshot · newer than live feed" : feedState === "fallback" ? "Verified bundled snapshot · live feed unavailable" : "Verified bundled snapshot · checking live feed"}
+            {` · through ${formatDay(data.range.end)} · updated ${timestampFormatter(data.timeZone).format(new Date(data.generatedAt))}`}
+          </div>
+          <div className="activity-definition-summary">
+            {overview.map((item) => (
+              <article key={item.label}>
+                <strong>{item.value.toLocaleString("en-US")}{item.label.includes("streak") ? "d" : ""}</strong>
+                <span>{item.label}</span>
+                <small>{item.context}</small>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="activity-glossary" aria-labelledby="number-definitions">
-        <div className="section-heading">
-          <span className="eyebrow">Number by number</span>
-          <h2 id="number-definitions">What each number counts, exactly.</h2>
+      <section className={styles.section} aria-labelledby="number-definitions">
+        <h2 className={styles.label} id="number-definitions">Number by number</h2>
+        <div className={styles.content}>
+          <p className={styles.statement}>What each number counts, exactly.</p>
+          <dl className="activity-glossary">
+            {summaryCardOrder.map((id) => (
+              <div key={id}><dt>{summaryCardLabels[id]}</dt><dd>{summaryCardExplanations[id]}</dd></div>
+            ))}
+          </dl>
         </div>
-        <dl>
-          {summaryCardOrder.map((id) => (
-            <div key={id}><dt>{summaryCardLabels[id]}</dt><dd>{summaryCardExplanations[id]}</dd></div>
-          ))}
-        </dl>
       </section>
 
-      <section className="activity-glossary" aria-labelledby="shading-definitions">
-        <div className="section-heading">
-          <span className="eyebrow">Intensity</span>
-          <h2 id="shading-definitions">How a day earns its shade.</h2>
+      <section className={styles.section} aria-labelledby="shading-definitions">
+        <h2 className={styles.label} id="shading-definitions">Intensity</h2>
+        <div className={styles.content}>
+          <p className={styles.statement}>How a day earns its shade.</p>
+          <dl className="activity-glossary">
+            <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays light gray. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
+            <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
+            <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
+            <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
+          </dl>
         </div>
-        <dl>
-          <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays cream. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
-          <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
-          <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
-          <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
-        </dl>
       </section>
 
-      <section className="activity-glossary" aria-labelledby="plain-english-definitions">
-        <div className="section-heading">
-          <span className="eyebrow">Plain-English definitions</span>
-          <h2 id="plain-english-definitions">Four distinctions that keep the record honest.</h2>
+      <section className={styles.section} aria-labelledby="plain-english-definitions">
+        <h2 className={styles.label} id="plain-english-definitions">Plain-English definitions</h2>
+        <div className={styles.content}>
+          <p className={styles.statement}>Four distinctions that keep the record honest.</p>
+          <dl className="activity-glossary">
+            <div><dt>Session-day</dt><dd>One distinct tool session observed on the calendar day the work happened (home base America/Denver; living-local when travelling). The same session can count again if it remains active on another date.</dd></div>
+            <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. First-party Cursor usage or provider-attributed GitHub evidence can verify a date without creating a session count.</dd></div>
+            <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
+            <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>
+          </dl>
         </div>
-        <dl>
-          <div><dt>Session-day</dt><dd>One distinct tool session observed on the calendar day the work happened (home base America/Denver; living-local when travelling). The same session can count again if it remains active on another date.</dd></div>
-          <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. First-party Cursor usage or provider-attributed GitHub evidence can verify a date without creating a session count.</dd></div>
-          <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
-          <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>
-        </dl>
       </section>
 
-      <div className="tool-blocks">
-        {activityProviders.map((provider) => (
-          <article className="tool-block" key={provider}>
-            <div className="heatmap-heading">
-              <div>
-                <span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />
-                <h2>{providerLabels[provider]}</h2>
-              </div>
-            </div>
+      {activityProviders.map((provider) => (
+        <section className={styles.section} key={provider} aria-labelledby={`tool-${provider}`}>
+          <h2 className={`${styles.label} ${styles.markedLabel}`} id={`tool-${provider}`}>
+            <span className={`provider-mark provider-mark--${provider}`} aria-hidden="true" />
+            {providerLabels[provider]}
+          </h2>
+          <div className={styles.content}>
             {Object.entries(data.providers[provider].metrics).filter(([metricId]) => metricId !== "appliedLineChanges").map(([, metric]) => (
               <section className="metric-method" key={metric.definition.unit}>
-                <strong>{metric.definition.label}</strong>
+                <h3>{metric.definition.label}</h3>
                 <p>{metric.definition.methodology}</p>
                 <p className="metric-limit"><strong>Does not mean:</strong> {limitations[provider]}</p>
                 <dl className="tool-provenance">
@@ -166,9 +166,9 @@ export function ActivityDefinitions() {
             {provider === "cursor" ? (
               <p className="metric-retirement-note"><strong>Why there is no line-change total:</strong> Cursor&apos;s retained tracking database records code hashes, not additions and deletions. That historical number has been removed. A line-change metric will return only after direct edit hooks produce verifiable line diffs.</p>
             ) : null}
-          </article>
-        ))}
-      </div>
+          </div>
+        </section>
+      ))}
     </>
   );
 }
