@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     "dist/**",
     "out/**",
     "build/**",
+    "outputs/**",
     "next-env.d.ts",
   ]),
   eslint.configs.recommended,
@@ -26,7 +27,7 @@ const eslintConfig = defineConfig([
     // These static entry points intentionally navigate to the exported HTML.
     // This avoids missing segment-prefetch files and mid-page route landings
     // after homepage hash navigation or project disclosure interactions.
-    files: ["app/page.tsx", "app/blog/**/*.tsx", "components/site/SiteHeader.tsx", "components/site/SiteFooter.tsx"],
+    files: ["app/page.tsx", "app/blog/**/*.tsx", "app/work/**/*.tsx", "components/site/SiteHeader.tsx", "components/site/SiteFooter.tsx"],
     rules: { "@next/next/no-html-link-for-pages": "off" },
   },
   {

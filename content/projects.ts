@@ -9,6 +9,8 @@ export interface Project {
   tagline: string;
   /** Featured projects only: the homepage summary and three checkable facts. */
   feature?: { summary: string; highlights: [string, string, string] };
+  /** A real product capture, kept separate from the architecture diagram. */
+  preview?: { src: string; alt: string; width: number; height: number; caption: string };
   href: string | null;
   /** Architecture diagram under public/, e.g. "/projects/ladybug-architecture.svg". */
   image: string;
@@ -24,13 +26,45 @@ function diagram(slug: string): string {
   return `/projects/${slug}-architecture.svg`;
 }
 
-// Hardest first, judged by scope and the systems involved. The first
-// FEATURED_PROJECTS get the full entry with a reflection; the rest render as
-// compact cards underneath.
+// Lead with the desktop knowledge graph, followed by two supporting projects.
 export const projects: Project[] = [
   {
-    slug: "obsidian-research-agent",
+    slug: "research-agent-platform",
     number: "01",
+    title: "Research Agent Platform",
+    description:
+      "A standalone desktop editor built around the same agent core as the plugin. Electron and CodeMirror 6, fully compatible with Obsidian vaults, with the agent's edits reviewed hunk by hunk before anything touches disk. The core is vendored at a pinned commit behind three typed seams rather than forked. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
+    reflection:
+      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
+    discipline: "TypeScript · Electron · Desktop app",
+    tagline: "Explore connected ideas. Trace them back to the source",
+    feature: {
+      summary: "A desktop workspace for research, connected notes, and agent-assisted editing.",
+      highlights: [
+        "A knowledge graph connects notes, concepts, and tags",
+        "An inspector brings source passages into the graph",
+        "Review agent edits before they reach your vault",
+      ],
+    },
+    preview: {
+      src: "/projects/research-agent-graph.webp",
+      alt: "Research Agent Platform in a demo vault: a knowledge graph of linked research notes, concepts, and tags, with the selected note and source passages in the inspector",
+      width: 1600, height: 1000, caption: "Knowledge graph · Demo vault · October 2026",
+    },
+    href: null,
+    image: diagram("research-agent-platform"),
+    problem:
+      "The same research agent, hosted in a desktop editor that can review every edit before a vault file changes.",
+    whatItDoes:
+      "A standalone desktop editor opens ordinary vault folders. Its knowledge graph connects notes, concepts, and tags, with an inspector for the selected note and its source passages. The same agent core as the Obsidian plugin runs alongside Electron and CodeMirror 6. Agent edits are reviewed hunk by hunk before anything touches disk.",
+    howItConnects:
+      "The agent core is vendored at a pinned commit and talked to through three typed seams. The editor host owns the file tree, the review UI, and the installer. A vault stays compatible with Obsidian because the host writes ordinary notes, not a private format.",
+    whatWasHard:
+      "Forking the core would have created two agents. Vendoring it behind typed seams keeps one agent with two hosts, and a vendor bump that breaks a seam fails at compile time instead of in someone's vault.",
+  },
+  {
+    slug: "obsidian-research-agent",
+    number: "02",
     title: "Obsidian Research Agent",
     description:
       "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, plans, uses approved tools, writes back to notes, and shows a receipt for every step. It also carries a bounded code workspace, gated Linear and GitHub integrations, and a companion service, with sandboxing, approval prompts, replay, and recovery when a step fails.",
@@ -48,6 +82,11 @@ export const projects: Project[] = [
       ],
     },
     href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
+    preview: {
+      src: "/projects/obsidian-research-demo.jpg",
+      alt: "Obsidian research demo: a sourced note beside the mission console and its write receipt",
+      width: 1280, height: 720, caption: "Research mission · Demo vault",
+    },
     image: diagram("obsidian-research-agent"),
     problem:
       "Research that can read a vault, use real tools, and write back to notes, without hiding what the agent just did.",
@@ -60,7 +99,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ladybug",
-    number: "02",
+    number: "03",
     title: "Ladybug",
     description:
       "A private photo and writing space for two people, built three ways: a deterministic product simulator that runs both phones side by side with no credentials, a Supabase-backed PWA with row-level security, private storage, and realtime state, and the original native SwiftUI and Firebase app. Verification covers the migrations, a three-account connected journey, Chromium end-to-end runs, and the iOS build handoff, all on self-hosted CI.",
@@ -90,7 +129,7 @@ export const projects: Project[] = [
   },
   {
     slug: "personal-ai-digest",
-    number: "03",
+    number: "04",
     title: "Personal AI Digest",
     description:
       "A self-hosted RAG pipeline that emails me a grounded technical lesson twice a day, running since March. Ingestion and delivery are separate services that share only the knowledge store, which can be SQLite or Postgres with pgvector. A Cloudflare Worker fires each send on time, because GitHub's own scheduler drifts by hours.",
@@ -120,7 +159,7 @@ export const projects: Project[] = [
   },
   {
     slug: "teach-anything",
-    number: "04",
+    number: "05",
     title: "Teach Anything",
     description:
       "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-5 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a deterministic core, so any schedule can be replayed against the learning history and checked. Every question cites its source.",
@@ -138,27 +177,6 @@ export const projects: Project[] = [
       "History updates memory. Memory drives the scheduler. The scheduler picks the next session. Generated questions and exercises have to cite a source, and code work runs in a sandbox. Because the core is deterministic, a later run with the same history has to produce the same plan.",
     whatWasHard:
       "Asking a model for a lesson is cheap. Making Tuesday depend on Monday, and proving the schedule adapted instead of improvised, meant putting the memory math and the replay harness at the center of the product.",
-  },
-  {
-    slug: "research-agent-platform",
-    number: "05",
-    title: "Research Agent Platform",
-    description:
-      "A standalone desktop editor built around the same agent core as the plugin. Electron and CodeMirror 6, fully compatible with Obsidian vaults, with the agent's edits reviewed hunk by hunk before anything touches disk. The core is vendored at a pinned commit behind three typed seams rather than forked. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
-    reflection:
-      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
-    discipline: "TypeScript · Electron · Desktop app",
-    tagline: "The research agent in a desktop editor that reviews every edit",
-    href: null,
-    image: diagram("research-agent-platform"),
-    problem:
-      "The same research agent, hosted in a desktop editor that can review every edit before a vault file changes.",
-    whatItDoes:
-      "A standalone desktop editor runs the same agent core as the Obsidian plugin. Electron and CodeMirror 6 open ordinary vault folders. Agent edits are reviewed hunk by hunk before anything touches disk. It ships as a Windows installer, with Playwright journeys covering the whole loop.",
-    howItConnects:
-      "The agent core is vendored at a pinned commit and talked to through three typed seams. The editor host owns the file tree, the review UI, and the installer. A vault stays compatible with Obsidian because the host writes ordinary notes, not a private format.",
-    whatWasHard:
-      "Forking the core would have created two agents. Vendoring it behind typed seams keeps one agent with two hosts, and a vendor bump that breaks a seam fails at compile time instead of in someone's vault.",
   },
   {
     slug: "autonomous-repository-template",

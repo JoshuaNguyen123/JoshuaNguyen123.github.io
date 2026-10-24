@@ -6,11 +6,12 @@
  */
 
 export const CANVAS = { width: 1200, height: 900 } as const;
-export const INK = "#141414";
-export const MUTED = "#5c5c5c";
-export const RULE = "#c4c4c4";
-export const PAPER = "#ffffff";
-export const ACCENT = "#2f4bd6";
+// Match the page's alpine tokens, including the downloadable SVG versions.
+export const INK = "#192c32";
+export const MUTED = "#526460";
+export const RULE = "#b6c3ba";
+export const PAPER = "#f7f8f5";
+export const ACCENT = "#315e55";
 export const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 export const MONO = "ui-monospace, Menlo, Consolas, monospace";
 

@@ -1,35 +1,9 @@
-import { createReadStream } from "node:fs";
-import { stat } from "node:fs/promises";
-import { createServer } from "node:http";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { createStaticPreview } from "./preview.mjs";
 
 const outRoot = path.resolve("out");
-const contentTypes = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".jpg": "image/jpeg",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".webp": "image/webp",
-  ".woff2": "font/woff2",
-};
-
-const server = createServer(async (request, response) => {
-  try {
-    const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://localhost").pathname);
-    const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
-    const file = path.resolve(outRoot, relative);
-    if (file !== outRoot && !file.startsWith(`${outRoot}${path.sep}`)) throw new Error("Invalid path");
-    const info = await stat(file);
-    if (!info.isFile()) throw new Error("Not a file");
-    response.writeHead(200, { "Content-Type": contentTypes[path.extname(file)] ?? "application/octet-stream" });
-    createReadStream(file).pipe(response);
-  } catch {
-    response.writeHead(404).end("Not found");
-  }
-});
+const server = createStaticPreview(outRoot);
 
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
 try {
@@ -47,7 +21,33 @@ try {
   if (activity.schemaVersion !== 6 || activity.privacyVersion !== "aggregate-v6" || !activity.providers?.codex?.metrics?.repositoryEvidence || !activity.providers?.cursor?.metrics?.activeSessions || !activity.providers?.cursor?.metrics?.usagePresence || !activity.providers?.cursor?.metrics?.appliedLineChanges || !activity.providers?.["claude-code"]?.metrics?.repositoryEvidence) {
     throw new Error("Served activity snapshot has an unexpected reconciliation state");
   }
-  console.log("Local production HTTP smoke test passed");
+  const pages = [];
+  async function walk(directory, prefix = "") {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      if (entry.isDirectory()) await walk(path.join(directory, entry.name), prefix + entry.name + "/");
+      else if (entry.name.endsWith(".html")) pages.push(prefix + entry.name);
+    }
+  }
+  await walk(outRoot);
+  const destinations = new Set();
+  for (const page of pages) {
+    const url = "/" + page.replace(/index\.html$/, "");
+    const response = await fetch(origin + url);
+    if (response.status !== 200) throw new Error(`Exported route failed: ${url}`);
+    const source = await readFile(path.join(outRoot, page), "utf8");
+    for (const match of source.matchAll(/(?:href|src)="(\/[^"#]*)"/g)) {
+      if (!match[1].startsWith("//")) destinations.add(match[1].replaceAll("&amp;", "&"));
+    }
+  }
+  for (const destination of destinations) {
+    const response = await fetch(origin + destination, { method: "HEAD" });
+    if (!response.ok) throw new Error(`Missing internal asset or destination: ${destination}`);
+  }
+  const missing = await fetch(origin + "/missing-candidate-page/");
+  if (missing.status !== 404 || !(await missing.text()).includes("That page isn")) throw new Error("Branded 404 failed");
+  const post = await fetch(origin + "/", { method: "POST", body: "fixture" });
+  if (post.status !== 405) throw new Error("Static preview must reject form POSTs");
+  console.log(`Local production HTTP smoke test passed: ${pages.length} pages, ${destinations.size} internal destinations, branded 404 and static POST boundary.`);
 } finally {
   await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
 }

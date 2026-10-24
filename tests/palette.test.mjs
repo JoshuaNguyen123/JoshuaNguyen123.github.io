@@ -61,6 +61,11 @@ test("provider identity and intensity do not rely on hue alone", async () => {
   const legendLuminance = legend.map(luminance);
 
   assert.equal(legend.length, 6);
+  // The homepage strip, full dashboard and legend describe the same intensity.
+  // Different colors here previously made navigation appear to change scales.
+  const providerSource = await readFile(new URL("../lib/activity/palette.ts", import.meta.url), "utf8");
+  const buildIndex = [...providerSource.match(/"build-index": \[(.*?)\]/)[1].matchAll(/#[0-9a-f]{6}/gi)].map((match) => match[0]);
+  assert.deepEqual(buildIndex, legend);
   assert.ok(legendLuminance.every((value, index) => index === 0 || contrast(value, legendLuminance[index - 1]) >= 1.3));
   assert.match(styles, /provider-mark--build-index[^}]*rotate\(45deg\)/);
   assert.match(styles, /provider-mark--github[^}]*border-radius:\s*50%/);

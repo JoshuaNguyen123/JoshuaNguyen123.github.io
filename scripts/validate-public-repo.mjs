@@ -16,8 +16,11 @@ const allowedPublicPaths = new Set([
   "public/images/mountain-panorama.webp",
   "public/images/hiking-valley.jpg",
   "public/images/hiking-goats.jpg",
+  "public/images/trout-leap.webp",
   "public/images/topography.svg",
   "public/images/attribution.txt",
+  "public/projects/obsidian-research-demo.jpg",
+  "public/projects/research-agent-graph.webp",
   "public/og-personal.jpg",
   "public/robots.txt",
 ]);
@@ -82,22 +85,22 @@ export function validatePublicFiles(files) {
   return violations;
 }
 
-export async function validateTrackedRepository(root = process.cwd()) {
-  const listed = spawnSync("git", ["ls-files", "-z"], { cwd: root, encoding: "utf8", windowsHide: true });
+export async function validateTrackedRepository(root = process.cwd(), { includeUntracked = false } = {}) {
+  const listed = spawnSync("git", ["ls-files", "-z", ...(includeUntracked ? ["--cached", "--others", "--exclude-standard"] : [])], { cwd: root, encoding: "utf8", windowsHide: true });
   if (listed.status !== 0) throw new Error("Public repository safety check could not enumerate tracked files");
-  const paths = listed.stdout.split("\0").filter(Boolean);
+  const paths = [...new Set(listed.stdout.split("\0").filter(Boolean))].sort();
   const files = await Promise.all(paths.map(async (file) => ({ path: file, contents: await readFile(path.join(root, file)) })));
   return { paths, violations: validatePublicFiles(files) };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
-    const { paths, violations } = await validateTrackedRepository();
+    const { paths, violations } = await validateTrackedRepository(process.cwd(), { includeUntracked: process.argv.includes("--include-untracked") });
     if (violations.length) {
       process.stderr.write(`Public repository safety check failed:\n${violations.map(({ path: file, reason }) => `- ${file}: ${reason}`).join("\n")}\n`);
       process.exitCode = 1;
     } else {
-      process.stdout.write(`Public repository safety check passed for ${paths.length} tracked files.\n`);
+      process.stdout.write(`Public repository safety check passed for ${paths.length} source files.\n`);
     }
   } catch (error) {
     process.stderr.write(`${error.message}\n`);

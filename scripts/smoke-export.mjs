@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { getPublishedPosts } from "../lib/blog.ts";
+import { verifyContactExport } from "./verify-contact-export.mjs";
 
 const root = process.cwd();
 const projectSource = await readFile(path.join(root, "content", "projects.ts"), "utf8");
@@ -9,26 +10,24 @@ if (projectSlugs.length !== 9) throw new Error("Expected nine project case studi
 for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/obsidian-research-agent-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
 const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything", "Private repository"]) {
+for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
-if (homeHeadline !== "I build research agents and retrieval systems that show their work.") throw new Error("Static export is missing the selected homepage headline");
+if (homeHeadline !== "Useful software. Room to explore.") throw new Error("Static export is missing the selected homepage headline");
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
 const activityHtml = await readFile(path.join(root, "out", "activity", "index.html"), "utf8");
 for (const expected of ["Build Index", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence", "Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {
   if (!activityHtml.includes(expected)) throw new Error(`Activity page is missing ${expected}`);
 }
 if (activityHtml.includes("Cursor applied AI line changes")) throw new Error("Activity page still publishes the retired Cursor line-change claim");
-// A contact backend is configured, so the form must actually be in the export.
-// Switching backends once silently dropped it from the live site: the component
-// renders nothing when it has nowhere to post, and that read as a normal build.
+// Local previews keep the form visible too. Release configuration is a separate gate.
 const contactConfigured = Boolean(process.env.NEXT_PUBLIC_CONTACT_API_URL && process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY)
   || Boolean(process.env.NEXT_PUBLIC_WEB3FORMS_KEY);
-if (contactConfigured) {
-  for (const expected of ["contact-form", "h-captcha", "Send message"]) {
+  for (const expected of ["contact-form", 'name="name"', 'name="email"', 'name="message"', "Send message"]) {
     if (!html.includes(expected)) throw new Error(`Static export is missing the contact form (${expected})`);
   }
-}
+if (contactConfigured && !html.includes('data-contact-configured="true"')) throw new Error("Configured contact backend did not reach the exported form");
+verifyContactExport(html, process.env);
 
 // Every project remains reachable through a real link, independent of visual
 // card classes. Architecture diagrams remain in their case studies.
@@ -44,12 +43,17 @@ for (const photo of ["hiking-valley.jpg"]) {
   await access(path.join(root, "out", "images", photo));
   if (!html.includes(`/images/${photo}`)) throw new Error(`Static export is missing ${photo}`);
 }
-// Selected work ships its scroll-linked index as plain in-page links, so it
-// still works as a table of contents before (or without) JavaScript.
-const workIndex = html.match(/<nav\b[^>]*aria-label="Selected projects"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+// Every featured project is directly reachable before JavaScript loads.
+const workIndex = html.match(/<section\b[^>]*id="work"[^>]*>([\s\S]*?)<\/section>/)?.[1] ?? "";
 for (const slug of projectSlugs.slice(0, 3)) {
-  if (!workIndex.includes(`href="#project-${slug}"`) || !html.includes(`id="project-${slug}"`)) throw new Error(`Selected work index is missing ${slug}`);
+  if (!workIndex.includes(`href="/work/${slug}/"`) || !html.includes(`id="project-${slug}"`)) throw new Error(`Selected work index is missing ${slug}`);
 }
+await access(path.join(root, "out", "projects", "obsidian-research-demo.jpg"));
+if (!workIndex.includes("/projects/obsidian-research-demo.jpg")) throw new Error("Selected work is missing the real product capture");
+await access(path.join(root, "out", "projects", "research-agent-graph.webp"));
+if (!workIndex.includes("/projects/research-agent-graph.webp") || !workIndex.includes('id="project-research-agent-platform"')) throw new Error("Selected work is missing the real knowledge graph");
+const graphDetail = await readFile(path.join(root, "out/work/research-agent-platform/index.html"), "utf8");
+if (!graphDetail.includes("/projects/research-agent-graph.webp") || !graphDetail.includes("Knowledge graph")) throw new Error("Graph case study is missing its product capture");
 if (!/<section\b[^>]*\bid="more"/.test(html)) throw new Error("Missing the more-projects index");
 if (!activityHtml.includes('class="monthly-disclosure"')) throw new Error("Missing progressive disclosure for monthly charts");
 const sectionPositions = Object.fromEntries(["work", "activity", "writing", "contact"].map((id) => [id, html.indexOf(`id="${id}"`)]));

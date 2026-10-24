@@ -45,7 +45,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "light",
-  themeColor: "#ffffff",
+  themeColor: "#f7f8f5",
 };
 
 // The contact form posts directly to Web3Forms until the verifying worker is

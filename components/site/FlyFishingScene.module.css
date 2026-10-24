@@ -1,0 +1,71 @@
+.scene {
+  --fish-width: clamp(108px, 15vw, 196px);
+  --fish-x: 78.5%;
+  --fish-y: calc(78% - min(170px, 22vh));
+  --rod-tip-x: 22%;
+  --rod-tip-y: 28%;
+  --mouth-x: calc(var(--fish-x) + var(--fish-width) * .466772);
+  --mouth-y: calc(var(--fish-y) + var(--fish-width) * .025316);
+  background: transparent;
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: .05;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+.scene[data-background-ready] { opacity: .25; }
+.maskDefinitions { height: 0; position: absolute; width: 0; }
+.illustration { height: 100%; isolation: isolate; overflow: hidden; pointer-events: none; position: relative; }
+.cast { height: 100%; inset: 0; overflow: visible; position: absolute; width: 100%; }
+.cast path { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.rod { stroke: var(--accent); stroke-width: .4; }
+.cast .shaft { fill: var(--accent); stroke: none; }
+.guides { fill: none; stroke: var(--ink); stroke-width: .65; }
+.runningLine { opacity: .7; stroke: var(--muted); stroke-width: .5; }
+.water { opacity: .42; stroke: var(--accent); stroke-width: 1; }
+.cast .seat { fill: var(--ink); stroke: var(--ink); stroke-width: .6; }
+.cast .cork { fill: var(--accent); stroke: var(--ink); stroke-width: .65; }
+.corkGrain { opacity: .65; stroke: var(--ink); stroke-width: .45; }
+.ferrules { stroke: var(--ink); stroke-width: 1; }
+.reel { fill: none; height: 34px; left: var(--reel-x, calc(4% + 1px)); overflow: visible; position: absolute; stroke: var(--ink); stroke-width: 1.2; top: var(--reel-y, calc(78% - 1px)); transform: translate(-50%, -50%) rotate(var(--rod-angle, -60deg)); width: 34px; }
+.reel path { stroke-linecap: round; stroke-linejoin: round; }
+.fishingLine {
+  fill: none;
+  height: calc(var(--mouth-y) - var(--rod-tip-y));
+  left: var(--rod-tip-x);
+  opacity: calc(.8 * var(--line-presence, 1));
+  overflow: visible;
+  position: absolute;
+  stroke: var(--muted);
+  stroke-width: .85;
+  top: var(--rod-tip-y);
+  width: calc(var(--mouth-x) - var(--rod-tip-x));
+}
+.fishingLine path { stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.air { clip-path: inset(0 0 22%); inset: 0; position: absolute; }
+.fish {
+  left: var(--fish-x);
+  position: absolute;
+  top: var(--fish-y);
+  transform: translate(-50%, -50%) rotate(var(--fish-angle, 0deg));
+  width: var(--fish-width);
+}
+.fish img { display: block; height: auto; width: 100%; }
+.splash {
+  fill: none;
+  height: 42px;
+  left: var(--splash-x, 77%);
+  opacity: var(--splash-opacity, 0);
+  position: absolute;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-width: 1;
+  top: calc(78% - 30px);
+  transform: translateX(-50%) scale(var(--splash-scale, 1));
+  transform-origin: center 30px;
+  width: 80px;
+}
+@media (max-width: 760px) {
+  .scene[data-background-ready] { opacity: .18; }
+}

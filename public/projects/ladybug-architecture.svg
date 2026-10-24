@@ -1,46 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="ladybug-title ladybug-desc">
   <title id="ladybug-title">Ladybug architecture</title>
   <desc id="ladybug-desc">One shared space for two people, built on three hosts: a deterministic dual-phone simulator, a Supabase PWA with row-level security, private storage, and realtime state, and the earlier SwiftUI and Firebase app. Self-hosted CI checks migrations, a three-account journey, Chromium runs, and the iOS handoff.</desc>
-  <rect width="1200" height="900" fill="#ffffff"/>
-  <rect x="40" y="600" width="1120" height="250" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
-  <text x="62" y="636" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Self-hosted CI</text>
-  <path d="M 560 197 L 560 263 L 220 263 L 220 328" fill="none" stroke="#141414" stroke-width="2"/>
-  <path d="M 220 328 L 213 314 L 227 314 Z" fill="#141414"/>
-  <path d="M 600 197 L 600 328" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 600 328 L 593 314 L 607 314 Z" fill="#2f4bd6"/>
-  <rect x="520.4" y="245.5" width="159.2" height="34" fill="#ffffff"/>
-  <text x="600" y="268.5" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">primary host</text>
-  <path d="M 640 197 L 640 263 L 980 263 L 980 328" fill="none" stroke="#141414" stroke-width="2"/>
-  <path d="M 980 328 L 973 314 L 987 314 Z" fill="#141414"/>
-  <path d="M 225 708 L 225 590 L 560 590 L 560 472" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 560 472 L 567 486 L 553 486 Z" fill="#5c5c5c"/>
-  <path d="M 455 708 L 455 590 L 600 590 L 600 472" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 600 472 L 607 486 L 593 486 Z" fill="#5c5c5c"/>
-  <path d="M 705 708 L 705 590 L 640 590 L 640 472" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 640 472 L 647 486 L 633 486 Z" fill="#5c5c5c"/>
-  <path d="M 1015 708 L 1015 590 L 980 590 L 980 472" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 980 472 L 987 486 L 973 486 Z" fill="#5c5c5c"/>
-  <rect x="450" y="83" width="300" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
-  <text x="478" y="133" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Shared space</text>
-  <text x="478" y="167" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">exactly two people</text>
-  <rect x="95" y="328" width="250" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="123" y="378" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Simulator</text>
-  <text x="123" y="412" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">two phones</text>
-  <text x="123" y="442" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">no credentials</text>
-  <rect x="450" y="328" width="300" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="478" y="378" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">PWA</text>
-  <text x="478" y="412" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Supabase · RLS</text>
-  <text x="478" y="442" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">storage · realtime</text>
-  <rect x="830" y="328" width="300" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="858" y="378" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Native app</text>
-  <text x="858" y="412" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">SwiftUI · Firebase</text>
-  <text x="858" y="442" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">earlier host</text>
-  <rect x="60" y="708" width="250" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="88" y="758" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Migrations</text>
-  <rect x="330" y="708" width="250" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="358" y="758" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">3 accounts</text>
-  <rect x="620" y="708" width="250" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="648" y="758" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Chromium</text>
-  <rect x="890" y="708" width="250" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="918" y="758" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">iOS handoff</text>
+  <rect width="1200" height="900" fill="#f7f8f5"/>
+  <rect x="40" y="600" width="1120" height="250" fill="none" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="636" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Self-hosted CI</text>
+  <path d="M 560 197 L 560 263 L 220 263 L 220 328" fill="none" stroke="#192c32" stroke-width="2"/>
+  <path d="M 220 328 L 213 314 L 227 314 Z" fill="#192c32"/>
+  <path d="M 600 197 L 600 328" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 600 328 L 593 314 L 607 314 Z" fill="#315e55"/>
+  <rect x="520.4" y="245.5" width="159.2" height="34" fill="#f7f8f5"/>
+  <text x="600" y="268.5" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">primary host</text>
+  <path d="M 640 197 L 640 263 L 980 263 L 980 328" fill="none" stroke="#192c32" stroke-width="2"/>
+  <path d="M 980 328 L 973 314 L 987 314 Z" fill="#192c32"/>
+  <path d="M 225 708 L 225 590 L 560 590 L 560 472" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 560 472 L 567 486 L 553 486 Z" fill="#526460"/>
+  <path d="M 455 708 L 455 590 L 600 590 L 600 472" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 600 472 L 607 486 L 593 486 Z" fill="#526460"/>
+  <path d="M 705 708 L 705 590 L 640 590 L 640 472" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 640 472 L 647 486 L 633 486 Z" fill="#526460"/>
+  <path d="M 1015 708 L 1015 590 L 980 590 L 980 472" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 980 472 L 987 486 L 973 486 Z" fill="#526460"/>
+  <rect x="450" y="83" width="300" height="114" fill="#f7f8f5" stroke="#315e55" stroke-width="3"/>
+  <text x="478" y="133" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Shared space</text>
+  <text x="478" y="167" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">exactly two people</text>
+  <rect x="95" y="328" width="250" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="123" y="378" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Simulator</text>
+  <text x="123" y="412" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">two phones</text>
+  <text x="123" y="442" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">no credentials</text>
+  <rect x="450" y="328" width="300" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="478" y="378" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">PWA</text>
+  <text x="478" y="412" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Supabase · RLS</text>
+  <text x="478" y="442" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">storage · realtime</text>
+  <rect x="830" y="328" width="300" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="858" y="378" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Native app</text>
+  <text x="858" y="412" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">SwiftUI · Firebase</text>
+  <text x="858" y="442" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">earlier host</text>
+  <rect x="60" y="708" width="250" height="84" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="88" y="758" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Migrations</text>
+  <rect x="330" y="708" width="250" height="84" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="358" y="758" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">3 accounts</text>
+  <rect x="620" y="708" width="250" height="84" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="648" y="758" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Chromium</text>
+  <rect x="890" y="708" width="250" height="84" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="918" y="758" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">iOS handoff</text>
 </svg>

@@ -7,7 +7,8 @@ import { validateHistoryBackfill } from "./history-backfill-core.mjs";
 import { applyHistoryBackfill } from "./local-exporter.mjs";
 
 const root = process.cwd();
-const publicFile = path.resolve(process.argv[2] ?? path.join(root, "public", "data", "activity.json"));
+const publishedSnapshotMode = process.argv.includes("--published-snapshot");
+const publicFile = path.resolve(process.argv.slice(2).find((argument) => !argument.startsWith("--")) ?? path.join(root, "public", "data", "activity.json"));
 const snapshot = validateSnapshot(JSON.parse(await readFile(publicFile, "utf8")));
 const github = JSON.parse(await readFile(path.join(root, "data", "github-activity.json"), "utf8"));
 const local = JSON.parse(await readFile(path.join(root, "data", "local-activity.json"), "utf8"));
@@ -147,6 +148,14 @@ const sources = {
 // GitHub is refetched on every build and is never carried forward, so it still
 // reconciles to its source alone.
 const published = previouslyPublished();
+// A UI-only candidate does not fetch a new calendar. Its GitHub reference must
+// be the immutable published snapshot in HEAD, rather than the older local
+// collection cache. Normal refreshed builds still reconcile to that cache.
+if (publishedSnapshotMode) {
+  assert.equal(snapshot.mode, "observed", "A release cannot use activity fixtures");
+  assert.ok(published, "Frozen release audit requires an observed snapshot in HEAD");
+  sources.github = published.providers.github.metrics.contributions;
+}
 const carried = {
   github: null,
   codex: published?.providers.codex.metrics.activeSessions ?? null,
@@ -218,7 +227,7 @@ const rows = [
   ["Claude Code sessions", "active session-days", metrics.claude, total(metrics.claude), expectedTotal(expectedDays(sources.claude, carried.claude)), activeDates(metrics.claude).length],
   ["Claude Code repository evidence", "observed dates", metrics.claudeEvidence, activeDates(metrics.claudeEvidence).length, expectedActive(expectedDays(sources.claudeEvidence, carried.claudeEvidence)).length, activeDates(metrics.claudeEvidence).length],
 ];
-console.log(`Activity audit passed for ${year}; completed dates and the captured current date reconcile to source-native aggregates.`);
+console.log(`Activity audit passed for ${year}; reference: ${publishedSnapshotMode ? "published snapshot in HEAD for GitHub, local aggregates plus published history for tools" : "source-native aggregates"}.`);
 console.log("| Metric | Unit | Source | Coverage | Freshness | Feed total | Recalculated total | Active calendar days |");
 console.log("|---|---|---|---|---|---:|---:|---:|");
 for (const [label, unit, metric, feedTotal, sourceTotal, activeDayCount] of rows) {

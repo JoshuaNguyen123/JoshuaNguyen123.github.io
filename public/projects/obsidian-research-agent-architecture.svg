@@ -1,57 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="obsidian-research-agent-title obsidian-research-agent-desc">
   <title id="obsidian-research-agent-title">Obsidian Research Agent architecture</title>
   <desc id="obsidian-research-agent-desc">A mission starts in the console, reads the vault, and becomes a durable plan. Tools run in a sandbox only after an approval gate, and results are written back as sourced notes with a receipt per step. The companion service, Linear, and GitHub sit behind capability gates, off the default path.</desc>
-  <rect width="1200" height="900" fill="#ffffff"/>
-  <rect x="40" y="600" width="1120" height="240" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
-  <text x="62" y="636" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Capability gates · off by default</text>
-  <path d="M 350 170 L 480 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 480 170 L 466 177 L 466 163 Z" fill="#2f4bd6"/>
-  <path d="M 720 170 L 845 170" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 845 170 L 831 177 L 831 163 Z" fill="#2f4bd6"/>
-  <path d="M 990 227 L 990 363" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 990 363 L 983 349 L 997 349 Z" fill="#2f4bd6"/>
-  <path d="M 845 420 L 720 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 720 420 L 734 413 L 734 427 Z" fill="#2f4bd6"/>
-  <rect x="726.1" y="403" width="112.8" height="34" fill="#ffffff"/>
-  <text x="782.5" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">approved</text>
-  <path d="M 480 420 L 350 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 350 420 L 364 413 L 364 427 Z" fill="#2f4bd6"/>
-  <rect x="370.2" y="403" width="89.6" height="34" fill="#ffffff"/>
-  <text x="415" y="426" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">writes</text>
-  <path d="M 970 477 L 970 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 970 673 L 963 659 L 977 659 Z" fill="#5c5c5c"/>
-  <rect x="925.2" y="558" width="89.6" height="34" fill="#ffffff"/>
-  <text x="970" y="581" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">opt-in</text>
-  <path d="M 600 477 L 600 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 600 673 L 593 659 L 607 659 Z" fill="#5c5c5c"/>
-  <path d="M 540 477 L 540 575 L 230 575 L 230 673" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 230 673 L 223 659 L 237 659 Z" fill="#5c5c5c"/>
-  <rect x="70" y="113" width="280" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="98" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Console</text>
-  <text x="98" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">starts a mission</text>
-  <rect x="480" y="113" width="240" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="508" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Vault</text>
-  <text x="508" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reads context</text>
-  <rect x="845" y="113" width="290" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="873" y="163" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Plan</text>
-  <text x="873" y="197" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">durable, followed</text>
-  <rect x="845" y="363" width="290" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
-  <text x="873" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Approval gate</text>
-  <text x="873" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">before every tool</text>
-  <rect x="480" y="363" width="240" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="508" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Sandbox</text>
-  <text x="508" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">tools execute</text>
-  <rect x="70" y="348" width="280" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="98" y="398" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Notes</text>
-  <text x="98" y="432" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">sourced</text>
-  <text x="98" y="462" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">receipt per step</text>
-  <rect x="110" y="673" width="240" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
-  <text x="138" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Companion</text>
-  <text x="138" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">local service</text>
-  <rect x="515" y="673" width="170" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
-  <text x="543" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Linear</text>
-  <text x="543" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">issues</text>
-  <rect x="875" y="673" width="190" height="114" fill="#ffffff" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 6"/>
-  <text x="903" y="723" fill="#5c5c5c" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">GitHub</text>
-  <text x="903" y="757" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">code work</text>
+  <rect width="1200" height="900" fill="#f7f8f5"/>
+  <rect x="40" y="600" width="1120" height="240" fill="none" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="636" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Capability gates · off by default</text>
+  <path d="M 350 170 L 480 170" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 480 170 L 466 177 L 466 163 Z" fill="#315e55"/>
+  <path d="M 720 170 L 845 170" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 845 170 L 831 177 L 831 163 Z" fill="#315e55"/>
+  <path d="M 990 227 L 990 363" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 990 363 L 983 349 L 997 349 Z" fill="#315e55"/>
+  <path d="M 845 420 L 720 420" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 720 420 L 734 413 L 734 427 Z" fill="#315e55"/>
+  <rect x="726.1" y="403" width="112.8" height="34" fill="#f7f8f5"/>
+  <text x="782.5" y="426" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">approved</text>
+  <path d="M 480 420 L 350 420" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 350 420 L 364 413 L 364 427 Z" fill="#315e55"/>
+  <rect x="370.2" y="403" width="89.6" height="34" fill="#f7f8f5"/>
+  <text x="415" y="426" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">writes</text>
+  <path d="M 970 477 L 970 673" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 970 673 L 963 659 L 977 659 Z" fill="#526460"/>
+  <rect x="925.2" y="558" width="89.6" height="34" fill="#f7f8f5"/>
+  <text x="970" y="581" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">opt-in</text>
+  <path d="M 600 477 L 600 673" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 600 673 L 593 659 L 607 659 Z" fill="#526460"/>
+  <path d="M 540 477 L 540 575 L 230 575 L 230 673" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 230 673 L 223 659 L 237 659 Z" fill="#526460"/>
+  <rect x="70" y="113" width="280" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="98" y="163" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Console</text>
+  <text x="98" y="197" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">starts a mission</text>
+  <rect x="480" y="113" width="240" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="508" y="163" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Vault</text>
+  <text x="508" y="197" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reads context</text>
+  <rect x="845" y="113" width="290" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="873" y="163" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Plan</text>
+  <text x="873" y="197" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">durable, followed</text>
+  <rect x="845" y="363" width="290" height="114" fill="#f7f8f5" stroke="#315e55" stroke-width="3"/>
+  <text x="873" y="413" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Approval gate</text>
+  <text x="873" y="447" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">before every tool</text>
+  <rect x="480" y="363" width="240" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="508" y="413" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Sandbox</text>
+  <text x="508" y="447" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">tools execute</text>
+  <rect x="70" y="348" width="280" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="98" y="398" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Notes</text>
+  <text x="98" y="432" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">sourced</text>
+  <text x="98" y="462" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">receipt per step</text>
+  <rect x="110" y="673" width="240" height="114" fill="#f7f8f5" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="138" y="723" fill="#526460" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Companion</text>
+  <text x="138" y="757" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">local service</text>
+  <rect x="515" y="673" width="170" height="114" fill="#f7f8f5" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="543" y="723" fill="#526460" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Linear</text>
+  <text x="543" y="757" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">issues</text>
+  <rect x="875" y="673" width="190" height="114" fill="#f7f8f5" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="903" y="723" fill="#526460" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">GitHub</text>
+  <text x="903" y="757" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">code work</text>
 </svg>

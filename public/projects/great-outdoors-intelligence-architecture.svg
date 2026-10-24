@@ -1,34 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="great-outdoors-intelligence-title great-outdoors-intelligence-desc">
   <title id="great-outdoors-intelligence-title">Great Outdoors Intelligence architecture</title>
   <desc id="great-outdoors-intelligence-desc">Condition feeds (forecasts, river gauges, avalanche advisories, snowpack, road status, and fire data) are ingested and scored per activity. The scores feed a dashboard where a person can question the ranking, and separately produce trip bundles that work fully offline. Built on the autonomous repository template; in progress.</desc>
-  <rect width="1200" height="900" fill="#ffffff"/>
-  <path d="M 350 420 L 420 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 420 420 L 406 427 L 406 413 Z" fill="#2f4bd6"/>
-  <path d="M 620 420 L 660 420" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 660 420 L 646 427 L 646 413 Z" fill="#2f4bd6"/>
-  <path d="M 770 363 L 770 260 L 880 260" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 880 260 L 866 267 L 866 253 Z" fill="#2f4bd6"/>
-  <path d="M 770 477 L 770 580 L 880 580" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 880 580 L 866 587 L 866 573 Z" fill="#2f4bd6"/>
-  <rect x="50" y="160" width="300" height="520" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="78" y="210" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Feeds</text>
-  <text x="78" y="244" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21"></text>
-  <text x="78" y="274" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Forecasts</text>
-  <text x="78" y="304" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">River gauges</text>
-  <text x="78" y="334" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Avalanche</text>
-  <text x="78" y="364" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Snowpack</text>
-  <text x="78" y="394" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Road status</text>
-  <text x="78" y="424" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Fire data</text>
-  <rect x="420" y="378" width="200" height="84" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="448" y="428" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Ingest</text>
-  <rect x="660" y="363" width="220" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
-  <text x="688" y="413" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Score</text>
-  <text x="688" y="447" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">per activity</text>
-  <rect x="880" y="203" width="260" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="908" y="253" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Dashboard</text>
-  <text x="908" y="287" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">argue with it</text>
-  <rect x="880" y="523" width="260" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="908" y="573" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Offline</text>
-  <text x="908" y="607" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">trip bundles</text>
-  <text x="60" y="800" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Built on the autonomous repository template. In progress.</text>
+  <rect width="1200" height="900" fill="#f7f8f5"/>
+  <path d="M 350 420 L 420 420" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 420 420 L 406 427 L 406 413 Z" fill="#315e55"/>
+  <path d="M 620 420 L 660 420" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 660 420 L 646 427 L 646 413 Z" fill="#315e55"/>
+  <path d="M 770 363 L 770 260 L 880 260" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 880 260 L 866 267 L 866 253 Z" fill="#315e55"/>
+  <path d="M 770 477 L 770 580 L 880 580" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 880 580 L 866 587 L 866 573 Z" fill="#315e55"/>
+  <rect x="50" y="160" width="300" height="520" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="78" y="210" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Feeds</text>
+  <text x="78" y="244" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21"></text>
+  <text x="78" y="274" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Forecasts</text>
+  <text x="78" y="304" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">River gauges</text>
+  <text x="78" y="334" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Avalanche</text>
+  <text x="78" y="364" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Snowpack</text>
+  <text x="78" y="394" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Road status</text>
+  <text x="78" y="424" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Fire data</text>
+  <rect x="420" y="378" width="200" height="84" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="448" y="428" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Ingest</text>
+  <rect x="660" y="363" width="220" height="114" fill="#f7f8f5" stroke="#315e55" stroke-width="3"/>
+  <text x="688" y="413" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Score</text>
+  <text x="688" y="447" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">per activity</text>
+  <rect x="880" y="203" width="260" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="908" y="253" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Dashboard</text>
+  <text x="908" y="287" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">argue with it</text>
+  <rect x="880" y="523" width="260" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="908" y="573" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Offline</text>
+  <text x="908" y="607" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">trip bundles</text>
+  <text x="60" y="800" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Built on the autonomous repository template. In progress.</text>
 </svg>

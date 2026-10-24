@@ -1,128 +1,64 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import Image from "next/image";
+import { useState } from "react";
 import type { Project } from "@/content/projects";
-import { drawProgress, READING_LINE } from "@/lib/scroll";
-import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import styles from "./WorkIndex.module.css";
 
-export type FeaturedProject = Pick<Project, "slug" | "number" | "title" | "discipline" | "href" | "image"> &
+export type FeaturedProject = Pick<Project, "slug" | "number" | "title" | "tagline" | "discipline" | "href" | "image" | "preview"> &
   NonNullable<Project["feature"]>;
 
-/**
- * Selected work with a scroll-linked index. The index column is sticky (CSS
- * only) and marks the project crossing the reading line; a rail fills as the
- * reader moves through the three entries. On a phone the index becomes a slim
- * sticky bar. Each entry's diagram traces its connections as it comes into
- * view. Native scrolling is never intercepted, and without JavaScript the
- * index is still a plain list of in-page links and every diagram is drawn.
- */
+/** All case studies remain native links, including before hydration. */
 export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const track = trackRef.current;
-    if (!section || !track) return;
-
-    const entries = Array.from(track.querySelectorAll<HTMLElement>("[data-project-index]"));
-    const diagrams = Array.from(track.querySelectorAll<SVGElement>("[data-scroll-draw]"));
-
-    // One measurement per frame drives both signals, so they always agree:
-    // the active entry is the last one whose top has passed the reading line
-    // (the first one while the reader is still above the section), and
-    // progress is written straight to a CSS variable. setActive with an
-    // unchanged index is a no-op, so React re-renders only on a real change.
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const line = window.innerHeight * READING_LINE;
-      const rect = track.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, (line - rect.top) / rect.height));
-      section.style.setProperty("--work-progress", progress.toFixed(4));
-      let next = 0;
-      entries.forEach((entry, index) => {
-        if (entry.getBoundingClientRect().top <= line) next = index;
-      });
-      setActive(next);
-      diagrams.forEach((diagram) => {
-        diagram.style.setProperty("--draw-progress", drawProgress(diagram.getBoundingClientRect(), window.innerHeight).toFixed(4));
-      });
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, []);
-
-  const current = projects[active] ?? projects[0];
-
   return (
-    <section ref={sectionRef} className={styles.section} id="work" aria-labelledby="work-title">
-      <div className={styles.aside}>
-        <div className={styles.sticky}>
-          <h2 className={styles.heading} id="work-title">Selected work</h2>
-          <nav className={styles.index} aria-label="Selected projects">
-            <span className={styles.rail} aria-hidden="true" />
-            <ol className={styles.list}>
-              {projects.map((project, index) => (
-                <li key={project.slug}>
-                  <a className={styles.link} href={`#project-${project.slug}`} aria-current={index === active ? "true" : undefined}>
-                    <span className={styles.number}>{project.number}</span>
-                    <span className={styles.linkTitle}>{project.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-          <a className={styles.more} href="#more">More projects</a>
-        </div>
-      </div>
-
-      <div className={styles.track} ref={trackRef}>
-        <div className={styles.bar} aria-hidden="true">
-          <p>
-            <span className={styles.number}>{current.number} / {String(projects.length).padStart(2, "0")}</span>
-            <span className={styles.barTitle}>{current.title}</span>
-          </p>
-          <span className={styles.barTrack} />
-        </div>
-
+    <section className={styles.section} id="work" aria-labelledby="work-title">
+      <h2 className={styles.heading} id="work-title">Selected work</h2>
+      <div className={styles.track}>
         {projects.map((project, index) => (
           <article
             key={project.slug}
             id={`project-${project.slug}`}
             className={styles.entry}
-            data-project-index={index}
+            data-featured={active === index}
             aria-labelledby={`project-${project.slug}-title`}
           >
-            <figure className={styles.figure}>
-              <ArchitectureDiagram slug={project.slug} label={`Architecture diagram of ${project.title}`} />
-            </figure>
-            <p className={styles.meta}>{project.number} · {project.discipline}</p>
-            <h3 className={styles.title} id={`project-${project.slug}-title`}>{project.title}</h3>
-            <p className={styles.summary}>{project.summary}</p>
-            <ul className={styles.highlights}>
-              {project.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
-            </ul>
-            <div className={styles.actions}>
-              <a className={styles.caseStudy} href={`/work/${project.slug}/`}>Read the case study</a>
-              {project.href ? (
-                <a className="project-link project-link--external" href={project.href} target="_blank" rel="noreferrer">View the source</a>
-              ) : (
-                <span className={styles.private}>Private repository · <a href="#contact">ask me about it</a></span>
-              )}
+            <a className={styles.figure} href={`/work/${project.slug}/`} aria-label={`See the ${project.title} case study`}>
+                <Image
+                  src={project.preview?.src ?? project.image}
+                  alt={project.preview?.alt ?? `Architecture diagram of ${project.title}`}
+                  width={project.preview?.width ?? 1200}
+                  height={project.preview?.height ?? 720}
+                  sizes="(max-width: 760px) 90vw, 60vw"
+                  loading="lazy"
+                />
+                <span className={styles.caption}>{project.preview?.caption ?? "System architecture"}</span>
+            </a>
+            <div className={styles.copy}>
+              <h3 className={styles.title} id={`project-${project.slug}-title`}>
+                <a href={`/work/${project.slug}/`}>{project.title}</a>
+              </h3>
+              <p className={styles.summary}>{project.tagline}.</p>
+              <a className={styles.caseStudy} href={`/work/${project.slug}/`}>
+                Case study <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+              <p className={styles.detail}>{project.highlights[0]}</p>
             </div>
           </article>
+        ))}
+      </div>
+      <div className={styles.controls} role="group" aria-label="Feature a project">
+        {projects.map((project, index) => (
+          <button
+            key={project.slug}
+            type="button"
+            aria-label={`Feature ${project.title}`}
+            aria-pressed={active === index}
+            aria-controls={`project-${project.slug}`}
+            onClick={() => setActive(index)}
+          ><span aria-hidden="true" /></button>
         ))}
       </div>
     </section>

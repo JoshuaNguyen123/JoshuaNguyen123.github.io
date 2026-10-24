@@ -1,0 +1,23 @@
+header.overlay {
+  color: var(--on-image);
+  left: 0;
+  padding: 24px clamp(24px, 6vw, 120px);
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 5;
+}
+.overlay > a { font-size: 16px; font-weight: 500; letter-spacing: -.02em; }
+.overlay > nav { color: var(--on-image); font-size: 13px; gap: 0 34px; }
+.overlay > nav a { position: relative; }
+.overlay > nav a::after { background: currentColor; bottom: 7px; content: ""; height: 1px; left: 0; position: absolute; right: 0; transform: scaleX(0); transform-origin: left; transition: transform 220ms ease; }
+.overlay > nav a:hover, .overlay > nav a:focus-visible { color: var(--on-image); }
+.overlay > nav a:hover::after, .overlay > nav a:focus-visible::after { transform: scaleX(1); }
+.overlay a:focus-visible { outline-color: var(--on-image); }
+@media (max-width: 760px) {
+  header.overlay { align-items: flex-start; gap: 4px 12px; padding-top: 18px; }
+  .overlay > a { font-size: 15px; min-height: 44px; padding-top: 13px; }
+  .overlay > nav { font-size: 12px; gap: 0 17px; }
+}
+@media (max-width: 380px) { .overlay > nav { gap: 0 12px; } }
+@media (prefers-reduced-motion: reduce) { .overlay > nav a::after { transition: none; } }

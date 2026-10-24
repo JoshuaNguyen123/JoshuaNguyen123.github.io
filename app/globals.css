@@ -1,26 +1,36 @@
-/* Minimal: white ground, near-black type, one cobalt accent shared with Josh UI.
-   The accent marks links, the active work entry and activity intensity only.
+/* Alpine palette: soft chalk, slate type, and one evergreen accent.
+   The landscape, editorial pages, diagrams and activity share these roles.
    Activity identity and intensity remain independently encoded.
    Page layout lives in CSS modules (app/home.module.css,
    components/site/subpage.module.css); this file holds tokens, shared chrome,
    and the global classes that components and rendered markdown use. */
 :root {
-  --ink: #141414;
-  --body: #3d3d3d;
-  --muted: #5c5c5c;
-  --faint: #6b6b6b;
-  --paper: #ffffff;
-  --panel: #f5f5f5;
-  --line: #e5e5e5;
-  --hair: #ebebeb;
-  --accent: #2f4bd6;
-  --accent-hover: #2440b8;
-  --level-0: #f0f0f0;
-  --level-1: #c4ccf2;
-  --level-2: #94a5eb;
-  --level-3: #5f75e0;
-  --level-4: #2f4bd6;
-  --level-5: #1a2c8c;
+  --ink: #192c32;
+  --body: #3e5054;
+  --muted: #526460;
+  --faint: #5c6d67;
+  --paper: #f7f8f5;
+  --panel: #edf1ed;
+  --line: #dbe2dc;
+  --hair: #e3e8e2;
+  --accent: #315e55;
+  --accent-hover: #234a43;
+  /* Also used by the full dashboard's Build Index in lib/activity/palette.ts. */
+  --level-0: #e5ece7;
+  --level-1: #bfcec6;
+  --level-2: #94ac9e;
+  --level-3: #6b8a79;
+  --level-4: #446a58;
+  --level-5: #234b3b;
+  /* Image foregrounds stay independent of the page's paper surface. */
+  --on-image: #f7f8f5;
+  --on-image-muted: rgb(247 248 245 / .88);
+  --on-image-soft: rgb(247 248 245 / .72);
+  --on-image-rule: rgb(247 248 245 / .6);
+  --landscape-base: #10292c;
+  --landscape-side-shade: linear-gradient(90deg, rgb(16 41 44 / .3), rgb(16 41 44 / .08) 65%, transparent);
+  --landscape-shade: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .5) 55%, rgb(16 41 44 / .8) 100%);
+  --landscape-shade-mobile: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .66) 55%, rgb(16 41 44 / .8) 100%);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 16px;
@@ -40,14 +50,14 @@
   --gutter-centered: max(var(--gutter), calc((100% - var(--container)) / 2));
   --measure: 660px;
 
-  /* Secondary colours. The five --level-* values above are the neutral
-     intensity ramp and must stay literal hex: tests/palette.test.mjs reads them. */
-  --rule: #c4c4c4;          /* quiet underline under secondary links */
+  /* Secondary colours. Keep the six --level-* ramp values above as literal
+     hex: tests/palette.test.mjs checks their contrast and dashboard agreement. */
+  --rule: #b6c3ba;          /* quiet underline under secondary links */
   --paper-bright: #ffffff;  /* writing sheet, text on ink */
-  --input-line: #d4d4d4;
-  --placeholder: #767676;
-  --ink-16: rgba(20, 20, 20, .16);
-  --ink-26: rgba(20, 20, 20, .26);
+  --input-line: #7c8f83;
+  --placeholder: #606f68;
+  --ink-16: rgba(25, 44, 50, .16);
+  --ink-26: rgba(25, 44, 50, .26);
   --error: #8a2f1f;
   --success: #3f6135;
   --warn: #8a6520;

@@ -1,41 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="engineering-activity-portfolio-title engineering-activity-portfolio-desc">
   <title id="engineering-activity-portfolio-title">Engineering Activity Portfolio architecture</title>
   <desc id="engineering-activity-portfolio-desc">Collectors stay on the machine and reduce tool activity to dates and counts. A publish step writes the public snapshot. The static site reads that snapshot, draws the heatmaps, and polls the published feed for a newer day. Prompts, code, filenames, repositories, and raw IDs never leave the machine.</desc>
-  <rect width="1200" height="900" fill="#ffffff"/>
-  <rect x="40" y="60" width="520" height="660" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
-  <text x="62" y="96" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">This machine</text>
-  <path d="M 300 272 L 300 353" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 300 353 L 293 339 L 307 339 Z" fill="#2f4bd6"/>
-  <path d="M 300 467 L 300 553" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 300 553 L 293 539 L 307 539 Z" fill="#2f4bd6"/>
-  <path d="M 510 610 L 710 610" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 710 610 L 696 617 L 696 603 Z" fill="#2f4bd6"/>
-  <rect x="559.4" y="593" width="101.2" height="34" fill="#ffffff"/>
-  <text x="610" y="616" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">publish</text>
-  <path d="M 820 553 L 820 357" fill="none" stroke="#141414" stroke-width="2"/>
-  <path d="M 820 357 L 827 371 L 813 371 Z" fill="#141414"/>
-  <rect x="781" y="438" width="78" height="34" fill="#ffffff"/>
-  <text x="820" y="461" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">reads</text>
-  <path d="M 980 357 L 980 553" fill="none" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="6 7"/>
-  <path d="M 980 553 L 973 539 L 987 539 Z" fill="#5c5c5c"/>
-  <rect x="941" y="438" width="78" height="34" fill="#ffffff"/>
-  <text x="980" y="461" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">polls</text>
-  <rect x="90" y="128" width="420" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="118" y="178" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Collectors</text>
-  <text x="118" y="212" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Codex · Cursor</text>
-  <text x="118" y="242" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Claude Code · GitHub</text>
-  <rect x="90" y="353" width="420" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
-  <text x="118" y="403" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Daily counts</text>
-  <text x="118" y="437" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">dates and counts only</text>
-  <rect x="90" y="553" width="420" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="118" y="603" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Publish</text>
-  <text x="118" y="637" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">validated snapshot</text>
-  <rect x="710" y="553" width="380" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="738" y="603" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">activity.json</text>
-  <text x="738" y="637" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">public feed</text>
-  <rect x="710" y="243" width="380" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="738" y="293" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Static site</text>
-  <text x="738" y="327" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">heatmaps</text>
-  <text x="60" y="790" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Never leaves the machine: prompts, code,</text>
-  <text x="60" y="820" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">filenames, repositories, raw IDs.</text>
+  <rect width="1200" height="900" fill="#f7f8f5"/>
+  <rect x="40" y="60" width="520" height="660" fill="none" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="96" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">This machine</text>
+  <path d="M 300 272 L 300 353" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 300 353 L 293 339 L 307 339 Z" fill="#315e55"/>
+  <path d="M 300 467 L 300 553" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 300 553 L 293 539 L 307 539 Z" fill="#315e55"/>
+  <path d="M 510 610 L 710 610" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 710 610 L 696 617 L 696 603 Z" fill="#315e55"/>
+  <rect x="559.4" y="593" width="101.2" height="34" fill="#f7f8f5"/>
+  <text x="610" y="616" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">publish</text>
+  <path d="M 820 553 L 820 357" fill="none" stroke="#192c32" stroke-width="2"/>
+  <path d="M 820 357 L 827 371 L 813 371 Z" fill="#192c32"/>
+  <rect x="781" y="438" width="78" height="34" fill="#f7f8f5"/>
+  <text x="820" y="461" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">reads</text>
+  <path d="M 980 357 L 980 553" fill="none" stroke="#526460" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 980 553 L 973 539 L 987 539 Z" fill="#526460"/>
+  <rect x="941" y="438" width="78" height="34" fill="#f7f8f5"/>
+  <text x="980" y="461" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">polls</text>
+  <rect x="90" y="128" width="420" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="118" y="178" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Collectors</text>
+  <text x="118" y="212" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Codex · Cursor</text>
+  <text x="118" y="242" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Claude Code · GitHub</text>
+  <rect x="90" y="353" width="420" height="114" fill="#f7f8f5" stroke="#315e55" stroke-width="3"/>
+  <text x="118" y="403" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Daily counts</text>
+  <text x="118" y="437" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">dates and counts only</text>
+  <rect x="90" y="553" width="420" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="118" y="603" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Publish</text>
+  <text x="118" y="637" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">validated snapshot</text>
+  <rect x="710" y="553" width="380" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="738" y="603" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">activity.json</text>
+  <text x="738" y="637" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">public feed</text>
+  <rect x="710" y="243" width="380" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="738" y="293" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Static site</text>
+  <text x="738" y="327" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">heatmaps</text>
+  <text x="60" y="790" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Never leaves the machine: prompts, code,</text>
+  <text x="60" y="820" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">filenames, repositories, raw IDs.</text>
 </svg>

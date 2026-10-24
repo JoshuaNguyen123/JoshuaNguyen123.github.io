@@ -2,6 +2,7 @@
    sections that set a narrow label column beside the content, separated by a
    hairline and whitespace. No cards, shadows, or badges. Tokens live in globals.css. */
 .main { margin: 0 var(--gutter-centered); }
+.figure img { display: block; height: auto; width: 100%; }
 
 .intro { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-7) 0 var(--space-8); }
 .kicker { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); }

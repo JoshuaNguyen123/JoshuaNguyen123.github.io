@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "node scripts/prepare-activity.mjs --fixtures && next dev",
     "build": "node scripts/fetch-cursor-usage.mjs && node scripts/prepare-activity.mjs && next build",
-    "start": "next start",
+    "start": "node scripts/preview.mjs",
+    "preview": "node scripts/preview.mjs",
     "activity:export": "node scripts/export-local-activity.mjs",
     "activity:prepare": "node scripts/prepare-activity.mjs",
     "activity:preflight": "node scripts/hook-installer.mjs preflight && node scripts/live-activity-collector.mjs --preflight",
@@ -28,6 +29,8 @@
     "public-safety:check": "node scripts/validate-public-repo.mjs",
     "privacy:check": "node scripts/validate-activity.mjs public/data/activity.json",
     "smoke": "node scripts/smoke-export.mjs && node scripts/smoke-http.mjs",
+    "release:check": "node scripts/release-candidate.mjs",
+    "release:config": "node scripts/release-config.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
     "verify": "npm run lint && npm run public-safety:check && npm test && npm run build && npm run activity:audit && npm run privacy:check && npm run smoke"
@@ -36,14 +39,14 @@
     "@phosphor-icons/react": "^2.1.10",
     "gray-matter": "4.0.3",
     "marked": "18.0.9",
-    "next": "16.3.0",
+    "next": "16.4.3",
     "react": "19.2.6",
     "react-dom": "19.2.6",
-    "sanitize-html": "^2.17.7"
+    "sanitize-html": "2.18.1"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",
-    "@next/eslint-plugin-next": "16.3.0",
+    "@next/eslint-plugin-next": "16.4.3",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

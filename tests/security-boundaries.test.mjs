@@ -52,13 +52,11 @@ test("contact form prefers the verifying worker and only falls back while it is 
   }
 });
 
-test("the contact form is never dropped from the page when a backend is configured", async () => {
+test("the contact form stays visible even in an unconfigured preview", async () => {
   const form = await repositoryFile("components/contact/ContactForm.tsx");
-  // Rendering nothing is reserved for the case where there is genuinely nowhere
-  // to post; either backend must keep the form on the page.
   assert.match(form, /const isConfigured = usesWorker \|\| Boolean\(WEB3FORMS_KEY\)/);
-  assert.match(form, /if \(!isConfigured\) return null;/);
-  assert.equal((form.match(/return null;/g) ?? []).length, 1, "only the unconfigured case may render nothing");
+  assert.doesNotMatch(form, /return null;/);
+  assert.match(form, /disabled=\{!isConfigured \|\| status === "sending"\}/);
 
   const smoke = await repositoryFile("scripts/smoke-export.mjs");
   assert.match(smoke, /contact-form/, "the export smoke test must prove the form shipped");

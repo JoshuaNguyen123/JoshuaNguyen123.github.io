@@ -1,36 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="local-first-meeting-transcription-title local-first-meeting-transcription-desc">
   <title id="local-first-meeting-transcription-title">Local-First Meeting Transcription architecture</title>
   <desc id="local-first-meeting-transcription-desc">Everything runs on the machine. The recorder keeps audio on disk. Vosk writes a live transcript during the meeting and faster-whisper writes a refined one afterward. A review queue reconciles the two, and only the agreed text goes to a local model that writes structured notes. FastAPI serves the backend and React the review UI.</desc>
-  <rect width="1200" height="900" fill="#ffffff"/>
-  <rect x="40" y="60" width="1120" height="700" fill="none" stroke="#c4c4c4" stroke-width="2" stroke-dasharray="8 8"/>
-  <text x="62" y="96" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">This machine</text>
-  <path d="M 380 350 L 410 350 L 410 220 L 440 220" fill="none" stroke="#141414" stroke-width="2"/>
-  <path d="M 440 220 L 426 227 L 426 213 Z" fill="#141414"/>
-  <path d="M 380 410 L 410 410 L 410 540 L 440 540" fill="none" stroke="#141414" stroke-width="2"/>
-  <path d="M 440 540 L 426 547 L 426 533 Z" fill="#141414"/>
-  <path d="M 760 220 L 790 220 L 790 350 L 820 350" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 820 350 L 806 357 L 806 343 Z" fill="#2f4bd6"/>
-  <path d="M 760 540 L 790 540 L 790 410 L 820 410" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 820 410 L 806 417 L 806 403 Z" fill="#2f4bd6"/>
-  <path d="M 970 437 L 970 583" fill="none" stroke="#2f4bd6" stroke-width="3"/>
-  <path d="M 970 583 L 963 569 L 977 569 Z" fill="#2f4bd6"/>
-  <rect x="896.2" y="493" width="147.6" height="34" fill="#ffffff"/>
-  <text x="970" y="516" text-anchor="middle" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">agreed text</text>
-  <rect x="80" y="323" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="108" y="373" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Recorder</text>
-  <text x="108" y="407" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">audio on disk</text>
-  <rect x="440" y="163" width="320" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="468" y="213" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Live pass</text>
-  <text x="468" y="247" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Vosk · during</text>
-  <rect x="440" y="468" width="320" height="144" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="468" y="518" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Refined pass</text>
-  <text x="468" y="552" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">faster-whisper</text>
-  <text x="468" y="582" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">after</text>
-  <rect x="820" y="323" width="300" height="114" fill="#ffffff" stroke="#2f4bd6" stroke-width="3"/>
-  <text x="848" y="373" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Review</text>
-  <text x="848" y="407" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reconcile both</text>
-  <rect x="820" y="583" width="300" height="114" fill="#ffffff" stroke="#141414" stroke-width="2"/>
-  <text x="848" y="633" fill="#141414" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Notes</text>
-  <text x="848" y="667" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">local model</text>
-  <text x="60" y="820" fill="#5c5c5c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">FastAPI backend · React review UI</text>
+  <rect width="1200" height="900" fill="#f7f8f5"/>
+  <rect x="40" y="60" width="1120" height="700" fill="none" stroke="#b6c3ba" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62" y="96" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">This machine</text>
+  <path d="M 380 350 L 410 350 L 410 220 L 440 220" fill="none" stroke="#192c32" stroke-width="2"/>
+  <path d="M 440 220 L 426 227 L 426 213 Z" fill="#192c32"/>
+  <path d="M 380 410 L 410 410 L 410 540 L 440 540" fill="none" stroke="#192c32" stroke-width="2"/>
+  <path d="M 440 540 L 426 547 L 426 533 Z" fill="#192c32"/>
+  <path d="M 760 220 L 790 220 L 790 350 L 820 350" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 820 350 L 806 357 L 806 343 Z" fill="#315e55"/>
+  <path d="M 760 540 L 790 540 L 790 410 L 820 410" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 820 410 L 806 417 L 806 403 Z" fill="#315e55"/>
+  <path d="M 970 437 L 970 583" fill="none" stroke="#315e55" stroke-width="3"/>
+  <path d="M 970 583 L 963 569 L 977 569 Z" fill="#315e55"/>
+  <rect x="896.2" y="493" width="147.6" height="34" fill="#f7f8f5"/>
+  <text x="970" y="516" text-anchor="middle" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">agreed text</text>
+  <rect x="80" y="323" width="300" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="108" y="373" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Recorder</text>
+  <text x="108" y="407" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">audio on disk</text>
+  <rect x="440" y="163" width="320" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="468" y="213" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Live pass</text>
+  <text x="468" y="247" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">Vosk · during</text>
+  <rect x="440" y="468" width="320" height="144" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="468" y="518" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Refined pass</text>
+  <text x="468" y="552" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">faster-whisper</text>
+  <text x="468" y="582" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">after</text>
+  <rect x="820" y="323" width="300" height="114" fill="#f7f8f5" stroke="#315e55" stroke-width="3"/>
+  <text x="848" y="373" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Review</text>
+  <text x="848" y="407" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">reconcile both</text>
+  <rect x="820" y="583" width="300" height="114" fill="#f7f8f5" stroke="#192c32" stroke-width="2"/>
+  <text x="848" y="633" fill="#192c32" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Notes</text>
+  <text x="848" y="667" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">local model</text>
+  <text x="60" y="820" fill="#526460" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="21">FastAPI backend · React review UI</text>
 </svg>

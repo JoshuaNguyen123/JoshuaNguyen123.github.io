@@ -6,7 +6,7 @@ import styles from "@/components/site/subpage.module.css";
 import { getProject, getProjects } from "@/content/projects";
 import { ogImage, siteName } from "@/content/site";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
@@ -53,7 +53,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
       <main className={styles.main} id="main">
         <article>
           <header className={styles.intro}>
-            <Link className={styles.back} href="/#work">All work</Link>
+            <a className={styles.back} href="/#work">All work</a>
             <p className={styles.kicker}>Project {project.number}</p>
             <h1>{project.title}</h1>
             <p className={styles.lede}>{project.problem}</p>
@@ -65,13 +65,24 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
                 {project.href ? (
                   <a className={styles.link} href={project.href} target="_blank" rel="noreferrer">View repository</a>
                 ) : (
-                  <>Private repository · <Link href="/#contact">ask me about it</Link></>
+                  <>Private repository · <a href="/#contact">ask me about it</a></>
                 )}
               </dd>
             </dl>
           </header>
 
           <ScrollSections>
+            {project.preview ? (
+              <section className={styles.section} data-section="Inside the app">
+                <h2 className={styles.label} data-section-label>Inside the app</h2>
+                <figure className={styles.figure}>
+                  <a href={project.preview.src} target="_blank" rel="noreferrer" aria-label="Open the full-size product capture (new tab)">
+                    <Image src={project.preview.src} alt={project.preview.alt} width={project.preview.width} height={project.preview.height} sizes="(max-width: 760px) 90vw, 75vw" />
+                  </a>
+                  <figcaption>{project.preview.caption}. Open the image to explore it at full size.</figcaption>
+                </figure>
+              </section>
+            ) : null}
             <section className={styles.section} data-section="What it does">
               <h2 className={styles.label} data-section-label>What it does</h2>
               <p className={styles.prose}>{project.whatItDoes}</p>
@@ -98,13 +109,13 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
             <div className={styles.content}>
               <ul className={styles.rows}>
                 <li>
-                  <Link href={`/work/${next.slug}/`}>
+                  <a href={`/work/${next.slug}/`}>
                     <span className={styles.rowTitle}>{next.title}</span>
                     <span className={styles.rowNote}>{next.tagline}</span>
-                  </Link>
+                  </a>
                 </li>
               </ul>
-              <Link className={styles.textLink} href="/#work">All work</Link>
+              <a className={styles.textLink} href="/#work">All work</a>
             </div>
           </footer>
         </article>

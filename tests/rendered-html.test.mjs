@@ -24,7 +24,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   // The name renders in the shared header; the page carries it as structured data.
   assert.match(site, /siteName = "Joshua Nguyen"/);
   assert.match(page, /name: siteName/);
-  assert.match(page, /I build research agents and retrieval systems that show their work\./);
+  const personalIntro = await readFile(new URL("../components/site/PersonalIntro.tsx", import.meta.url), "utf8");
+  assert.match(personalIntro, /I build research agents and retrieval systems that/);
+  assert.match(personalIntro, /show their work\./);
   const workIndex = await readFile(new URL("../components/work/WorkIndex.tsx", import.meta.url), "utf8");
   assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
@@ -37,11 +39,11 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(projects, /Engineering Activity Portfolio/);
   assert.match(projects, /Research Agent Platform/);
   const projectOrder = [
+    "Research Agent Platform",
     "Obsidian Research Agent",
     "Ladybug",
     "Personal AI Digest",
     "Teach Anything",
-    "Research Agent Platform",
     "Autonomous Repository Template",
     "Engineering Activity Portfolio",
     "Great Outdoors Intelligence",
@@ -54,16 +56,17 @@ test("public identity, editorial writing, and public social surfaces are source-
   const sectionOrder = [page.indexOf("<WorkIndex"), ...["more", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`))];
   assert.ok(sectionOrder.every((position) => position >= 0));
   assert.deepEqual(sectionOrder, [...sectionOrder].sort((a, b) => a - b));
-  // The scroll-linked index never takes over scrolling: one passive,
-  // frame-throttled listener, with in-page links as the no-JS fallback.
-  assert.match(workIndex, /\{ passive: true \}/);
-  assert.match(workIndex, /requestAnimationFrame/);
-  assert.match(workIndex, /href=\{`#project-\$\{project\.slug\}`\}/);
+  // Featured controls enhance native case-study links. The hero follows
+  // native scroll and honors reduced motion without intercepting input.
+  const hero = await readFile(new URL("../components/site/CinematicHero.tsx", import.meta.url), "utf8");
+  assert.match(hero, /\{ passive: true \}/);
+  assert.match(hero, /requestAnimationFrame/);
+  assert.match(hero, /prefers-reduced-motion: reduce/);
+  assert.match(workIndex, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
   assert.doesNotMatch(workIndex, /preventDefault|scrollTo\(|wheel/);
   // Subpage sections follow the same reading line, under the same rules.
   const scrollSections = await readFile(new URL("../components/site/ScrollSections.tsx", import.meta.url), "utf8");
   assert.match(scrollSections, /READING_LINE \} from "@\/lib\/scroll"/);
-  assert.match(workIndex, /READING_LINE \} from "@\/lib\/scroll"/);
   assert.match(scrollSections, /\{ passive: true \}/);
   assert.match(scrollSections, /requestAnimationFrame/);
   assert.doesNotMatch(scrollSections, /preventDefault|scrollTo\(|wheel/);
@@ -92,7 +95,7 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /projects\.slice\(0, FEATURED_PROJECTS\)/);
   assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
   assert.doesNotMatch(page, /<strong><span>View project/);
-  assert.match(workIndex, /className="project-link project-link--external"/);
+  assert.match(workIndex, /aria-pressed=\{active === index\}/);
   assert.match(page, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
   assert.match(projects, /image: string;/);
   assert.match(work, /Architecture diagram of/);

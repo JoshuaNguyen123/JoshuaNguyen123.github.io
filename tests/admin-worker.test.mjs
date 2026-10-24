@@ -162,6 +162,25 @@ test("contact relay verifies captcha server-side before sending", async () => {
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("missing, rejected, or wrong-host captcha tokens never reach message delivery", async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  let verification = { success: false, "error-codes": ["invalid-or-already-seen-response"] };
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    assert.equal(String(url), "https://api.hcaptcha.com/siteverify", "an unverified token must never reach the delivery provider");
+    return Response.json(verification);
+  };
+  try {
+    assert.equal((await contactRequest(configuredEnvironment(), { captchaToken: "" })).status, 400);
+    assert.equal(calls.length, 0);
+    assert.equal((await contactRequest(configuredEnvironment(), {})).status, 400);
+    verification = { success: true, hostname: "another-site.example" };
+    assert.equal((await contactRequest(configuredEnvironment(), {})).status, 400);
+    assert.equal(calls.length, 2);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("admin writes reject bodies above the bounded request size", async () => {
   const oversized = await worker.fetch(apiRequest("/api/posts/safe-post", {
     method: "PUT",

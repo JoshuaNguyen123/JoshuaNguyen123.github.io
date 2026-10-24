@@ -1,13 +1,15 @@
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { CinematicHero } from "@/components/site/CinematicHero";
+import { PersonalIntro } from "@/components/site/PersonalIntro";
+import { FlyFishingScene } from "@/components/site/FlyFishingScene";
 import { WorkIndex, type FeaturedProject } from "@/components/work/WorkIndex";
 import { FEATURED_PROJECTS, projects } from "@/content/projects";
-import { availability, currentFocus, githubUrl, linkedInUrl, resumeUrl, siteName, siteUrl } from "@/content/site";
+import { githubUrl, linkedInUrl, resumeUrl, siteName, siteUrl } from "@/content/site";
 import { loadActivitySnapshot } from "@/lib/activity/load";
 import { getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
-import Image from "next/image";
 import type { CSSProperties } from "react";
 import styles from "./home.module.css";
 
@@ -48,34 +50,18 @@ function yearCalendar() {
 export default function Home() {
   const latestPost = getPublishedPosts()[0];
   const calendar = yearCalendar();
-  const featured: FeaturedProject[] = projects.slice(0, FEATURED_PROJECTS).flatMap(({ slug, number, title, discipline, href, image, feature }) =>
-    feature ? [{ slug, number, title, discipline, href, image, ...feature }] : [],
+  const featured: FeaturedProject[] = projects.slice(0, FEATURED_PROJECTS).flatMap(({ slug, number, title, tagline, discipline, href, image, preview, feature }) =>
+    feature ? [{ slug, number, title, tagline, discipline, href, image, preview, ...feature }] : [],
   );
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="overlay" />
       <main id="main" className={styles.main}>
+        <FlyFishingScene />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
 
-        <section className={styles.intro} id="top" aria-labelledby="intro-title">
-          <p className={styles.kicker}>AI developer in Bozeman, Montana</p>
-          <h1 id="intro-title">I build research agents and retrieval systems that show their work.</h1>
-          <p className={styles.lede}>
-            Recent work includes an Obsidian agent that keeps a receipt for every tool call, and a retrieval pipeline that has emailed me a cited lesson twice a day since March.
-          </p>
-          <dl className={styles.facts}>
-            <dt>Now</dt>
-            <dd><a href={currentFocus.href}>{currentFocus.label}</a></dd>
-            {availability ? (
-              <>
-                <dt>Open to</dt>
-                <dd>{availability}</dd>
-              </>
-            ) : null}
-          </dl>
-        </section>
-
+        <CinematicHero><PersonalIntro /></CinematicHero>
         <WorkIndex projects={featured} />
 
         <section className={styles.section} id="more" aria-labelledby="more-title">
@@ -149,9 +135,6 @@ export default function Home() {
                 {interests.map(([title, description]) => <p key={title}><strong>{title}.</strong> {description}</p>)}
               </details>
             </div>
-            <figure className={styles.photo}>
-              <Image src="/images/hiking-valley.jpg" alt="A mountain valley between a shadowed rocky slope and a sunlit ridge, with open country in the distance" width={1280} height={960} sizes="(max-width: 760px) calc(100vw - 40px), 320px" />
-            </figure>
           </div>
         </section>
 
