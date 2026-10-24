@@ -26,6 +26,7 @@ export function FlyFishingScene() {
     const scene = sceneRef.current;
     if (!scene) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopLayout = window.matchMedia("(min-width: 761px)");
     let frame = 0;
     const textNodes: Text[] = [];
     const refreshText = () => {
@@ -41,6 +42,7 @@ export function FlyFishingScene() {
 
     const update = () => {
       frame = 0;
+      if (!desktopLayout.matches) return;
       const { width, height } = scene.getBoundingClientRect();
       // Read foreground geometry before writing animation styles. Soft holes in
       // the background preserve the original text colors and avoid visible panels.
@@ -158,7 +160,7 @@ export function FlyFishingScene() {
       waterRef.current?.setAttribute("d", `M -40 ${water} Q ${width * 0.25} ${water - 12 + drift} ${width * 0.5} ${water} T ${width + 40} ${water} M -40 ${water + 24} C ${width * 0.3} ${water + 8 - drift}, ${width * 0.7} ${water + 40 + drift}, ${width + 40} ${water + 18}`);
     };
     const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      if (!frame && desktopLayout.matches) frame = requestAnimationFrame(update);
     };
     const resize = new ResizeObserver(schedule);
     resize.observe(scene);

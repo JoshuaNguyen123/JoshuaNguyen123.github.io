@@ -67,5 +67,5 @@
   width: 80px;
 }
 @media (max-width: 760px) {
-  .scene[data-background-ready] { opacity: .18; }
+  .scene { display: none; }
 }

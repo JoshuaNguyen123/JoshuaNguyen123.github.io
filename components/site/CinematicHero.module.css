@@ -116,13 +116,16 @@
 }
 
 @media (max-width: 760px) {
-  .opening { --hero-height: clamp(600px, 76svh, 820px); }
+  .opening { --hero-height: clamp(460px, 64svh, 600px); }
+  .scene { clip-path: none; position: absolute; }
   .shade { background: var(--landscape-shade-mobile); }
-  .image { object-position: 51% 38%; }
-  .copy { padding-bottom: 88px; width: 100%; }
+  .photo, .copy, .location { transform: none; }
+  .image { animation: none; object-position: 51% 65%; }
+  .copy { padding-bottom: 92px; width: 100%; }
   .copy h1 { font-size: clamp(35px, 9.4vw, 64px); letter-spacing: -.045em; line-height: 1.06; }
+  .copy h1 span, .explore { animation: none; }
   .explore { font-size: 13px; gap: 24px; margin-top: 26px; }
-  .location { bottom: 24px; font-size: 11px; left: var(--home-gutter); right: auto; text-align: left; transform: translate3d(calc(var(--hero-progress, 0) * 24px), 0, 0); }
+  .location { bottom: 28px; font-size: 12px; left: var(--home-gutter); right: auto; text-align: left; }
   .location span { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

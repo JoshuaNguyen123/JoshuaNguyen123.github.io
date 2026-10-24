@@ -17,34 +17,34 @@ export function CinematicHero({ children }: { children?: ReactNode }) {
     const photo = photoRef.current;
     const opening = openingRef.current;
     if (!hero || !photo || !opening) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const staticLayout = window.matchMedia("(max-width: 760px), (prefers-reduced-motion: reduce)");
     let frame = 0;
     const update = () => {
       frame = 0;
       const { top, height } = hero.getBoundingClientRect();
-      const offset = reducedMotion.matches ? 0 : Math.min(height, Math.max(0, -top)) * 0.08;
-      const progress = reducedMotion.matches ? 0 : Math.min(1, Math.max(0, -top / (height * 0.72)));
-      opening.toggleAttribute("data-scroll-motion", !reducedMotion.matches);
+      const offset = staticLayout.matches ? 0 : Math.min(height, Math.max(0, -top)) * 0.08;
+      const progress = staticLayout.matches ? 0 : Math.min(1, Math.max(0, -top / (height * 0.72)));
+      opening.toggleAttribute("data-scroll-motion", !staticLayout.matches);
       // Clip the lingering photo at the introduction's edge, leaving the
       // shared page background visible through the transparent introduction.
       const bottom = landscapeRef.current?.getBoundingClientRect().bottom ?? top + height;
-      const cover = reducedMotion.matches ? 0 : Math.min(height, Math.max(0, bottom - (top + height)));
+      const cover = staticLayout.matches ? 0 : Math.min(height, Math.max(0, bottom - (top + height)));
       opening.style.setProperty("--landscape-cover", `${cover.toFixed(2)}px`);
       photo.style.setProperty("--photo-offset", `${offset.toFixed(1)}px`);
       opening.style.setProperty("--hero-progress", progress.toFixed(4));
     };
     const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      if (!frame && !staticLayout.matches) frame = requestAnimationFrame(update);
     };
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
-    reducedMotion.addEventListener("change", schedule);
+    staticLayout.addEventListener("change", update);
     update();
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
-      reducedMotion.removeEventListener("change", schedule);
+      staticLayout.removeEventListener("change", update);
       opening.removeAttribute("data-scroll-motion");
     };
   }, []);

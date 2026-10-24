@@ -66,8 +66,12 @@
 .content :global(.contact-form) { border-top: 1px solid var(--line); margin-top: var(--space-4); padding-top: var(--space-5); }
 
 @media (max-width: 760px) {
+  .main { --home-gutter: 20px; }
   .intro { padding: var(--space-7) 0 var(--space-8); }
-  .section { grid-template-columns: minmax(0, 1fr); padding: var(--space-7) 0; }
+  .section { gap: 20px; grid-template-columns: minmax(0, 1fr); padding: 40px 0; }
+  .content { gap: 20px; }
   .statement { font-size: var(--text-lg); }
   .cells { gap: 2px; }
+  .calendar figcaption { font-size: 11px; line-height: 1.6; }
+  .content :global(.contact-form) { margin-top: 12px; padding-top: 24px; }
 }

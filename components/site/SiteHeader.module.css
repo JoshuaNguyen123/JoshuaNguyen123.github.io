@@ -15,8 +15,8 @@ header.overlay {
 .overlay > nav a:hover::after, .overlay > nav a:focus-visible::after { transform: scaleX(1); }
 .overlay a:focus-visible { outline-color: var(--on-image); }
 @media (max-width: 760px) {
-  header.overlay { align-items: flex-start; gap: 4px 12px; padding-top: 18px; }
-  .overlay > a { font-size: 15px; min-height: 44px; padding-top: 13px; }
+  header.overlay { align-items: center; gap: 4px 12px; padding: 14px 20px; }
+  .overlay > a { align-items: center; display: inline-flex; font-size: 15px; min-height: 44px; }
   .overlay > nav { font-size: 12px; gap: 0 17px; }
 }
 @media (max-width: 380px) { .overlay > nav { gap: 0 12px; } }
