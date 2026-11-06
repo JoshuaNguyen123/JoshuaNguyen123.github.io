@@ -1,17 +1,26 @@
-/* Inline architecture diagram. Page fonts replace the system stacks the
-   static files carry. */
-.diagram { border: 1px solid var(--line); display: block; height: auto; width: 100%; }
-.sans { font-family: var(--font-sans); }
-.mono { font-family: var(--font-mono); }
+/* Inline Mermaid diagram. The SVG keeps the font stack it was measured with,
+   so labels always fit their boxes. On a phone it keeps a readable minimum
+   width and scrolls sideways instead of shrinking its text. */
+.diagram {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  padding: clamp(8px, 2vw, 28px);
+}
+.diagram :global(svg) { display: block; height: auto; margin: 0 auto; }
 
 /* --draw-progress (0 to 1) is written by ScrollSections as the diagram enters
    view. Connection i of --n draws during its own slice of that range, so the
    flow traces itself in order. Boxes and their text never hide. */
-.edge { --draw: clamp(0, calc(var(--draw-progress, 1) * (var(--n) + 1) - var(--i)), 1); }
-.line { stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - var(--draw)); }
-.dashed { opacity: var(--draw); }
-.head { opacity: clamp(0, calc(var(--draw) * 8 - 7), 1); }
+.diagram :global(.flowchart-link),
+.diagram :global(.edgeLabel) { --draw: clamp(0, calc(var(--draw-progress, 1) * (var(--n) + 1) - var(--i, 0)), 1); }
+.diagram :global(.flowchart-link) { opacity: clamp(0, calc(var(--draw) * 3), 1); }
+.diagram :global(.edgeLabel) { opacity: clamp(0, calc(var(--draw) * 8 - 7), 1); }
 
+@media (max-width: 760px) {
+  .diagram :global(svg) { min-width: 680px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .edge { --draw: 1; }
+  .diagram :global(.flowchart-link),
+  .diagram :global(.edgeLabel) { --draw: 1; }
 }

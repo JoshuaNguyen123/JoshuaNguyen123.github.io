@@ -1,0 +1,45 @@
+flowchart TB
+  accTitle: Great Outdoors Intelligence architecture
+  accDescr: A scheduled task or the Refresh button runs the Python producer. Cache-aware, failure-isolated collectors pull public condition feeds (river gauges, FWP closures, NWS forecasts, SNOTEL, fire perimeters, and avalanche zones) into one versioned SQLite bundle. A deterministic rule engine scores river reaches for fly fishing and writes assessments with reasons back into the bundle. A local Flask API reads only the bundle and serves a React UI that ranks reaches with their reasons and shows the conditions on a map. A separate daily script archives FWP closures, which are not kept anywhere else. Offline trip bundles were designed but never built.
+
+  sources["`**Public condition feeds**
+  gauges, FWP, NWS, SNOTEL,
+  fire, avalanche`"]
+
+  subgraph producer["PRODUCER · PYTHON"]
+    trigger["`**Schedule or Refresh**`"]
+    collect["`**Collectors**
+    cache-aware, isolated`"]
+    bundle[("`**Bundle**
+    SQLite + manifest`")]
+    rules["`**Rule engine**
+    fly fishing rules, YAML`"]
+  end
+
+  subgraph local["LOCAL APP"]
+    api["`**Flask API**
+    reads the bundle only`"]
+    ui["`**React UI**
+    ranked reaches, reasons, map`"]
+  end
+
+  archive[("`**FWP closure archive**
+  daily capture`")]
+  offline["`**Offline trip bundles**
+  designed, not built`"]
+
+  trigger --> collect
+  sources ==> collect
+  collect ==> bundle
+  bundle <==>|assessments| rules
+  bundle ==> api
+  api ==> ui
+  sources -.-> archive
+  bundle -.-> offline
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class rules key
+  class sources ext
+  class offline side

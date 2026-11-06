@@ -1,0 +1,37 @@
+flowchart TB
+  accTitle: Autonomous Repository Template architecture
+  accDescr: A human request goes through setup scripts that instantiate or adopt a product repository. In the default supervised profile, a plan records one human-approved milestone, a coding agent such as Claude Code, Codex, or Cursor implements it, the project's own checks run, and the work comes back as local commits and a handoff for human review. The opt-in lite and full profiles add a planning gate check, verification cycles, and tracked state under .ai.
+
+  human(["`**Human**
+  request, approval, review`"])
+  scripts["`**Setup scripts**
+  instantiate, adopt, switch`"]
+
+  subgraph repo["PRODUCT REPOSITORY · SUPERVISED"]
+    plan["`**Plan**
+    one approved milestone`"]
+    agent["`**Coding agent**
+    Claude Code, Codex, Cursor`"]
+    checks["`**Project checks**
+    listed in the plan`"]
+    handoff["`**Handoff**
+    local commits + notes`"]
+  end
+
+  legacy["`**Lite / full profiles** · opt-in
+  planning gate, verification cycles,
+  tracked .ai/ state`"]
+
+  human -->|request| scripts
+  scripts --> plan
+  human -->|approves| plan
+  plan ==> agent
+  agent ==> checks
+  checks ==>|for human review| handoff
+  plan -.-> legacy
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class plan key
+  class legacy side

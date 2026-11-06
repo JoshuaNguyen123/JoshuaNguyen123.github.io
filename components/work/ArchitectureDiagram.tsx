@@ -1,78 +1,61 @@
-import { ACCENT, CANVAS, INK, MONO, MUTED, PAPER, RULE, SANS, diagrams, layoutDiagram, nodeText, sizes } from "@/lib/architecture";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import type { CSSProperties } from "react";
 import styles from "./ArchitectureDiagram.module.css";
 
 /**
- * A project's architecture, drawn inline from lib/architecture.ts so its
- * connections can trace themselves in flow order as the reader scrolls
- * (ScrollSections writes --draw-progress on [data-scroll-draw]). Boxes never
- * move or hide; without JavaScript, or with reduced motion, it is fully drawn.
+ * A project's architecture, from its Mermaid source in content/architecture/.
+ * scripts/render-architecture-diagrams.mjs renders each source to
+ * public/projects/<slug>-architecture.svg; this server component inlines that
+ * same file at build time, so the page and the full-size link never drift.
+ *
+ * Inlining lets the connections trace themselves in flow order as the reader
+ * scrolls (ScrollSections writes --draw-progress on [data-scroll-draw]): each
+ * edge and its label get an index, and solid edges a unit path length. Boxes
+ * never move or hide; without JavaScript, or with reduced motion, it is fully
+ * drawn.
  */
 export function ArchitectureDiagram({ slug, label }: { slug: string; label: string }) {
-  const spec = diagrams[slug];
-  if (!spec) return null;
-  const drawing = layoutDiagram(spec);
+  let svg: string;
+  try {
+    svg = readFileSync(path.join(process.cwd(), "public", "projects", `${slug}-architecture.svg`), "utf8");
+  } catch {
+    return null;
+  }
+  // Our own committed file, but it is inlined, so refuse anything executable.
+  if (/<script|\son[a-z]+\s*=|(?:href|src)\s*=\s*"(?!#)/i.test(svg)) throw new Error(`${slug}-architecture.svg is not an inert diagram`);
+
+  const order = new Map<string, number>();
+  const drawn = svg
+    .replace(/^<\?xml[^>]*>\s*/, "")
+    // Keep a self-closing slash at the end: inline SVG in HTML only honours
+    // "/>" as the very last characters, or every later edge nests inside.
+    .replace(/<path\b([^>]*?\bclass="[^"]*\bflowchart-link\b[^"]*"[^>]*?)(\s*\/)?>/g, (tag: string, attributes: string, close = "") => {
+      const id = /\bdata-id="([^"]+)"/.exec(attributes)?.[1] ?? /\bid="([^"]+)"/.exec(attributes)?.[1] ?? `edge-${order.size}`;
+      const index = order.size;
+      order.set(id, index);
+      // Mermaid lists a default pattern class after the real one, so a dotted
+      // edge also carries edge-pattern-solid; only undashed edges trace.
+      const solid = !/\bedge-pattern-(?:dotted|dashed)\b/.test(attributes);
+      const animation = `--i:${index};${solid ? "stroke-dasharray:1 1;stroke-dashoffset:calc(1 - var(--draw, 1));" : ""}`;
+      const styled = /\sstyle="/.test(attributes)
+        ? attributes.replace(/\sstyle="([^"]*)"/, (_match: string, existing: string) => ` style="${existing.replace(/;?$/, ";")}${animation}"`)
+        : `${attributes} style="${animation}"`;
+      return `<path${styled}${solid ? ' pathLength="1"' : ""}${close}>`;
+    })
+    .replace(/<g class="edgeLabel"([^>]*)>(\s*<g class="label" data-id="([^"]+)")/g, (tag: string, attributes: string, inner: string, id: string) => {
+      const index = order.get(id);
+      return index === undefined ? tag : `<g class="edgeLabel"${attributes} style="--i:${index}">${inner}`;
+    });
 
   return (
-    <svg
+    <div
       className={styles.diagram}
-      viewBox={`0 0 ${CANVAS.width} ${CANVAS.height}`}
       role="img"
       aria-label={label}
       data-scroll-draw=""
-      style={{ "--n": drawing.edges.length } as CSSProperties}
-    >
-      <desc>{drawing.description}</desc>
-      <rect width={CANVAS.width} height={CANVAS.height} fill={PAPER} />
-      {drawing.boundaries.map((b) => (
-        <g key={b.label}>
-          <rect x={b.x} y={b.y} width={b.w} height={b.h} fill="none" stroke={RULE} strokeWidth={2} strokeDasharray="8 8" />
-          <text className={styles.mono} x={b.x + 22} y={b.y + 36} fill={MUTED} fontFamily={MONO} fontSize={sizes.label}>{b.label}</text>
-        </g>
-      ))}
-      {drawing.edges.map((e, index) => {
-        const color = e.dashed ? MUTED : e.main ? ACCENT : INK;
-        return (
-          <g key={index} className={styles.edge} style={{ "--i": index } as CSSProperties}>
-            <path
-              className={e.dashed ? styles.dashed : styles.line}
-              d={e.d}
-              fill="none"
-              stroke={color}
-              strokeWidth={e.main ? 3 : 2}
-              strokeDasharray={e.dashed ? "6 7" : undefined}
-              pathLength={e.dashed ? undefined : 1}
-            />
-            <path className={styles.head} d={e.arrow} fill={color} />
-            {e.label ? (
-              <g className={styles.head}>
-                <rect x={e.label.x - e.label.w / 2} y={e.label.y - 17} width={e.label.w} height={34} fill={PAPER} />
-                <text className={styles.mono} x={e.label.x} y={e.label.y + 6} textAnchor="middle" fill={MUTED} fontFamily={MONO} fontSize={sizes.label}>{e.label.text}</text>
-              </g>
-            ) : null}
-          </g>
-        );
-      })}
-      {drawing.nodes.map((n) => {
-        const text = nodeText(n);
-        return (
-          <g key={`${n.title}-${n.x}-${n.y}`}>
-            <rect
-              x={n.x} y={n.y} width={n.w} height={n.h} fill={PAPER}
-              stroke={n.variant === "key" ? ACCENT : n.variant === "side" ? RULE : INK}
-              strokeWidth={n.variant === "key" ? 3 : 2}
-              strokeDasharray={n.variant === "side" ? "8 6" : undefined}
-            />
-            <text className={styles.sans} x={text.title.x} y={text.title.y} fill={n.variant === "side" ? MUTED : INK} fontFamily={SANS} fontSize={sizes.title} fontWeight={500}>{n.title}</text>
-            {text.sub.map((s, index) => (
-              <text key={index} className={styles.mono} x={s.x} y={s.y} fill={MUTED} fontFamily={MONO} fontSize={sizes.sub}>{s.line}</text>
-            ))}
-          </g>
-        );
-      })}
-      {drawing.notes.map((note) => note.lines.map((line, index) => (
-        <text key={`${note.x}-${note.y}-${index}`} className={styles.mono} x={note.x} y={note.y + index * 30} fill={MUTED} fontFamily={MONO} fontSize={sizes.sub}>{line}</text>
-      )))}
-    </svg>
+      style={{ "--n": order.size } as CSSProperties}
+      dangerouslySetInnerHTML={{ __html: drawn }}
+    />
   );
 }

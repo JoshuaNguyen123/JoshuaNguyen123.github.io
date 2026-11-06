@@ -10,6 +10,7 @@ import { githubUrl, linkedInUrl, resumeUrl, siteName, siteUrl } from "@/content/
 import { loadActivitySnapshot } from "@/lib/activity/load";
 import { getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import styles from "./home.module.css";
 
@@ -123,6 +124,15 @@ export default function Home() {
         <section className={styles.section} id="about" aria-labelledby="about-title">
           <h2 className={styles.label} id="about-title">About</h2>
           <div className={styles.about}>
+            <figure className={styles.portrait}>
+              <Image
+                src="/joshua-nguyen.jpg"
+                alt="Joshua Nguyen outdoors by the water, wearing glasses, a cap, and a fleece jacket"
+                width={800}
+                height={1000}
+                sizes="(max-width: 760px) 200px, 240px"
+              />
+            </figure>
             <div className={styles.aboutCopy}>
               <p className={styles.statement}>
                 I care about the parts of AI software that usually get skipped: the approval before a tool runs, the citation behind a sentence, the record you can replay when a step fails.
@@ -141,7 +151,7 @@ export default function Home() {
         <section className={styles.section} id="contact" aria-labelledby="contact-title">
           <h2 className={styles.label} id="contact-title">Contact</h2>
           <div className={styles.content}>
-            <p className={styles.statement}>If you&apos;re hiring for applied AI, or have a problem worth building for, I&apos;d be glad to hear about it.</p>
+            <p className={styles.statement}>Have a question about a project, a thought on something I wrote, or just want to say hello? I&apos;d be glad to hear from you.</p>
             <dl className={styles.channels}>
               {linkedInUrl ? (
                 <>

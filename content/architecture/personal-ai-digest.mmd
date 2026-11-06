@@ -1,0 +1,40 @@
+flowchart TB
+  accTitle: Personal AI Digest architecture
+  accDescr: A Cloudflare Worker fires a GitHub Actions workflow at 09:11 and 20:11 Eastern. The send job picks topics from a curriculum, retrieves and distills evidence from the knowledge store, and asks Ollama Cloud to write the lessons. A quality gate rejects any lesson whose factual paragraphs do not cite the evidence, and passing lessons are emailed over SMTP. A send log committed to git prevents double sends. A separate ingest job chunks, tags, and embeds sources into the store, which is SQLite or Postgres with pgvector.
+
+  subgraph cf["CLOUDFLARE"]
+    worker["`**Worker cron**
+    09:11 + 20:11 ET`"]
+  end
+
+  subgraph gha["GITHUB ACTIONS"]
+    send["`**Send job**
+    curriculum, retrieve, distill`"]
+    gate["`**Quality gate**
+    claims must cite evidence`"]
+    log[("`**Send log**
+    committed to git, no double sends`")]
+  end
+
+  ingest["`**Ingest job**
+  chunk, tag, embed`"]
+  store[("`**Knowledge store**
+  SQLite or pgvector`")]
+  model["`**Ollama Cloud**
+  drafts the lessons`"]
+  inbox(["`**Inbox**
+  SMTP, twice a day`"])
+
+  worker ==>|dispatch| send
+  store ==>|evidence| send
+  send <==>|evidence in, draft out| model
+  send ==> gate
+  gate ==>|passing lessons| inbox
+  gate --> log
+  ingest --> store
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class gate key
+  class model,inbox ext

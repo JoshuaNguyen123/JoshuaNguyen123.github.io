@@ -1,0 +1,42 @@
+flowchart TB
+  accTitle: Engineering Activity Portfolio architecture
+  accDescr: On this machine, an hourly collector reads local hooks and logs from Claude Code, Codex, and Cursor plus the public GitHub contribution calendar, and reduces them to dates and counts. Prompts, code, filenames, and repository names never leave the machine. The validated snapshot is published to a public activity feed in the repository. GitHub Actions runs the tests and privacy check, builds the static export, and deploys it to GitHub Pages. Visitors' browsers load the static site and poll the feed for a newer day. The contact form and blog editor go through a Cloudflare Worker.
+
+  subgraph machine["THIS MACHINE · PROMPTS, CODE, NAMES STAY HERE"]
+    tools["`**Coding tools**
+    Claude Code, Codex, Cursor`"]
+    collector["`**Hourly collector**
+    dates + counts only`"]
+  end
+
+  calendar["`**GitHub calendar**
+  public contributions`"]
+
+  subgraph github["GITHUB"]
+    feed[("`**activity.json**
+    public feed`")]
+    actions["`**Actions**
+    tests, privacy check, build`"]
+    pages["`**Pages**
+    static export`"]
+  end
+
+  browser(["`**Visitor's browser**`"])
+  worker["`**Cloudflare Worker**
+  contact form, blog editor`"]
+
+  tools -->|hooks, local logs| collector
+  calendar --> collector
+  collector ==>|validated snapshot| feed
+  feed ==> actions
+  actions ==> pages
+  pages ==> browser
+  browser -.->|polls for a newer day| feed
+  browser -.-> worker
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class collector key
+  class calendar,browser ext
+  class worker side

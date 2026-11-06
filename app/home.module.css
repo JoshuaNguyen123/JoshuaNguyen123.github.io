@@ -55,7 +55,11 @@
   font-size: var(--text-sm); gap: var(--space-1) var(--space-4); justify-content: space-between;
 }
 
-.about { display: flex; flex-wrap: wrap; gap: var(--space-5); min-width: 0; }
+/* The portrait sits with the personal copy, left of it, clear of the fly rod
+   the background scene draws through the label column. */
+.about { align-items: flex-start; display: flex; flex-wrap: wrap; gap: var(--space-5) var(--space-6); min-width: 0; }
+.portrait { flex: 0 0 auto; margin: 0; width: clamp(180px, 15vw, 240px); }
+.portrait img { aspect-ratio: 4 / 5; background: var(--panel); display: block; height: auto; object-fit: cover; width: 100%; }
 .aboutCopy { display: flex; flex: 999 1 320px; flex-direction: column; gap: var(--space-4); font-size: var(--studio-body); line-height: 1.65; min-width: 0; }
 .aboutCopy > p:not(.statement) { color: var(--body); max-width: 62ch; }
 .approach { max-width: 62ch; }
@@ -71,6 +75,8 @@
   .section { gap: 20px; grid-template-columns: minmax(0, 1fr); padding: 40px 0; }
   .content { gap: 20px; }
   .statement { font-size: var(--text-lg); }
+  .about { gap: var(--space-4); }
+  .portrait { width: min(200px, 56vw); }
   .cells { gap: 2px; }
   .calendar figcaption { font-size: 11px; line-height: 1.6; }
   .content :global(.contact-form) { margin-top: 12px; padding-top: 24px; }

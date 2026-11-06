@@ -1,0 +1,44 @@
+flowchart TB
+  accTitle: Ladybug architecture
+  accDescr: One React PWA with a simulator mode, which runs both phones side by side with browser-local state and no account, and a connected mode installed on two phones. Connected writes queue offline, then go through Supabase RPCs, the only write path, into Postgres guarded by row-level security; photos are redrawn in the browser and stored privately. Realtime sends a hint back and Edge Functions deliver push notifications. Shared product rules keep the PWA and the earlier SwiftUI and Firebase app consistent. Self-hosted CI checks migrations, a three-account journey, and WebKit and Chromium runs.
+
+  subgraph pwa["REACT PWA · ONE CODEBASE"]
+    sim["`**Simulator mode**
+    two phones, no account`"]
+    app["`**Connected mode**
+    installed on two phones`"]
+    queue["`**Offline queue**
+    IndexedDB`"]
+  end
+
+  subgraph supa["SUPABASE"]
+    db[("`**Postgres**
+    RLS + RPCs, Realtime`")]
+    storage[("`**Private storage**
+    redrawn JPEGs`")]
+    fns["`**Edge Functions**
+    push, support, places`"]
+  end
+
+  rules["`**Shared rules**
+  shared/domain`"]
+  ios["`**SwiftUI app**
+  Firebase · earlier host`"]
+  ci["`**Self-hosted CI**
+  migrations, 3 accounts, e2e`"]
+
+  app ==> queue
+  queue ==>|RPC: only write path| db
+  app -->|photos| storage
+  db -.->|realtime hint| app
+  db --> fns
+  rules -.-> sim
+  rules -.-> ios
+  ci -.-> db
+  ci -.-> app
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class db key
+  class ios,ci side
