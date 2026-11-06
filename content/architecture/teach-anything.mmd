@@ -1,0 +1,38 @@
+flowchart TB
+  accTitle: Teach Anything architecture
+  accDescr: A Next.js app. Pages reach stored state only through the session service, which hands the learning history to a pure, seeded learning engine built on FSRS-6 memory and Bayesian mastery estimates, and gets back the next activity and due dates. State lives in Postgres with pgvector, row-level security, and an append-only mastery log; a database trigger refuses to serve a question without a grounded source. Code exercises run in QuickJS or a network-less Docker sandbox. Every model call goes through one AI gateway to the provider the learner configures, and a course worker builds courses behind human review gates.
+
+  subgraph app["NEXT.JS APP"]
+    ui["`**Pages**
+    server actions`"]
+    svc["`**Session service**
+    only door to state`"]
+    engine["`**Learning engine**
+    FSRS-6 + mastery, pure`"]
+    ai["`**AI gateway**
+    schemas, budgets, cache`"]
+    worker["`**Course worker**
+    review-gated builds`"]
+  end
+
+  db[("`**Postgres + pgvector**
+  RLS, mastery event log`")]
+  sandbox["`**Sandboxes**
+  QuickJS, Docker Python`"]
+  model["`**Model provider**
+  learner's own key`"]
+
+  ui ==> svc
+  svc <==>|history in, plan out| engine
+  svc <-->|grounded items only| db
+  svc --> sandbox
+  svc --> ai
+  worker --> ai
+  worker --> db
+  ai --> model
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class engine key
+  class model ext

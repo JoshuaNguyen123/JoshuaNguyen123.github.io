@@ -1,0 +1,40 @@
+flowchart TB
+  accTitle: Local-First Meeting Transcription architecture
+  accDescr: A React UI streams microphone or shared-tab audio to a local FastAPI backend. Vosk writes a live transcript during the meeting and faster-whisper writes a refined one from the saved audio afterward. A review queue reconciles the two, and a person verifies or edits the result. Audio, transcripts, and exports stay in local SQLite and on disk. Only the agreed transcript is sent to the configured Ollama-compatible notes model, which returns structured notes.
+
+  subgraph browser["BROWSER · REACT"]
+    ui["`**Meeting UI**
+    live, review, export`"]
+  end
+
+  subgraph machine["THIS MACHINE · FASTAPI"]
+    capture["`**Capture**
+    mic or shared tab`"]
+    live["`**Live pass**
+    Vosk, during`"]
+    refined["`**Refined pass**
+    faster-whisper, after`"]
+    review["`**Review queue**
+    reconcile both`"]
+    store[("`**SQLite + disk**
+    audio, transcripts`")]
+  end
+
+  notes["`**Notes model**
+  Ollama-compatible endpoint,
+  returns structured notes`"]
+
+  ui ==>|audio| capture
+  capture ==> live
+  capture --> store
+  store --> refined
+  live ==> review
+  refined ==> review
+  ui -->|verify, edit| review
+  review ==>|agreed transcript| notes
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class review key
+  class notes ext

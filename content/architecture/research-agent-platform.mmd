@@ -1,0 +1,41 @@
+flowchart TB
+  accTitle: Research Agent Platform architecture
+  accDescr: An Electron desktop workspace. A sandboxed renderer draws the editor, inline review, and knowledge graph, and talks only through typed IPC to the main process, which forwards requests to the agent host. The agent host is the only process that reads or writes the vault, a plain Markdown folder that Obsidian can open too. It runs missions through the vendored agent core across three typed seams, uses local engines for voice, OCR, completion, and code sandboxes, and sends prompts to the model provider the user picks. Linear, GitHub, and research APIs are opt-in.
+
+  subgraph app["ELECTRON APP · YOUR MACHINE"]
+    ui["`**Renderer** · sandboxed
+    editor, review, graph`"]
+    main["`**Main process**
+    windows, sealed keys`"]
+    host["`**Agent host**
+    missions, vault, graph`"]
+    core["`**Agent core**
+    vendored, pinned commit`"]
+    engines["`**Local engines**
+    voice, OCR, completion, sandbox`"]
+  end
+
+  vault[("`**Vault**
+  plain Markdown, Obsidian-compatible`")]
+
+  subgraph net["LEAVES THE MACHINE"]
+    model["`**Model provider**
+    Ollama, Anthropic, OpenRouter`"]
+    services["`**Linear, GitHub**
+    research APIs · opt-in`"]
+  end
+
+  ui <==>|typed IPC| main
+  main <==>|forwarded| host
+  host <==>|3 typed seams| core
+  host ==>|atomic writes| vault
+  host --> engines
+  host -->|prompts, context| model
+  host -.->|tool calls| services
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class host key
+  class model,services ext
+  style net fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4

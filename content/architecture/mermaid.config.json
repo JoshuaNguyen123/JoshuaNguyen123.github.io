@@ -1,0 +1,34 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "\"Helvetica Neue\", Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "background": "#f7f8f5",
+    "primaryColor": "#ffffff",
+    "primaryBorderColor": "#192c32",
+    "primaryTextColor": "#192c32",
+    "secondaryColor": "#edf1ed",
+    "tertiaryColor": "#edf1ed",
+    "lineColor": "#526460",
+    "textColor": "#526460",
+    "titleColor": "#526460",
+    "clusterBkg": "#f7f8f5",
+    "clusterBorder": "#b6c3ba",
+    "edgeLabelBackground": "#f7f8f5"
+  },
+  "flowchart": {
+    "htmlLabels": false,
+    "curve": "linear",
+    "padding": 14,
+    "nodeSpacing": 36,
+    "rankSpacing": 54,
+    "diagramPadding": 20,
+    "wrappingWidth": 260
+  },
+  "themeCSS": ".edge-thickness-thick { stroke: #315e55 !important; } .edgeLabel rect.background { fill: #f7f8f5 !important; opacity: 1 !important; } .cluster-label text, .cluster-label tspan { font-size: 12px; letter-spacing: .08em; fill: #526460; } .edgeLabel text, .edgeLabel tspan { font-size: 13px; fill: #526460; }",
+  "layout": "elk",
+  "elk": {
+    "mergeEdges": false,
+    "nodePlacementStrategy": "BRANDES_KOEPF"
+  }
+}

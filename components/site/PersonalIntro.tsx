@@ -1,11 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { availability, currentFocus, siteName } from "@/content/site";
+import { currentFocus, siteName } from "@/content/site";
 import styles from "./PersonalIntro.module.css";
 
-/** The portrait settles into the page as the landscape recedes above it. */
+/**
+ * The statement settles into the page as the landscape recedes above it. The
+ * byline sits in the same label column as every section below, so the intro
+ * reads as the first section rather than a separate card; the portrait lives
+ * with the personal copy in About.
+ */
 export function PersonalIntro() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -38,23 +42,10 @@ export function PersonalIntro() {
 
   return (
     <section ref={sectionRef} className={styles.section} id="introduction" aria-labelledby="profile-title">
-      <figure className={styles.portrait}>
-        <div className={styles.aperture}>
-          <Image
-            src="/joshua-nguyen.jpg"
-            alt="Joshua Nguyen outdoors by the water, wearing glasses, a cap, and a fleece jacket"
-            width={800}
-            height={1000}
-            sizes="(max-width: 760px) 64px, (max-width: 1100px) 160px, 200px"
-            data-portrait-image=""
-          />
-        </div>
-        <figcaption>{siteName}<span>AI developer &amp; technical researcher</span></figcaption>
-      </figure>
+      <p className={styles.byline}>{siteName}<span>AI developer &amp; technical researcher</span></p>
       <div className={styles.copy}>
         <h2 className={styles.statement} id="profile-title">I build research agents and retrieval systems that <em><a href="#work">show their work.</a></em></h2>
         <a className={styles.now} href={currentFocus.href}><span>Now</span>{currentFocus.label}</a>
-        {availability ? <p className={styles.availability}>{availability}</p> : null}
       </div>
     </section>
   );

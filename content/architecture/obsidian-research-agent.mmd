@@ -1,0 +1,36 @@
+flowchart TB
+  accTitle: Obsidian Research Agent architecture
+  accDescr: An Obsidian desktop plugin. A mission starts in the console. The agent loop follows a durable mission plan, calls the model, and proposes actions, and every action passes the prepared-action gate, which shows an exact approval, records a receipt, and reads the result back. Sourced notes are written to the vault, and an interrupted run resumes from its plan. Web and scholarly search, Linear and GitHub, the code sandbox, and a local companion service are destinations behind the gate.
+
+  subgraph obs["OBSIDIAN DESKTOP"]
+    console["`**Mission console**
+    chat, run details`"]
+    loop["`**Agent loop**
+    durable plan, lead + specialists`"]
+    gate["`**Prepared-action gate**
+    approval, receipt, readback`"]
+    vault[("`**Vault**
+    notes, runs, memory`")]
+  end
+
+  model["`**Model**
+  Ollama Cloud or compatible`"]
+  web["`**Web + scholarly search**`"]
+  work["`**Linear + GitHub**`"]
+  helpers["`**Local helpers** · opt-in
+  code sandbox, companion service`"]
+
+  console ==>|mission| loop
+  loop ==>|every action| gate
+  gate ==>|sourced notes| vault
+  loop <-->|prompts, tool calls| model
+  gate --> web
+  gate -.-> work
+  gate -.-> helpers
+
+  classDef key fill:#e6eee9,stroke:#315e55,stroke-width:2.5px,color:#192c32
+  classDef ext fill:#f7f8f5,stroke:#7c8f83,color:#192c32
+  classDef side fill:#f7f8f5,stroke:#b6c3ba,stroke-dasharray:6 4,color:#526460
+  class gate key
+  class model,web,work ext
+  class helpers side
