@@ -13,7 +13,7 @@ const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^
 for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
-if (homeHeadline !== "Useful software. Room to explore.") throw new Error("Static export is missing the selected homepage headline");
+if (homeHeadline !== "Hi, I’m Josh.") throw new Error("Static export is missing the selected homepage headline");
 if (html.includes("Cursor applied AI line changes")) throw new Error("Static export still publishes the retired Cursor line-change claim");
 const activityHtml = await readFile(path.join(root, "out", "activity", "index.html"), "utf8");
 for (const expected of ["Build Index", "not productivity", "Codex session-days", "Claude Code session-days", "Cursor session-days", "Cursor observed days", "Observed activity", "Usage evidence", "Session-day", "Zero vs. no coverage", "Why there is no line-change total", "numbers actually say"]) {

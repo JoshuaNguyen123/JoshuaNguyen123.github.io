@@ -3,7 +3,6 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { CinematicHero } from "@/components/site/CinematicHero";
 import { PersonalIntro } from "@/components/site/PersonalIntro";
-import { FlyFishingScene } from "@/components/site/FlyFishingScene";
 import { WorkIndex, type FeaturedProject } from "@/components/work/WorkIndex";
 import { FEATURED_PROJECTS, projects } from "@/content/projects";
 import { githubUrl, linkedInUrl, resumeUrl, siteName, siteUrl } from "@/content/site";
@@ -59,7 +58,6 @@ export default function Home() {
     <>
       <SiteHeader variant="overlay" />
       <main id="main" className={styles.main}>
-        <FlyFishingScene />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
 
         <CinematicHero><PersonalIntro /></CinematicHero>
@@ -137,7 +135,7 @@ export default function Home() {
               <p className={styles.statement}>
                 I care about the parts of AI software that usually get skipped: the approval before a tool runs, the citation behind a sentence, the record you can replay when a step fails.
               </p>
-              <p>I live in Bozeman. Away from the keyboard I&apos;m usually reading, fly fishing, hiking, or lifting.</p>
+              <p>I live in Bozeman, Montana. When I’m away from my desk, I’m usually at the gym, out hiking, or home with a book.</p>
               <details className={styles.approach}>
                 <summary>How I approach my work</summary>
                 <p>I work across the stack, from data pipelines and evaluation to the tools people use.</p>

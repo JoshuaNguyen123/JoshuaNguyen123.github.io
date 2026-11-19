@@ -1,35 +1,14 @@
-/* The intro shares the homepage's label/content grid, so its byline lines up
-   with "Selected work", "About" and the rest of the section labels below. */
-.section {
-  align-items: baseline;
-  background: transparent;
-  border-bottom: 1px solid var(--line);
-  display: grid;
-  gap: var(--space-4) var(--space-6);
-  grid-template-columns: minmax(150px, 22%) minmax(0, 1fr);
-  isolation: isolate;
-  margin: 0 var(--home-gutter);
-  padding: 76px 0 60px;
-  position: relative;
-  z-index: 2;
-}
-.byline { color: var(--ink); font-size: var(--studio-meta); font-weight: 500; line-height: 1.5; margin: 0; }
-.byline span { color: var(--muted); display: block; font-size: var(--text-sm); font-weight: 400; margin-top: 2px; }
-.copy { min-width: 0; position: relative; transform: translate3d(0, calc((1 - var(--intro-progress, 1)) * 22px), 0); z-index: 1; }
-.statement { font-size: clamp(30px, 3.2vw, 48px); font-weight: 400; letter-spacing: -.04em; line-height: 1.14; margin: 0; max-width: 29ch; }
-.statement em { color: var(--accent); display: inline-block; font-style: normal; max-width: 100%; position: relative; }
-.statement em::after { background: var(--accent); bottom: -4px; content: ""; height: 1px; left: 0; position: absolute; transform: scaleX(var(--intro-progress, 1)); transform-origin: left; width: 100%; }
-.now { color: var(--muted); display: inline-flex; font-size: var(--text-md); gap: 16px; line-height: 1.6; margin-top: 26px; max-width: 48ch; min-height: 44px; padding: 8px 0; }
-.now span { color: var(--ink); }
-.now:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.section { padding: clamp(26px, 3vw, 60px) var(--home-gutter) 38px; position: relative; color: #172a2c; }
+.section h2 { max-width: 69%; font-size: clamp(34px, 4.25vw, 72px); font-weight: 440; line-height: 1.05; letter-spacing: -.05em; margin: 0; }
+.trace { display: flex; padding: 0; list-style: none; margin: clamp(42px, 4vw, 68px) 0 28px; text-align: center; }
+.trace li { flex: 1; position: relative; font-size: clamp(13px, 1.45vw, 22px); }
+.trace li::before { content: ""; display: block; width: clamp(18px, 2.4vw, 36px); aspect-ratio: 1; border-radius: 50%; background: #edcc9f; border: 1px solid #ba7833; margin: 0 auto 16px; }
+.trace li::after { content: ""; position: absolute; height: 1px; background: #c18748; width: calc(100% - clamp(18px, 2.4vw, 36px)); top: clamp(9px, 1.2vw, 18px); left: calc(50% + clamp(9px, 1.2vw, 18px)); }
+.trace li:last-child::after { display: none; }
+.trace li:last-child::before { background: #c18237; box-shadow: 0 0 0 6px #edd4ae, 0 0 0 12px #f5e7d4; }
+.section a { display: inline-flex; align-items: center; gap: .45em; min-height: 44px; font-size: clamp(16px, 1.65vw, 24px); text-decoration: underline; text-decoration-color: #bdb5a7; text-underline-offset: 7px; }
+.section a:hover { text-decoration-color: currentColor; }
 @media (max-width: 760px) {
-  .section { align-items: start; gap: 18px; grid-template-columns: minmax(0, 1fr); padding: 32px 0 36px; }
-  .byline { font-size: var(--text-md); }
-  .byline span { font-size: var(--text-xs); }
-  .copy, .statement em::after { transform: none; }
-  .statement { font-size: clamp(26px, 7vw, 32px); letter-spacing: -.035em; line-height: 1.2; }
-  .now { display: grid; font-size: var(--text-md); gap: 12px; grid-template-columns: max-content minmax(0, 1fr); margin-top: 18px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .copy, .statement em::after { transform: none; }
+  .section { padding-top: 50px; }
+  .section h2 { max-width: 100%; }
 }

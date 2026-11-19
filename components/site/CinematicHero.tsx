@@ -1,37 +1,21 @@
 "use client";
 
-import { ArrowRight } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./CinematicHero.module.css";
 
-/** Native scroll pulls the landscape into a frame, with separate photo/type depths. */
+/** The landscape shifts gently as the project introduction comes into view. */
 export function CinematicHero({ children }: { children?: ReactNode }) {
   const openingRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
-  const landscapeRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const hero = heroRef.current;
-    const photo = photoRef.current;
     const opening = openingRef.current;
-    if (!hero || !photo || !opening) return;
+    if (!opening) return;
     const staticLayout = window.matchMedia("(max-width: 760px), (prefers-reduced-motion: reduce)");
     let frame = 0;
     const update = () => {
       frame = 0;
-      const { top, height } = hero.getBoundingClientRect();
-      const offset = staticLayout.matches ? 0 : Math.min(height, Math.max(0, -top)) * 0.08;
-      const progress = staticLayout.matches ? 0 : Math.min(1, Math.max(0, -top / (height * 0.72)));
-      opening.toggleAttribute("data-scroll-motion", !staticLayout.matches);
-      // Clip the lingering photo at the introduction's edge, leaving the
-      // shared page background visible through the transparent introduction.
-      const bottom = landscapeRef.current?.getBoundingClientRect().bottom ?? top + height;
-      const cover = staticLayout.matches ? 0 : Math.min(height, Math.max(0, bottom - (top + height)));
-      opening.style.setProperty("--landscape-cover", `${cover.toFixed(2)}px`);
-      photo.style.setProperty("--photo-offset", `${offset.toFixed(1)}px`);
-      opening.style.setProperty("--hero-progress", progress.toFixed(4));
+      const progress = staticLayout.matches ? 0 : Math.min(1, Math.max(0, -opening.getBoundingClientRect().top / (window.innerHeight * 0.48)));
+      opening.style.setProperty("--photo-offset", `${progress * 22}px`);
     };
     const schedule = () => {
       if (!frame && !staticLayout.matches) frame = requestAnimationFrame(update);
@@ -45,14 +29,18 @@ export function CinematicHero({ children }: { children?: ReactNode }) {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       staticLayout.removeEventListener("change", update);
-      opening.removeAttribute("data-scroll-motion");
     };
   }, []);
 
   return (
     <div ref={openingRef} className={styles.opening} data-opening-scene="">
-      <div ref={landscapeRef} className={styles.scene} data-landscape-frame="">
-        <div className={styles.photo} ref={photoRef} data-scene-photo="">
+      <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
+        <defs><clipPath id="valley-edge" clipPathUnits="objectBoundingBox">
+          <path d="M0 0 H1 V.90 C.79 .93 .68 1 .53 .99 S.14 .79 0 .85 Z" />
+        </clipPath></defs>
+      </svg>
+      <div className={styles.scene} data-landscape-frame="">
+        <div className={styles.photo} data-scene-photo="">
           <Image
             src="/images/hiking-valley.jpg"
             alt="A rocky mountain valley opening onto distant country, beneath a blue sky"
@@ -64,12 +52,11 @@ export function CinematicHero({ children }: { children?: ReactNode }) {
         </div>
         <div className={styles.shade} aria-hidden="true" />
       </div>
-      <section ref={heroRef} className={styles.hero} id="top" aria-labelledby="intro-title">
+      <section className={styles.hero} id="top" aria-labelledby="intro-title">
         <div className={styles.copy} data-hero-copy="">
-          <h1 id="intro-title"><span>Useful software.</span><span>Room to explore.</span></h1>
-          <a className={styles.explore} href="#work">Explore my work <ArrowRight size={21} weight="light" aria-hidden="true" /></a>
+          <h1 id="intro-title">Hi, I’m Josh.</h1>
+          <p>I’m into AI, engineering, and technology.</p>
         </div>
-        <p className={styles.location}><span>Based in</span>Bozeman, Montana</p>
       </section>
       {children}
     </div>

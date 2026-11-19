@@ -25,8 +25,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(site, /siteName = "Joshua Nguyen"/);
   assert.match(page, /name: siteName/);
   const personalIntro = await readFile(new URL("../components/site/PersonalIntro.tsx", import.meta.url), "utf8");
-  assert.match(personalIntro, /I build research agents and retrieval systems that/);
-  assert.match(personalIntro, /show their work\./);
+  assert.match(personalIntro, /Trace an idea to its source/);
+  assert.match(personalIntro, /Source excerpt/);
   const workIndex = await readFile(new URL("../components/work/WorkIndex.tsx", import.meta.url), "utf8");
   assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
