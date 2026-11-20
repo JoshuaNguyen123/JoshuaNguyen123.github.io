@@ -19,11 +19,13 @@ export const currentFocus = {
   href: "/work/research-agent-platform/",
 } as const;
 
+// The link-preview card. It is rendered from the homepage hero by `npm run og:render`;
+// run that again after changing the hero's photo, headline, subline, or typeface.
 export const ogImage = {
   url: "/og-personal.jpg",
   width: 1200,
   height: 630,
-  alt: "Joshua Nguyen, AI developer and technical researcher in Bozeman, Montana",
+  alt: "A rocky mountain valley under a blue sky, with the words: Hi, I’m Josh. AI developer and technical researcher in Bozeman, Montana.",
 } as const;
 
 export const navLinks = [
