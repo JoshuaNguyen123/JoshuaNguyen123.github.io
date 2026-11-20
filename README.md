@@ -8,7 +8,7 @@ This is my personal site. It has my projects, notes on how they were built, and 
 
 ## What's here
 
-- Three lead projects and five more, each with a case study and an architecture diagram
+- Three lead projects and four more, each with a case study and an architecture diagram
 - Writing about how the projects were built
 - An activity page that shows which days I was building, and how each number is counted
 

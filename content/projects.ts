@@ -146,29 +146,8 @@ export const projects: Project[] = [
       "The schedule had to adapt to the learner, and I had to be able to prove that it did. That meant putting the memory math in a pure, deterministic core and checking it in a simulation harness.",
   },
   {
-    slug: "autonomous-repository-template",
-    number: "05",
-    title: "Autonomous Repository Template",
-    description:
-      "A plan-first repository protocol for coding agents: built, used, and retired. Project memory lived in tracked files, implementation sat behind a planning gate, and every task carried a verification lane. In 29 days it was instantiated into six products, and one reached completion with all 82 of its acceptance commands passing. It also cost more than it saved, so I retired it on September 30, 2026, keeping its lightest profile: one human-approved milestone, then the agent, then review.",
-    reflection:
-      "A plan the agent cannot skip is worth having. The machinery I built around it cost time on every commit, so I kept the plan-first contract and retired the rest.",
-    discipline: "Python · Agent workflows",
-    tagline: "A plan-first protocol for coding agents, built, used, and retired",
-    href: null,
-    image: diagram("autonomous-repository-template"),
-    problem:
-      "A coding agent that can keep project memory, but cannot start implementing until a human-approved plan exists.",
-    whatItDoes:
-      "A repository protocol for coding agents, used in six products over a month and retired on September 30, 2026. In its full profile, project memory lived in tracked files, a planning gate check held implementation until a plan passed, every task carried a verification lane of commands, and features entered only through a human request. Products could migrate to newer protocol versions without losing their own state. The default is now a supervised profile of nine files: one approved milestone, the project's own checks, and a handoff for review.",
-    howItConnects:
-      "Setup scripts instantiate a product or adopt an existing repository. A human request becomes a plan with one approved milestone. A coding agent such as Claude Code, Codex, or Cursor implements it, runs the checks the plan lists, and hands back local commits and notes for review. The opt-in profiles add the gate check, verification cycles that decide whether to continue, replan, or escalate, and the tracked state those cycles read.",
-    whatWasHard:
-      "The protocol cost more than it saved. In the products built on it, 37 to 69 percent of commits touched only protocol records, and a verification cycle averaged about seven minutes. Two parts earned their cost, memory the agent cannot drop and a plan it cannot skip, and the postmortem kept those.",
-  },
-  {
     slug: "engineering-activity-portfolio",
-    number: "06",
+    number: "05",
     title: "Engineering Activity Portfolio",
     description:
       "This site. A privacy-safe collector reads local activity from the tools I work in, publishes daily counts to a live feed, and renders them as the yearly heatmaps above. Nothing about the code or the projects leaves the machine.",
@@ -189,10 +168,10 @@ export const projects: Project[] = [
   },
   {
     slug: "great-outdoors-intelligence",
-    number: "07",
+    number: "06",
     title: "Great Outdoors Intelligence",
     description:
-      "Ranks Montana river reaches for fly fishing by live conditions instead of showing a wall of gauges. It pulls river gauges, FWP closures, NWS forecasts, SNOTEL snowpack, fire perimeters, and avalanche zones into one local bundle, scores reaches with deterministic rules that show their reasons, and archives FWP closures daily, because FWP keeps no history. More activities and offline trip bundles were designed but never built. It was the first product built on the repository template above, and its defect reports shaped the template's fixes.",
+      "Ranks Montana river reaches for fly fishing by live conditions instead of showing a wall of gauges. It pulls river gauges, FWP closures, NWS forecasts, SNOTEL snowpack, fire perimeters, and avalanche zones into one local bundle, scores reaches with deterministic rules that show their reasons, and archives FWP closures daily, because FWP keeps no history. More activities and offline trip bundles were designed but never built.",
     reflection:
       "The product is the ranking. The dashboard exists so you can argue with it.",
     discipline: "Python · Data pipelines",
@@ -210,7 +189,7 @@ export const projects: Project[] = [
   },
   {
     slug: "local-first-meeting-transcription",
-    number: "08",
+    number: "07",
     title: "Local-First Meeting Transcription",
     description:
       "A meeting recorder that keeps the audio on the machine and transcribes it locally. Live transcription with Vosk, a refined pass with faster-whisper after the meeting, a review queue that reconciles the two, and structured notes written from the agreed transcript by whichever Ollama-compatible model you configure. FastAPI backend, React frontend.",

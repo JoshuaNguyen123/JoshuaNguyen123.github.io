@@ -6,7 +6,7 @@ import { verifyContactExport } from "./verify-contact-export.mjs";
 const root = process.cwd();
 const projectSource = await readFile(path.join(root, "content", "projects.ts"), "utf8");
 const projectSlugs = [...projectSource.matchAll(/slug: "([a-z0-9-]+)"/g)].map((match) => match[1]);
-if (projectSlugs.length !== 8) throw new Error("Expected eight project case studies");
+if (projectSlugs.length !== 7) throw new Error("Expected seven project case studies");
 for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/research-agent-platform/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/research-agent-platform-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
 const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -85,7 +85,9 @@ for (const expected of ["Notes from the build.", "quick fix", "Why this site exi
 }
 const sitemapXml = await readFile(path.join(root, "out", "sitemap.xml"), "utf8");
 if (!sitemapXml.includes("/work/research-agent-platform/") || !sitemapXml.includes("/work/ladybug/")) throw new Error("Sitemap is missing work case-study routes");
-if (html.includes("/work/obsidian-research-agent/") || sitemapXml.includes("/work/obsidian-research-agent/")) throw new Error("The removed Obsidian plugin project is still linked");
+for (const removed of ["obsidian-research-agent", "autonomous-repository-template"]) {
+  if (html.includes(`/work/${removed}/`) || sitemapXml.includes(`/work/${removed}/`)) throw new Error(`The removed ${removed} project is still linked`);
+}
 const workHtml = await readFile(path.join(root, "out", "work", "engineering-activity-portfolio", "index.html"), "utf8");
 for (const expected of ["What it does", "How the pieces connect", "What was hard", "Architecture diagram of Engineering Activity Portfolio", "View repository"]) {
   if (!workHtml.includes(expected)) throw new Error(`Work case study is missing ${expected}`);

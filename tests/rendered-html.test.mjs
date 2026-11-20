@@ -35,8 +35,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   // Copy is written plainly: no em dashes anywhere in the home page source.
   assert.doesNotMatch(page, /\u2014/);
   assert.doesNotMatch(projects, /\u2014/);
-  // The Obsidian plugin project is no longer listed, linked, or referred to.
+  // The Obsidian plugin and the repository template are no longer listed, linked, or referred to.
   assert.doesNotMatch(`${projects}${personalIntro}${page}`, /Obsidian Research Agent|obsidian-research|Obsidian plugin/i);
+  assert.doesNotMatch(`${projects}${personalIntro}${page}`, /Autonomous Repository|autonomous-repository|repository template/i);
   assert.match(projects, /Engineering Activity Portfolio/);
   assert.match(projects, /Research Agent Platform/);
   const projectOrder = [
@@ -44,7 +45,6 @@ test("public identity, editorial writing, and public social surfaces are source-
     "Ladybug",
     "Personal AI Digest",
     "Teach Anything",
-    "Autonomous Repository Template",
     "Engineering Activity Portfolio",
     "Great Outdoors Intelligence",
     "Local-First Meeting Transcription",
