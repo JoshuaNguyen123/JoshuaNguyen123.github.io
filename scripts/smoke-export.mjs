@@ -6,11 +6,11 @@ import { verifyContactExport } from "./verify-contact-export.mjs";
 const root = process.cwd();
 const projectSource = await readFile(path.join(root, "content", "projects.ts"), "utf8");
 const projectSlugs = [...projectSource.matchAll(/slug: "([a-z0-9-]+)"/g)].map((match) => match[1]);
-if (projectSlugs.length !== 9) throw new Error("Expected nine project case studies");
-for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/obsidian-research-agent-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
+if (projectSlugs.length !== 8) throw new Error("Expected eight project case studies");
+for (const file of ["out/index.html", "out/404.html", "out/activity/index.html", "out/admin/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/research-agent-platform/index.html", "out/work/ladybug/index.html", "out/data/activity.json", "out/og-personal.jpg", "out/apple-touch-icon.png", "out/favicon.ico", "out/projects/research-agent-platform-architecture.svg", "out/sitemap.xml"]) await access(path.join(root, file));
 const html = await readFile(path.join(root, "out", "index.html"), "utf8");
 const homeHeadline = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-for (const expected of ["Joshua Nguyen", "Selected work", "Obsidian Research Agent", "Ladybug", "Teach Anything"]) {
+for (const expected of ["Joshua Nguyen", "Selected work", "Research Agent Platform", "Ladybug", "Teach Anything"]) {
   if (!html.includes(expected)) throw new Error(`Static export is missing ${expected}`);
 }
 if (homeHeadline !== "Hi, I’m Josh.") throw new Error("Static export is missing the selected homepage headline");
@@ -48,8 +48,6 @@ const workIndex = html.match(/<section\b[^>]*id="work"[^>]*>([\s\S]*?)<\/section
 for (const slug of projectSlugs.slice(0, 3)) {
   if (!workIndex.includes(`href="/work/${slug}/"`) || !html.includes(`id="project-${slug}"`)) throw new Error(`Selected work index is missing ${slug}`);
 }
-await access(path.join(root, "out", "projects", "obsidian-research-demo.jpg"));
-if (!workIndex.includes("/projects/obsidian-research-demo.jpg")) throw new Error("Selected work is missing the real product capture");
 await access(path.join(root, "out", "projects", "research-agent-graph.webp"));
 if (!workIndex.includes("/projects/research-agent-graph.webp") || !workIndex.includes('id="project-research-agent-platform"')) throw new Error("Selected work is missing the real knowledge graph");
 const graphDetail = await readFile(path.join(root, "out/work/research-agent-platform/index.html"), "utf8");
@@ -73,7 +71,7 @@ for (const expected of ["Bozeman, Montana", "LinkedIn", 'rel="apple-touch-icon"'
 }
 // Every public page shares one header and footer; a page that loses them is a
 // dead end for a visitor who arrived from search.
-for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/obsidian-research-agent/index.html", "out/404.html"]) {
+for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/research-agent-platform/index.html", "out/404.html"]) {
   const pageHtml = await readFile(path.join(root, page), "utf8");
   for (const expected of ['aria-label="Primary navigation"', 'class="site-footer"', 'href="/blog/"', 'href="/#contact"']) {
     if (!pageHtml.includes(expected)) throw new Error(`${page} is missing shared chrome (${expected})`);
@@ -86,9 +84,10 @@ for (const expected of ["Notes from the build.", "quick fix", "Why this site exi
   if (!blogHtml.includes(expected)) throw new Error(`Static blog export is missing ${expected}`);
 }
 const sitemapXml = await readFile(path.join(root, "out", "sitemap.xml"), "utf8");
-if (!sitemapXml.includes("/work/obsidian-research-agent/") || !sitemapXml.includes("/work/ladybug/")) throw new Error("Sitemap is missing work case-study routes");
-const workHtml = await readFile(path.join(root, "out", "work", "obsidian-research-agent", "index.html"), "utf8");
-for (const expected of ["What it does", "How the pieces connect", "What was hard", "Architecture diagram of Obsidian Research Agent", "View repository"]) {
+if (!sitemapXml.includes("/work/research-agent-platform/") || !sitemapXml.includes("/work/ladybug/")) throw new Error("Sitemap is missing work case-study routes");
+if (html.includes("/work/obsidian-research-agent/") || sitemapXml.includes("/work/obsidian-research-agent/")) throw new Error("The removed Obsidian plugin project is still linked");
+const workHtml = await readFile(path.join(root, "out", "work", "engineering-activity-portfolio", "index.html"), "utf8");
+for (const expected of ["What it does", "How the pieces connect", "What was hard", "Architecture diagram of Engineering Activity Portfolio", "View repository"]) {
   if (!workHtml.includes(expected)) throw new Error(`Work case study is missing ${expected}`);
 }
 const privateWorkHtml = await readFile(path.join(root, "out", "work", "ladybug", "index.html"), "utf8");

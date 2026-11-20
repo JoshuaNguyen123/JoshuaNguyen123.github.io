@@ -25,24 +25,22 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(site, /siteName = "Joshua Nguyen"/);
   assert.match(page, /name: siteName/);
   const personalIntro = await readFile(new URL("../components/site/PersonalIntro.tsx", import.meta.url), "utf8");
-  // The introduction is first-person prose that links the two research projects.
+  // The introduction is first-person prose that links the current project.
   assert.match(personalIntro, /I build AI agents and the software around them/);
   assert.match(personalIntro, /href="\/work\/research-agent-platform\/"/);
-  assert.match(personalIntro, /href="\/work\/obsidian-research-agent\/"/);
   const workIndex = await readFile(new URL("../components/work/WorkIndex.tsx", import.meta.url), "utf8");
   assert.match(page, /I work across the stack/);
-  assert.match(projects, /bounded and debuggable/);
   assert.match(projects, /a small distributed system/);
   assert.match(projects, /Tuesday's lesson to depend on what Monday showed/);
   // Copy is written plainly: no em dashes anywhere in the home page source.
   assert.doesNotMatch(page, /\u2014/);
   assert.doesNotMatch(projects, /\u2014/);
-  assert.match(projects, /Obsidian Research Agent/);
+  // The Obsidian plugin project is no longer listed, linked, or referred to.
+  assert.doesNotMatch(`${projects}${personalIntro}${page}`, /Obsidian Research Agent|obsidian-research|Obsidian plugin/i);
   assert.match(projects, /Engineering Activity Portfolio/);
   assert.match(projects, /Research Agent Platform/);
   const projectOrder = [
     "Research Agent Platform",
-    "Obsidian Research Agent",
     "Ladybug",
     "Personal AI Digest",
     "Teach Anything",

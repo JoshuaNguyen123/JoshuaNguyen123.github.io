@@ -19,7 +19,6 @@ const allowedPublicPaths = new Set([
   "public/images/trout-leap.webp",
   "public/images/topography.svg",
   "public/images/attribution.txt",
-  "public/projects/obsidian-research-demo.jpg",
   "public/projects/research-agent-graph.webp",
   "public/og-personal.jpg",
   "public/robots.txt",

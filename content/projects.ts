@@ -35,9 +35,9 @@ export const projects: Project[] = [
     number: "01",
     title: "Research Agent Platform",
     description:
-      "A desktop research workspace built around the same agent core as the Obsidian plugin. Electron and CodeMirror 6, working directly on ordinary Obsidian-compatible vaults. The core is vendored at a pinned commit behind three typed seams rather than forked, and only a separate agent-host process ever reads or writes the vault. In review mode, the agent's edits arrive as inline hunks to accept or reject before they are written. It runs as a packaged Windows app with local engines for dictation, OCR, completion, and code sandboxes, and hundreds of Playwright journeys cover the loop.",
+      "A desktop research workspace built on Electron and CodeMirror 6, working directly on ordinary Obsidian-compatible vaults. The agent core is vendored at a pinned commit behind three typed seams rather than forked, and only a separate agent-host process ever reads or writes the vault. In review mode, the agent's edits arrive as inline hunks to accept or reject before they are written. It runs as a packaged Windows app with local engines for dictation, OCR, completion, and code sandboxes, and hundreds of Playwright journeys cover the loop.",
     reflection:
-      "The three typed seams ended up being the whole contract between the two hosts. When a vendor bump breaks one, the build fails at compile time and the change never reaches someone's vault.",
+      "The three typed seams ended up being the whole contract between the app and the agent core. When a vendor bump breaks one, the build fails at compile time and the change never reaches someone's vault.",
     discipline: "TypeScript · Electron · Desktop app",
     tagline: "Explore connected ideas. Trace them back to the source",
     feature: {
@@ -56,52 +56,17 @@ export const projects: Project[] = [
     href: null,
     image: diagram("research-agent-platform"),
     problem:
-      "The same research agent, hosted in a desktop workspace that can hold every edit for review before a vault file changes.",
+      "A research agent in a desktop workspace that can hold every edit for review before a vault file changes.",
     whatItDoes:
-      "A desktop workspace that opens ordinary vault folders. Its knowledge graph links notes, concepts, sources, and agent runs, with Map, Atlas, and Code lenses and an inspector that shows why each node matters and which passages it came from. The same agent core as the Obsidian plugin runs inside the app, and a permission mode decides how its edits land: read only, review, where each change appears as an inline hunk to accept or reject, or auto-apply.",
+      "A desktop workspace that opens ordinary vault folders. Its knowledge graph links notes, concepts, sources, and agent runs, with Map, Atlas, and Code lenses and an inspector that shows why each node matters and which passages it came from. The agent runs inside the app, and a permission mode decides how its edits land: read only, review, where each change appears as an inline hunk to accept or reject, or auto-apply.",
     howItConnects:
       "A sandboxed renderer draws the editor, review, and graph, and reaches everything else through typed IPC. The main process owns the windows and sealed API keys and forwards requests to an agent-host process, the only part of the app that reads or writes the vault. The host runs missions through the vendored core across three typed seams and sends prompts only to the model provider you choose. The vault stays plain Markdown, so Obsidian can open the same folder.",
     whatWasHard:
-      "The desktop app and the Obsidian plugin had to run the same agent, and forking the core would have meant maintaining two. So the core is vendored at a pinned commit, and the app reaches it only through three typed seams.",
-  },
-  {
-    slug: "obsidian-research-agent",
-    number: "02",
-    title: "Obsidian Research Agent",
-    description:
-      "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, follows a durable plan, passes every action through a prepared-action gate, writes sourced notes back, and keeps a receipt for every step. Code work runs in a sandbox, Linear and GitHub stay behind capability gates, and an optional local companion service can finish jobs that were already authorized. An interrupted run resumes from its plan without redoing finished steps.",
-    reflection:
-      "A tool is only useful to an agent once it is bounded and debuggable. When something goes wrong, I want to see exactly which call did it and pick up from there.",
-    discipline: "TypeScript · Agent systems",
-    tagline: "Research missions inside an Obsidian vault, with a receipt for every step",
-    feature: {
-      summary:
-        "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, commits to a plan, passes every action through an approval gate, and writes sourced notes back with a receipt for every step.",
-      highlights: [
-        "An interrupted run resumes without redoing finished steps",
-        "Exact approval prompts and a receipt for every step",
-        "Linear, GitHub, and code work stay behind capability gates",
-      ],
-    },
-    href: "https://github.com/JoshuaNguyen123/Obsidian_research_agent",
-    preview: {
-      src: "/projects/obsidian-research-demo.jpg",
-      alt: "Obsidian research demo: a sourced note beside the mission console and its write receipt",
-      width: 1280, height: 720, caption: "Research mission · Demo vault",
-    },
-    image: diagram("obsidian-research-agent"),
-    problem:
-      "Research that can read a vault, use real tools, and write back to notes, without hiding what the agent just did.",
-    whatItDoes:
-      "A desktop Obsidian plugin runs missions from a side console. It reads vault context, builds a durable plan, sends prompts to the model you configure, and passes every action through a prepared-action gate before writing sourced notes with a receipt for every step. Code work, a local companion service, and Linear or GitHub stay behind capability gates so a research run does not get extra authority by default.",
-    howItConnects:
-      "A mission starts in the console and becomes a plan the rest of the run has to follow. The agent loop proposes each action; the plugin prepares it, checks its grant or asks for an exact approval, runs it, and reads the result back before recording a receipt. Only code runs in a sandbox. Sourced notes write back to the vault, and an interrupted run resumes from the durable plan without redoing finished steps. The companion, Linear, and GitHub sit behind the gate; they never become the default path.",
-    whatWasHard:
-      "Each new tool needed its own guardrails before the agent could use it: an exact approval prompt, a sandbox if it runs code, a way to resume after a failed step, and a receipt that stays truthful when a page does not actually load.",
+      "The agent core is developed outside the app, and forking it would have meant maintaining two agents. So the core is vendored at a pinned commit, and the app reaches it only through three typed seams.",
   },
   {
     slug: "ladybug",
-    number: "03",
+    number: "02",
     title: "Ladybug",
     description:
       "A private photo and writing space for two people. One React app runs two ways: a deterministic simulator that shows both phones side by side with no credentials, and a connected PWA backed by Supabase, with row-level security, private storage, and realtime state. It began as a native SwiftUI and Firebase app, and the simulator and that app's backend share one package of product rules. Verification covers the migrations, a three-account connected journey, WebKit and Chromium end-to-end runs, and the iOS handoff, all on self-hosted CI.",
@@ -131,7 +96,7 @@ export const projects: Project[] = [
   },
   {
     slug: "personal-ai-digest",
-    number: "04",
+    number: "03",
     title: "Personal AI Digest",
     description:
       "A retrieval pipeline that emailed me grounded technical lessons twice a day from March to September 2026. A Cloudflare Worker fired each send on time, because GitHub's own scheduler drifts by hours, and a GitHub Actions job retrieved evidence from the knowledge store, SQLite or Postgres with pgvector, for a model to draft from. A quality gate dropped any lesson whose factual paragraphs did not cite that evidence. Ingestion runs as a separate job, so a stalled ingest never stopped the mail.",
@@ -161,7 +126,7 @@ export const projects: Project[] = [
   },
   {
     slug: "teach-anything",
-    number: "05",
+    number: "04",
     title: "Teach Anything",
     description:
       "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-6 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a pure, seeded core, so the same learning state always produces the same plan, and every mastery update is kept in an append-only event log. Every question has to cite its source.",
@@ -182,7 +147,7 @@ export const projects: Project[] = [
   },
   {
     slug: "autonomous-repository-template",
-    number: "06",
+    number: "05",
     title: "Autonomous Repository Template",
     description:
       "A plan-first repository protocol for coding agents: built, used, and retired. Project memory lived in tracked files, implementation sat behind a planning gate, and every task carried a verification lane. In 29 days it was instantiated into six products, and one reached completion with all 82 of its acceptance commands passing. It also cost more than it saved, so I retired it on September 30, 2026, keeping its lightest profile: one human-approved milestone, then the agent, then review.",
@@ -203,7 +168,7 @@ export const projects: Project[] = [
   },
   {
     slug: "engineering-activity-portfolio",
-    number: "07",
+    number: "06",
     title: "Engineering Activity Portfolio",
     description:
       "This site. A privacy-safe collector reads local activity from the tools I work in, publishes daily counts to a live feed, and renders them as the yearly heatmaps above. Nothing about the code or the projects leaves the machine.",
@@ -224,7 +189,7 @@ export const projects: Project[] = [
   },
   {
     slug: "great-outdoors-intelligence",
-    number: "08",
+    number: "07",
     title: "Great Outdoors Intelligence",
     description:
       "Ranks Montana river reaches for fly fishing by live conditions instead of showing a wall of gauges. It pulls river gauges, FWP closures, NWS forecasts, SNOTEL snowpack, fire perimeters, and avalanche zones into one local bundle, scores reaches with deterministic rules that show their reasons, and archives FWP closures daily, because FWP keeps no history. More activities and offline trip bundles were designed but never built. It was the first product built on the repository template above, and its defect reports shaped the template's fixes.",
@@ -245,7 +210,7 @@ export const projects: Project[] = [
   },
   {
     slug: "local-first-meeting-transcription",
-    number: "09",
+    number: "08",
     title: "Local-First Meeting Transcription",
     description:
       "A meeting recorder that keeps the audio on the machine and transcribes it locally. Live transcription with Vosk, a refined pass with faster-whisper after the meeting, a review queue that reconciles the two, and structured notes written from the agreed transcript by whichever Ollama-compatible model you configure. FastAPI backend, React frontend.",
