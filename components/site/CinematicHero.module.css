@@ -1,4 +1,4 @@
-.opening { --hero-height: clamp(390px, 62svh, 800px); position: relative; isolation: isolate; background: #f9f5ed; }
+.opening { --hero-height: clamp(390px, 62svh, 800px); position: relative; isolation: isolate; background: var(--paper); }
 .hero, .scene { height: var(--hero-height); }
 .scene { position: absolute; inset: 0 0 auto; overflow: hidden; clip-path: url(#valley-edge); }
 .photo, .shade { position: absolute; inset: 0; }
@@ -6,8 +6,8 @@
 .image { object-fit: cover; object-position: center 64%; }
 .shade { background: linear-gradient(95deg, rgb(7 24 30 / 56%), transparent 78%), linear-gradient(0deg, rgb(0 20 27 / 27%), transparent 70%); }
 .hero { display: flex; align-items: center; position: relative; color: white; padding: 50px var(--home-gutter) 0; }
-.copy h1 { font-size: clamp(52px, 5.1vw, 92px); font-weight: 430; line-height: 1.04; letter-spacing: -.055em; margin: 0; }
-.copy p { font-size: clamp(17px, 1.9vw, 30px); line-height: 1.35; margin: 14px 0 0; letter-spacing: -.025em; }
+.copy h1 { font-size: clamp(52px, 5.1vw, 92px); font-weight: 430; line-height: 1.04; letter-spacing: -.035em; margin: 0; }
+.copy p { font-size: clamp(17px, 1.55vw, 24px); line-height: 1.35; margin: 16px 0 0; letter-spacing: -.01em; }
 @media (max-width: 760px) {
   .opening { --hero-height: clamp(360px, 54svh, 540px); }
   .image { object-position: 48% center; }

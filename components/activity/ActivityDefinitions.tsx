@@ -121,10 +121,10 @@ export function ActivityDefinitions() {
         <div className={styles.content}>
           <p className={styles.statement}>How a day earns its shade.</p>
           <dl className="activity-glossary">
-            <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays light gray. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
-            <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
-            <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
-            <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
+            <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on. Only the top tenth earns the darkest. A day at zero stays light gray. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
+            <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them. That average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
+            <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm, which is what this page exists to show, would vanish.</dd></div>
+            <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change. Only the comparison does.</dd></div>
           </dl>
         </div>
       </section>
@@ -158,7 +158,7 @@ export function ActivityDefinitions() {
                   <div><dt>Status</dt><dd>{metric.status === "available" ? "Observed within coverage" : metric.status === "stale" ? "Last verified data retained" : "Unavailable"}</dd></div>
                   <div><dt>{year} total</dt><dd>{metric.status === "unavailable" ? "Unavailable" : total(metric, year).toLocaleString("en-US")}</dd></div>
                   <div><dt>Source</dt><dd>{metric.source}</dd></div>
-                  <div><dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${formatDay(metric.coverage.start)} — ${formatDay(metric.coverage.end)}` : "Unavailable"}</dd></div>
+                  <div><dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${formatDay(metric.coverage.start)} to ${formatDay(metric.coverage.end)}` : "Unavailable"}</dd></div>
                   <div><dt>Last verified</dt><dd>{metric.lastSyncedAt ? timestampFormatter(data.timeZone).format(new Date(metric.lastSyncedAt)) : "Unavailable"}</dd></div>
                 </dl>
               </section>

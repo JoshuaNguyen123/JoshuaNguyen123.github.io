@@ -25,8 +25,10 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(site, /siteName = "Joshua Nguyen"/);
   assert.match(page, /name: siteName/);
   const personalIntro = await readFile(new URL("../components/site/PersonalIntro.tsx", import.meta.url), "utf8");
-  assert.match(personalIntro, /Trace an idea to its source/);
-  assert.match(personalIntro, /Source excerpt/);
+  // The introduction is first-person prose that links the two research projects.
+  assert.match(personalIntro, /I build AI agents and the software around them/);
+  assert.match(personalIntro, /href="\/work\/research-agent-platform\/"/);
+  assert.match(personalIntro, /href="\/work\/obsidian-research-agent\/"/);
   const workIndex = await readFile(new URL("../components/work/WorkIndex.tsx", import.meta.url), "utf8");
   assert.match(page, /I work across the stack/);
   assert.match(projects, /bounded and debuggable/);
@@ -72,7 +74,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(scrollSections, /preventDefault|scrollTo\(|wheel/);
   for (const source of [work, article]) assert.match(source, /<ScrollSections>/);
   assert.doesNotMatch(page, /className="interests-section"/);
-  assert.equal((page.match(/interests\.map/g) ?? []).length, 1);
+  // About is prose: no bold-led list of interests, and nothing folded behind a disclosure.
+  assert.doesNotMatch(page, /interests\.map|<details/);
   // One shared header and footer on every public page. The primary links wrap
   // on a phone instead of hiding behind a menu, so no stylesheet may hide them.
   assert.doesNotMatch(header, /MobileNav/);

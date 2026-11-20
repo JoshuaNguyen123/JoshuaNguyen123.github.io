@@ -3,13 +3,13 @@ import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { ogImage, siteDescription, siteName, siteTitle, siteUrl } from "@/content/site";
 import "./globals.css";
 
-// Archivo is shared with the Josh UI library; Plex Mono carries small metadata.
+// Archivo is shared with the Josh UI library; Plex Mono sets activity data and code.
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
 const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: siteTitle, template: `%s — ${siteName}` },
+  title: { default: siteTitle, template: `%s | ${siteName}` },
   description: siteDescription,
   authors: [{ name: siteName, url: siteUrl }],
   creator: siteName,

@@ -6,9 +6,9 @@ import styles from "./subpage.module.css";
 
 /**
  * Scroll-linked sections for subpages, on the same reading line as the
- * homepage work index. Every [data-section] inside gets --section-progress
+ * case-study diagrams. Every [data-section] inside gets --section-progress
  * (0 to 1), and data-active while it crosses the line; the stylesheet pins its
- * [data-section-label] and fills a rail beneath it. Every [data-scroll-draw]
+ * [data-section-label] and darkens it while it is current. Every [data-scroll-draw]
  * gets --draw-progress, from entering the bottom of the viewport to sitting
  * fully in view, so a diagram can trace itself. On a phone, where labels
  * sit above their content, a slim sticky bar names the current section

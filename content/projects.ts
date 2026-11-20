@@ -37,7 +37,7 @@ export const projects: Project[] = [
     description:
       "A desktop research workspace built around the same agent core as the Obsidian plugin. Electron and CodeMirror 6, working directly on ordinary Obsidian-compatible vaults. The core is vendored at a pinned commit behind three typed seams rather than forked, and only a separate agent-host process ever reads or writes the vault. In review mode, the agent's edits arrive as inline hunks to accept or reject before they are written. It runs as a packaged Windows app with local engines for dictation, OCR, completion, and code sandboxes, and hundreds of Playwright journeys cover the loop.",
     reflection:
-      "Vendoring the core instead of forking it kept one agent with two hosts. The typed seams are the whole contract, so a vendor bump that breaks one fails at compile time instead of in someone's vault.",
+      "The three typed seams ended up being the whole contract between the two hosts. When a vendor bump breaks one, the build fails at compile time and the change never reaches someone's vault.",
     discipline: "TypeScript · Electron · Desktop app",
     tagline: "Explore connected ideas. Trace them back to the source",
     feature: {
@@ -62,7 +62,7 @@ export const projects: Project[] = [
     howItConnects:
       "A sandboxed renderer draws the editor, review, and graph, and reaches everything else through typed IPC. The main process owns the windows and sealed API keys and forwards requests to an agent-host process, the only part of the app that reads or writes the vault. The host runs missions through the vendored core across three typed seams and sends prompts only to the model provider you choose. The vault stays plain Markdown, so Obsidian can open the same folder.",
     whatWasHard:
-      "Forking the core would have created two agents. Vendoring it behind typed seams keeps one agent with two hosts, and a vendor bump that breaks a seam fails at compile time instead of in someone's vault.",
+      "The desktop app and the Obsidian plugin had to run the same agent, and forking the core would have meant maintaining two. So the core is vendored at a pinned commit, and the app reaches it only through three typed seams.",
   },
   {
     slug: "obsidian-research-agent",
@@ -71,15 +71,15 @@ export const projects: Project[] = [
     description:
       "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, follows a durable plan, passes every action through a prepared-action gate, writes sourced notes back, and keeps a receipt for every step. Code work runs in a sandbox, Linear and GitHub stay behind capability gates, and an optional local companion service can finish jobs that were already authorized. An interrupted run resumes from its plan without redoing finished steps.",
     reflection:
-      "Adding tools to an agent is the easy part. The hard part is making each one bounded and debuggable, so that when something goes wrong you can see exactly which call did it and pick up from there.",
+      "A tool is only useful to an agent once it is bounded and debuggable. When something goes wrong, I want to see exactly which call did it and pick up from there.",
     discipline: "TypeScript · Agent systems",
     tagline: "Research missions inside an Obsidian vault, with a receipt for every step",
     feature: {
       summary:
         "An Obsidian plugin that runs research missions inside a vault. It reads the vault for context, commits to a plan, passes every action through an approval gate, and writes sourced notes back with a receipt for every step.",
       highlights: [
-        "Exact approval prompts and a receipt for every step",
         "An interrupted run resumes without redoing finished steps",
+        "Exact approval prompts and a receipt for every step",
         "Linear, GitHub, and code work stay behind capability gates",
       ],
     },
@@ -97,7 +97,7 @@ export const projects: Project[] = [
     howItConnects:
       "A mission starts in the console and becomes a plan the rest of the run has to follow. The agent loop proposes each action; the plugin prepares it, checks its grant or asks for an exact approval, runs it, and reads the result back before recording a receipt. Only code runs in a sandbox. Sourced notes write back to the vault, and an interrupted run resumes from the durable plan without redoing finished steps. The companion, Linear, and GitHub sit behind the gate; they never become the default path.",
     whatWasHard:
-      "Giving the agent more tools was easy. The work was making every tool bounded, previewable, and recoverable: exact approval prompts, a sandbox for code, resuming after a failed step, and receipts that stay truthful when a page does not actually load.",
+      "Each new tool needed its own guardrails before the agent could use it: an exact approval prompt, a sandbox if it runs code, a way to resume after a failed step, and a receipt that stays truthful when a page does not actually load.",
   },
   {
     slug: "ladybug",
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     description:
       "A private photo and writing space for two people. One React app runs two ways: a deterministic simulator that shows both phones side by side with no credentials, and a connected PWA backed by Supabase, with row-level security, private storage, and realtime state. It began as a native SwiftUI and Firebase app, and the simulator and that app's backend share one package of product rules. Verification covers the migrations, a three-account connected journey, WebKit and Chromium end-to-end runs, and the iOS handoff, all on self-hosted CI.",
     reflection:
-      "Two phones, two accounts, uploads, notifications, and realtime state make even a two-person app a small distributed system. The simulator let me find the product mistakes before paying for cloud time.",
+      "The simulator was worth building first. It runs both phones side by side with no credentials, so I found the basic product mistakes before I was paying for cloud time.",
     discipline: "TypeScript · Swift · Supabase",
     tagline: "A private photo and writing space for two people",
     feature: {
@@ -121,13 +121,13 @@ export const projects: Project[] = [
     href: null,
     image: diagram("ladybug"),
     problem:
-      "A two-person photo and writing space that has to feel private, personal, and reliable on two phones at once.",
+      "A photo and writing space for two people that has to stay private and reliable on two phones at once.",
     whatItDoes:
       "Ladybug is a shared space for exactly two people: photos, short writing, daily prompts, and the small interactions that make that space feel like a place. One React app runs in two modes, a deterministic simulator and a connected Supabase PWA, so the product could be proven before the cloud bill started. The original SwiftUI and Firebase app was its first host.",
     howItConnects:
       "The simulator runs both phones side by side with no credentials and is where product mistakes get found. The connected PWA queues writes offline and sends them through Supabase RPCs, the only write path, into Postgres behind row-level security. Photos are redrawn in the browser before they reach private storage, and Realtime only hints that something changed. Self-hosted CI checks migrations, a three-account journey, WebKit and Chromium runs, and the iOS handoff.",
     whatWasHard:
-      "A two-person app still has two accounts, two devices, uploads, notifications, and realtime state. The hard part was treating that as a small distributed system and using the simulator so I was not paying cloud time to discover basic product mistakes.",
+      "A two-person app still has two accounts, two devices, uploads, notifications, and realtime state. I had to treat it as a small distributed system from the start, with the migrations, a three-account journey, and both browser engines checked in CI.",
   },
   {
     slug: "personal-ai-digest",
@@ -136,7 +136,7 @@ export const projects: Project[] = [
     description:
       "A retrieval pipeline that emailed me grounded technical lessons twice a day from March to September 2026. A Cloudflare Worker fired each send on time, because GitHub's own scheduler drifts by hours, and a GitHub Actions job retrieved evidence from the knowledge store, SQLite or Postgres with pgvector, for a model to draft from. A quality gate dropped any lesson whose factual paragraphs did not cite that evidence. Ingestion runs as a separate job, so a stalled ingest never stopped the mail.",
     reflection:
-      "Requiring every factual paragraph to cite its evidence is what turned this from a toy into something I trusted enough to study from. Keeping ingestion and delivery apart meant either side could fail without taking the other down.",
+      "The citation rule is why I trusted the lessons enough to study from them. Keeping ingestion and delivery apart mattered just as much, because either side could fail without stopping the other.",
     discipline: "Python · RAG · Cloudflare Workers",
     tagline: "Cited technical lessons in my inbox, twice a day from March to September",
     feature: {
@@ -157,7 +157,7 @@ export const projects: Project[] = [
     howItConnects:
       "Ingest chunks, tags, and embeds sources into the knowledge store, SQLite or Postgres with pgvector, and stops there. On schedule, the Worker dispatches a GitHub Actions job that retrieves and distills evidence, asks Ollama Cloud for a draft, runs the citation gate, and sends what passes over SMTP. A send log committed to git keeps a retried run from mailing twice. If ingest stalls, mail still goes out from what is already indexed.",
     whatWasHard:
-      "The model will invent a fluent lesson if you let it. Forcing every factual paragraph to cite quoted evidence, rejecting numbers the evidence does not contain, and splitting ingest from delivery so a failure on one side does not take the other down, is what made it something I would read.",
+      "The model will invent a fluent lesson if you let it. The quality gate drops any lesson whose factual paragraphs do not cite quoted evidence, and it rejects numbers the evidence does not contain.",
   },
   {
     slug: "teach-anything",
@@ -166,7 +166,7 @@ export const projects: Project[] = [
     description:
       "An adaptive learning engine that plans each session from what the learner actually remembers. It combines FSRS-6 forgetting curves, Bayesian mastery estimates, and sandboxed code exercises on top of a pure, seeded core, so the same learning state always produces the same plan, and every mastery update is kept in an append-only event log. Every question has to cite its source.",
     reflection:
-      "Getting a model to write a lesson takes an afternoon. Getting Tuesday's lesson to depend on what Monday showed, and being able to prove it, was the real product.",
+      "Getting a model to write a lesson takes an afternoon. Getting Tuesday's lesson to depend on what Monday showed took the rest of the project.",
     discipline: "TypeScript · Learning systems",
     tagline: "A lesson planner that remembers what Monday taught",
     href: null,
@@ -178,7 +178,7 @@ export const projects: Project[] = [
     howItConnects:
       "Pages reach stored state only through a session service, which hands the learning history to the engine and stores what comes back. FSRS decides when an item is due; a priority selector decides what goes into the session, using predicted recall, readiness, prerequisites, and deadlines. Every model call goes through one gateway to the provider the learner configures, and a course worker builds new courses behind human review gates.",
     whatWasHard:
-      "Asking a model for a lesson is cheap. Making Tuesday depend on Monday, and proving the schedule adapted instead of improvised, meant putting the memory math in a pure, deterministic core and checking it in a simulation harness.",
+      "The schedule had to adapt to the learner, and I had to be able to prove that it did. That meant putting the memory math in a pure, deterministic core and checking it in a simulation harness.",
   },
   {
     slug: "autonomous-repository-template",
@@ -187,7 +187,7 @@ export const projects: Project[] = [
     description:
       "A plan-first repository protocol for coding agents: built, used, and retired. Project memory lived in tracked files, implementation sat behind a planning gate, and every task carried a verification lane. In 29 days it was instantiated into six products, and one reached completion with all 82 of its acceptance commands passing. It also cost more than it saved, so I retired it on September 30, 2026, keeping its lightest profile: one human-approved milestone, then the agent, then review.",
     reflection:
-      "A plan the agent cannot skip is worth having. Paying for the machinery around it on every commit was not, so the plan-first contract survived and the rest did not.",
+      "A plan the agent cannot skip is worth having. The machinery I built around it cost time on every commit, so I kept the plan-first contract and retired the rest.",
     discipline: "Python · Agent workflows",
     tagline: "A plan-first protocol for coding agents, built, used, and retired",
     href: null,
@@ -199,7 +199,7 @@ export const projects: Project[] = [
     howItConnects:
       "Setup scripts instantiate a product or adopt an existing repository. A human request becomes a plan with one approved milestone. A coding agent such as Claude Code, Codex, or Cursor implements it, runs the checks the plan lists, and hands back local commits and notes for review. The opt-in profiles add the gate check, verification cycles that decide whether to continue, replan, or escalate, and the tracked state those cycles read.",
     whatWasHard:
-      "The useful part was not a smarter model. It was memory the agent cannot drop and a plan it cannot skip. The machinery around them is what did not pay: in the products built on it, 37 to 69 percent of commits touched only protocol records, and a verification cycle averaged about seven minutes. Its postmortem kept the plan-first contract and dropped the rest.",
+      "The protocol cost more than it saved. In the products built on it, 37 to 69 percent of commits touched only protocol records, and a verification cycle averaged about seven minutes. Two parts earned their cost, memory the agent cannot drop and a plan it cannot skip, and the postmortem kept those.",
   },
   {
     slug: "engineering-activity-portfolio",
@@ -208,7 +208,7 @@ export const projects: Project[] = [
     description:
       "This site. A privacy-safe collector reads local activity from the tools I work in, publishes daily counts to a live feed, and renders them as the yearly heatmaps above. Nothing about the code or the projects leaves the machine.",
     reflection:
-      "Provenance and privacy work better as visible features than as a footnote.",
+      "I ended up putting the privacy rules and the source of each number on the page itself, where a visitor can check them.",
     discipline: "TypeScript · Data visualization",
     tagline: "This site's privacy-safe record of when I'm building",
     href: "https://github.com/JoshuaNguyen123/JoshuaNguyen123.github.io",
@@ -220,7 +220,7 @@ export const projects: Project[] = [
     howItConnects:
       "Collectors stay on the machine and emit dates and counts only. A publish step writes the public snapshot. The static site reads that snapshot, draws the heatmaps, and can poll the published feed for a newer day. Prompts, code, filenames, repositories, and raw IDs never enter the snapshot.",
     whatWasHard:
-      "The tempting dashboard is a feed of what I was working on. The honest one is a calendar of observed days plus a public explanation of how each count is made. Privacy had to be the product, not a disclaimer under a more revealing chart.",
+      "The hard part was deciding what to leave out. A feed of what I was working on would have been more interesting to look at, and it would have published prompts, paths, and project names. The site shows a calendar of observed days and explains in public how each count is made.",
   },
   {
     slug: "great-outdoors-intelligence",
@@ -235,13 +235,13 @@ export const projects: Project[] = [
     href: null,
     image: diagram("great-outdoors-intelligence"),
     problem:
-      "Where to go outside in Montana today, ranked by live conditions, not a wall of unrelated gauges.",
+      "Where to go outside in Montana today, ranked by live conditions.",
     whatItDoes:
       "A local pipeline collects river gauges, FWP closures, NWS forecasts, SNOTEL snowpack, fire perimeters, and avalanche zones into one versioned local bundle. A rule engine scores river reaches for fly fishing from flow, water temperature, and published restrictions, and every score carries its reasons and a confidence level. Snowpack, fire, and avalanche data show as map layers. More activities and offline trip bundles were designed but never built.",
     howItConnects:
       "A scheduled task or the Refresh button runs the collectors, each cache-aware and isolated so one failing source cannot sink the rest. They write a single SQLite bundle, and the rule engine writes its assessments back into it. A local Flask API reads only that bundle, never a source, and serves the React UI, which is there so a person can argue with the ranking. A separate daily script archives FWP closures.",
     whatWasHard:
-      "More data is easy to display and hard to use on a trailhead. The work is turning several live feeds into one ranked recommendation you can inspect, and binding each reach to the right gauge, because a score read from the wrong gauge is worse than no score.",
+      "Six live feeds are easy to put on a map and hard to use at a trailhead. Most of the work went into turning them into one ranked recommendation you can inspect, and into binding each river reach to the right gauge. A score read from the wrong gauge is worse than no score.",
   },
   {
     slug: "local-first-meeting-transcription",
@@ -250,7 +250,7 @@ export const projects: Project[] = [
     description:
       "A meeting recorder that keeps the audio on the machine and transcribes it locally. Live transcription with Vosk, a refined pass with faster-whisper after the meeting, a review queue that reconciles the two, and structured notes written from the agreed transcript by whichever Ollama-compatible model you configure. FastAPI backend, React frontend.",
     reflection:
-      "Two transcripts of the same audio disagree constantly. The review queue that reconciles them turned out to be the product, not the models.",
+      "I expected the speech models to be most of the work. Most of it ended up in the review queue.",
     discipline: "Python · TypeScript · Speech",
     tagline: "Local meeting transcription, with a review queue for when two passes disagree",
     href: null,
@@ -262,7 +262,7 @@ export const projects: Project[] = [
     howItConnects:
       "Audio stays on disk, alongside the transcripts in SQLite. The live model writes a first transcript during the meeting. Afterward a second model writes a refined transcript from the saved audio. The review queue is where those two are reconciled and a person verifies them. Only the agreed transcript leaves the recorder, and only to the notes model you point it at.",
     whatWasHard:
-      "The models were the obvious part. Two transcripts of the same audio disagree constantly, and the product became the review queue that makes a person resolve that, not another model that pretends the conflict is gone.",
+      "Two transcripts of the same audio disagree constantly. Handing the conflict to another model would only hide it, so the disagreements go to a review queue where a person resolves them.",
   },
 ];
 
