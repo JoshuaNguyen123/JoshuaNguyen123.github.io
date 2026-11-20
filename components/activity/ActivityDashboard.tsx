@@ -230,7 +230,7 @@ export function ActivityDashboard() {
 
       <section className="activity-year-summary" aria-labelledby="year-summary-title">
         <h3 id="year-summary-title">{selectedYear} at a glance</h3>
-        <p>Year totals across all months. Session-days count sessions on each day, not hours worked.</p>
+        <p>Year totals across all months. A session-day is one session seen on one day, whatever its length.</p>
         <ActivitySummary summary={summary} currentStreak={currentStreak} metrics={{
           github: filteredMetrics.github,
           codex: filteredMetrics.codexSessions,

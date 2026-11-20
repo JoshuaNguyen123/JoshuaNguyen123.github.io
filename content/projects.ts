@@ -88,7 +88,7 @@ export const projects: Project[] = [
     problem:
       "A photo and writing space for two people that has to stay private and reliable on two phones at once.",
     whatItDoes:
-      "Ladybug is a shared space for exactly two people: photos, short writing, daily prompts, and the small interactions that make that space feel like a place. One React app runs in two modes, a deterministic simulator and a connected Supabase PWA, so the product could be proven before the cloud bill started. The original SwiftUI and Firebase app was its first host.",
+      "Ladybug is a shared space for exactly two people, with photos, short writing, and daily prompts. One React app runs in two modes, a deterministic simulator and a connected Supabase PWA, so the product could be proven before the cloud bill started. The original SwiftUI and Firebase app was its first host.",
     howItConnects:
       "The simulator runs both phones side by side with no credentials and is where product mistakes get found. The connected PWA queues writes offline and sends them through Supabase RPCs, the only write path, into Postgres behind row-level security. Photos are redrawn in the browser before they reach private storage, and Realtime only hints that something changed. Self-hosted CI checks migrations, a three-account journey, WebKit and Chromium runs, and the iOS handoff.",
     whatWasHard:

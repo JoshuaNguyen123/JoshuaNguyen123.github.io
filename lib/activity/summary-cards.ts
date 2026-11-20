@@ -59,19 +59,19 @@ export function cursorDaysNote(sessionCountedDays: number, observedDays: number)
 // on /activity and inside the dashboard's methodology panel.
 export const summaryCardExplanations: Record<SummaryCardId, string> = {
   contributions:
-    "This is what GitHub's public contribution calendar counts for me: commits, pull requests, issues, and reviews. The note underneath is how many separate days had at least one of them. It is a tally of events, not effort: a one-line fix and an all-day refactor look identical here.",
+    "This is what GitHub's public contribution calendar counts for me: commits, pull requests, issues, and reviews. The note underneath is how many separate days had at least one of them. It is a tally of events, so a one-line fix and an all-day refactor look identical here.",
   codexSessionDays:
     "Every distinct Codex session counts once for the calendar day it was active (home base America/Denver, living-local when I travel), and I add those up over the year. Work past midnight and the same session counts on both days. That is the quirk of the unit. Prompts, tokens, and hours never enter into it.",
   cursorSessionDays:
-    "Same idea as Codex: distinct Cursor sessions per day, added up over the year, from the conversation timestamps Cursor keeps locally. Session-counted days are days with at least one of those records. Observed days adds days where Cursor's own usage export proves I used it even though no session record survived. Those days get verified, but I never invent a session count for them.",
+    "Same idea as Codex: distinct Cursor sessions per day, added up over the year, from the conversation timestamps Cursor keeps locally. Session-counted days are days with at least one of those records. Observed days adds days where Cursor's own usage export proves I used it even though no session record survived. Those days count as observed and add nothing to the session-day total.",
   claudeSessionDays:
-    "Distinct Claude Code sessions per day, added up over the year, from its transcripts and hook events. One rule keeps this honest: credit goes to the tool, not the model. When I use a Claude model inside Cursor, that is Cursor activity, not Claude Code.",
+    "Distinct Claude Code sessions per day, added up over the year, from its transcripts and hook events. Credit goes to the tool that was open. When I use a Claude model inside Cursor, that counts as Cursor activity.",
   observedBuildDays:
     "How many days this year at least one of these tools saw me doing something, which is every day the Build Index sits above zero. A zero means a tool looked and found nothing. A hatched day means no tool was keeping records yet, so I honestly don't know.",
   cursorObservedDays:
     "Every day with any Cursor evidence at all: exact session records, plus days its usage export can vouch for. A vouched-for day counts here without adding to the session-day total, which is why this number can run ahead of the session-counted days.",
   currentStreak:
-    "How many days in a row I've been active, counting backward from the most recent day with data. If today hasn't recorded anything yet, the count starts from yesterday, because a day still in progress never breaks the streak. This one runs across the whole record, not just one year.",
+    "How many days in a row I've been active, counting backward from the most recent day with data. If today hasn't recorded anything yet, the count starts from yesterday, because a day still in progress never breaks the streak. This one runs across the whole record, so it can span more than one year.",
   longestStreak:
-    "The longest unbroken run of active days this year. These are the same days the observed-build-days number counts, measured for how long they held together instead of how many there were.",
+    "The longest unbroken run of active days this year. These are the same days the observed-build-days number counts, measured by how long they ran without a gap.",
 };
