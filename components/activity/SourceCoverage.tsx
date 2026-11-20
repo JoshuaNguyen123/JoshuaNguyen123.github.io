@@ -26,6 +26,6 @@ export function SourceCoverage({ sources, startDate, endDate }: {
         })}</tbody>
       </table>
     </div>
-    <p>Coverage measures available records, not time worked. Sources may cover the same day; their counts should not be added together.</p>
+    <p>Coverage measures which records exist. Sources may cover the same day; their counts should not be added together.</p>
   </div>;
 }

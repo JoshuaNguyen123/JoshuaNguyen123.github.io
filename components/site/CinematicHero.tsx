@@ -55,7 +55,7 @@ export function CinematicHero({ children }: { children?: ReactNode }) {
       <section className={styles.hero} id="top" aria-labelledby="intro-title">
         <div className={styles.copy} data-hero-copy="">
           <h1 id="intro-title">Hi, I’m Josh.</h1>
-          <p>I’m into AI, engineering, and technology.</p>
+          <p>AI developer and technical researcher in Bozeman, Montana.</p>
         </div>
       </section>
       {children}

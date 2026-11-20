@@ -13,12 +13,6 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import styles from "./home.module.css";
 
-const interests = [
-  ["AI engineering", "Agents and retrieval systems that are grounded, observable, and worth trusting."],
-  ["Software development", "Small, well-tested pieces with clear contracts and useful errors."],
-  ["Systems engineering", "Pipelines, runners, and local-first tools that keep working when no one is watching."],
-] as const;
-
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -63,7 +57,7 @@ export default function Home() {
         <CinematicHero><PersonalIntro /></CinematicHero>
         <WorkIndex projects={featured} />
 
-        <section className={styles.section} id="more" aria-labelledby="more-title">
+        <section className={`${styles.section} ${styles.continued}`} id="more" aria-labelledby="more-title">
           <h2 className={styles.label} id="more-title">More projects</h2>
           <ul className={styles.rows}>
             {projects.slice(FEATURED_PROJECTS).map((project) => (
@@ -135,13 +129,10 @@ export default function Home() {
               <p className={styles.statement}>
                 I care about the parts of AI software that usually get skipped: the approval before a tool runs, the citation behind a sentence, the record you can replay when a step fails.
               </p>
+              <p>
+                I work across the stack, from data pipelines and evaluation to the tools people use. I like problems that start out vague. I read what already exists and build a rough first version, then keep reshaping it until another person can understand it and trust it.
+              </p>
               <p>I live in Bozeman, Montana. When I’m away from my desk, I’m usually at the gym, out hiking, or home with a book.</p>
-              <details className={styles.approach}>
-                <summary>How I approach my work</summary>
-                <p>I work across the stack, from data pipelines and evaluation to the tools people use.</p>
-                <p>I like working on ambiguous problems. I read what exists, build a rough first version, and keep reshaping it until the system is something a person can understand and trust.</p>
-                {interests.map(([title, description]) => <p key={title}><strong>{title}.</strong> {description}</p>)}
-              </details>
             </div>
           </div>
         </section>
@@ -149,7 +140,7 @@ export default function Home() {
         <section className={styles.section} id="contact" aria-labelledby="contact-title">
           <h2 className={styles.label} id="contact-title">Contact</h2>
           <div className={styles.content}>
-            <p className={styles.statement}>Have a question about a project, a thought on something I wrote, or just want to say hello? I&apos;d be glad to hear from you.</p>
+            <p className={styles.statement}>If you have a question about a project or want to talk about something I wrote, send me a note.</p>
             <dl className={styles.channels}>
               {linkedInUrl ? (
                 <>

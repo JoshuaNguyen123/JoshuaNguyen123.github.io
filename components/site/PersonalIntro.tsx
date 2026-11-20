@@ -1,19 +1,16 @@
 import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { FlyFishingScene } from "./FlyFishingScene";
 import styles from "./PersonalIntro.module.css";
 
+/** Two sentences on what I build and what is on the bench, linked to that project. */
 export function PersonalIntro() {
   return (
-    <section className={styles.section} aria-labelledby="profile-title">
+    <section className={styles.section} aria-label="Introduction">
       <FlyFishingScene />
-      <h2 id="profile-title">Trace an idea to its source.</h2>
-      <ol className={styles.trace} aria-label="How the research graph connects ideas">
-        <li>Research note</li>
-        <li>Connected idea</li>
-        <li>Source excerpt</li>
-      </ol>
-      <Link href="/work/research-agent-platform/">Research Agent Platform <ArrowUpRight aria-hidden="true" /></Link>
+      <p className={styles.lead}>
+        I build AI agents and the software around them. Right now I’m building a{" "}
+        <Link href="/work/research-agent-platform/">desktop research workspace</Link> where the agent’s edits can wait for review before they touch a file.
+      </p>
     </section>
   );
 }

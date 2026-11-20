@@ -86,7 +86,7 @@ export function ActivityDefinitions() {
         <h2 className={styles.label} id="current-numbers" data-section-label>Current record</h2>
         <div className={styles.content}>
           <p className={styles.statement}>What the {year} numbers actually say.</p>
-          <p className={styles.prose}>These are counts of observed tool activity, not a productivity score. They update from the same validated feed as the dashboard.</p>
+          <p className={styles.prose}>These numbers update from the same validated feed as the dashboard.</p>
           <div className="data-provenance" role="status">
             <span className={`data-dot data-dot--${feedState === "live" ? "live" : data.mode}`} />
             {feedState === "live" ? "Live activity feed" : feedState === "bundled" ? "Verified bundled snapshot · newer than live feed" : feedState === "fallback" ? "Verified bundled snapshot · live feed unavailable" : "Verified bundled snapshot · checking live feed"}
@@ -121,10 +121,10 @@ export function ActivityDefinitions() {
         <div className={styles.content}>
           <p className={styles.statement}>How a day earns its shade.</p>
           <dl className="activity-glossary">
-            <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on — only the top tenth earns the darkest. A day at zero stays light gray. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
-            <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them — that average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
-            <div><dt>Darker means busier for me, not busy in general</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm — the thing this page exists to show — would vanish.</dd></div>
-            <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change — only the comparison does.</dd></div>
+            <div><dt>Each tool grades its own days</dt><dd>I take every day this year with any activity in that tool and line them up, quietest to busiest. The bottom quarter gets the lightest shade, the next quarter the second, and so on. Only the top tenth earns the darkest. A day at zero stays light gray. A day verified only by Cursor usage data or provider-attributed GitHub evidence always uses the lightest shade, because I know the tool was active but not how many sessions occurred.</dd></div>
+            <div><dt>The Build Index is just the average</dt><dd>Every covered tool hands each day a grade from 0 to 5, and the Build Index averages them. That average, scaled to 100, is the percentage in the tooltip. Any activity at all keeps a square visible, so a light day never disappears.</dd></div>
+            <div><dt>Darker means busier than my own usual</dt><dd>Because every tool is graded on its own curve, the same shade in two heatmaps does not mean the same amount of work. Absolute thresholds would leave a naturally light tool permanently pale and a heavy one permanently dark, and the rhythm, which is what this page exists to show, would vanish.</dd></div>
+            <div><dt>Shades can settle as the year fills in</dt><dd>The curve is recomputed from the whole year every time the feed publishes, so a spring day that once looked heavy can read a little more ordinary by autumn if the fall turns out busier. The counts underneath never change. Only the comparison does.</dd></div>
           </dl>
         </div>
       </section>
@@ -132,12 +132,12 @@ export function ActivityDefinitions() {
       <section className={styles.section} aria-labelledby="plain-english-definitions" data-section="Plain-English definitions">
         <h2 className={styles.label} id="plain-english-definitions" data-section-label>Plain-English definitions</h2>
         <div className={styles.content}>
-          <p className={styles.statement}>Four distinctions that keep the record honest.</p>
+          <p className={styles.statement}>Four terms this page uses throughout.</p>
           <dl className="activity-glossary">
             <div><dt>Session-day</dt><dd>One distinct tool session observed on the calendar day the work happened (home base America/Denver; living-local when travelling). The same session can count again if it remains active on another date.</dd></div>
             <div><dt>Observed day</dt><dd>A date where at least one covered source recorded activity. First-party Cursor usage or provider-attributed GitHub evidence can verify a date without creating a session count.</dd></div>
             <div><dt>Zero vs. no coverage</dt><dd>Zero means the collector covered that date and found nothing. A hatched day means the source did not cover that date, so the value is unknown.</dd></div>
-            <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. It is useful for visual pattern, not for comparing productivity or output.</dd></div>
+            <div><dt>Build Index</dt><dd>An equal-weight blend of each covered tool&apos;s relative daily intensity. Use it to see the pattern of the year. It cannot compare productivity or output.</dd></div>
           </dl>
         </div>
       </section>
@@ -158,7 +158,7 @@ export function ActivityDefinitions() {
                   <div><dt>Status</dt><dd>{metric.status === "available" ? "Observed within coverage" : metric.status === "stale" ? "Last verified data retained" : "Unavailable"}</dd></div>
                   <div><dt>{year} total</dt><dd>{metric.status === "unavailable" ? "Unavailable" : total(metric, year).toLocaleString("en-US")}</dd></div>
                   <div><dt>Source</dt><dd>{metric.source}</dd></div>
-                  <div><dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${formatDay(metric.coverage.start)} — ${formatDay(metric.coverage.end)}` : "Unavailable"}</dd></div>
+                  <div><dt>Coverage</dt><dd>{metric.coverage.start && metric.coverage.end ? `${formatDay(metric.coverage.start)} to ${formatDay(metric.coverage.end)}` : "Unavailable"}</dd></div>
                   <div><dt>Last verified</dt><dd>{metric.lastSyncedAt ? timestampFormatter(data.timeZone).format(new Date(metric.lastSyncedAt)) : "Unavailable"}</dd></div>
                 </dl>
               </section>

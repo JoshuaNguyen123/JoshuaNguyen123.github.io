@@ -54,7 +54,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
         <article>
           <header className={styles.intro}>
             <a className={styles.back} href="/#work">All work</a>
-            <p className={styles.kicker}>Project {project.number}</p>
+            <p className={styles.kicker}>Case study</p>
             <h1>{project.title}</h1>
             <p className={styles.lede}>{project.problem}</p>
             <dl className={styles.facts}>

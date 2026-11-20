@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowUpRight } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useState } from "react";
 import type { Project } from "@/content/projects";
@@ -9,7 +8,12 @@ import styles from "./WorkIndex.module.css";
 export type FeaturedProject = Pick<Project, "slug" | "number" | "title" | "tagline" | "discipline" | "href" | "image" | "preview"> &
   NonNullable<Project["feature"]>;
 
-/** All case studies remain native links, including before hydration. */
+/**
+ * Three lead projects: one shown large with its image, the others listed
+ * beside it. Each listed entry has a button, labelled for what it shows, that
+ * brings its screenshot or diagram into the large slot. All case studies
+ * remain native links, including before hydration.
+ */
 export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
   const [active, setActive] = useState(0);
 
@@ -41,24 +45,20 @@ export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
                 <a href={`/work/${project.slug}/`}>{project.title}</a>
               </h3>
               <p className={styles.summary}>{project.tagline}.</p>
-              <a className={styles.caseStudy} href={`/work/${project.slug}/`}>
-                Case study <ArrowUpRight size={16} aria-hidden="true" />
-              </a>
-              <p className={styles.detail}>{project.highlights[0]}</p>
+              <p className={styles.detail}>{project.highlights[0]}.</p>
+              <div className={styles.actions}>
+                <a className={styles.caseStudy} href={`/work/${project.slug}/`} aria-label={`${project.title} case study`}>Case study</a>
+                <button
+                  type="button"
+                  className={styles.swap}
+                  aria-label={`${project.preview ? "Show screenshot" : "Show diagram"} of ${project.title}`}
+                  aria-pressed={active === index}
+                  aria-controls={`project-${project.slug}`}
+                  onClick={() => setActive(index)}
+                >{project.preview ? "Show screenshot" : "Show diagram"}</button>
+              </div>
             </div>
           </article>
-        ))}
-      </div>
-      <div className={styles.controls} role="group" aria-label="Feature a project">
-        {projects.map((project, index) => (
-          <button
-            key={project.slug}
-            type="button"
-            aria-label={`Feature ${project.title}`}
-            aria-pressed={active === index}
-            aria-controls={`project-${project.slug}`}
-            onClick={() => setActive(index)}
-          ><span aria-hidden="true" /></button>
         ))}
       </div>
     </section>
