@@ -94,6 +94,21 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(workIndexPage, /<SiteFooter/);
   assert.match(workIndexPage, /id="main"/);
   for (const source of [workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
+  // Subpages speak the same language: a tinted opening band, section titles on
+  // the homepage's five-to-seven split, and full-width sections where the
+  // content needs the room. The private editor keeps its own shell.
+  const frameStyles = await readFile(new URL("../components/site/frame.module.css", import.meta.url), "utf8");
+  assert.match(frameStyles, /\.intro \{[^}]*background: var\(--panel\)/);
+  assert.match(frameStyles, /\.section \{[^}]*grid-template-columns: minmax\(0, 5fr\) minmax\(0, 7fr\)/);
+  assert.match(frameStyles, /\.label \{[^}]*font-size: var\(--text-feature\)/);
+  assert.match(work, /\$\{styles\.section\} \$\{styles\.wide\}/);
+  const adminPage = await readFile(new URL("../app/admin/page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(adminPage, /SiteHeader|SiteFooter|frame\.module|bands\.module/);
+  // Inline diagrams set their labels in the site's own typeface, which every
+  // device loads, so a label never outgrows the box it was measured for.
+  const diagramStyles = await readFile(new URL("../components/work/ArchitectureDiagram.module.css", import.meta.url), "utf8");
+  assert.match(diagramStyles, /\.diagram :global\(svg \*\) \{ font-family: var\(--font-sans\) !important; \}/);
+  assert.match(diagramStyles, /\.diagram :global\(foreignObject\) \{ overflow: visible; \}/);
   // The homepage runs in bands on that same container. The introduction sits
   // inside the opening landscape, and the dark bands only remap colour roles.
   const bands = await readFile(new URL("../components/site/bands.module.css", import.meta.url), "utf8");

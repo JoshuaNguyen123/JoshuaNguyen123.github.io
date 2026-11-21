@@ -73,7 +73,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
 
           <ScrollSections>
             {project.preview ? (
-              <section className={styles.section} data-section="Inside the app">
+              <section className={`${styles.section} ${styles.wide}`} data-section="Inside the app">
                 <h2 className={styles.label} data-section-label>Inside the app</h2>
                 <figure className={styles.figure}>
                   <a href={project.preview.src} target="_blank" rel="noreferrer" aria-label="Open the full-size product capture (new tab)">
@@ -88,7 +88,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
               <p className={styles.prose}>{project.whatItDoes}</p>
             </section>
 
-            <section className={styles.section} data-section="Architecture">
+            <section className={`${styles.section} ${styles.wide}`} data-section="Architecture">
               <h2 className={styles.label} data-section-label>Architecture</h2>
               <figure className={styles.figure}>
                 <ArchitectureDiagram slug={project.slug} label={`Architecture diagram of ${project.title}`} />

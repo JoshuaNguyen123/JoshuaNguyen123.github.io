@@ -27,7 +27,7 @@ export default function ActivityDetail() {
   return (
     <>
       <SiteHeader current="activity" />
-      <main className={styles.main} id="main">
+      <main className={`${styles.main} ${styles.stacked}`} id="main">
         <header className={styles.intro}>
           <p className={styles.kicker}>Activity</p>
           <h1>A record of the work behind the projects.</h1>

@@ -1,6 +1,6 @@
 /* The homepage lays the shared header over its landscape. Position and colour
    change; the links, their sizes, and the container they sit in do not. */
-header.overlay { color: var(--on-image); left: 0; position: absolute; right: 0; top: 0; z-index: 5; }
+header.overlay { background: transparent; color: var(--on-image); left: 0; position: absolute; right: 0; top: 0; z-index: 5; }
 .overlay > nav,
 .overlay > nav a:hover,
 .overlay > nav a:focus-visible { color: var(--on-image); }

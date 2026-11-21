@@ -12,7 +12,6 @@
 .post { align-items: baseline; border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); margin-bottom: var(--space-4); padding: var(--space-5) 0 36px; }
 .postTitle { font-size: var(--text-feature); font-weight: 500; letter-spacing: -.03em; line-height: 1.1; margin: 0; }
 .postSummary { color: var(--body); display: block; font-size: var(--text-lg); line-height: 1.55; }
-.post :global(.writing-meta) { font-family: var(--font-mono); margin-top: 12px; }
 
 /* Activity: three numerals, then the year. The calendar sits on a paper plate
    so its squares keep the same ramp as the full dashboard. */

@@ -104,6 +104,7 @@
   --text-display: clamp(30px, 3.3vw, 42px);
   --text-display-lg: clamp(32px, 4vw, 48px);
   /* The homepage's bands: one title size, one project-title size, one numeral size. */
+  --text-page: clamp(42px, 5.6vw, 76px);   /* a subpage's title */
   --text-band: clamp(38px, 4.4vw, 60px);
   --text-feature: clamp(27px, 2.7vw, 38px);
   --text-statement: clamp(20px, 1.9vw, 26px);
@@ -121,7 +122,7 @@
 html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; }
 body {
   /* next/font defines its variables on body. One grotesk for UI and prose;
-     Plex Mono only for data on the activity page and for code. */
+     Plex Mono for data, code, and the short meta lines above titles. */
   --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, Menlo, Consolas, monospace;
   background: var(--paper);
@@ -198,7 +199,7 @@ section[id] { scroll-margin-top: 28px; }
    current page. ---- */
 .site-header {
   align-items: center; display: flex; flex-wrap: wrap; gap: 0 var(--space-5);
-  justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
+  background: var(--panel); justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
 }
 .wordmark { align-items: center; display: inline-flex; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; min-height: 44px; }
 .site-header > nav {
@@ -246,11 +247,11 @@ main:has(> .night:last-child) + .site-footer .site-footer-inner { border-top: 1p
    latest note: each entry is a full-width row (title, summary, then one quiet
    line of meta), so a single entry never leaves an empty column. ---- */
 .writing-list { border-bottom: 1px solid var(--line); min-width: 0; }
-.writing-list > a { border-top: 1px solid var(--line); display: block; padding: var(--space-4) 0; }
-.writing-list h3 { font-size: var(--studio-title); font-weight: 500; letter-spacing: -.015em; line-height: 1.25; margin: 0 0 var(--space-2); }
+.writing-list > a { border-top: 1px solid var(--line); display: block; padding: 22px 0 26px; }
+.writing-list h3 { font-size: var(--text-h2-sm); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; margin: 0 0 var(--space-2); }
 .writing-list > a:hover h3, .writing-list > a:focus-visible h3 { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
 .writing-list p { color: var(--body); font-size: var(--studio-body); line-height: 1.6; max-width: 62ch; }
-.writing-meta { color: var(--muted); display: block; font-size: var(--text-sm); margin-top: 10px; }
+.writing-meta { color: var(--muted); display: block; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.5; margin-top: 12px; }
 
 /* ---- Article prose: rendered markdown, so these stay global ---- */
 .article-body { color: var(--body); font-size: var(--text-lg); hanging-punctuation: first; line-height: 1.72; max-width: var(--measure); min-width: 0; }
