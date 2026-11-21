@@ -1,2 +1,0 @@
-.scene { position: absolute; right: var(--gutter-centered); top: -14px; width: min(32%, 460px); pointer-events: none; }
-@media (max-width: 760px) { .scene { top: -6px; width: min(44%, 190px); } }

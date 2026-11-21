@@ -1,13 +1,29 @@
-/* The homepage opens on a full-bleed landscape, then follows the shared page
-   frame (components/site/frame.module.css) like every other page. Only what is
-   particular to the homepage lives here. */
+/* What is particular to the homepage. Bands, titles, and the seven-to-five
+   split come from components/site/bands.module.css. */
 .main { position: relative; }
 
-/* A year of the Build Index as a strip of week columns, levels from the shared ramp. */
-.calendar { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; }
+/* More projects and the latest note: large rows on hairlines. */
+.pairs { display: grid; gap: 0 var(--split-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0 0 var(--space-4); padding: 0; }
+.pairs a { border-top: 1px solid var(--line); display: block; height: 100%; padding: 22px 0 26px; }
+.pairTitle { display: block; font-size: var(--text-h3); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
+.pairNote { color: var(--muted); display: block; font-size: var(--text-base); line-height: 1.55; margin-top: var(--space-2); }
+.pairs a:hover .pairTitle, .post:hover .postTitle { text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 5px; }
+
+.post { align-items: baseline; border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); margin-bottom: var(--space-4); padding: var(--space-5) 0 36px; }
+.postTitle { font-size: var(--text-feature); font-weight: 500; letter-spacing: -.03em; line-height: 1.1; margin: 0; }
+.postSummary { color: var(--body); display: block; font-size: var(--text-lg); line-height: 1.55; }
+.post :global(.writing-meta) { font-family: var(--font-mono); margin-top: 12px; }
+
+/* Activity: three numerals, then the year. The calendar sits on a paper plate
+   so its squares keep the same ramp as the full dashboard. */
+.stats { display: grid; gap: var(--space-6) var(--split-gap); grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 0 clamp(40px, 5vw, 64px); }
+.stats > div { border-top: 1px solid var(--line); display: flex; flex-direction: column-reverse; gap: 10px; justify-content: flex-end; padding-top: 18px; }
+.stats dt { color: var(--muted); font-size: var(--text-base); line-height: 1.4; }
+.stats dd { font-size: var(--text-numeral); font-variant-numeric: tabular-nums; letter-spacing: -.045em; line-height: 1; margin: 0; }
+.calendar { margin: 0; }
 .cells {
-  display: grid; gap: 3px; grid-auto-flow: column;
-  grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); grid-template-rows: repeat(7, auto);
+  background: var(--on-image); display: grid; gap: 3px; grid-auto-flow: column;
+  grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); grid-template-rows: repeat(7, auto); padding: clamp(10px, 1.6vw, 24px);
 }
 .cell { aspect-ratio: 1; border-radius: 1px; }
 .cell[data-level="0"] { background: var(--level-0); }
@@ -17,23 +33,30 @@
 .cell[data-level="4"] { background: var(--level-4); }
 .cell[data-level="5"] { background: var(--level-5); }
 .calendar figcaption {
-  color: var(--muted); display: flex; flex-wrap: wrap;
-  font-size: var(--text-sm); gap: var(--space-1) var(--space-4); justify-content: space-between;
+  align-items: center; color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--text-md);
+  gap: var(--space-1) var(--space-4); justify-content: space-between; line-height: 1.5; margin-top: var(--space-3);
 }
+.calendar figcaption a { align-items: center; color: var(--ink); display: inline-flex; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
 
-/* The portrait sits with the personal copy, left of it. */
-.about { align-items: flex-start; display: flex; flex-wrap: wrap; gap: var(--space-5) var(--space-6); min-width: 0; }
-.portrait { flex: 0 0 auto; margin: 0; width: clamp(180px, 15vw, 240px); }
-.portrait img { aspect-ratio: 4 / 5; background: var(--panel); display: block; height: auto; object-fit: cover; width: 100%; }
-.aboutCopy { display: flex; flex: 999 1 320px; flex-direction: column; gap: var(--space-4); font-size: var(--studio-body); line-height: 1.65; min-width: 0; }
-.aboutCopy > p:not(:first-child) { color: var(--body); max-width: 62ch; }
+/* About: the two photographs share one top and one bottom edge, and the text
+   beneath them keeps the same two columns. */
+.photos { margin-bottom: var(--space-6); }
+.photos img { display: block; object-fit: cover; width: 100%; }
+.place img { aspect-ratio: 8 / 5; height: auto; }
+.portrait { min-height: 0; position: relative; }
+.portrait img { height: 100%; inset: 0; object-position: center 22%; position: absolute; }
 
-.contact :global(.contact-form) { border-top: 1px solid var(--line); margin-top: var(--space-4); padding-top: var(--space-5); }
+/* Contact: the invitation and the ways to reach me beside the form. */
+.channels { display: flex; flex-direction: column; font-size: var(--text-base); margin-top: var(--space-3); }
+.channels a { align-items: center; align-self: flex-start; display: inline-flex; min-height: 44px; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.channels a:hover { text-decoration-color: var(--ink); }
+.contact :global(.contact-form) { padding-top: 0; }
 
-@media (max-width: 760px) {
-  .about { gap: var(--space-4); }
-  .portrait { width: min(200px, 56vw); }
+@media (max-width: 860px) {
+  .pairs { grid-template-columns: minmax(0, 1fr); }
+  .stats { gap: var(--space-5); grid-template-columns: minmax(0, 1fr); }
+  .photos { margin-bottom: var(--space-5); }
+  .portrait { aspect-ratio: 4 / 5; max-width: 280px; }
   .cells { gap: 2px; }
-  .calendar figcaption { font-size: var(--text-xs); line-height: 1.6; }
-  .contact :global(.contact-form) { margin-top: 12px; padding-top: 24px; }
+  .calendar figcaption { font-size: var(--text-sm); }
 }

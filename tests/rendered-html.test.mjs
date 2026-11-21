@@ -56,8 +56,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   const sectionOrder = [page.indexOf("<WorkIndex"), ...["more", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`))];
   assert.ok(sectionOrder.every((position) => position >= 0));
   assert.deepEqual(sectionOrder, [...sectionOrder].sort((a, b) => a - b));
-  // Featured controls enhance native case-study links. The hero follows
-  // native scroll and honors reduced motion without intercepting input.
+  // Featured projects are native case-study links with no script of their
+  // own. The hero follows native scroll and honors reduced motion without
+  // intercepting input.
   const hero = await readFile(new URL("../components/site/CinematicHero.tsx", import.meta.url), "utf8");
   assert.match(hero, /\{ passive: true \}/);
   assert.match(hero, /requestAnimationFrame/);
@@ -92,7 +93,16 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(workIndexPage, /<SiteHeader current="work" \/>/);
   assert.match(workIndexPage, /<SiteFooter/);
   assert.match(workIndexPage, /id="main"/);
-  for (const source of [page, workIndex, workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
+  for (const source of [workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
+  // The homepage runs in bands on that same container. The introduction sits
+  // inside the opening landscape, and the dark bands only remap colour roles.
+  const bands = await readFile(new URL("../components/site/bands.module.css", import.meta.url), "utf8");
+  assert.match(bands, /\.band \{ padding: var\(--band-space\) var\(--gutter-centered\); \}/);
+  for (const source of [page, workIndex]) assert.match(source, /site\/bands\.module\.css"/);
+  assert.match(page, /<CinematicHero><PersonalIntro \/><\/CinematicHero>/);
+  assert.match(hero, /\{children\}\s*<\/div>\s*<\/section>/);
+  assert.match(styles, /\.night, \.site-footer \{[^}]*--ink: var\(--night-ink\)/);
+  for (const id of ["activity", "contact"]) assert.match(page, new RegExp(`className=\\{\`\\$\\{bands\\.band\\} night\`\\} id="${id}"`));
   for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
     assert.match(source, /<SiteFooter/);
@@ -110,7 +120,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /projects\.slice\(0, FEATURED_PROJECTS\)/);
   assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
   assert.doesNotMatch(page, /<strong><span>View project/);
-  assert.match(workIndex, /aria-pressed=\{active === index\}/);
+  assert.doesNotMatch(workIndex, /"use client"|useState/);
+  assert.match(workIndex, /project\.highlights\.map/);
   assert.match(page, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
   assert.match(projects, /image: string;/);
   assert.match(work, /Architecture diagram of/);

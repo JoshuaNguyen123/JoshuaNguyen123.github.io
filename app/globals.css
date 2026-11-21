@@ -28,6 +28,15 @@
   --on-image-soft: rgb(247 248 245 / .72);
   --on-image-rule: rgb(247 248 245 / .6);
   --landscape-base: #10292c;
+  /* Night: the dark bands (homepage activity and contact, and every page's
+     footer). The .night scope below points the ordinary roles at these. */
+  --night-ink: #f7f8f5;
+  --night-body: #dfe7e2;
+  --night-muted: #c3d0ca;
+  --night-line: #44615f;
+  --night-input: #8fa39b;
+  --night-error: #f3b9ad;
+  --night-success: #b9dcae;
   --landscape-side-shade: linear-gradient(90deg, rgb(16 41 44 / .3), rgb(16 41 44 / .08) 65%, transparent);
   --landscape-shade: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .5) 55%, rgb(16 41 44 / .8) 100%);
   --landscape-shade-mobile: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .66) 55%, rgb(16 41 44 / .8) 100%);
@@ -94,6 +103,13 @@
   --text-tile: 44px;
   --text-display: clamp(30px, 3.3vw, 42px);
   --text-display-lg: clamp(32px, 4vw, 48px);
+  /* The homepage's bands: one title size, one project-title size, one numeral size. */
+  --text-band: clamp(38px, 4.4vw, 60px);
+  --text-feature: clamp(27px, 2.7vw, 38px);
+  --text-statement: clamp(20px, 1.9vw, 26px);
+  --text-numeral: clamp(60px, 6.8vw, 96px);
+  --band-space: clamp(72px, 8.4vw, 120px);
+  --split-gap: clamp(32px, 5vw, 72px);
   --ease: 180ms ease;
 
   /* One deliberate light scheme: keeps native form controls and scrollbars
@@ -138,6 +154,17 @@ section[id] { scroll-margin-top: 28px; }
   font-weight: 500;
 }
 
+/* ---- Night: a dark band. Everything inside keeps its usual rules; only the
+   colour roles change, so links, buttons, and form fields follow on their own. ---- */
+.night, .site-footer {
+  --ink: var(--night-ink); --body: var(--night-body); --muted: var(--night-muted); --faint: var(--night-muted);
+  --line: var(--night-line); --hair: var(--night-line); --rule: var(--night-input); --input-line: var(--night-input);
+  --placeholder: var(--night-muted); --accent: var(--night-ink); --accent-hover: var(--night-body);
+  --paper: var(--landscape-base); --paper-bright: var(--landscape-base);
+  --error: var(--night-error); --success: var(--night-success);
+  background: var(--landscape-base); color: var(--ink);
+}
+
 /* ---- Buttons and links: one family, used by the contact form and the editor ---- */
 .primary-button, .quiet-button {
   border: 1px solid var(--ink); border-radius: 0; cursor: pointer; font-size: var(--text-md); font-weight: 500;
@@ -154,6 +181,9 @@ section[id] { scroll-margin-top: 28px; }
   font-size: var(--text-base); font-weight: 500; gap: 12px; padding: 0 0 3px;
 }
 .primary-link:hover, .primary-link:focus-visible { border-color: var(--accent); color: var(--accent); }
+
+/* Read by assistive technology, not drawn. */
+.visually-hidden { clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
 
 /* Keyboard users get a way past the header; it is invisible until focused. */
 .skip-link {
@@ -183,13 +213,16 @@ section[id] { scroll-margin-top: 28px; }
 .site-header > nav a:hover, .site-header > nav a:focus-visible, .site-header > nav a[aria-current="page"] { color: var(--ink); }
 .site-header > nav a:hover::after, .site-header > nav a:focus-visible::after, .site-header > nav a[aria-current="page"]::after { transform: scaleX(1); }
 
-/* ---- Footer, shared by every public page: meta left, links right ---- */
-.site-footer {
-  align-items: center; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap;
-  font-size: var(--text-sm); gap: 0 var(--space-4); justify-content: space-between;
-  margin: var(--space-8) var(--gutter-centered) 0; padding: var(--space-3) 0 var(--space-6);
+/* ---- Footer, shared by every public page: a night band, meta left, links
+   right. On the homepage it closes the contact band above it. ---- */
+.site-footer { font-size: var(--text-sm); padding: 0 var(--gutter-centered); }
+.site-footer-inner {
+  align-items: center; color: var(--muted); display: flex; flex-wrap: wrap;
+  gap: 0 var(--space-4); justify-content: space-between; padding: var(--space-3) 0 var(--space-6);
 }
-.site-footer-meta { color: var(--faint); font-size: var(--text-xs); }
+/* Where a night band already ends the page, a hairline sets the footer apart from it. */
+main:has(> .night:last-child) + .site-footer .site-footer-inner { border-top: 1px solid var(--line); }
+.site-footer-meta { font-size: var(--text-xs); }
 .site-footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
 .site-footer-links a { align-items: center; display: inline-flex; min-height: 44px; }
 .site-footer-links a:hover, .site-footer-links a:focus-visible { color: var(--ink); }
@@ -636,7 +669,6 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 @media (max-width: 640px) {
   :root { --gutter: 24px; }
   .site-header { gap: 0; padding-bottom: var(--space-3); padding-top: var(--space-3); }
-  .site-footer { margin-top: var(--space-7); }
 }
 /* All five links stay on one row down to the narrowest phones. */
 @media (max-width: 380px) { .site-header > nav { font-size: var(--text-md); gap: 0 12px; } }

@@ -1,10 +1,9 @@
-/* The one page frame, used by the homepage and every subpage: content sits in
-   the centred container, and each section sets a narrow label column beside
-   its content, separated by a hairline and whitespace. No cards, shadows, or
-   badges. Tokens live in globals.css.
-   .main frames a whole page; .frame does the same for the part of the
-   homepage that follows its full-bleed landscape. */
-.main, .frame { margin: 0 var(--gutter-centered); }
+/* The frame every subpage shares: content sits in the centred container, and
+   each section sets a narrow label column beside its content, separated by a
+   hairline and whitespace. No cards, shadows, or badges. Tokens live in
+   globals.css. The homepage uses the same container in bands
+   (components/site/bands.module.css). */
+.main { margin: 0 var(--gutter-centered); padding-bottom: var(--space-8); }
 .figure img { display: block; height: auto; width: 100%; }
 
 .intro { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-7) 0 var(--space-8); }
@@ -40,8 +39,6 @@
   grid-template-columns: var(--label-column) minmax(0, 1fr); padding: var(--space-7) 0;
   scroll-margin-top: var(--space-4);
 }
-/* A section that continues the one above it, so no rule divides them. */
-.continued { border-top: 0; padding-top: 0; }
 .label { color: var(--muted); font-size: var(--studio-meta); font-weight: 500; margin: 0; }
 .markedLabel { align-items: center; align-self: start; display: flex; gap: var(--space-2); }
 .content { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
@@ -77,6 +74,7 @@
 .bar { display: none; }
 
 @media (max-width: 760px) {
+  .main { padding-bottom: var(--space-7); }
   .intro { padding: var(--space-6) 0 var(--space-7); }
   .section { grid-template-columns: minmax(0, 1fr); padding: var(--space-6) 0; }
   .statement { font-size: var(--text-lg); }

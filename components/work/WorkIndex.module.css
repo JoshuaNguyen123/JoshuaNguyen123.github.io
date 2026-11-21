@@ -1,39 +1,24 @@
-/* One stage, three projects beneath it. The stage keeps one shape whichever
-   image it holds, so swapping never moves the page. */
-.stage { min-width: 0; }
-.figure { display: block; }
-.figure[hidden] { display: none; }
-.figure img {
-  aspect-ratio: 8 / 5; background: var(--paper); border: 1px solid var(--line); display: block;
-  height: auto; object-fit: contain; width: 100%;
-}
-.caption { color: var(--muted); display: block; font-size: var(--text-sm); line-height: 1.5; margin-top: var(--space-2); }
+/* Three lead projects, each a wide image beside its text on the shared
+   seven-to-five split. The image changes side from one project to the next. */
+.rows { display: flex; flex-direction: column; gap: clamp(64px, 8vw, 112px); }
+.row { align-items: center; display: grid; gap: var(--space-5) var(--split-gap); grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.row:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.row:nth-child(even) .figure { order: 2; }
 
-/* The rule above each project is ink for the one on the stage. */
-.entries { display: grid; gap: var(--space-5); grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.entry { border-top: 2px solid var(--line); min-width: 0; padding-top: var(--space-3); transition: border-color var(--ease); }
-.entry[data-active="true"] { border-top-color: var(--ink); }
-.title { font-size: var(--text-xl); font-weight: 500; letter-spacing: -.015em; line-height: 1.25; margin: 0 0 var(--space-2); }
-.title a:hover { text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 4px; }
-.summary { color: var(--body); font-size: var(--text-ui); line-height: 1.6; }
-.detail { color: var(--muted); font-size: var(--text-md); line-height: 1.6; margin-top: 6px; }
-.actions { align-items: center; display: flex; flex-wrap: wrap; gap: 0 var(--space-4); margin-top: var(--space-1); }
-.caseStudy, .swap { align-items: center; display: inline-flex; font-size: var(--text-md); min-height: 44px; }
-.caseStudy { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
-.caseStudy:hover { text-decoration-color: var(--ink); }
-/* A text button, like the year tabs on the activity page. The shown project's
-   own button is redundant, so it stays out of sight unless the keyboard is on it. */
-.swap { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 0; }
-.swap:hover { color: var(--ink); }
-.entry[data-active="true"] .swap:not(:focus-visible) { clip-path: inset(50%); height: 1px; min-height: 0; overflow: hidden; position: absolute; width: 1px; }
+.figure { aspect-ratio: 8 / 5; background: var(--paper); border: 1px solid var(--line); display: block; overflow: hidden; }
+.figure img { display: block; height: 100%; object-fit: cover; width: 100%; }
+/* An architecture diagram is shown whole inside the same frame. */
+.figure > div { border: 0; height: 100%; overflow: hidden; padding: clamp(12px, 2vw, 28px); }
+.figure > div :global(svg) { height: 100%; margin: 0; max-width: none !important; min-width: 0; width: 100%; }
 
-@media (max-width: 1000px) {
-  .entries { gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
-  .summary, .detail { max-width: 46ch; }
-}
-@media (max-width: 760px) {
-  /* The stage is out of sight by the time a thumb reaches these, so it stays
-     on the first project and there is nothing to swap. */
-  .entry, .entry[data-active="true"] { border-top: 1px solid var(--line); }
-  .swap, .detail { display: none; }
+.copy { min-width: 0; }
+.title { font-size: var(--text-feature); font-weight: 500; letter-spacing: -.03em; line-height: 1.1; margin: 14px 0; }
+.title a:hover { text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.summary { color: var(--body); font-size: var(--text-lg); line-height: 1.55; }
+.highlights { color: var(--body); font-size: var(--text-ui); line-height: 1.5; list-style: none; margin: var(--space-3) 0 var(--space-2); padding: 0; }
+.highlights li { border-top: 1px solid var(--line); padding: var(--space-2) 0; }
+
+@media (max-width: 860px) {
+  .row, .row:nth-child(even) { grid-template-columns: minmax(0, 1fr); }
+  .row:nth-child(even) .figure { order: 0; }
 }

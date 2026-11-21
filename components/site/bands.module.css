@@ -1,0 +1,26 @@
+/* The homepage runs in full-width bands on the shared container: paper, panel,
+   or night (the global .night scope). Every band opens with the same title,
+   and wide-and-narrow pairs share one seven-to-five split, so images and text
+   keep the same two column edges all the way down the page. */
+.band { padding: var(--band-space) var(--gutter-centered); }
+/* A band that continues the one above it. */
+.flush { padding-top: 0; }
+.panel { background: var(--panel); }
+.title { font-size: var(--text-band); font-weight: 450; letter-spacing: -.035em; line-height: 1.05; margin: 0 0 clamp(36px, 5vw, 64px); }
+
+.split { display: grid; gap: var(--space-5) var(--split-gap); grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.splitFlip { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+
+.statement { font-size: var(--text-statement); font-weight: 430; letter-spacing: -.015em; line-height: 1.36; }
+.prose { color: var(--body); display: flex; flex-direction: column; font-size: var(--studio-body); gap: var(--space-3); line-height: 1.65; }
+.meta { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.5; }
+/* The one link each band leads to. */
+.cta {
+  align-items: center; color: var(--accent); display: inline-flex; font-size: var(--text-base); font-weight: 500; min-height: 44px;
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.cta:hover { color: var(--accent-hover); }
+
+@media (max-width: 860px) {
+  .split, .splitFlip { grid-template-columns: minmax(0, 1fr); }
+}
