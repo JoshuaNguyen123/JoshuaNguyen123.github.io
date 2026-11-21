@@ -5,13 +5,15 @@ import styles from "./SiteHeader.module.css";
  * The one header every public page shares: the same five links in the same
  * place, with `current` marking the active one. The homepage passes
  * `variant="overlay"`, which only lays the header over the landscape and turns
- * it light; it never changes what the header contains. Five short links fit on
+ * it light, and the work pages pass `variant="night"` for their dark opening.
+ * Neither changes what the header contains. Five short links fit on
  * a phone, so they wrap instead of hiding behind a menu button: navigation
  * stays visible at every width.
  */
-export function SiteHeader({ current, variant }: { current?: NavKey; variant?: "overlay" }) {
+export function SiteHeader({ current, variant }: { current?: NavKey; variant?: "overlay" | "night" }) {
+  const tone = variant === "overlay" ? ` ${styles.overlay}` : variant === "night" ? " night" : "";
   return (
-    <header className={`site-header${variant === "overlay" ? ` ${styles.overlay}` : ""}`}>
+    <header className={`site-header${tone}`}>
       <a className="wordmark" href="/" aria-label={`${siteName} home`}>
         {siteName}
       </a>

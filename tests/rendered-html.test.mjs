@@ -90,10 +90,10 @@ test("public identity, editorial writing, and public social surfaces are source-
   ]);
   // Work is a page of its own, on the same frame as the homepage and every subpage.
   const workIndexPage = await readFile(new URL("../app/work/page.tsx", import.meta.url), "utf8");
-  assert.match(workIndexPage, /<SiteHeader current="work" \/>/);
+  assert.match(workIndexPage, /<SiteHeader current="work" variant="night" \/>/);
   assert.match(workIndexPage, /<SiteFooter/);
   assert.match(workIndexPage, /id="main"/);
-  for (const source of [workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
+  for (const source of [blog, article, notFound]) assert.match(source, /site\/frame\.module\.css"/);
   // Subpages speak the same language: a tinted opening band, section titles on
   // the homepage's five-to-seven split, and full-width sections where the
   // content needs the room. The private editor keeps its own shell.
@@ -101,7 +101,28 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(frameStyles, /\.intro \{[^}]*background: var\(--panel\)/);
   assert.match(frameStyles, /\.section \{[^}]*grid-template-columns: minmax\(0, 5fr\) minmax\(0, 7fr\)/);
   assert.match(frameStyles, /\.label \{[^}]*font-size: var\(--text-feature\)/);
-  assert.match(work, /\$\{styles\.section\} \$\{styles\.wide\}/);
+  // The work gallery (the index and every case study) opens on night with its
+  // own stylesheet. Its two scripted pieces follow native scroll, never
+  // intercept it, and leave every title and plate a native link.
+  for (const source of [workIndexPage, work]) {
+    assert.match(source, /work\/gallery\.module\.css"/);
+    assert.match(source, /<SiteHeader current="work" variant="night" \/>/);
+  }
+  const browser = await readFile(new URL("../components/work/ProjectBrowser.tsx", import.meta.url), "utf8");
+  const rail = await readFile(new URL("../components/work/ChapterRail.tsx", import.meta.url), "utf8");
+  for (const source of [browser, rail]) {
+    assert.match(source, /READING_LINE \} from "@\/lib\/scroll"/);
+    assert.match(source, /\{ passive: true \}/);
+    assert.match(source, /requestAnimationFrame/);
+    assert.doesNotMatch(source, /preventDefault|scrollTo\(|wheel/);
+  }
+  assert.match(browser, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
+  assert.match(work, /<ChapterRail chapters=\{chapters\} \/>/);
+  assert.match(work, /project\.reflection/);
+  // A project's title travels from the list to its case study, only for
+  // visitors who have not asked for reduced motion.
+  for (const source of [browser, work, workIndex]) assert.match(source, /viewTransitionName: `project-\$\{project\.slug\}`/);
+  assert.match(styles, /@media \(prefers-reduced-motion: no-preference\) \{\s*@view-transition \{ navigation: auto; \}/);
   const adminPage = await readFile(new URL("../app/admin/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(adminPage, /SiteHeader|SiteFooter|frame\.module|bands\.module/);
   // Inline diagrams set their labels in the site's own typeface, which every

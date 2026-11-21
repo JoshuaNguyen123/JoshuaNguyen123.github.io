@@ -1,0 +1,119 @@
+/* The work gallery: the index of projects and each case study. Both open on
+   night with a very large title, on the shared container. Colour roles come
+   from the global .night scope, so nothing here names a colour of its own. */
+.opening { display: flex; flex-direction: column; gap: var(--space-4); padding: clamp(24px, 4vw, 56px) var(--gutter-centered) clamp(48px, 6.4vw, 96px); }
+.opening h1 { font-size: var(--text-giant); font-weight: 450; letter-spacing: -.045em; line-height: .98; margin: 0; text-wrap: balance; }
+.meta { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.5; }
+.lede { color: var(--body); font-size: var(--text-statement); font-weight: 430; letter-spacing: -.015em; line-height: 1.36; max-width: 30em; }
+.back { align-items: center; align-self: flex-start; color: var(--muted); display: inline-flex; font-size: var(--studio-meta); min-height: 44px; }
+.back:hover, .back:focus-visible { color: var(--ink); }
+.cta {
+  align-items: center; align-self: flex-start; color: var(--accent); display: inline-flex; font-size: var(--text-base); font-weight: 500;
+  min-height: 44px; text-decoration: underline; text-underline-offset: 4px;
+}
+.cta:hover { color: var(--accent-hover); }
+
+/* A paper plate holds a screenshot or diagram wherever the ground is night. */
+.plate { background: var(--on-image); display: block; overflow: hidden; }
+.plate img { display: block; height: 100%; object-fit: contain; width: 100%; }
+.plate > div { background: transparent; border: 0; height: 100%; overflow: hidden; padding: clamp(12px, 2vw, 28px); }
+.plate > div :global(svg) { height: 100%; margin: 0; max-width: none !important; min-width: 0; width: 100%; }
+
+/* ---- The index: titles down the left, one stage on the right ---- */
+.browser {
+  column-gap: var(--split-gap); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  padding: 0 var(--gutter-centered) var(--band-space);
+}
+.item { border-top: 1px solid var(--line); grid-column: 1; padding: clamp(26px, 3.2vw, 44px) 0; transition: border-color var(--ease); }
+.item[data-active="true"] { border-top-color: var(--ink); }
+.title { color: var(--muted); font-size: clamp(32px, 4.6vw, 68px); font-weight: 450; letter-spacing: -.04em; line-height: 1.02; margin: 10px 0 14px; transition: color var(--ease); }
+.item[data-active="true"] .title, .title a:hover, .title a:focus-visible { color: var(--ink); }
+.tagline { color: var(--body); font-size: var(--text-lg); line-height: 1.5; max-width: 34em; }
+
+/* Every project's panel shares the right-hand cell and stays in view; only the
+   current one shows. Without JavaScript the first stays up and every title is
+   still a link. */
+.panel {
+  align-self: start; display: flex; flex-direction: column; gap: var(--space-3); grid-column: 2; grid-row: 1 / span var(--count);
+  opacity: 0; padding-top: clamp(26px, 3.2vw, 44px); position: sticky; top: var(--space-4);
+  transition: opacity 260ms ease, visibility 0s linear 260ms; visibility: hidden;
+}
+.panel[data-active="true"] { opacity: 1; transition: opacity 260ms ease; visibility: visible; }
+.panel .plate { height: clamp(260px, 50vh, 500px); }
+/* A screenshot keeps its own shape instead of floating inside a taller plate. */
+.panel .plate:has(> img) { height: auto; }
+.panel .plate > img { height: auto; }
+.problem { font-size: var(--text-xl); letter-spacing: -.01em; line-height: 1.45; }
+
+@media (max-width: 960px) {
+  /* One column: each project carries its own plate beneath its title. */
+  .browser { grid-template-columns: minmax(0, 1fr); }
+  .item { padding-bottom: var(--space-3); }
+  .title { color: var(--ink); }
+  .panel, .panel[data-active="true"] { grid-column: 1; grid-row: auto; opacity: 1; padding: 0 0 var(--space-6); position: static; visibility: visible; }
+  .panel .plate { height: auto; }
+  .panel .plate img { aspect-ratio: 8 / 5; height: auto; }
+  .panel .plate > div { aspect-ratio: 8 / 5; height: auto; }
+}
+
+/* ---- A case study ---- */
+.spec { display: grid; gap: var(--space-4) var(--split-gap); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin: var(--space-4) 0 0; }
+.spec > div { border-top: 1px solid var(--line); padding-top: 14px; }
+.spec dt { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); }
+.spec dd { font-size: var(--text-base); line-height: 1.5; margin: 6px 0 0; }
+.spec a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.spec a:hover { text-decoration-color: var(--ink); }
+
+/* The product capture straddles the edge where night gives way to paper. */
+.withLead, .lead { --lead-overlap: clamp(72px, 13vw, 200px); }
+.withLead { padding-bottom: calc(clamp(48px, 6.4vw, 96px) + var(--lead-overlap)); }
+.lead { display: flex; flex-direction: column; gap: var(--space-3); margin: calc(-1 * var(--lead-overlap)) var(--gutter-centered) 0; position: relative; }
+.lead img { border: 1px solid var(--line); display: block; height: auto; width: 100%; }
+.caption { color: var(--muted); font-size: var(--text-md); line-height: 1.5; }
+.caption a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.caption a:hover { text-decoration-color: var(--ink); }
+
+/* Chapters: a list that stays beside the reading column and marks the current one. */
+.body { display: grid; gap: 0 var(--split-gap); grid-template-columns: 190px minmax(0, 1fr); padding: var(--band-space) var(--gutter-centered) 0; }
+.rail { align-self: start; position: sticky; top: var(--space-5); }
+.rail ol { counter-reset: chapter; list-style: none; margin: 0; padding: 0; }
+.rail li { counter-increment: chapter; }
+.rail a {
+  align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; font-size: var(--text-md); gap: var(--space-2);
+  line-height: 1.35; min-height: 44px; padding: 11px 0;
+}
+.rail a::before { content: counter(chapter, decimal-leading-zero); font-family: var(--font-mono); font-size: var(--text-xs); }
+.rail a:hover, .rail a:focus-visible { color: var(--ink); }
+.rail a[aria-current="true"] { border-top-color: var(--ink); color: var(--ink); font-weight: 500; }
+
+.chapter { padding-bottom: clamp(56px, 7.4vw, 104px); scroll-margin-top: var(--space-5); }
+.chapter h2 { font-size: var(--text-band); font-weight: 450; letter-spacing: -.035em; line-height: 1.05; margin: 0 0 clamp(24px, 3vw, 40px); }
+.prose { color: var(--body); font-size: var(--text-xl); line-height: 1.6; max-width: 34em; }
+.glance { counter-reset: fact; display: grid; gap: var(--space-5) var(--split-gap); grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+.glance li { border-top: 1px solid var(--ink); counter-increment: fact; font-size: var(--text-xl); letter-spacing: -.01em; line-height: 1.4; padding-top: 14px; }
+.glance li::before { color: var(--muted); content: counter(fact, decimal-leading-zero); display: block; font-family: var(--font-mono); font-size: var(--text-sm); margin-bottom: var(--space-3); }
+.figure { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; }
+
+/* What it taught me, set large, then the way on to the neighbouring projects. */
+.reflection { padding: var(--band-space) var(--gutter-centered) clamp(48px, 6vw, 88px); scroll-margin-top: 0; }
+.reflection h2 { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 400; margin: 0 0 var(--space-4); }
+.reflection p { font-size: clamp(25px, 3.5vw, 48px); font-weight: 430; letter-spacing: -.03em; line-height: 1.18; max-width: 24em; text-wrap: pretty; }
+.pager { display: grid; gap: 0 var(--split-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 var(--gutter-centered) clamp(48px, 6vw, 88px); }
+.pager a { border-top: 1px solid var(--line); display: block; padding: 22px 0 var(--space-5); }
+.pager a:hover, .pager a:focus-visible { border-top-color: var(--ink); }
+.pagerTitle { display: block; font-size: var(--text-band); font-weight: 450; letter-spacing: -.035em; line-height: 1.05; margin: 10px 0 12px; }
+.pagerNote { color: var(--muted); display: block; font-size: var(--text-base); line-height: 1.5; max-width: 30em; }
+.pager + .cta { margin: 0 var(--gutter-centered) var(--space-7); }
+
+@media (max-width: 860px) {
+  .glance { grid-template-columns: minmax(0, 1fr); }
+  .pager { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  /* The chapter list gives way to the slim bar that names the current
+     section; the chapters take the page's own gutter so that bar can span it. */
+  .body { grid-template-columns: minmax(0, 1fr); padding-inline: 0; }
+  .rail { display: none; }
+  .chapter { padding-inline: var(--gutter-centered); }
+  .prose { font-size: var(--text-lg); }
+}

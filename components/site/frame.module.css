@@ -2,9 +2,10 @@
    bands (components/site/bands.module.css): a tinted opening band that holds
    the page title, then sections on the shared container, then the night
    footer. A section sets its title in the narrow column of the same
-   five-to-seven split the homepage uses, beside its content; a wide section
-   stacks its title above content that needs the full width. Hairlines and
-   whitespace only: no cards, shadows, or badges. Tokens live in globals.css. */
+   five-to-seven split the homepage uses, beside its content; the activity page
+   stacks each title above content that needs the full width. Hairlines and
+   whitespace only: no cards, shadows, or badges. Tokens live in globals.css.
+   The work gallery has its own stylesheet (components/work/gallery.module.css). */
 .main { padding-bottom: var(--band-space); }
 .figure img { display: block; height: auto; width: 100%; }
 
@@ -43,8 +44,8 @@
 }
 /* The first section follows the opening band directly, so it needs no rule. */
 .intro + .section, .bar + .section { border-top: 0; }
-/* Content that needs the whole container: figures, diagrams, the activity record. */
-.wide, .stacked .section { grid-template-columns: minmax(0, 1fr); }
+/* The activity record needs the whole container, so its titles stack above their content. */
+.stacked .section { grid-template-columns: minmax(0, 1fr); }
 .label { color: var(--ink); font-size: var(--text-feature); font-weight: 500; letter-spacing: -.03em; line-height: 1.1; margin: 0; }
 .markedLabel { align-items: center; align-self: start; display: flex; gap: var(--space-3); }
 .content { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
@@ -74,7 +75,7 @@
    beside its content while that section is read. A title stacked above its
    content scrolls with it. */
 .tracked [data-section-label] { align-self: start; position: sticky; top: var(--space-5); }
-.tracked .wide [data-section-label], .stacked [data-section-label] { position: static; }
+.stacked [data-section-label] { position: static; }
 .bar { display: none; }
 
 @media (max-width: 760px) {

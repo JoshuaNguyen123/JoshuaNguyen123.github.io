@@ -29,7 +29,7 @@ export function WorkIndex({ projects }: { projects: FeaturedProject[] }) {
             </a>
             <div className={styles.copy}>
               <p className={bands.meta}>{project.number} · {project.discipline}</p>
-              <h3 className={styles.title} id={`project-${project.slug}-title`}>
+              <h3 className={styles.title} id={`project-${project.slug}-title`} style={{ viewTransitionName: `project-${project.slug}` }}>
                 <a href={`/work/${project.slug}/`}>{project.title}</a>
               </h3>
               <p className={styles.summary}>{project.tagline}.</p>

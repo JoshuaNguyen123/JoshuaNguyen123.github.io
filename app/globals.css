@@ -104,6 +104,7 @@
   --text-display: clamp(30px, 3.3vw, 42px);
   --text-display-lg: clamp(32px, 4vw, 48px);
   /* The homepage's bands: one title size, one project-title size, one numeral size. */
+  --text-giant: clamp(44px, 7.6vw, 112px);  /* the work gallery and a case study's title */
   --text-page: clamp(42px, 5.6vw, 76px);   /* a subpage's title */
   --text-band: clamp(38px, 4.4vw, 60px);
   --text-feature: clamp(27px, 2.7vw, 38px);
@@ -201,6 +202,8 @@ section[id] { scroll-margin-top: 28px; }
   align-items: center; display: flex; flex-wrap: wrap; gap: 0 var(--space-5);
   background: var(--panel); justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
 }
+/* The work gallery and its case studies open on night, so their header does too. */
+.site-header.night { background: var(--landscape-base); }
 .wordmark { align-items: center; display: inline-flex; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; min-height: 44px; }
 .site-header > nav {
   color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta);
@@ -222,7 +225,7 @@ section[id] { scroll-margin-top: 28px; }
   gap: 0 var(--space-4); justify-content: space-between; padding: var(--space-3) 0 var(--space-6);
 }
 /* Where a night band already ends the page, a hairline sets the footer apart from it. */
-main:has(> .night:last-child) + .site-footer .site-footer-inner { border-top: 1px solid var(--line); }
+main:has(.night:last-child) + .site-footer .site-footer-inner, main.night + .site-footer .site-footer-inner { border-top: 1px solid var(--line); }
 .site-footer-meta { font-size: var(--text-xs); }
 .site-footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
 .site-footer-links a { align-items: center; display: inline-flex; min-height: 44px; }
@@ -660,6 +663,13 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
   .admin-sheet { padding: 28px 20px 56px; }
   .admin-actions { align-items: stretch; flex-direction: column; }
   .admin-actions-buttons button { flex: 1; }
+}
+
+/* Moving between pages cross-fades, and a project's title travels from the
+   list it was chosen in to the top of its case study, where the browser
+   supports it. Elements opt in with their own view-transition-name. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
