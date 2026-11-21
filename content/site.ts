@@ -28,11 +28,14 @@ export const ogImage = {
   alt: "A rocky mountain valley under a blue sky, with the words: Hi, I’m Josh. AI developer and technical researcher in Bozeman, Montana.",
 } as const;
 
+// The primary navigation, in the order the homepage runs. Every page shows all
+// five. Work, Writing, and Activity are pages of their own; About and Contact
+// are the homepage's closing sections.
 export const navLinks = [
-  { key: "work", label: "Work", href: "/#work" },
-  { key: "about", label: "About", href: "/#about" },
+  { key: "work", label: "Work", href: "/work/" },
   { key: "writing", label: "Writing", href: "/blog/" },
   { key: "activity", label: "Activity", href: "/activity/" },
+  { key: "about", label: "About", href: "/#about" },
   { key: "contact", label: "Contact", href: "/#contact" },
 ] as const;
 

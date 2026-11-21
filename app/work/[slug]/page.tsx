@@ -2,7 +2,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { ArchitectureDiagram } from "@/components/work/ArchitectureDiagram";
 import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 import { getProject, getProjects } from "@/content/projects";
 import { ogImage, siteName } from "@/content/site";
 import type { Metadata } from "next";
@@ -53,7 +53,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
       <main className={styles.main} id="main">
         <article>
           <header className={styles.intro}>
-            <a className={styles.back} href="/#work">All work</a>
+            <a className={styles.back} href="/work/">All work</a>
             <p className={styles.kicker}>Case study</p>
             <h1>{project.title}</h1>
             <p className={styles.lede}>{project.problem}</p>
@@ -115,7 +115,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
                   </a>
                 </li>
               </ul>
-              <a className={styles.textLink} href="/#work">All work</a>
+              <a className={styles.textLink} href="/work/">All work</a>
             </div>
           </footer>
         </article>

@@ -14,7 +14,7 @@ import {
 } from "@/lib/activity/summary-cards";
 import type { ActivityProvider, MetricActivitySnapshot } from "@/lib/activity/types";
 import { activityProviders, providerLabels } from "@/lib/activity/types";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 import { useActivityFeed } from "./ActivityFeedProvider";
 
 const timestampFormatter = (timeZone: string) => new Intl.DateTimeFormat("en-US", {

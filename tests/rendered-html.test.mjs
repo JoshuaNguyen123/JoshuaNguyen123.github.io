@@ -79,6 +79,20 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(header, /MobileNav/);
   assert.doesNotMatch(styles, /\.site-header > nav \{[^}]*display: none/);
   assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
+  // Every page shows the same five links, in the order the homepage runs. The
+  // homepage's header over the landscape once dropped two of them.
+  assert.match(header, /\{navLinks\.map\(/);
+  assert.doesNotMatch(header, /\.filter\(/);
+  assert.match(footer, /\{navLinks\.map\(/);
+  assert.deepEqual([...site.matchAll(/\{ key: "(\w+)", label: "\w+", href: "([^"]+)" \}/g)].map(([, key, href]) => [key, href]), [
+    ["work", "/work/"], ["writing", "/blog/"], ["activity", "/activity/"], ["about", "/#about"], ["contact", "/#contact"],
+  ]);
+  // Work is a page of its own, on the same frame as the homepage and every subpage.
+  const workIndexPage = await readFile(new URL("../app/work/page.tsx", import.meta.url), "utf8");
+  assert.match(workIndexPage, /<SiteHeader current="work" \/>/);
+  assert.match(workIndexPage, /<SiteFooter/);
+  assert.match(workIndexPage, /id="main"/);
+  for (const source of [page, workIndex, workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
   for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
     assert.match(source, /<SiteFooter/);

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { drawProgress, READING_LINE } from "@/lib/scroll";
-import styles from "./subpage.module.css";
+import styles from "./frame.module.css";
 
 /**
  * Scroll-linked sections for subpages, on the same reading line as the

@@ -71,10 +71,15 @@ for (const expected of ["Bozeman, Montana", "LinkedIn", 'rel="apple-touch-icon"'
 }
 // Every public page shares one header and footer; a page that loses them is a
 // dead end for a visitor who arrived from search.
-for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/research-agent-platform/index.html", "out/404.html"]) {
+for (const page of ["out/index.html", "out/activity/index.html", "out/blog/index.html", "out/blog/why-this-site-exists/index.html", "out/work/index.html", "out/work/research-agent-platform/index.html", "out/404.html"]) {
   const pageHtml = await readFile(path.join(root, page), "utf8");
   for (const expected of ['aria-label="Primary navigation"', 'class="site-footer"', 'href="/blog/"', 'href="/#contact"']) {
     if (!pageHtml.includes(expected)) throw new Error(`${page} is missing shared chrome (${expected})`);
+  }
+  // The header carries all five links on every page, the homepage included.
+  const primaryNav = pageHtml.match(/<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  for (const href of ["/work/", "/blog/", "/activity/", "/#about", "/#contact"]) {
+    if (!primaryNav.includes(`href="${href}"`)) throw new Error(`${page} header is missing its ${href} link`);
   }
 }
 const notFoundHtml = await readFile(path.join(root, "out", "404.html"), "utf8");
@@ -84,6 +89,11 @@ for (const expected of ["Notes from the build.", "quick fix", "Why this site exi
   if (!blogHtml.includes(expected)) throw new Error(`Static blog export is missing ${expected}`);
 }
 const sitemapXml = await readFile(path.join(root, "out", "sitemap.xml"), "utf8");
+const workIndexHtml = await readFile(path.join(root, "out", "work", "index.html"), "utf8");
+for (const slug of projectSlugs) {
+  if (!workIndexHtml.includes(`href="/work/${slug}/"`)) throw new Error(`Work index is missing ${slug}`);
+}
+if (!sitemapXml.includes("/work/</loc>")) throw new Error("Sitemap is missing the work index");
 if (!sitemapXml.includes("/work/research-agent-platform/") || !sitemapXml.includes("/work/ladybug/")) throw new Error("Sitemap is missing work case-study routes");
 for (const removed of ["obsidian-research-agent", "autonomous-repository-template"]) {
   if (html.includes(`/work/${removed}/`) || sitemapXml.includes(`/work/${removed}/`)) throw new Error(`The removed ${removed} project is still linked`);

@@ -4,7 +4,7 @@ import { ActivityFeedProvider } from "@/components/activity/ActivityFeedProvider
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 import { ogImage } from "@/content/site";
 import { loadActivitySnapshot } from "@/lib/activity/load";
 import type { Metadata } from "next";

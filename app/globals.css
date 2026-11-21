@@ -1,8 +1,8 @@
 /* Alpine palette: soft chalk, slate type, and one evergreen accent.
    The landscape, editorial pages, diagrams and activity share these roles.
    Activity identity and intensity remain independently encoded.
-   Page layout lives in CSS modules (app/home.module.css,
-   components/site/subpage.module.css); this file holds tokens, shared chrome,
+   Page layout lives in one CSS module, components/site/frame.module.css, that
+   the homepage and every subpage share; this file holds tokens, shared chrome,
    and the global classes that components and rendered markdown use. */
 :root {
   --ink: #192c32;
@@ -46,7 +46,7 @@
   --studio-display: 34px;
   --gutter: 20px;
   --container: 1200px;
-  --label-column: 260px;
+  --label-column: clamp(150px, 20vw, 260px);
   --gutter-centered: max(var(--gutter), calc((100% - var(--container)) / 2));
   --measure: 660px;
 
@@ -162,19 +162,26 @@ section[id] { scroll-margin-top: 28px; }
 }
 .skip-link:focus-visible { outline: 2px solid var(--paper); outline-offset: -5px; top: 12px; }
 
-/* ---- Header: name left, a short row of text links right. Links wrap on a
-   phone rather than collapsing into a menu, so navigation is never hidden. ---- */
+/* ---- Header: name left, the same five text links right, on every page.
+   Links wrap on a phone rather than collapsing into a menu, so navigation is
+   never hidden. A hairline draws under a link on hover and stays under the
+   current page. ---- */
 .site-header {
-  align-items: center; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-5);
+  align-items: center; display: flex; flex-wrap: wrap; gap: 0 var(--space-5);
   justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
 }
-.wordmark { display: inline-block; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; }
-.site-header > nav { color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta); gap: 0 var(--space-4); }
-.site-header > nav a { align-items: center; display: inline-flex; min-height: 44px; }
-.site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); }
-.site-header > nav a[aria-current="page"], .site-header > nav .site-header-resume {
-  color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 6px;
+.wordmark { align-items: center; display: inline-flex; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; min-height: 44px; }
+.site-header > nav {
+  color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta);
+  gap: 0 clamp(var(--space-3), 4vw, var(--space-4));
 }
+.site-header > nav a { align-items: center; display: inline-flex; min-height: 44px; position: relative; }
+.site-header > nav a::after {
+  background: currentColor; bottom: 9px; content: ""; height: 1px; left: 0; position: absolute; right: 0;
+  transform: scaleX(0); transform-origin: left; transition: transform 220ms ease;
+}
+.site-header > nav a:hover, .site-header > nav a:focus-visible, .site-header > nav a[aria-current="page"] { color: var(--ink); }
+.site-header > nav a:hover::after, .site-header > nav a:focus-visible::after, .site-header > nav a[aria-current="page"]::after { transform: scaleX(1); }
 
 /* ---- Footer, shared by every public page: meta left, links right ---- */
 .site-footer {
@@ -202,8 +209,9 @@ section[id] { scroll-margin-top: 28px; }
 .project-tile--image { display: block; overflow: hidden; padding: 0; }
 .project-tile--image img { display: block; height: 100%; object-fit: cover; width: 100%; }
 
-/* ---- Writing: each note is a full-width row (title, summary, then date and
-   length on one quiet line), so a single post never leaves an empty column. ---- */
+/* ---- Index rows, used by the writing and work indexes and the homepage's
+   latest note: each entry is a full-width row (title, summary, then one quiet
+   line of meta), so a single entry never leaves an empty column. ---- */
 .writing-list { border-bottom: 1px solid var(--line); min-width: 0; }
 .writing-list > a { border-top: 1px solid var(--line); display: block; padding: var(--space-4) 0; }
 .writing-list h3 { font-size: var(--studio-title); font-weight: 500; letter-spacing: -.015em; line-height: 1.25; margin: 0 0 var(--space-2); }
@@ -630,6 +638,8 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
   .site-header { gap: 0; padding-bottom: var(--space-3); padding-top: var(--space-3); }
   .site-footer { margin-top: var(--space-7); }
 }
+/* All five links stay on one row down to the narrowest phones. */
+@media (max-width: 380px) { .site-header > nav { font-size: var(--text-md); gap: 0 12px; } }
 @media (min-width: 768px) { :root { --gutter: 48px; } }
 @media (min-width: 960px) { :root { --studio-display: 56px; } }
 @media (min-width: 1200px) { :root { --gutter: 64px; } }
