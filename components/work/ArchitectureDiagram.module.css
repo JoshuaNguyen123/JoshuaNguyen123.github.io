@@ -1,6 +1,5 @@
-/* Inline Mermaid diagram. The SVG keeps the font stack it was measured with,
-   so labels always fit their boxes. On a phone it keeps a readable minimum
-   width and scrolls sideways instead of shrinking its text. */
+/* Inline Mermaid diagram. On a phone it keeps a readable minimum width and
+   scrolls sideways instead of shrinking its text. */
 .diagram {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -8,6 +7,15 @@
   padding: clamp(8px, 2vw, 28px);
 }
 .diagram :global(svg) { display: block; height: auto; margin: 0 auto; }
+
+/* The diagrams were measured in a system typeface that a phone or a Linux
+   machine may not have; a wider fallback then ran each label past its box and
+   clipped it. Inline, the labels use the site's own typeface, which every
+   visitor loads and which sets no wider than the measured text, and a label
+   that still differs by a pixel stays centred instead of being cut off. */
+.diagram :global(svg), .diagram :global(svg *) { font-family: var(--font-sans) !important; }
+.diagram :global(foreignObject) { overflow: visible; }
+.diagram :global(foreignObject > div) { display: flex !important; justify-content: center; max-width: none !important; width: 100%; }
 
 /* --draw-progress (0 to 1) is written by ScrollSections as the diagram enters
    view. Connection i of --n draws during its own slice of that range, so the

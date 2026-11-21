@@ -1,14 +1,19 @@
-.opening { --hero-height: clamp(390px, 62svh, 800px); position: relative; isolation: isolate; background: var(--paper); }
+/* The opening: the landscape fills most of the first screen and holds the whole
+   introduction. The copy sits low on the left, above the valley edge that the
+   photo is cut to. */
+.opening { --hero-height: clamp(580px, 88svh, 880px); background: var(--paper); isolation: isolate; position: relative; }
 .hero, .scene { height: var(--hero-height); }
-.scene { position: absolute; inset: 0 0 auto; overflow: hidden; clip-path: url(#valley-edge); }
-.photo, .shade { position: absolute; inset: 0; }
+.scene { clip-path: url(#valley-edge); inset: 0 0 auto; overflow: hidden; position: absolute; }
+.photo, .shade { inset: 0; position: absolute; }
 .photo { inset: -24px 0; transform: translateY(var(--photo-offset, 0px)); }
 .image { object-fit: cover; object-position: center 64%; }
-.shade { background: linear-gradient(95deg, rgb(7 24 30 / 56%), transparent 78%), linear-gradient(0deg, rgb(0 20 27 / 27%), transparent 70%); }
-.hero { display: flex; align-items: center; position: relative; color: white; padding: 50px var(--home-gutter) 0; }
-.copy h1 { font-size: clamp(52px, 5.1vw, 92px); font-weight: 430; line-height: 1.04; letter-spacing: -.035em; margin: 0; }
-.copy p { font-size: clamp(17px, 1.55vw, 24px); line-height: 1.35; margin: 16px 0 0; letter-spacing: -.01em; }
+.shade { background: linear-gradient(95deg, rgb(7 24 30 / 64%), transparent 84%), linear-gradient(0deg, rgb(0 20 27 / 58%), transparent 74%); }
+/* The edge curve rises to about four fifths of the height on the left, so the copy stays above it. */
+.hero { align-items: flex-end; color: var(--on-image); display: flex; padding: 104px var(--gutter-centered) calc(var(--hero-height) * .23); position: relative; }
+.copy { min-width: 0; }
+.copy h1 { font-size: clamp(54px, 7.2vw, 104px); font-weight: 450; letter-spacing: -.04em; line-height: 1; margin: 0; }
+.sub { font-size: clamp(18px, 1.7vw, 24px); letter-spacing: -.01em; line-height: 1.35; margin-top: clamp(14px, 1.4vw, 20px); }
 @media (max-width: 760px) {
-  .opening { --hero-height: clamp(360px, 54svh, 540px); }
+  .opening { --hero-height: clamp(620px, 92svh, 760px); }
   .image { object-position: 48% center; }
 }

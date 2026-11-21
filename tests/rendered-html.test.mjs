@@ -56,8 +56,9 @@ test("public identity, editorial writing, and public social surfaces are source-
   const sectionOrder = [page.indexOf("<WorkIndex"), ...["more", "writing", "activity", "contact"].map((id) => page.indexOf(`id="${id}"`))];
   assert.ok(sectionOrder.every((position) => position >= 0));
   assert.deepEqual(sectionOrder, [...sectionOrder].sort((a, b) => a - b));
-  // Featured controls enhance native case-study links. The hero follows
-  // native scroll and honors reduced motion without intercepting input.
+  // Featured projects are native case-study links with no script of their
+  // own. The hero follows native scroll and honors reduced motion without
+  // intercepting input.
   const hero = await readFile(new URL("../components/site/CinematicHero.tsx", import.meta.url), "utf8");
   assert.match(hero, /\{ passive: true \}/);
   assert.match(hero, /requestAnimationFrame/);
@@ -79,6 +80,44 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.doesNotMatch(header, /MobileNav/);
   assert.doesNotMatch(styles, /\.site-header > nav \{[^}]*display: none/);
   assert.match(header, /aria-current=\{link\.key === current \? "page" : undefined\}/);
+  // Every page shows the same five links, in the order the homepage runs. The
+  // homepage's header over the landscape once dropped two of them.
+  assert.match(header, /\{navLinks\.map\(/);
+  assert.doesNotMatch(header, /\.filter\(/);
+  assert.match(footer, /\{navLinks\.map\(/);
+  assert.deepEqual([...site.matchAll(/\{ key: "(\w+)", label: "\w+", href: "([^"]+)" \}/g)].map(([, key, href]) => [key, href]), [
+    ["work", "/work/"], ["writing", "/blog/"], ["activity", "/activity/"], ["about", "/#about"], ["contact", "/#contact"],
+  ]);
+  // Work is a page of its own, on the same frame as the homepage and every subpage.
+  const workIndexPage = await readFile(new URL("../app/work/page.tsx", import.meta.url), "utf8");
+  assert.match(workIndexPage, /<SiteHeader current="work" \/>/);
+  assert.match(workIndexPage, /<SiteFooter/);
+  assert.match(workIndexPage, /id="main"/);
+  for (const source of [workIndexPage, blog, article, work, notFound]) assert.match(source, /site\/frame\.module\.css"/);
+  // Subpages speak the same language: a tinted opening band, section titles on
+  // the homepage's five-to-seven split, and full-width sections where the
+  // content needs the room. The private editor keeps its own shell.
+  const frameStyles = await readFile(new URL("../components/site/frame.module.css", import.meta.url), "utf8");
+  assert.match(frameStyles, /\.intro \{[^}]*background: var\(--panel\)/);
+  assert.match(frameStyles, /\.section \{[^}]*grid-template-columns: minmax\(0, 5fr\) minmax\(0, 7fr\)/);
+  assert.match(frameStyles, /\.label \{[^}]*font-size: var\(--text-feature\)/);
+  assert.match(work, /\$\{styles\.section\} \$\{styles\.wide\}/);
+  const adminPage = await readFile(new URL("../app/admin/page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(adminPage, /SiteHeader|SiteFooter|frame\.module|bands\.module/);
+  // Inline diagrams set their labels in the site's own typeface, which every
+  // device loads, so a label never outgrows the box it was measured for.
+  const diagramStyles = await readFile(new URL("../components/work/ArchitectureDiagram.module.css", import.meta.url), "utf8");
+  assert.match(diagramStyles, /\.diagram :global\(svg \*\) \{ font-family: var\(--font-sans\) !important; \}/);
+  assert.match(diagramStyles, /\.diagram :global\(foreignObject\) \{ overflow: visible; \}/);
+  // The homepage runs in bands on that same container. The introduction sits
+  // inside the opening landscape, and the dark bands only remap colour roles.
+  const bands = await readFile(new URL("../components/site/bands.module.css", import.meta.url), "utf8");
+  assert.match(bands, /\.band \{ padding: var\(--band-space\) var\(--gutter-centered\); \}/);
+  for (const source of [page, workIndex]) assert.match(source, /site\/bands\.module\.css"/);
+  assert.match(page, /<CinematicHero><PersonalIntro \/><\/CinematicHero>/);
+  assert.match(hero, /\{children\}\s*<\/div>\s*<\/section>/);
+  assert.match(styles, /\.night, \.site-footer \{[^}]*--ink: var\(--night-ink\)/);
+  for (const id of ["activity", "contact"]) assert.match(page, new RegExp(`className=\\{\`\\$\\{bands\\.band\\} night\`\\} id="${id}"`));
   for (const source of [page, blog, article, work, notFound]) {
     assert.match(source, /<SiteHeader/);
     assert.match(source, /<SiteFooter/);
@@ -96,7 +135,8 @@ test("public identity, editorial writing, and public social surfaces are source-
   assert.match(page, /projects\.slice\(0, FEATURED_PROJECTS\)/);
   assert.match(page, /projects\.slice\(FEATURED_PROJECTS\)/);
   assert.doesNotMatch(page, /<strong><span>View project/);
-  assert.match(workIndex, /aria-pressed=\{active === index\}/);
+  assert.doesNotMatch(workIndex, /"use client"|useState/);
+  assert.match(workIndex, /project\.highlights\.map/);
   assert.match(page, /href=\{`\/work\/\$\{project\.slug\}\/`\}/);
   assert.match(projects, /image: string;/);
   assert.match(work, /Architecture diagram of/);

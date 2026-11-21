@@ -2,7 +2,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { ArchitectureDiagram } from "@/components/work/ArchitectureDiagram";
 import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 import { getProject, getProjects } from "@/content/projects";
 import { ogImage, siteName } from "@/content/site";
 import type { Metadata } from "next";
@@ -53,7 +53,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
       <main className={styles.main} id="main">
         <article>
           <header className={styles.intro}>
-            <a className={styles.back} href="/#work">All work</a>
+            <a className={styles.back} href="/work/">All work</a>
             <p className={styles.kicker}>Case study</p>
             <h1>{project.title}</h1>
             <p className={styles.lede}>{project.problem}</p>
@@ -73,7 +73,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
 
           <ScrollSections>
             {project.preview ? (
-              <section className={styles.section} data-section="Inside the app">
+              <section className={`${styles.section} ${styles.wide}`} data-section="Inside the app">
                 <h2 className={styles.label} data-section-label>Inside the app</h2>
                 <figure className={styles.figure}>
                   <a href={project.preview.src} target="_blank" rel="noreferrer" aria-label="Open the full-size product capture (new tab)">
@@ -88,7 +88,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
               <p className={styles.prose}>{project.whatItDoes}</p>
             </section>
 
-            <section className={styles.section} data-section="Architecture">
+            <section className={`${styles.section} ${styles.wide}`} data-section="Architecture">
               <h2 className={styles.label} data-section-label>Architecture</h2>
               <figure className={styles.figure}>
                 <ArchitectureDiagram slug={project.slug} label={`Architecture diagram of ${project.title}`} />
@@ -115,7 +115,7 @@ export default async function WorkCaseStudyPage({ params }: { params: Promise<{ 
                   </a>
                 </li>
               </ul>
-              <a className={styles.textLink} href="/#work">All work</a>
+              <a className={styles.textLink} href="/work/">All work</a>
             </div>
           </footer>
         </article>

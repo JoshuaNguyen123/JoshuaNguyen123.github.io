@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./CinematicHero.module.css";
 
-/** The landscape shifts gently as the project introduction comes into view. */
+/** The opening landscape. Its children join the headline as the rest of the introduction; the photo shifts gently as the page scrolls. */
 export function CinematicHero({ children }: { children?: ReactNode }) {
   const openingRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -55,10 +55,10 @@ export function CinematicHero({ children }: { children?: ReactNode }) {
       <section className={styles.hero} id="top" aria-labelledby="intro-title">
         <div className={styles.copy} data-hero-copy="">
           <h1 id="intro-title">Hi, I’m Josh.</h1>
-          <p>AI developer and technical researcher in Bozeman, Montana.</p>
+          <p className={styles.sub}>AI developer and technical researcher in Bozeman, Montana.</p>
+          {children}
         </div>
       </section>
-      {children}
     </div>
   );
 }

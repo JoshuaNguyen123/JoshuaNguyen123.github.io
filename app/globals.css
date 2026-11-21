@@ -1,8 +1,8 @@
 /* Alpine palette: soft chalk, slate type, and one evergreen accent.
    The landscape, editorial pages, diagrams and activity share these roles.
    Activity identity and intensity remain independently encoded.
-   Page layout lives in CSS modules (app/home.module.css,
-   components/site/subpage.module.css); this file holds tokens, shared chrome,
+   Page layout lives in one CSS module, components/site/frame.module.css, that
+   the homepage and every subpage share; this file holds tokens, shared chrome,
    and the global classes that components and rendered markdown use. */
 :root {
   --ink: #192c32;
@@ -28,6 +28,15 @@
   --on-image-soft: rgb(247 248 245 / .72);
   --on-image-rule: rgb(247 248 245 / .6);
   --landscape-base: #10292c;
+  /* Night: the dark bands (homepage activity and contact, and every page's
+     footer). The .night scope below points the ordinary roles at these. */
+  --night-ink: #f7f8f5;
+  --night-body: #dfe7e2;
+  --night-muted: #c3d0ca;
+  --night-line: #44615f;
+  --night-input: #8fa39b;
+  --night-error: #f3b9ad;
+  --night-success: #b9dcae;
   --landscape-side-shade: linear-gradient(90deg, rgb(16 41 44 / .3), rgb(16 41 44 / .08) 65%, transparent);
   --landscape-shade: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .5) 55%, rgb(16 41 44 / .8) 100%);
   --landscape-shade-mobile: var(--landscape-side-shade), linear-gradient(180deg, rgb(16 41 44 / .4) 0%, rgb(16 41 44 / .1) 25%, rgb(16 41 44 / .66) 55%, rgb(16 41 44 / .8) 100%);
@@ -46,7 +55,7 @@
   --studio-display: 34px;
   --gutter: 20px;
   --container: 1200px;
-  --label-column: 260px;
+  --label-column: clamp(150px, 20vw, 260px);
   --gutter-centered: max(var(--gutter), calc((100% - var(--container)) / 2));
   --measure: 660px;
 
@@ -94,6 +103,14 @@
   --text-tile: 44px;
   --text-display: clamp(30px, 3.3vw, 42px);
   --text-display-lg: clamp(32px, 4vw, 48px);
+  /* The homepage's bands: one title size, one project-title size, one numeral size. */
+  --text-page: clamp(42px, 5.6vw, 76px);   /* a subpage's title */
+  --text-band: clamp(38px, 4.4vw, 60px);
+  --text-feature: clamp(27px, 2.7vw, 38px);
+  --text-statement: clamp(20px, 1.9vw, 26px);
+  --text-numeral: clamp(60px, 6.8vw, 96px);
+  --band-space: clamp(72px, 8.4vw, 120px);
+  --split-gap: clamp(32px, 5vw, 72px);
   --ease: 180ms ease;
 
   /* One deliberate light scheme: keeps native form controls and scrollbars
@@ -105,7 +122,7 @@
 html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; }
 body {
   /* next/font defines its variables on body. One grotesk for UI and prose;
-     Plex Mono only for data on the activity page and for code. */
+     Plex Mono for data, code, and the short meta lines above titles. */
   --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, Menlo, Consolas, monospace;
   background: var(--paper);
@@ -138,6 +155,17 @@ section[id] { scroll-margin-top: 28px; }
   font-weight: 500;
 }
 
+/* ---- Night: a dark band. Everything inside keeps its usual rules; only the
+   colour roles change, so links, buttons, and form fields follow on their own. ---- */
+.night, .site-footer {
+  --ink: var(--night-ink); --body: var(--night-body); --muted: var(--night-muted); --faint: var(--night-muted);
+  --line: var(--night-line); --hair: var(--night-line); --rule: var(--night-input); --input-line: var(--night-input);
+  --placeholder: var(--night-muted); --accent: var(--night-ink); --accent-hover: var(--night-body);
+  --paper: var(--landscape-base); --paper-bright: var(--landscape-base);
+  --error: var(--night-error); --success: var(--night-success);
+  background: var(--landscape-base); color: var(--ink);
+}
+
 /* ---- Buttons and links: one family, used by the contact form and the editor ---- */
 .primary-button, .quiet-button {
   border: 1px solid var(--ink); border-radius: 0; cursor: pointer; font-size: var(--text-md); font-weight: 500;
@@ -155,6 +183,9 @@ section[id] { scroll-margin-top: 28px; }
 }
 .primary-link:hover, .primary-link:focus-visible { border-color: var(--accent); color: var(--accent); }
 
+/* Read by assistive technology, not drawn. */
+.visually-hidden { clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+
 /* Keyboard users get a way past the header; it is invisible until focused. */
 .skip-link {
   background: var(--ink); color: var(--paper); font-size: var(--studio-meta);
@@ -162,27 +193,37 @@ section[id] { scroll-margin-top: 28px; }
 }
 .skip-link:focus-visible { outline: 2px solid var(--paper); outline-offset: -5px; top: 12px; }
 
-/* ---- Header: name left, a short row of text links right. Links wrap on a
-   phone rather than collapsing into a menu, so navigation is never hidden. ---- */
+/* ---- Header: name left, the same five text links right, on every page.
+   Links wrap on a phone rather than collapsing into a menu, so navigation is
+   never hidden. A hairline draws under a link on hover and stays under the
+   current page. ---- */
 .site-header {
-  align-items: center; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-5);
-  justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
+  align-items: center; display: flex; flex-wrap: wrap; gap: 0 var(--space-5);
+  background: var(--panel); justify-content: space-between; padding: var(--space-4) var(--gutter-centered);
 }
-.wordmark { display: inline-block; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; }
-.site-header > nav { color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta); gap: 0 var(--space-4); }
-.site-header > nav a { align-items: center; display: inline-flex; min-height: 44px; }
-.site-header > nav a:hover, .site-header > nav a:focus-visible { color: var(--ink); }
-.site-header > nav a[aria-current="page"], .site-header > nav .site-header-resume {
-  color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 6px;
+.wordmark { align-items: center; display: inline-flex; font-size: var(--text-base); font-weight: 600; letter-spacing: -.01em; min-height: 44px; }
+.site-header > nav {
+  color: var(--muted); display: flex; flex-wrap: wrap; font-size: var(--studio-meta);
+  gap: 0 clamp(var(--space-3), 4vw, var(--space-4));
 }
+.site-header > nav a { align-items: center; display: inline-flex; min-height: 44px; position: relative; }
+.site-header > nav a::after {
+  background: currentColor; bottom: 9px; content: ""; height: 1px; left: 0; position: absolute; right: 0;
+  transform: scaleX(0); transform-origin: left; transition: transform 220ms ease;
+}
+.site-header > nav a:hover, .site-header > nav a:focus-visible, .site-header > nav a[aria-current="page"] { color: var(--ink); }
+.site-header > nav a:hover::after, .site-header > nav a:focus-visible::after, .site-header > nav a[aria-current="page"]::after { transform: scaleX(1); }
 
-/* ---- Footer, shared by every public page: meta left, links right ---- */
-.site-footer {
-  align-items: center; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap;
-  font-size: var(--text-sm); gap: 0 var(--space-4); justify-content: space-between;
-  margin: var(--space-8) var(--gutter-centered) 0; padding: var(--space-3) 0 var(--space-6);
+/* ---- Footer, shared by every public page: a night band, meta left, links
+   right. On the homepage it closes the contact band above it. ---- */
+.site-footer { font-size: var(--text-sm); padding: 0 var(--gutter-centered); }
+.site-footer-inner {
+  align-items: center; color: var(--muted); display: flex; flex-wrap: wrap;
+  gap: 0 var(--space-4); justify-content: space-between; padding: var(--space-3) 0 var(--space-6);
 }
-.site-footer-meta { color: var(--faint); font-size: var(--text-xs); }
+/* Where a night band already ends the page, a hairline sets the footer apart from it. */
+main:has(> .night:last-child) + .site-footer .site-footer-inner { border-top: 1px solid var(--line); }
+.site-footer-meta { font-size: var(--text-xs); }
 .site-footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
 .site-footer-links a { align-items: center; display: inline-flex; min-height: 44px; }
 .site-footer-links a:hover, .site-footer-links a:focus-visible { color: var(--ink); }
@@ -202,14 +243,15 @@ section[id] { scroll-margin-top: 28px; }
 .project-tile--image { display: block; overflow: hidden; padding: 0; }
 .project-tile--image img { display: block; height: 100%; object-fit: cover; width: 100%; }
 
-/* ---- Writing: each note is a full-width row (title, summary, then date and
-   length on one quiet line), so a single post never leaves an empty column. ---- */
+/* ---- Index rows, used by the writing and work indexes and the homepage's
+   latest note: each entry is a full-width row (title, summary, then one quiet
+   line of meta), so a single entry never leaves an empty column. ---- */
 .writing-list { border-bottom: 1px solid var(--line); min-width: 0; }
-.writing-list > a { border-top: 1px solid var(--line); display: block; padding: var(--space-4) 0; }
-.writing-list h3 { font-size: var(--studio-title); font-weight: 500; letter-spacing: -.015em; line-height: 1.25; margin: 0 0 var(--space-2); }
+.writing-list > a { border-top: 1px solid var(--line); display: block; padding: 22px 0 26px; }
+.writing-list h3 { font-size: var(--text-h2-sm); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; margin: 0 0 var(--space-2); }
 .writing-list > a:hover h3, .writing-list > a:focus-visible h3 { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
 .writing-list p { color: var(--body); font-size: var(--studio-body); line-height: 1.6; max-width: 62ch; }
-.writing-meta { color: var(--muted); display: block; font-size: var(--text-sm); margin-top: 10px; }
+.writing-meta { color: var(--muted); display: block; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.5; margin-top: 12px; }
 
 /* ---- Article prose: rendered markdown, so these stay global ---- */
 .article-body { color: var(--body); font-size: var(--text-lg); hanging-punctuation: first; line-height: 1.72; max-width: var(--measure); min-width: 0; }
@@ -628,8 +670,9 @@ button.heatmap-cell:hover, button.heatmap-cell:focus-visible, .heatmap-cell.is-s
 @media (max-width: 640px) {
   :root { --gutter: 24px; }
   .site-header { gap: 0; padding-bottom: var(--space-3); padding-top: var(--space-3); }
-  .site-footer { margin-top: var(--space-7); }
 }
+/* All five links stay on one row down to the narrowest phones. */
+@media (max-width: 380px) { .site-header > nav { font-size: var(--text-md); gap: 0 12px; } }
 @media (min-width: 768px) { :root { --gutter: 48px; } }
 @media (min-width: 960px) { :root { --studio-display: 56px; } }
 @media (min-width: 1200px) { :root { --gutter: 64px; } }

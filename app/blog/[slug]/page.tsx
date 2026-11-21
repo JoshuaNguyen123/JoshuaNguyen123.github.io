@@ -1,7 +1,7 @@
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollSections } from "@/components/site/ScrollSections";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 import { ogImage, siteName } from "@/content/site";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog";
 import { formatDate } from "@/lib/format";

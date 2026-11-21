@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import styles from "@/components/site/subpage.module.css";
+import styles from "@/components/site/frame.module.css";
 
 export default function NotFound() {
   return (
